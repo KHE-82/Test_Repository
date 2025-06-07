@@ -1,0 +1,1 @@
+SELECT {DISTINCT({DESCENDANTS([Product_TM1Py].[Product_TM1Py].[total products],1, self)})} on ROWS, { [cube_TM1py measure].[price],[cube_TM1py measure].[unit],[cube_TM1py measure].[sales]} ON COLUMNS FROM [cube_TM1Py]WHERE([Year].[2007-2008])

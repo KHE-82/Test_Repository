@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"}SPFCubes",
+	"Hierarchies@Code.links":
+	[
+		"}SPFCubes.hierarchies/}SPFCubes.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('}SPFCubes')/Hierarchies('}SPFCubes')"
+	}
+}

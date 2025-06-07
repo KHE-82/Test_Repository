@@ -1,0 +1,14 @@
+{
+	"@type":"Cube",
+	"Name":"}sm_client_properties",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('}Clients')"
+		},
+		{
+			"@id":"Dimensions('}sm_client_properties')"
+		}
+	],
+	"Views@Code.links":[]
+}

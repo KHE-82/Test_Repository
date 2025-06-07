@@ -1,0 +1,36 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}sm_binding_measures",
+	"Elements":
+	[
+		{
+			"Name":"subset",
+			"Type":"String"
+		},
+		{
+			"Name":"element",
+			"Type":"String"
+		},
+		{
+			"Name":"worksheet",
+			"Type":"String"
+		},
+		{
+			"Name":"workbook",
+			"Type":"String"
+		},
+		{
+			"Name":"workbook_path",
+			"Type":"String"
+		},
+		{
+			"Name":"source_type",
+			"Type":"String"
+		},
+		{
+			"Name":"Alias",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

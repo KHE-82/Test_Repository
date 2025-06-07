@@ -1,0 +1,6 @@
+['Auto Formatting']=S:DB(
+'}DimensionFormats_Formatting'
+,'Level ' | TRIM(STR(ELLEV('Month',!Month),2,0))
+,'Auto Formatting Month'
+,!}DimensionFormatItems
+,!}DimensionFormatAttributes);

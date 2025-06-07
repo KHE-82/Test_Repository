@@ -1,0 +1,20 @@
+{
+	"@type":"Cube",
+	"Name":"}sm_versionbindings@Scenario@Budget",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('}Dimensions')"
+		},
+		{
+			"@id":"Dimensions('}sm_versiontasks@Scenario@Budget')"
+		},
+		{
+			"@id":"Dimensions('}sm_binding_measures')"
+		}
+	],
+	"Views@Code.links":
+	[
+		"}sm_versionbindings@Scenario@Budget.views/sm_task_bindings.json"
+	]
+}

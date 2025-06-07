@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"}DimensionFormatStyles_Asset Categories",
+	"Hierarchies@Code.links":
+	[
+		"}DimensionFormatStyles_Asset Categories.hierarchies/}DimensionFormatStyles_Asset Categories.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('}DimensionFormatStyles_Asset Categories')/Hierarchies('}DimensionFormatStyles_Asset Categories')"
+	}
+}

@@ -1,0 +1,72 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}sm_client_properties",
+	"Elements":
+	[
+		{
+			"Name":"Client Help Type",
+			"Type":"String"
+		},
+		{
+			"Name":"Client Help Path",
+			"Type":"String"
+		},
+		{
+			"Name":"Prompt for Saving Changes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Admin Help Type",
+			"Type":"String"
+		},
+		{
+			"Name":"Admin Help Path",
+			"Type":"String"
+		},
+		{
+			"Name":"Default Delegation Task Status",
+			"Type":"String"
+		},
+		{
+			"Name":"Default Completable Task Status",
+			"Type":"String"
+		},
+		{
+			"Name":"Image Name",
+			"Type":"String"
+		},
+		{
+			"Name":"DisplayDataSaveMessage",
+			"Type":"String"
+		},
+		{
+			"Name":"pre_ti",
+			"Type":"String"
+		},
+		{
+			"Name":"pre_ti_return",
+			"Type":"String"
+		},
+		{
+			"Name":"post_ti",
+			"Type":"String"
+		},
+		{
+			"Name":"post_ti_return",
+			"Type":"String"
+		},
+		{
+			"Name":"language",
+			"Type":"String"
+		},
+		{
+			"Name":"Binding Address Template",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"}sm_client_properties.subsets/sm_admin_properties.json",
+		"}sm_client_properties.subsets/sm_client_properties.json"
+	]
+}

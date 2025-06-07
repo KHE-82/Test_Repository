@@ -1,0 +1,34 @@
+{
+	"@type":"Subset",
+	"Name":"Default",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Variance')"
+		},
+		{
+			"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Actual')"
+		},
+		{
+			"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Budget')"
+		},
+		{
+			"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Actual Allocation Summary')"
+		},
+		{
+			"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Allocated Actual')"
+		},
+		{
+			"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Actual')"
+		},
+		{
+			"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Budget Allocation Summary')"
+		},
+		{
+			"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Allocated Budget')"
+		},
+		{
+			"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Budget')"
+		}
+	]
+}

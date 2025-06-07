@@ -1,0 +1,12 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}sm_versionsecurity_measures",
+	"Elements":
+	[
+		{
+			"Name":"Security_Setting",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

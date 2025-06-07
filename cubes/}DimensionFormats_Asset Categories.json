@@ -1,0 +1,20 @@
+{
+	"@type":"Cube",
+	"Name":"}DimensionFormats_Asset Categories",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('Asset Categories')"
+		},
+		{
+			"@id":"Dimensions('}DimensionFormatStyles_Asset Categories')"
+		},
+		{
+			"@id":"Dimensions('}DimensionFormatItems')"
+		},
+		{
+			"@id":"Dimensions('}DimensionFormatAttributes')"
+		}
+	],
+	"Views@Code.links":[]
+}
