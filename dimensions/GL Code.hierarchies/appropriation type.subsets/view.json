@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"view",
+	"Expression":"{{DRILLDOWNMEMBER({[GL Code].[appropriation type].[All appropriation type]} , {[GL Code].[appropriation type].[All appropriation type]} , RECURSIVE)}}"
+}

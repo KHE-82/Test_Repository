@@ -1,0 +1,181 @@
+{
+	"@type":"Subset",
+	"Name":"sm_multi_task_attributes",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Status')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Due Date')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('owner group')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Owner')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Approved By')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('approved datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Completed By')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('completed datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Delegated By')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('delegated datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Rejected By')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('rejected datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Started By')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('started datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Submitted By')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('submitted datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Approve Message')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Approve Subject')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Complete Message')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Complete Subject')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Delegate Message')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Delegate Subject')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Reject Message')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Reject Subject')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Revoke Message')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Revoke Subject')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Start Message')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Start Subject')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Submit Message')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Submit Subject')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Approve Comment')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Complete Comment')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Reject Comment')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Submit Comment')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Delegate Comment')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Start Comment')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Revoke Comment')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('worksheet')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('workbook path')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('workbook')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Source Element')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Source Dimension')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Source AliasName')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('source_type')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('pre_ti')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('pre_ti_return')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('post_ti')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('source_type')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('source_type')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('source_type')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('source_type')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('source_type')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('source_type')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('source_type')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('source_type')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('source_type')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('source_type')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('post_ti_return')"
+		}
+	]
+}

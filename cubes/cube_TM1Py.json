@@ -1,0 +1,20 @@
+{
+	"@type":"Cube",
+	"Name":"cube_TM1Py",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('Year')"
+		},
+		{
+			"@id":"Dimensions('Product_TM1Py')"
+		},
+		{
+			"@id":"Dimensions('cube_TM1py measure')"
+		}
+	],
+	"Views@Code.links":
+	[
+		"cube_TM1Py.views/TM1py_view.json"
+	]
+}

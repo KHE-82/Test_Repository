@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"Formatting",
+	"Hierarchies@Code.links":
+	[
+		"Formatting.hierarchies/Formatting.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('Formatting')/Hierarchies('Formatting')"
+	}
+}

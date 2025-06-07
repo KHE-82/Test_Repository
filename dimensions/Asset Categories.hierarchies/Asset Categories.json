@@ -1,0 +1,99 @@
+{
+	"@type":"Hierarchy",
+	"Name":"Asset Categories",
+	"Elements":
+	[
+		{
+			"Name":"All Asset Categories",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Plant and Equipment",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Computer Equipment",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Office Equipment",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Vehicles",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Computer Software",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"In House Developed Software",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Purchased Software",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Land and Buildings",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Intangibles",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"All Asset Categories",
+			"ComponentName":"Plant and Equipment",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Asset Categories",
+			"ComponentName":"Land and Buildings",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Asset Categories",
+			"ComponentName":"Computer Software",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Asset Categories",
+			"ComponentName":"Intangibles",
+			"Weight":1
+		},
+		{
+			"ParentName":"Plant and Equipment",
+			"ComponentName":"Computer Equipment",
+			"Weight":1
+		},
+		{
+			"ParentName":"Plant and Equipment",
+			"ComponentName":"Office Equipment",
+			"Weight":1
+		},
+		{
+			"ParentName":"Plant and Equipment",
+			"ComponentName":"Vehicles",
+			"Weight":1
+		},
+		{
+			"ParentName":"Computer Software",
+			"ComponentName":"In House Developed Software",
+			"Weight":1
+		},
+		{
+			"ParentName":"Computer Software",
+			"ComponentName":"Purchased Software",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"Asset Categories.subsets/Default.json"
+	]
+}

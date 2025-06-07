@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"}SPFFormatProperties",
+	"Hierarchies@Code.links":
+	[
+		"}SPFFormatProperties.hierarchies/}SPFFormatProperties.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('}SPFFormatProperties')/Hierarchies('}SPFFormatProperties')"
+	}
+}

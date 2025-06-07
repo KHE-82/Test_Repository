@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"sm_client_properties",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Elements('Prompt for Saving Changes')"
+		}
+	]
+}

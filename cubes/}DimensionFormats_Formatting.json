@@ -1,0 +1,20 @@
+{
+	"@type":"Cube",
+	"Name":"}DimensionFormats_Formatting",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('Formatting')"
+		},
+		{
+			"@id":"Dimensions('}DimensionFormatStyles_Formatting')"
+		},
+		{
+			"@id":"Dimensions('}DimensionFormatItems')"
+		},
+		{
+			"@id":"Dimensions('}DimensionFormatAttributes')"
+		}
+	],
+	"Views@Code.links":[]
+}

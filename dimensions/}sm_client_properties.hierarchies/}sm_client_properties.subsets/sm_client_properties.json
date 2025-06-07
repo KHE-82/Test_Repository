@@ -1,0 +1,13 @@
+{
+	"@type":"Subset",
+	"Name":"sm_client_properties",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('}sm_client_properties')/Hierarchies('}sm_client_properties')/Elements('DisplayDataSaveMessage')"
+		},
+		{
+			"@id":"Dimensions('}sm_client_properties')/Hierarchies('}sm_client_properties')/Elements('Prompt for Saving Changes')"
+		}
+	]
+}

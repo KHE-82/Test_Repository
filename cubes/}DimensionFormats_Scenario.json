@@ -1,0 +1,20 @@
+{
+	"@type":"Cube",
+	"Name":"}DimensionFormats_Scenario",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('Scenario')"
+		},
+		{
+			"@id":"Dimensions('}DimensionFormatStyles_Scenario')"
+		},
+		{
+			"@id":"Dimensions('}DimensionFormatItems')"
+		},
+		{
+			"@id":"Dimensions('}DimensionFormatAttributes')"
+		}
+	],
+	"Views@Code.links":[]
+}

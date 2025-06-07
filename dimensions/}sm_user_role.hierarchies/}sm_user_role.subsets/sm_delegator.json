@@ -1,0 +1,11 @@
+{
+	"@type":"Subset",
+	"Name":"sm_delegator",
+	"Alias":"User Role",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('}sm_user_role')/Hierarchies('}sm_user_role')/Elements('Delegator')"
+		}
+	]
+}

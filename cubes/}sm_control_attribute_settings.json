@@ -1,0 +1,27 @@
+{
+	"@type":"Cube",
+	"Name":"}sm_control_attribute_settings",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('}sm_control_attributes')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attribute_types')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_attribute_measures')"
+		}
+	],
+	"Views@Code.links":
+	[
+		"}sm_control_attribute_settings.views/Default.json",
+		"}sm_control_attribute_settings.views/sm_display_name.json",
+		"}sm_control_attribute_settings.views/sm_display_name_languages.json",
+		"}sm_control_attribute_settings.views/sm_task_action_attributes.json",
+		"}sm_control_attribute_settings.views/sm_task_attributes.json",
+		"}sm_control_attribute_settings.views/sm_task_status_attributes.json",
+		"}sm_control_attribute_settings.views/sm_version_attributes.json",
+		"}sm_control_attribute_settings.views/sm_version_status_attributes.json"
+	]
+}

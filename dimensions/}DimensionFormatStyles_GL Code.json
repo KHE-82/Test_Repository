@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"}DimensionFormatStyles_GL Code",
+	"Hierarchies@Code.links":
+	[
+		"}DimensionFormatStyles_GL Code.hierarchies/}DimensionFormatStyles_GL Code.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('}DimensionFormatStyles_GL Code')/Hierarchies('}DimensionFormatStyles_GL Code')"
+	}
+}

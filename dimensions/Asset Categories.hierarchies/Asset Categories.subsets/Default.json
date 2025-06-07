@@ -1,0 +1,22 @@
+{
+	"@type":"Subset",
+	"Name":"Default",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('Asset Categories')/Hierarchies('Asset Categories')/Elements('All Asset Categories')"
+		},
+		{
+			"@id":"Dimensions('Asset Categories')/Hierarchies('Asset Categories')/Elements('Plant and Equipment')"
+		},
+		{
+			"@id":"Dimensions('Asset Categories')/Hierarchies('Asset Categories')/Elements('Land and Buildings')"
+		},
+		{
+			"@id":"Dimensions('Asset Categories')/Hierarchies('Asset Categories')/Elements('Computer Software')"
+		},
+		{
+			"@id":"Dimensions('Asset Categories')/Hierarchies('Asset Categories')/Elements('Intangibles')"
+		}
+	]
+}

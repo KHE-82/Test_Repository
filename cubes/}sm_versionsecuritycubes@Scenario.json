@@ -1,0 +1,17 @@
+{
+	"@type":"Cube",
+	"Name":"}sm_versionsecuritycubes@Scenario",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('}Cubes')"
+		},
+		{
+			"@id":"Dimensions('Scenario')"
+		},
+		{
+			"@id":"Dimensions('}sm_versionsecurity_measures')"
+		}
+	],
+	"Views@Code.links":[]
+}

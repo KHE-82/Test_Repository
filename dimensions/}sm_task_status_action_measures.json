@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"}sm_task_status_action_measures",
+	"Hierarchies@Code.links":
+	[
+		"}sm_task_status_action_measures.hierarchies/}sm_task_status_action_measures.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('}sm_task_status_action_measures')/Hierarchies('}sm_task_status_action_measures')"
+	}
+}

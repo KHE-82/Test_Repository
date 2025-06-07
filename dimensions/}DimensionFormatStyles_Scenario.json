@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"}DimensionFormatStyles_Scenario",
+	"Hierarchies@Code.links":
+	[
+		"}DimensionFormatStyles_Scenario.hierarchies/}DimensionFormatStyles_Scenario.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('}DimensionFormatStyles_Scenario')/Hierarchies('}DimensionFormatStyles_Scenario')"
+	}
+}

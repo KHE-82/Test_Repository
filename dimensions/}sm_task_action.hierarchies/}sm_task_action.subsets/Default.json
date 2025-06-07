@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"Default",
+	"Alias":"Action",
+	"Expression":"{TM1SUBSETALL( [}sm_task_action] )}"
+}

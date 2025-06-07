@@ -1,0 +1,21 @@
+{
+	"@type":"Cube",
+	"Name":"}DimensionFormats_Salary Level",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('Salary Level')"
+		},
+		{
+			"@id":"Dimensions('}DimensionFormatStyles_Salary Level')"
+		},
+		{
+			"@id":"Dimensions('}DimensionFormatItems')"
+		},
+		{
+			"@id":"Dimensions('}DimensionFormatAttributes')"
+		}
+	],
+	"Rules@Code.link":"}DimensionFormats_Salary Level.rules",
+	"Views@Code.links":[]
+}

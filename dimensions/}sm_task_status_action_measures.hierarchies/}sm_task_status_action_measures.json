@@ -1,0 +1,15 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}sm_task_status_action_measures",
+	"Elements":
+	[
+		{
+			"Name":"New Action",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"}sm_task_status_action_measures.subsets/Default.json"
+	]
+}

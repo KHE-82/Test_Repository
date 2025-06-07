@@ -1,0 +1,12 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}DimensionFormatStyles_Scenario",
+	"Elements":
+	[
+		{
+			"Name":"Train# Format",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

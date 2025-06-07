@@ -1,0 +1,16 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}sm_version_task_status_measures",
+	"Elements":
+	[
+		{
+			"Name":"Count",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Owner Count",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

@@ -1,0 +1,50 @@
+{
+	"@type":"Subset",
+	"Name":"sm_admin_properties",
+	"Alias":"property",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('}sm_client_properties')/Hierarchies('}sm_client_properties')/Elements('Admin Help Path')"
+		},
+		{
+			"@id":"Dimensions('}sm_client_properties')/Hierarchies('}sm_client_properties')/Elements('Admin Help Type')"
+		},
+		{
+			"@id":"Dimensions('}sm_client_properties')/Hierarchies('}sm_client_properties')/Elements('Client Help Path')"
+		},
+		{
+			"@id":"Dimensions('}sm_client_properties')/Hierarchies('}sm_client_properties')/Elements('Client Help Type')"
+		},
+		{
+			"@id":"Dimensions('}sm_client_properties')/Hierarchies('}sm_client_properties')/Elements('Default Completable Task Status')"
+		},
+		{
+			"@id":"Dimensions('}sm_client_properties')/Hierarchies('}sm_client_properties')/Elements('Default Delegation Task Status')"
+		},
+		{
+			"@id":"Dimensions('}sm_client_properties')/Hierarchies('}sm_client_properties')/Elements('DisplayDataSaveMessage')"
+		},
+		{
+			"@id":"Dimensions('}sm_client_properties')/Hierarchies('}sm_client_properties')/Elements('Image Name')"
+		},
+		{
+			"@id":"Dimensions('}sm_client_properties')/Hierarchies('}sm_client_properties')/Elements('Prompt for Saving Changes')"
+		},
+		{
+			"@id":"Dimensions('}sm_client_properties')/Hierarchies('}sm_client_properties')/Elements('pre_ti')"
+		},
+		{
+			"@id":"Dimensions('}sm_client_properties')/Hierarchies('}sm_client_properties')/Elements('pre_ti_return')"
+		},
+		{
+			"@id":"Dimensions('}sm_client_properties')/Hierarchies('}sm_client_properties')/Elements('post_ti')"
+		},
+		{
+			"@id":"Dimensions('}sm_client_properties')/Hierarchies('}sm_client_properties')/Elements('post_ti_return')"
+		},
+		{
+			"@id":"Dimensions('}sm_client_properties')/Hierarchies('}sm_client_properties')/Elements('Binding Address Template')"
+		}
+	]
+}

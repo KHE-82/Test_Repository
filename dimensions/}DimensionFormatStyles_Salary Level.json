@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"}DimensionFormatStyles_Salary Level",
+	"Hierarchies@Code.links":
+	[
+		"}DimensionFormatStyles_Salary Level.hierarchies/}DimensionFormatStyles_Salary Level.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('}DimensionFormatStyles_Salary Level')/Hierarchies('}DimensionFormatStyles_Salary Level')"
+	}
+}
