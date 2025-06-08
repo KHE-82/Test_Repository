@@ -1,7 +1,0 @@
-['Auto Formatting']=S:DB(
-'}DimensionFormats_Formatting'
-,'Level ' | TRIM(STR(ELLEV('Salary Level',!Salary Level),2,0))
-,'Auto Formatting Salary Level'
-,!}DimensionFormatItems
-,!}DimensionFormatAttributes);
-
