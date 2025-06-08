@@ -1,0 +1,22 @@
+#region Prolog
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+sText = 'TI is created by TM1Py';
+Asciioutput('prolog.csv',numbertostring(p1),p2);
+#endregion
+#region Metadata
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+ # this is metadata line
+#endregion
+#region Data
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+ # this is data line
+#endregion
+#region Epilog
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+ # this is epilog line
+#endregion

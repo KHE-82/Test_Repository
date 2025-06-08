@@ -1,0 +1,13 @@
+{
+	"@type":"Subset",
+	"Name":"Default",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('Year')/Hierarchies('Year')/Elements('2007-2008')"
+		},
+		{
+			"@id":"Dimensions('Year')/Hierarchies('Year')/Elements('2008-2009')"
+		}
+	]
+}
