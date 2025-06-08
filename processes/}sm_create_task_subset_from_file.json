@@ -1,0 +1,60 @@
+{
+	"@type":"Process",
+	"Name":"}sm_create_task_subset_from_file",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_create_task_subset_from_file.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"VarType=32€ColType=827€"
+	],
+	"DataSource":
+	{
+		"Type":"ASCII",
+		"asciiDecimalSeparator":".",
+		"asciiDelimiterChar":",",
+		"asciiDelimiterType":"Character",
+		"asciiHeaderRecords":0,
+		"asciiQuoteCharacter":"\"",
+		"asciiThousandSeparator":",",
+		"dataSourceNameForClient":"C:\\Program Files\\Applix\\Custom\\TM1Data\\pm_2005_03_04\\subset_tasks.txt",
+		"dataSourceNameForServer":"C:\\Program Files\\Applix\\Custom\\TM1Data\\pm_2005_03_04\\subset_tasks.txt "
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pDimension",
+			"Prompt":"Source Dimension",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pSubset",
+			"Prompt":"Source Subset",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pSourceFile",
+			"Prompt":"Source File",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pAction",
+			"Prompt":"Action (CREATE",
+			"Value":"CREATE",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"V1",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		}
+	]
+}

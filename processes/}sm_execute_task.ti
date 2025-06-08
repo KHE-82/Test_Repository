@@ -1,0 +1,327 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+
+### Pre defining the attributes to update based on the action being taken
+
+if (pAction @= '');
+processquit;
+endif;
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+
+VvtDimension=vObjectPrefix|'sm_versiontasks';
+VplantaskName=vObjectSeparator|Pplan;
+VversionName = vObjectSeparator|Pversion;
+VdimensionName=VvtDimension|VplantaskName|VversionName;
+
+vActionDim = vObjectPrefix | 'sm_task_action';
+vActionAttrDim = '}ElementAttributes_' | vdimensionName;
+
+IF(Paction@='Delegate');
+VwhoAttr='Delegated By';
+elseIF(Paction@='Start');
+VwhoAttr='Started By';
+elseIF(Paction@='Submit');
+VwhoAttr='Submitted By';
+elseIF(Paction@='Approve');
+VwhoAttr='Approved By';
+elseIF(Paction@='Reject');
+VwhoAttr='Rejected By';
+elseIF(Paction@='Complete');
+VwhoAttr='Completed By';
+elseIF(Paction@='Revoke');
+VwhoAttr='Revoked By';
+elseIF(Paction@='Delegate');
+VwhoAttr='Delegated By';
+endif;
+
+if (vWhoAttr @<> '');
+if (DIMIX(vActionAttrDim, vWhoAttr) = 0);
+vWhoAttr = '';
+endif;
+endif;
+
+if (vWhoAttr @= '');
+vWhoAttr = pAction | ' User';
+endif;
+if (vWhoAttr @<> '');
+if (DIMIX(vActionAttrDim, vWhoAttr) = 0);
+vWhoAttr = '';
+endif;
+endif;
+
+IF(Paction@='Delegate');
+VwhenAttr='Delegated datetime';
+elseIF(Paction@='Start');
+VwhenAttr='Started datetime';
+elseIF(Paction@='Submit');
+VwhenAttr='Submitted datetime';
+elseIF(Paction@='Approve');
+VwhenAttr='Approved datetime';
+elseIF(Paction@='Reject');
+VwhenAttr='Rejected datetime';
+elseIF(Paction@='Complete');
+VwhenAttr='Completed datetime';
+elseIF(Paction@='Revoke');
+VwhenAttr='Revoked datetime';
+endif;
+
+if (vWhenAttr @<> '');
+if (DIMIX(vActionAttrDim, vWhenAttr) = 0);
+vWhenAttr = '';
+endif;
+endif;
+
+if (vWhenAttr @= '');
+vWhenAttr = pAction | ' Datetime';
+endif;
+if (vWhenAttr @<> '');
+if (DIMIX(vActionAttrDim, vWhenAttr) = 0);
+vWhenAttr = '';
+endif;
+endif;
+
+#### Action Date
+Vdate=TIMST(NOW,'\m/\d/\Y  \h:\i ');
+
+Vlevel= DNLEV(VdimensionName);
+
+
+
+IF(Ptask_type@='element');
+
+#### Single element Being passed #####
+
+Velement = Ptask;
+Vtask_status=ATTRS(VdimensionName, Velement, 'Status');
+Vowner = ATTRS(VdimensionName, Velement, 'owner');
+if (pUser @= vOwner);
+vMember_type = 'owner';
+else;
+vMember_type = 'delegator';
+endif;
+VTaskType = 'Complete';
+if (ELPARN(VdimensionName, Velement) > 0);
+if (ATTRS(VdimensionName, ELPAR(VdimensionName, Velement, 1), 'owner') @<> Vowner);
+VTaskType = 'Delegate';
+endif;
+endif;
+
+## I Have the following ##############
+#Velement = task
+#Vtask_status = Current status of the task (sub task status)
+#Vmember_type = user member type (user roll)
+#Paction = Action being taken
+###############################
+
+Vchange_status = CellGetS('}sm_task_status_action',Vmember_type,Paction,Vtask_status,VTaskType, 'New Action');
+
+## Update Change Of Status
+IF(Vchange_status@<>'');
+
+vChangeStatusDisplay = ATTRS('}sm_task_status', vChange_Status, 'Status');
+if (vChangeStatusDisplay @<> '');
+vChange_Status = vChangeStatusDisplay;
+endif;
+
+AttrPutS(Vchange_status, VdimensionName, Velement, 'Status');
+if (vWhoAttr @<> '' );
+AttrPutS(Puser,VdimensionName, Velement,Vwhoattr);
+endif;
+if (vWhenAttr @<> '');
+AttrPutS(Vdate,VdimensionName, Velement,Vwhenattr);
+endif;
+
+else;
+
+vFound=0;
+vTop=0;
+Vmember_type='Delegator';
+vLevels=DNLEV(VdimensionName);
+VCurrentLevel=ELLEV(VdimensionName, Velement);
+if(VCurrentLevel<vLevels);
+
+while(vFound=0 & vTop=0);
+Vparent=ELPAR(VdimensionName, Velement, 1);
+VCurrentLevel=ELLEV(VdimensionName, Vparent);
+if(ELPARN(vDimensionName, Vparent) = 0);
+Vparent=Velement;
+vTop=1;
+endif;
+
+Vowner =ATTRS(VdimensionName, Vparent, 'owner');
+
+
+if(Vowner @= pUser);
+vFound=0;
+else;
+Vchange_status = CellGetS('}sm_task_status_action',Vmember_type,Paction,Vtask_status,VTaskType, 'New Action');
+endif;
+
+if(Vchange_status @<> '');
+vChangeStatusDisplay = ATTRS('}sm_task_status', vChange_Status, 'Status');
+if (vChangeStatusDisplay @<> '');
+vChange_Status = vChangeStatusDisplay;
+endif;
+
+vFound=1;
+AttrPutS(Vchange_status, VdimensionName, Velement, 'Status');
+
+if (vWhoAttr @<> '');
+AttrPutS(Puser,VdimensionName, Velement,Vwhoattr);
+endif;
+if (vWhenAttr @<> '');
+AttrPutS(Vdate,VdimensionName, Velement,Vwhenattr);
+endif;
+endif;
+Velement=VParent;
+end;
+endif;
+
+endif;
+
+
+
+ELSE;
+
+### SUBSET PASSED #########
+VElementIdx=1;
+VElementCount=SubsetGetSize(VdimensionName,Ptask);
+
+While(VElementIdx <= VElementCount);
+
+
+Velement=SubsetGetElementName(Vdimensionname, Ptask, VelementIdx);
+Vtask_status=ATTRS(VdimensionName, Velement, 'Status');
+Vowner =ATTRS(VdimensionName, Velement, 'owner');
+if (pUser @= vOwner);
+vMember_type = 'owner';
+else;
+vMember_type = 'delegator';
+endif;
+VTaskType = 'Complete';
+if (ELPARN(VdimensionName, Velement) > 0);
+if (ATTRS(VdimensionName, ELPAR(VdimensionName,Velement, 1), 'owner') @<> Vowner);
+VTaskType = 'Delegate';
+endif;
+endif;
+
+## I Have the following ##############
+#Velement = task
+#Vtask_status = Current status of the task (sub task status)
+#Vmember_type = user member type (user roll)
+#Paction = Action being taken
+###############################
+
+Vchange_status = CellGetS('}sm_task_status_action',Vmember_Type,Paction,Vtask_status,VTaskType, 'New Action');
+## Update Change Of Status
+IF(Vchange_status@<>'');
+
+vChangeStatusDisplay = ATTRS('}sm_task_status', vChange_Status, 'Status');
+if (vChangeStatusDisplay @<> '');
+vChange_Status = vChangeStatusDisplay;
+endif;
+
+AttrPutS(Vchange_status, VdimensionName, Velement, 'Status');
+if (vWhoAttr @<> '');
+AttrPutS(Puser,VdimensionName, Velement,Vwhoattr);
+endif;
+if (vWhenAttr @<> '');
+AttrPutS(Vdate,VdimensionName, Velement,Vwhenattr);
+endif;
+
+else;
+
+vFound=0;
+vTop=0;
+Vmember_type='Delegator';
+vLevels=DNLEV(VdimensionName);
+VCurrentLevel=ELLEV(VdimensionName, Velement);
+if(VCurrentLevel<vLevels);
+
+while(vFound=0 & vTop=0);
+Vparent=ELPAR(VdimensionName, Velement, 1);
+VCurrentLevel=ELLEV(VdimensionName, Vparent);
+if(ELPARN(vDimensionName, Vparent) = 0);
+Vparent=Velement;
+vTop=1;
+endif;
+
+Vowner =ATTRS(VdimensionName, Vparent, 'owner');
+
+
+if(Vowner @= pUser);
+vFound=0;
+else;
+Vchange_status = CellGetS('}sm_task_status_action',Vmember_type,Paction,Vtask_status,VTaskType, 'New Action');
+endif;
+
+if(Vchange_status @<> '');
+vChangeStatusDisplay = ATTRS('}sm_task_status', vChange_Status, 'Status');
+if (vChangeStatusDisplay @<> '');
+vChange_Status = vChangeStatusDisplay;
+endif;
+
+vFound=1;
+AttrPutS(Vchange_status, VdimensionName, Velement, 'Status');
+
+if (vWhoAttr @<> '');
+AttrPutS(Puser,VdimensionName, Velement,Vwhoattr);
+endif;
+if (vWhenAttr @<> '');
+AttrPutS(Vdate,VdimensionName, Velement,Vwhenattr);
+endif;
+endif;
+Velement=VParent;
+end;
+endif;
+
+endif;
+
+
+VelementIdx=VelementIdx+1;
+
+end;
+
+endif;
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vCubeName = '}sm_versionsecuritycubes@' | pPlan;
+
+if (pSecurityCubeDumpFile @<> '' & pSecurityCubeDumpFile @<> ' ');
+
+
+vCubeCount = DIMSIZ('}Cubes');
+vCubeIndex = 1;
+while (vCubeIndex <= vCubeCount);
+vCube = DIMNM('}Cubes', vCubeIndex);
+
+if (CELLGETS(vCubeName, vCube, pVersion, 'Security_Setting') @= '1');
+asciioutput(pSecurityCubeDumpFile, vCube);
+endif;
+
+vCubeIndex = vCubeIndex + 1;
+end;
+
+endif;
+#endregion

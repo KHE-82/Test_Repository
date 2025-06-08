@@ -1,0 +1,33 @@
+{
+	"@type":"Process",
+	"Name":"}sm_delete_task_attribute",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_delete_task_attribute.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pAttribute",
+			"Prompt":"Attribute",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pConsolidation",
+			"Prompt":"Consolidation",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pAttributeType",
+			"Prompt":"Attribute Type",
+			"Value":"text",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

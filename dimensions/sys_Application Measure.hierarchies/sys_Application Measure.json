@@ -1,0 +1,16 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_Application Measure",
+	"Elements":
+	[
+		{
+			"Name":"Caption Name",
+			"Type":"String"
+		},
+		{
+			"Name":"Caption",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

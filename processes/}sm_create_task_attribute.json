@@ -1,0 +1,40 @@
+{
+	"@type":"Process",
+	"Name":"}sm_create_task_attribute",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_create_task_attribute.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"IgnoredInputVarName=V1€VarType=32€ColType=1165€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForClient":"}sm_controls",
+		"dataSourceNameForServer":"}sm_controls",
+		"subset":"subman_single"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pAttribute",
+			"Prompt":"Attribute ID",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pAttributeType",
+			"Prompt":"Attribute Type (Text",
+			"Value":"Text",
+			"Type":"String"
+		},
+		{
+			"Name":"pAttributeOwner",
+			"Prompt":"Attribute Owner",
+			"Value":"Version Attributes",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

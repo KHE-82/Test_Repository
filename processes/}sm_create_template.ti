@@ -1,0 +1,90 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+
+vTemplateDimension = vObjectPrefix | 'sm_templates' ;
+vDimIX = DIMIX(vTemplateDimension , pTemplate);
+
+if (vDimIX > 0);
+processquit;
+endif;
+
+vDimSiz = DIMSIZ(vTemplateDimension);
+dimensionelementinsert(vTemplateDimension , '', pTemplate, 'N');
+
+vDimIX = DIMIX(vTemplateDimension , pTemplate);
+if (vDimIX = 0);
+processquit;
+endif;
+
+
+vTaskDimension = vObjectPrefix | 'sm_templatetasks'  | vObjectSeparator | pTemplate;
+dimensioncreate(vTaskDimension);
+
+vBindingCube = vObjectPrefix | 'sm_templatebindings'  |  vObjectSeparator | pTemplate;
+vBindingMeasures = vObjectPrefix | 'sm_binding_measures' ;
+vDimensions = '}dimensions';
+CUBECREATE( vBindingCube, vDimensions, vTaskDimension, vBindingMeasures);
+
+vBindingsView = 'sm_task_bindings';
+VIEWCREATE(vBindingCube, vBindingsView);
+ViewSetSkipZeroes(vBindingCube, vBindingsView, 1);
+VIEWROWDIMENSIONSET(vBindingCube, vBindingsView, vDimensions, 1);
+VIEWROWDIMENSIONSET(vBindingCube, vBindingsView, vTaskDimension, 2);
+VIEWCOLUMNDIMENSIONSET(vBindingCube, vBindingsView, vBindingMeasures, 1);
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+if (pName @<> '');
+attrputs(pName, vTemplateDimension, pTemplate, 'Template');
+endif;
+
+vAttributeDim = '}sm_control_task_attributes';
+vAttributeSubset = 'sm_template_attributes';
+
+vAttrSize = SUBSETGETSIZE(vAttributeDim , vAttributeSubset );
+
+vAttrIndex = 1;
+while (vAttrIndex <= vAttrSize);
+vAttr = SUBSETGETELEMENTNAME(vAttributeDim , vAttributeSubset , vAttrIndex);
+
+if (ELISANC(vAttributeDim, 'Alias', vAttr) > 0);
+AttrInsert(vTaskDimension , '', vAttr, 'A');
+
+elseif (ELISANC(vAttributeDim, 'Text', vAttr) > 0);
+AttrInsert(vTaskDimension , '', vAttr, 'S');
+
+elseif (ELISANC(vAttributeDim, 'Numeric', vAttr) > 0);
+AttrInsert(vTaskDimension , '', vAttr, 'N');
+
+endif;
+
+vAttrIndex = vAttrIndex + 1;
+end;
+
+vAttributesView = 'sm_task_attributes';
+vAttributesCube = '}ElementAttributes_' | vObjectPrefix | 'sm_templatetasks'  | vObjectSeparator | pTemplate;
+
+VIEWCREATE(vAttributesCube, vAttributesView);
+VIEWROWDIMENSIONSET(vAttributesCube, vAttributesView,vTaskDimension, 1);
+VIEWCOLUMNDIMENSIONSET(vAttributesCube, vAttributesView, vAttributesCube, 2);
+ViewSetSkipZeroes(vAttributesCube, vAttributesView, 1);
+#endregion

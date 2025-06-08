@@ -1,0 +1,100 @@
+{
+	"@type":"Subset",
+	"Name":"sm_task_attributes_all",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Template Attributes')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('type')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Name')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('owner group')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Task')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Version Attributes')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('type')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Name')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('owner group')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Task')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Status')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('delegated datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('submitted datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('approved datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('rejected datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('completed datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('started datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Text')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Status')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('delegated datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('submitted datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('approved datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('rejected datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('completed datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('started datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('type')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Name')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('owner group')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Owner')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Alias')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Task')"
+		}
+	]
+}

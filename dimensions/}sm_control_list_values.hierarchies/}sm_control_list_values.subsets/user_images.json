@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"user_images",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {TM1FILTERBYPATTERN( {TM1SUBSETALL( [}sm_control_list_values] )}, \"user_images\")}, ALL, RECURSIVE )}, 0)}"
+}

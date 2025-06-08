@@ -1,0 +1,45 @@
+{
+	"@type":"Process",
+	"Name":"}sm_set_task_status_action",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_set_task_status_action.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pRole",
+			"Prompt":"Role",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pAction",
+			"Prompt":"Action",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pOldStatus",
+			"Prompt":"Old Status",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pNewStatus",
+			"Prompt":"New Status",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pType",
+			"Prompt":"Type",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

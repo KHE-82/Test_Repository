@@ -1,0 +1,27 @@
+{
+	"@type":"Process",
+	"Name":"}sm_dump_users_groups",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_dump_users_groups.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pClient",
+			"Prompt":"Client",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pDumpFile",
+			"Prompt":"Dump File",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

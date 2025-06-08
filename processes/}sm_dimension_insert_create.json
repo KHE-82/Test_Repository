@@ -1,0 +1,39 @@
+{
+	"@type":"Process",
+	"Name":"}sm_dimension_insert_create",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_dimension_insert_create.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pDimension",
+			"Prompt":"dimension",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pElement",
+			"Prompt":"element",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pElementType",
+			"Prompt":"element type",
+			"Value":"N",
+			"Type":"String"
+		},
+		{
+			"Name":"pParent",
+			"Prompt":"element parent",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

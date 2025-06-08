@@ -1,0 +1,131 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*******************************************************************************************************************************************#
+#
+# Process:            vm_Version Manager - Master
+#
+# Purpose:            This process will copy data from 1 part of a cube to another by callingvm_Version Manager - Slave
+#                           It takes a number of parameters in the parameters tab and converts then into the required
+#                           parameters for the called processes.
+#                           It passes 3 parameters sCube, srcParams and destParams to these processes.
+#                           srcParams and destParama are both of the form 'Dim1;Element1|Dim2;Element2|...|Dimn;Elementn'.
+#                                  There can only be 1 element selected for each dimension.
+#                           The process can work on any cube with 3 to 15 dimensions, but can be modified to work on less or
+#                            more if required
+#
+# Written by:        Malcolm MacDonnell (Excelerated Consulting) (MLL)
+#
+#*******************************************************************************************************************************************#
+
+#------------------------------------------------------
+#    CUBES
+#------------------------------------------------------
+cbPreferences = 'sys_Client Preferences';
+cbScMgr = 'sys_Scenario Manager';
+    CellPutS(psTarYear| psTarScenario, 'sys_Client Preferences', 'admin', 'Year' );
+#------------------------------------------------------
+#    DIMENSIONS
+#------------------------------------------------------
+dmAccount = 'GL Code';
+dmScenario = 'Scenario';
+
+#------------------------------------------------------
+#    OTHER PARAMETERS
+#------------------------------------------------------
+sUser = TM1User;
+sProcess = 'vm_Version Manager - Slave';
+
+#sTargetCostCentre = psTargetCostCentre;
+#CELLPUTS(sSourceAccount, cbPreferences, sUser, 'Source Account');
+#sSourceAccount = DIMENSIONELEMENTPRINCIPALNAME(dmAccount, psSourceAccount);
+#sSourceCostCentre = psSourceCostCentre;
+
+#sSourceYear = CELLGETS(cbPreferences, TM1User, 'Source Year');
+#sSourceScenario = CELLGETS(cbPreferences, TM1User, 'Source Scenario');
+sSourceYear = psSrcYear;
+sSourceScenario = psSrcScenario;
+
+#sTargetYear = CELLGETS(cbPreferences, TM1User, 'Target Year');
+#sTargetScenario = CELLGETS(cbPreferences, TM1User, 'Target Scenario');
+sTargetYear = psTarYear;
+sTargetScenario = psTarScenario;
+
+
+
+#------------------------------------------------------
+#    RUN SLAVES FOR EACH CUBE
+#------------------------------------------------------
+
+#------------------------------------------------------
+#   fin_Operating Statement
+#------------------------------------------------------
+sCube = 'fin_Operating Statement';
+sCopy = CELLGETS(cbScMgr, sCube, 'Copy');
+sCopy = 'Yes';
+IF(sCopy @= 'Yes');
+
+      EXECUTEPROCESS(sProcess,  'sCube', sCube, 'srcParams', 'Year;' | sSourceYear | '|Scenario;' | sSourceScenario, 'destParams', 'Year;' | sTargetYear | '|Scenario;' | sTargetScenario | '|');
+ENDIF;
+
+# #------------------------------------------------------
+# #   fin_Balance Sheet
+# #------------------------------------------------------
+# sCube = 'fin_Balance Sheet';
+# sCopy = CELLGETS(cbScMgr, sCube, 'Copy');
+# IF(sCopy @= 'Yes');
+#       EXECUTEPROCESS(sProcess,  'sCube', sCube, 'srcParams', 'Year;' | sSourceYear | '|Scenario;' | sSourceScenario, 'destParams', 'Year;' | sTargetYear | '|Scenario;' | sTargetScenario | '|');
+# ENDIF;
+
+# #------------------------------------------------------
+# #   fin_CapEx
+# #------------------------------------------------------
+# sCube = ' fin_CapEx';
+# sCopy = CELLGETS(cbScMgr, sCube, 'Copy');
+# IF(sCopy @= 'Yes');
+#       EXECUTEPROCESS(sProcess,  'sCube', sCube, 'srcParams', 'Year;' | sSourceYear | '|Scenario;' | sSourceScenario, 'destParams', 'Year;' | sTargetYear | '|Scenario;' | sTargetScenario | '|');
+# ENDIF;
+
+
+# #------------------------------------------------------
+# #   fin_Cash Flow
+# #------------------------------------------------------
+# sCube = ' fin_Cash Flow';
+# sCopy = CELLGETS(cbScMgr, sCube, 'Copy');
+# IF(sCopy @= 'Yes');
+#       EXECUTEPROCESS(sProcess,  'sCube', sCube, 'srcParams', 'Year;' | sSourceYear | '|Scenario;' | sSourceScenario, 'destParams', 'Year;' | sTargetYear | '|Scenario;' | sTargetScenario | '|');
+# ENDIF;
+
+# #------------------------------------------------------
+# #    HR_Salary
+# #------------------------------------------------------
+# sCube = 'HR_Salary';
+# sCopy = CELLGETS(cbScMgr, sCube, 'Copy');
+# IF(sCopy @= 'Yes');
+#       EXECUTEPROCESS(sProcess,  'sCube', sCube, 'srcParams', 'Year;' | sSourceYear, 'destParams', 'Year;' | sTargetYear | '|');
+# ENDIF;
+
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+#endregion

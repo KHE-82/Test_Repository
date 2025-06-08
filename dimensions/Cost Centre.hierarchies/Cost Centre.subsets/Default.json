@@ -1,0 +1,52 @@
+{
+	"@type":"Subset",
+	"Name":"Default",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('CORPSUPP')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('LEGAL')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('CFO')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('CORPBUS')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C1001')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('DISTRIBUTION')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('INFRASTRUCTURE')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('STRATEGY')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('Output 1.1')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('Output 1.2')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('Output 2.1')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('Output 3.1')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('Output 3.2')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('Output 3.3')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('Output 3.4')"
+		}
+	]
+}

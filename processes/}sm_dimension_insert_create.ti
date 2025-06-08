@@ -1,0 +1,31 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vDimIx = DIMIX('}dimensions', pdimension);
+if (vDimix = 0);
+dimensioncreate(pdimension);
+endif;
+
+vEleIX = dimix(pdimension, pelement);
+if (vEleIx = 0 & pParent @='');
+DIMENSIONELEMENTINSERT(pdimension,'', pelement,pelementtype);
+else;
+if (pParent @<> '');
+DIMENSIONELEMENTCOMPONENTADD(pdimension, pparent, pelement,1);
+endif;
+endif;
+#endregion
+#region Metadata
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Data
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion

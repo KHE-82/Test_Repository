@@ -1,0 +1,16 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_Scenario Manager Measure",
+	"Elements":
+	[
+		{
+			"Name":"Copy",
+			"Type":"String"
+		},
+		{
+			"Name":"Clear",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

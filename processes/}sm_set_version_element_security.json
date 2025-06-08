@@ -1,0 +1,27 @@
+{
+	"@type":"Process",
+	"Name":"}sm_set_version_element_security",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_set_version_element_security.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pPlan",
+			"Prompt":"Plan",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pVersion",
+			"Prompt":"Version",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

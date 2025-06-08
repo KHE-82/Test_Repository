@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"sm_display_name",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('}sm_control_attribute_measures')/Hierarchies('}sm_control_attribute_measures')/Elements('display_name')"
+		}
+	]
+}

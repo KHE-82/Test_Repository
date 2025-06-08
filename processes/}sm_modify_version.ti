@@ -1,0 +1,77 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+vVersionDimension = vObjectPrefix | 'sm_versions' | vObjectSeparator | pPlan;
+vPlanDimension = vObjectPrefix | 'sm_plans';
+
+vDimIX = DIMIX(vPlanDimension, pPlan);
+
+if (vDimIX = 0);
+processquit;
+endif;
+
+vDimIX = DIMIX(vVersionDimension, pVersion);
+
+if (vDimIX = 0);
+processquit;
+endif;
+
+
+vPlanSecurityCube = vObjectPrefix | 'sm_versionsecuritycubes' | vObjectSeparator | pPlan;
+vPlanSecurityDimension = vObjectPrefix | 'sm_versionsecuritydimensions' | vObjectSeparator | pPlan;
+
+vVersionDimension = vObjectPrefix | 'sm_versions' | vObjectSeparator | pPlan;
+
+vDimIndex = 1;
+vDimCount = DIMSIZ('}Dimensions');
+
+while (vDimIndex <= vDimCount);
+vDim = DIMNM('}Dimensions', vDimIndex);
+
+CellPutS(' ', vPlanSecurityDimension, vDim, pVersion, 'Security_Setting');
+vDimIndex = vDimIndex + 1;
+end;
+
+vCubeIndex = 1;
+vCubeCount = DIMSIZ('}Cubes');
+while (vCubeIndex <= vCubeCount);
+vCube = DIMNM('}Cubes', vCubeIndex);
+CellPutS(' ', vPlanSecurityCube , vCube, pVersion, 'Security_Setting');
+vCubeIndex = vCubeIndex + 1;
+end;
+
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+
+if (pName @<> '');
+attrputs(pName, vVersionDimension , pVersion, 'Version');
+endif;
+attrputs(pStatus, vVersionDimension, pVersion, 'Status');
+attrputs(pNotes, vVersionDimension, pVersion, 'Notes');
+attrputs(pStart, vVersionDimension, pVersion, 'Start Date');
+attrputs(pDue, vVersionDimension, pVersion, 'Due Date');
+attrputs(pSecuritySetting, vVersionDimension, pVersion, 'Security Setting');
+attrputs(pAddAdminGroup, vVersionDimension, pVersion, 'Add AdminGroup');
+
+#endregion

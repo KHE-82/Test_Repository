@@ -1,0 +1,41 @@
+{
+	"@type":"MDXView",
+	"Name":"Power Reporting - Quick Report 1",
+	"MDX@Code.link":"Power Reporting - Quick Report 1.mdx",
+	"Meta" : 
+	{
+		"Aliases" : 
+		{
+			"[GL Code].[GL Code]" : "MEMBER_NAME",
+			"[Month].[Month]" : "MEMBER_NAME"
+		},
+		"ContextSets" : 
+		{
+			"[GL Code].[GL Code]" : 
+			{
+				"Expression" : "{[GL Code].[GL Code].[Net Result]}"
+			},
+			"[Scenario].[Scenario]" : 
+			{
+				"Expression" : "{[Scenario].[Scenario].[Actual],[Scenario].[Scenario].[Budget],[Scenario].[Scenario].[Variance]}"
+			},
+			"[Year].[Year]" : 
+			{
+				"Expression" : "{TM1SubsetAll([Year])}"
+			},
+			"[fin_Operating Statment Measure].[fin_Operating Statment Measure]" : 
+			{
+				"Expression" : "{[fin_Operating Statment Measure].[fin_Operating Statment Measure].[value]}"
+			}
+		},
+		"ExpandAboves" : 
+		{
+			"[Cost Centre].[Cost Centre]" : false,
+			"[GL Code].[GL Code]" : false,
+			"[Month].[Month]" : false,
+			"[Scenario].[Scenario]" : false,
+			"[Year].[Year]" : false,
+			"[fin_Operating Statment Measure].[fin_Operating Statment Measure]" : false
+		}
+	}
+}

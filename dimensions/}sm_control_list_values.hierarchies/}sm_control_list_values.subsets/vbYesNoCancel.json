@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"vbYesNoCancel",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {TM1FILTERBYPATTERN( {TM1SUBSETALL( [}sm_control_list_values] )}, \"vbYesNoCancel\")}, ALL, RECURSIVE )}, 0)}"
+}

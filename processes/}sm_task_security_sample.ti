@@ -1,0 +1,213 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+vCube = '}CellSecurity_plan_budgetplan';
+
+
+vTempView = vObjectPrefix | 'sm_security' | vObjectSeparator | pUnique;
+
+#
+# Clean up and the recreate the uniquely named temporary view
+#
+VIEWDESTROY(vCube, vTempView);
+VIEWCREATE(vCube, vTempView);
+ViewSetSkipCalcs(vCube, vTempView, 0);
+ViewSetSkipZeroes(vCube, vTempView, 0);
+ViewSetSkipRuleValues(vCube, vTempView, 0);
+
+#
+# Create a temporary subset of the chosen version and apply the subset to the temporary view
+#
+SUBSETDESTROY(pPlan, vTempView);
+SUBSETCREATE(pPlan, vTempView);
+SUBSETELEMENTINSERT(pPlan, vTempView, pVersion, 1);
+VIEWSUBSETASSIGN(vCube, vTempView, pPlan, vTempView);
+
+#
+# if the process is working on a single task, scan the task attributes to build up a focused temporary view
+#
+if (pSingleTask @<> '');
+
+vTaskDimension = vObjectPrefix | 'sm_versiontasks' | vObjectSeparator | pPlan  | vObjectSeparator | pVersion;
+
+vOwnerSetting = '';
+vDelegatorSetting = '';
+vTaskStatus = ATTRS(vTaskDimension, pSingleTask, 'Status');
+vOwnerGroup = ATTRS(vTaskDimension, pSingleTask, 'Owner Group');
+if (vTaskStatus @<> '' & vOwnerGroup @<> '');
+vOwnerSetting = ATTRS(vObjectPrefix | 'sm_task_status', vTaskStatus, 'Owner Security');
+vDelegatorSetting = ATTRS(vObjectPrefix | 'sm_task_status', vTaskStatus, 'Delegator Security');
+endif;
+if (vOwnerSetting @= '');
+processbreak;
+endif;
+
+vBindIndex = 1;
+while (vBindIndex <= 16);
+
+vDimSet = 'dimension' | trim(str(vBindIndex, 2, 0));
+vDimIx = DIMIX('}ElementAttributes_' | vTaskDimension, vDimSet );
+if (vDimIx > 0);
+
+vDim = ATTRS(vTaskDimension, pSingleTask, vDimSet );
+if (vDim @<> '');
+vSubSet = 'subset' | trim(str(vBindIndex, 2, 0));
+vSub = ATTRS(vTaskDimension, pSingleTask, vSubSet );
+if (vSub @<> '');
+VIEWSUBSETASSIGN(vCube, vTempView, vDim, vSub);
+else;
+vEleSet = 'element' | trim(str(vBindIndex, 2, 0));
+vElement = ATTRS(vTaskDimension, pSingleTask, vEleSet );
+if (vElement  @<> '');
+vSub = vTempView;
+SUBSETDESTROY(vDim, vSub);
+SUBSETCREATE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vElement,1);
+VIEWSUBSETASSIGN(vCube, vTempView, vDim, vSub);
+endif;
+endif;
+endif;
+endif;
+
+vBindIndex = vBindIndex + 1;
+end;
+
+vDim = '}Groups';
+SUBSETDESTROY(vDim , vTempView);
+SUBSETCREATE(vDim, vTempView);
+SUBSETELEMENTINSERT(vDim, vTempView, vOwnerGroup,1);
+
+#
+# if pAncestors is:
+#   0 do not set security for the task's ancestor nodes
+#   1 set security on the task's immediate parent
+#   N set security on all of the task's ancestors
+#
+if (ELPARN(vTaskDimension, pSingleTask) > 0 & pAncestors @<> '0');
+vDelegatorTask = ELPAR(vTaskDimension, pSingleTask, 1);
+vDelegatorGroup = ATTRS(vTaskDimension, vDelegatorTask, 'owner group');
+if (vDelegatorGroup @<> vOwnerGroup & vDelegatorGroup @<> '');
+SUBSETELEMENTINSERT(vDim, vTempView, vDelegatorGroup,1);
+endif;
+
+if (pAncestors @= 'N');
+
+while (ELPARN(vTaskDimension, vDelegatorTask) > 0);
+vDelegatorTask = ELPAR(vTaskDimension,  vDelegatorTask, 1);
+vDelegatorGroup = ATTRS(vTaskDimension, vDelegatorTask, 'owner group');
+if (vDelegatorGroup @<> vOwnerGroup & vDelegatorGroup @<> '');
+SUBSETELEMENTINSERT(vDim, vTempView, vDelegatorGroup,1);
+endif;
+end;
+
+endif;
+endif;
+
+VIEWSUBSETASSIGN(vCube, vTempView, vDim, vTempView);
+
+endif;
+
+VIEWZEROOUT(vCube, vTempView);
+if (pAction @= 'CLEAR');
+VIEWDESTROY(vCube, vTempView);
+
+
+vBindIndex = 1;
+while (vBindIndex <= 16);
+
+vDimSet = 'dimension' | trim(str(vBindIndex, 2, 0));
+vDimIx = DIMIX('}ElementAttributes_' | vTaskDimension, vDimSet );
+if (vDimIx > 0);
+
+vDim = ATTRS(vTaskDimension, pSingleTask, vDimSet );
+if (vDim @<> '');
+vSubSet = 'subset' | trim(str(vBindIndex, 2, 0));
+vSub = ATTRS(vTaskDimension, pSingleTask, vSubSet );
+if (vSub @= '');
+vEleSet = 'element' | trim(str(vBindIndex, 2, 0));
+vElement = ATTRS(vTaskDimension, pSingleTask, vEleSet );
+if (vElement  @<> '');
+vSub = vTempView;
+SUBSETDESTROY(vTaskDimension, vSub);
+endif;
+endif;
+endif;
+endif;
+
+vBindIndex = vBindIndex + 1;
+end;
+
+SUBSETDESTROY('}Groups' , vTempView);
+
+SUBSETDESTROY(pPlan, vTempView);
+processbreak;
+else;
+DatasourceCubeview = vTempView;
+endif;
+
+
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+if (vGroups @= vOwnerGroup);
+CellPuts(vOwnerSetting, vCube, plan_Version, plan_business_unit, plan_Department, plan_chart_of_accounts, plan_exchange_Rates, 
+plan_Method, plan_time,vOwnerGroup);
+else;
+CellPuts(vDelegatorSetting , vCube, plan_Version, plan_business_unit, plan_Department, plan_chart_of_accounts, plan_exchange_Rates, 
+plan_Method, plan_time, vGroups);
+endif;
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+
+VIEWDESTROY(vCube, vTempView);
+
+
+vBindIndex = 1;
+while (vBindIndex <= 16);
+
+vDimSet = 'dimension' | trim(str(vBindIndex, 2, 0));
+vDimIx = DIMIX('}ElementAttributes_' | vTaskDimension, vDimSet );
+if (vDimIx > 0);
+
+vDim = ATTRS(vTaskDimension, pSingleTask, vDimSet );
+if (vDim @<> '');
+vSubSet = 'subset' | trim(str(vBindIndex, 2, 0));
+vSub = ATTRS(vTaskDimension, pSingleTask, vSubSet );
+if (vSub @= '');
+vEleSet = 'element' | trim(str(vBindIndex, 2, 0));
+vElement = ATTRS(vTaskDimension, pSingleTask, vEleSet );
+if (vElement  @<> '');
+vSub = vTempView;
+SUBSETDESTROY(vTaskDimension, vSub);
+endif;
+endif;
+endif;
+endif;
+
+vBindIndex = vBindIndex + 1;
+end;
+
+SUBSETDESTROY('}Groups' , vTempView);
+
+SUBSETDESTROY(pPlan, vTempView);
+
+#endregion

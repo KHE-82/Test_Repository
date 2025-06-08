@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"Default",
+	"Alias":"Status",
+	"Expression":"{TM1SUBSETALL( [}sm_task_status] )}"
+}

@@ -1,0 +1,19 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}sm_controls",
+	"Elements":
+	[
+		{
+			"Name":"subman_object_prefix",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"subman_object_separator",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"}sm_controls.subsets/subman_single.json"
+	]
+}

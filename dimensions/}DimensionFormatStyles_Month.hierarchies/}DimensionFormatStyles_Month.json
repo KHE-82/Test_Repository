@@ -1,0 +1,12 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}DimensionFormatStyles_Month",
+	"Elements":
+	[
+		{
+			"Name":"Auto Formatting",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

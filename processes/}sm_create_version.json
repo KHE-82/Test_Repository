@@ -1,0 +1,88 @@
+{
+	"@type":"Process",
+	"Name":"}sm_create_version",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_create_version.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"IgnoredInputVarName=V1€VarType=32€ColType=1165€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForClient":"}sm_controls",
+		"dataSourceNameForServer":"}sm_controls",
+		"subset":"subman_single"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pVersion",
+			"Prompt":"New Version",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pName",
+			"Prompt":"Name",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pTemplate",
+			"Prompt":"Template",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pPlan",
+			"Prompt":"Plan",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pStatus",
+			"Prompt":"Status",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pNotes",
+			"Prompt":"Notes",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pStart",
+			"Prompt":"Start Date",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pDue",
+			"Prompt":"Due Date",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pCopyType",
+			"Prompt":"Copy Type (Template",
+			"Value":"TEMPLATE",
+			"Type":"String"
+		},
+		{
+			"Name":"pSecuritySetting",
+			"Prompt":"Security Setting",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pAddAdminGroup",
+			"Prompt":"AdminGroup Access",
+			"Value":"N",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

@@ -1,0 +1,42 @@
+{
+	"@type":"MDXView",
+	"Name":"Power Reporting - Exercise 6",
+	"MDX@Code.link":"Power Reporting - Exercise 6.mdx",
+	"Meta" : 
+	{
+		"Aliases" : 
+		{
+			"[GL Code].[GL Code]" : "MEMBER_NAME"
+		},
+		"ContextSets" : 
+		{
+			"[GL Code].[GL Code]" : 
+			{
+				"Expression" : "{[GL Code].[GL Code].[Cash Flow Statement],[GL Code].[GL Code].[Cash at beginning of reporting period],[GL Code].[GL Code].[Net Increase (Decrease) in Cash Held],[GL Code].[GL Code].[Financing Activities (CF)],[GL Code].[GL Code].[Investing Activities (CF)],[GL Code].[GL Code].[Operating Activities (CF)]}"
+			},
+			"[Scenario].[Scenario]" : 
+			{
+				"IsPublic" : true,
+				"SubsetName" : "Default"
+			},
+			"[Year].[Year]" : 
+			{
+				"IsPublic" : true,
+				"SubsetName" : "Default"
+			},
+			"[fin_Cash Flow Measure].[fin_Cash Flow Measure]" : 
+			{
+				"Expression" : "{[fin_Cash Flow Measure].[fin_Cash Flow Measure].MEMBERS}"
+			}
+		},
+		"ExpandAboves" : 
+		{
+			"[Cost Centre].[Cost Centre]" : false,
+			"[GL Code].[GL Code]" : false,
+			"[Month].[Month]" : false,
+			"[Scenario].[Scenario]" : false,
+			"[Year].[Year]" : false,
+			"[fin_Cash Flow Measure].[fin_Cash Flow Measure]" : false
+		}
+	}
+}

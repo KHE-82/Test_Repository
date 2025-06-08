@@ -1,0 +1,38 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+vVersionSecurityCube = vObjectPrefix | 'sm_versionsecuritycubes' | vObjectSeparator | pPlan;
+
+
+#Check If Version security cube exist
+IF(TABDIM(vVersionSecurityCube , 1) @<> '');
+
+#Check that the action is set to 'SET'
+IF(pAction@<>'SET');
+processbreak;
+endif;
+
+#Update the version security cube
+IF(pAction@='SET');
+CellPutS('1', vVersionSecurityCube, pCube, pVersion, 'Security_Setting');
+Endif;
+
+Endif;
+#endregion
+#region Metadata
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Data
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion

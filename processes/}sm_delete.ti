@@ -1,0 +1,120 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+# if deleting a plan or version make sure the plan exists
+if (pObjectType @= 'version' % pObjectType @= 'plan');
+vPlanDimension = vObjectPrefix | 'sm_plans';
+vDimIX = DIMIX(vPlanDimension, pPlan);
+
+# verify that the plan exists
+if (vDimIX = 0);
+processquit;
+endif;
+endif;
+
+vObjectDimension = '';
+vTaskDimension = '';
+
+# deleting a version
+if (pObjectType @= 'version');
+vObjectDimension = vObjectPrefix | 'sm_versions' | vObjectSeparator | pPlan;
+vTaskDimension = vObjectPrefix | 'sm_versiontasks' | vObjectSeparator | pPlan | vObjectSeparator | pObject;
+vBindingsCube = vObjectPrefix | 'sm_versionbindings' | vObjectSeparator | pPlan | vObjectSeparator | pObject;
+
+# deleting a template
+elseif (pObjectType @= 'template');
+vObjectDimension = vObjectPrefix | 'sm_templates';
+vTaskDimension = vObjectPrefix | 'sm_templatetasks' | vObjectSeparator | pObject;
+vBindingsCube = vObjectPrefix | 'sm_templatebindings' | vObjectSeparator | pObject;
+
+# deleting a plan
+elseif (pObjectType @= 'plan');
+pObject = pPlan;
+vObjectDimension = vPlanDimension;
+
+# deleting a version status
+elseif (pObjectType @= 'version_status');
+vObjectDimension = vObjectPrefix | 'sm_version_status';
+
+# deleting a task status
+elseif (pObjectType @= 'status');
+vObjectDimension = vObjectPrefix | 'sm_task_status';
+
+# deleting a task action
+elseif (pObjectType @= 'action');
+vObjectDimension = vObjectPrefix | 'sm_task_action';
+
+# deleting a  simple task
+elseif (pObjectType @= 'simpletask');
+vObjectDimension = vObjectPrefix | 'sm_simple_tasks';
+
+elseif (pObjectType @= 'WIZARD');
+dimensiondestroy(vObjectPrefix | pObject);
+processbreak;
+
+endif;
+
+# find the object to be deleted
+vDimIX = DIMIX(vObjectDimension , pObject);
+
+if (vDimIX = 0);
+processbreak;
+endif;
+
+# delete the object
+dimensionelementdelete(vObjectDimension, pObject);
+
+# if deleting a plan, also clean up all of the plan versions
+if (pObjectType @= 'plan');
+vPlanVersionsDimension = vObjectPrefix | 'sm_versions' | vObjectSeparator | pPlan;
+vVersions = DIMSIZ(vPlanVersionsDimension);
+vVersionIndex = vVersions;
+
+while (vVersionIndex  >= 1);
+vVersion = DIMNM(vPlanVersionsDimension, vVersionIndex);
+
+vPlanVersionTasksDimension = vObjectPrefix | 'sm_versiontasks' | vObjectSeparator | pPlan | vObjectSeparator | vVersion;
+dimensiondestroy(vPlanVersionTasksDimension);
+
+dimensionelementdelete(vPlanVersionsDimension, vVersion);
+vVersionIndex = vVersionIndex - 1;
+end;
+
+# delete the plan_version dimension
+dimensiondestroy(vPlanVersionsDimension);
+
+else;
+
+vDimIX = DIMIX(vObjectDimension , pObject);
+
+# if there is an associated task dimension, destroy it
+if (vTaskDimension @<> '');
+if (vBindingsCube @<> '');
+cubedestroy(vBindingsCube);
+endif;
+dimensiondestroy(vTaskDimension);
+endif;
+
+endif;
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+#endregion

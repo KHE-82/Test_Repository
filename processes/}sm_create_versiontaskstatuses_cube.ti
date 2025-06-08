@@ -1,0 +1,150 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+vPlanDim = vObjectPrefix  | 'sm_plans';
+vClientsDim = '}Clients';
+vMeasure = 'Count';
+vOwnerMeasure = 'Owner Count';
+vTaskStatusDim = vObjectPrefix  | 'sm_task_status';
+vTaskActionDim = vObjectPrefix  | 'sm_task_action';
+vTaskStatusActionCube = vObjectPrefix  | 'sm_task_status_action';
+vTaskStatusActionMeasure = 'New Action';
+vTaskTypeComplete = 'Complete';
+vTaskTypeDelegate = 'Delegate';
+vTaskRoleOwner = 'Owner';
+vTaskRoleDelegator = 'Delegator';
+
+vTaskStatusCount = DIMSIZ(vTaskStatusDim);
+vTaskActionCount = DIMSIZ(vTaskActionDim);
+vClientCount = DIMSIZ( vClientsDim );
+
+
+vPlanIndex = 1;
+vPlanCount = DIMSIZ(vPlanDim);
+while (vPlanIndex <= vPlanCount & (pPlan @= '' % vPlanIndex = 1));
+if (pPlan @<> '');
+vPlan = pPlan;
+else;
+vPlan = DIMNM(vPlanDim, vPlanIndex);
+endif;
+
+vCube = vObjectPrefix  | 'sm_versiontaskstatuses' | vObjectSeparator | vPlan;
+vVersionDim = vObjectPrefix  | 'sm_versions' | vObjectSeparator | vPlan;
+
+vCubeIX = DIMIX('}Cubes',  vCube);
+if (vCubeIX = 0); 
+cubecreate( vCube, vClientsDim,  vVersionDim, '}sm_task_status', '}sm_version_task_status_measures');
+endif;
+
+vVersionIndex = 1;
+vVersionCount = DIMSIZ(vVersionDim);
+while (vVersionIndex <= vVersionCount & (pVersion @= '' % vVersionIndex = 1));
+if (pVersion @<> '');
+vVersion = pVersion;
+else;
+vVersion = DIMNM(vVersionDim, vVersionIndex);
+endif;
+
+vClientIndex = 1;
+while (vClientIndex <= vClientCount);
+vClient = DIMNM(vClientsDim, vClientIndex);
+vTaskStatusIndex = 1;
+while (vTaskStatusIndex <= vTaskStatusCount);
+vTaskStatus = DIMNM(vTaskStatusDim, vTaskStatusIndex);
+if (ELLEV(vTaskStatusDim, vTaskStatus) = 0);
+CellPutN(0, vCube, vClient, vVersion, vTaskStatus, vMeasure);
+CellPutN(0, vCube, vClient, vVersion, vTaskStatus, vOwnerMeasure);
+endif;
+vTaskStatusIndex = vTaskStatusIndex + 1;
+end;
+vClientIndex = vClientIndex + 1;
+end;
+
+vTaskDim = vObjectPrefix  | 'sm_versiontasks' | vObjectSeparator | vPlan | vObjectSeparator | vVersion;
+
+vTaskIndex = 1;
+vTaskCount = DIMSIZ(vTaskDim);
+while (vTaskIndex <= vTaskCount);
+vTask = DIMNM(vTaskDim, vTaskIndex);
+
+vTaskStatusValue = ATTRS(vTaskDim, vTask, 'Status');
+vTaskOwner = ATTRS(vTaskDim, vTask, 'Owner');
+
+if (ELLEV(vTaskStatusDim, vTaskStatusValue) = 0 & vTaskStatusValue @<> '' &
+vTaskOwner @<> '' & vVersion @<> '' & vOwnerMeasure @<> '');
+CellPutN(1 + CellGetN(vCube, vTaskOwner , vVersion, vTaskStatusValue, vOwnerMeasure), vCube, vTaskOwner , vVersion, vTaskStatusValue, vOwnerMeasure);
+endif;
+
+vUpdateOwner = vTaskOwner;
+
+if (vTaskStatusValue @<> '' & vTaskOwner @<> '');
+vTaskType = vTaskTypeComplete;
+if (ELPARN(vTaskDim, vTask) > 0);
+vParentOwner = ATTRS(vTaskDim, ELPAR(vTaskDim, vTask, 1), 'Owner');
+if (vParentOwner @<> vTaskOwner);
+
+vTaskActionIndex = 1;
+vNextStatus = '';
+while (vTaskActionIndex <= vTaskActionCount & vNextStatus @= '');
+vTaskAction = DIMNM(vTaskActionDim, vTaskActionIndex);
+if (vTaskAction @<> 'REVOKE');
+vNextStatus = CellGetS(vTaskStatusActionCube, vTaskRoleOwner, vTaskAction, vTaskStatusValue, vTaskTypeDelegate, vTaskStatusActionMeasure);
+endif;
+
+vTaskActionIndex = vTaskActionIndex + 1;
+end;
+
+if (vNextStatus @= '');
+vUpdateOwner = vParentOwner;
+endif;
+
+endif;
+endif;
+
+vTaskStatusIndex = 1;
+while (vTaskStatusIndex <= vTaskStatusCount);
+vTaskStatus = DIMNM(vTaskStatusDim, vTaskStatusIndex);
+vTaskStatusAlias = ATTRS(vTaskStatusDim, vTaskStatus, 'Status');
+if (vTaskStatusAlias @= '');
+vTaskStatusAlias = vTaskStatus;
+endif;
+
+if (ELLEV(vTaskStatusDim, vTaskStatus) = 0 & vTaskStatusAlias @= vTaskStatusValue);
+CellPutN(1 + CellGetN(vCube, vUpdateOwner , vVersion, vTaskStatus, vMeasure), vCube, vUpdateOwner , vVersion, vTaskStatus, vMeasure);
+
+vTaskStatusIndex = vTaskStatusCount + 1;
+else;
+vTaskStatusIndex = vTaskStatusIndex + 1;
+endif;
+end;
+endif;
+
+vTaskIndex = vTaskIndex + 1;
+end;
+
+vVersionIndex = vVersionIndex + 1;
+end;
+
+vPlanIndex = vPlanIndex + 1;
+end;
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion

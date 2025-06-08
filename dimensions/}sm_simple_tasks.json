@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"}sm_simple_tasks",
+	"Hierarchies@Code.links":
+	[
+		"}sm_simple_tasks.hierarchies/}sm_simple_tasks.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('}sm_simple_tasks')/Hierarchies('}sm_simple_tasks')"
+	}
+}

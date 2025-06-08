@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"}sm_templates",
+	"Hierarchies@Code.links":
+	[
+		"}sm_templates.hierarchies/}sm_templates.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('}sm_templates')/Hierarchies('}sm_templates')"
+	}
+}

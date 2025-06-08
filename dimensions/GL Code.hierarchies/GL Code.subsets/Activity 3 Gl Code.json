@@ -1,0 +1,59 @@
+{
+	"@type":"Subset",
+	"Name":"Activity 3 Gl Code",
+	"Alias":"Code and Description",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Fees - Audit, Accounting, Bank and Other')"
+		},
+		{
+			"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42506')"
+		},
+		{
+			"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42510')"
+		},
+		{
+			"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42512')"
+		},
+		{
+			"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42603')"
+		},
+		{
+			"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42610')"
+		},
+		{
+			"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Legal Services')"
+		},
+		{
+			"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42623')"
+		},
+		{
+			"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42850')"
+		},
+		{
+			"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42864')"
+		},
+		{
+			"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42999')"
+		},
+		{
+			"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Printing')"
+		},
+		{
+			"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42411')"
+		},
+		{
+			"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42430')"
+		},
+		{
+			"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42432')"
+		},
+		{
+			"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42435')"
+		},
+		{
+			"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42436')"
+		}
+	]
+}

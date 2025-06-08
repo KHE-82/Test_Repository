@@ -1,0 +1,34 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+vVersionDimensionMapCube = vObjectPrefix | 'sm_versionsecuritydimensions' | vObjectSeparator | pPlan;
+vMeasure = 'security_setting';
+
+if (pSourceFile @= '');
+processquit;
+endif;
+
+DATASOURCENAMEFORSERVER = pSourceFile;
+#endregion
+#region Metadata
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+CellPuts(v2, vVersionDimensionMapCube , v1, pVersion, vMeasure);
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+#endregion

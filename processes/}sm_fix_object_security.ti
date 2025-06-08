@@ -1,0 +1,146 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vGroupSize = DIMSIZ('}Groups');
+
+vGroupIndex = 1;
+while (vGroupIndex <= vGroupSize);
+if (pGroup @= '');
+vGroup = DIMNM('}Groups', vGroupIndex);
+else;
+vGroup = pGroup;
+vGroupIndex = vGroupSize;
+endif;
+
+if (vGroup @<> 'admin');
+if (vGroup @<> 'TM1 Planning Manager Admin');
+vSetting = pSetting;
+else;
+vSetting = 'WRITE';
+endif;
+
+if (pDimensions @<> 'N');
+
+vDimension = '}dimensions';
+vCube = '}DimensionSecurity';
+#
+# verify whether or not the site is using dimension level security
+#
+vCubeExists = TABDIM(vCube, 1);
+if (vCubeExists @<> '');
+vSize = DIMSIZ(vDimension);
+vIndex = 1;
+while (vIndex <= vSize);
+vObject = DIMNM(vDimension, vIndex);
+
+if(subst(vObject, 1, 4) @= '}sm_');
+CELLPUTS(vSetting, vCube, vObject, vGroup);
+endif;
+if(vObject @= '}appClientProperties');
+CELLPUTS(vSetting, vCube, vObject, vGroup);
+endif;
+if(vObject @= '}Clients');
+CELLPUTS(vSetting, vCube, vObject, vGroup);
+endif;
+
+vIndex = vIndex + 1;
+end;
+
+endif;
+endif;
+
+if (pCubes @<> 'N');
+
+vDimension = '}cubes';
+vCube = '}CubeSecurity';
+#
+# verify whether or not the site is using cube level security
+#
+vCubeExists = TABDIM(vCube, 1);
+if (vCubeExists @<> '');
+vSize = DIMSIZ(vDimension);
+vIndex = 1;
+while (vIndex <= vSize);
+vObject = DIMNM(vDimension, vIndex);
+
+if(subst(vObject, 1, 4) @= '}sm_');
+CELLPUTS(vSetting, vCube, vObject, vGroup);
+endif;
+if(vObject @= '}sm_client_properties');
+CELLPUTS('WRITE', vCube, vObject, vGroup);
+endif;
+if(vObject @= '}appClientProperties');
+CELLPUTS('WRITE', vCube, vObject, vGroup);
+endif;
+
+
+vIndex = vIndex + 1;
+end;
+
+endif;
+endif;
+
+if (pProcesses @<> 'N');
+
+vDimension = '}processes';
+vCube = '}ProcessSecurity';
+#
+# verify whether or not the site is using process level security
+#
+vCubeExists = TABDIM(vCube, 1);
+if (vCubeExists @= '');
+CUBECREATE('}ProcessSecurity', '}Processes', '}Groups');
+vCubeExists = TABDIM(vCube, 1);
+endif;
+if (vCubeExists @<> '');
+vSize = DIMSIZ(vDimension);
+vIndex = 1;
+while (vIndex <= vSize);
+vObject = DIMNM(vDimension, vIndex);
+
+if(subst(vObject, 1, 4) @= '}sm_');
+CELLPUTS(vSetting, vCube, vObject, vGroup);
+endif;
+
+vIndex = vIndex + 1;
+end;
+
+endif;
+endif;
+
+endif;
+
+vGroupIndex = vGroupIndex + 1;
+end;
+
+#add source type to task attributes
+DimensionElementInsert('}sm_control_task_attributes','','source_type','N');
+DimensionElementComponentAdd('}sm_control_task_attributes', 'Template Attributes', 'source_type', 1);
+DimensionElementComponentAdd('}sm_control_task_attributes', 'Text', 'source_type', 1);
+
+DimensionElementInsert('}sm_control_attributes','','source_type','N');
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+iSubsetSize=SubsetGetSize('}sm_control_attributes', 'sm_multi_task_attributes');
+SubsetElementInsert('}sm_control_attributes', 'sm_multi_task_attributes', 'source_type',iSubsetSize);
+iSubsetSize=SubsetGetSize('}sm_control_attributes', 'sm_task_attributes');
+SubsetElementInsert('}sm_control_attributes', 'sm_task_attributes', 'source_type',iSubsetSize);
+iSubsetSize=SubsetGetSize('}sm_control_attributes', 'sm_task_template_attributes');
+SubsetElementInsert('}sm_control_attributes', 'sm_task_template_attributes', 'source_type', iSubsetSize);
+#endregion

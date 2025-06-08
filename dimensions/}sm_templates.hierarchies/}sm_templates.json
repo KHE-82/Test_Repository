@@ -1,0 +1,12 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}sm_templates",
+	"Elements":
+	[
+		{
+			"Name":"Scenario",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

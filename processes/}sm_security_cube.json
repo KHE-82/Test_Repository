@@ -1,0 +1,27 @@
+{
+	"@type":"Process",
+	"Name":"}sm_security_cube",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_security_cube.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pCube",
+			"Prompt":"n",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pAction",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

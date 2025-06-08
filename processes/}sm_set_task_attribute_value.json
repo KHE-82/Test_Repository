@@ -1,0 +1,52 @@
+{
+	"@type":"Process",
+	"Name":"}sm_set_task_attribute_value",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_set_task_attribute_value.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"IgnoredInputVarName=V1€VarType=32€ColType=1165€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForClient":"}sm_controls",
+		"dataSourceNameForServer":"}sm_controls",
+		"subset":"subman_single"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pAttribute",
+			"Prompt":"Attribute?",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"Ptask",
+			"Prompt":"element/subtask name ?",
+			"Value":"test",
+			"Type":"String"
+		},
+		{
+			"Name":"Pversion",
+			"Prompt":"Version name?",
+			"Value":"FY 2004 Budget",
+			"Type":"String"
+		},
+		{
+			"Name":"Pplan",
+			"Prompt":"Plan Name?",
+			"Value":"plan_version",
+			"Type":"String"
+		},
+		{
+			"Name":"pValue",
+			"Prompt":"Attribute Value?",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

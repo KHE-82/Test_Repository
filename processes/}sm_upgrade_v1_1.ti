@@ -1,0 +1,65 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+vSetTaskActionDisplay = 0;
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vDimensionName = vObjectPrefix | 'sm_task_action';
+vAttributeDim = '}ElementAttributes_' | vDimensionName;
+vAttribute = 'DisplayConfirmMessage';
+vAttrIX = DIMIX(vAttributeDim, vAttribute);
+if (vAttrIX = 0);
+AttrInsert(vDimensionName, '', vAttribute, 'S');
+vSetTaskActionDisplay = 1;
+endif;
+
+
+vControlTaskIX = DIMIX('}sm_control_attributes', vAttribute);
+if (vControlTaskIX = 0);
+DIMENSIONELEMENTINSERT('}sm_control_attributes', '', vAttribute, 'N');
+endif;
+
+vDim = '}sm_version_task_status_measures';
+vEle = 'Owner Count';
+vEleIX = DIMIX(vDim, vEle);
+if ( vEleIX = 0);
+DIMENSIONELEMENTINSERT(vDim, '', vEle, 'N');
+endif;
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+if (vSetTaskActionDisplay = 1);
+vTaskActionSize = DIMSIZ(vDimensionName);
+vTaskActionIndex = 1;
+while (vTaskActionIndex  <= vTaskActionSize);
+vTaskAction = DIMNM(vDimensionName, vTaskActionIndex);
+AttrPutS('Y', vDimensionName, vTaskAction, vAttribute);
+vTaskActionIndex = vTaskActionIndex + 1;
+end;
+
+CELLPUTS( 'yes_no', '}sm_control_attribute_settings', vAttribute, 'Task Action', 'list_subset');
+CELLPUTS( 'dropdown', '}sm_control_attribute_settings', vAttribute, 'Task Action', 'control_type');
+CELLPUTS( 'dim', '}sm_control_attribute_settings', vAttribute, 'Task Action', 'list_type');
+CELLPUTS( '}sm_control_list_values', '}sm_control_attribute_settings', vAttribute, 'Task Action', 'list_dim');
+CELLPUTS( 'N', '}sm_control_attribute_settings', vAttribute, 'Task Action', 'read_only');
+CELLPUTS( 'List Value', '}sm_control_attribute_settings', vAttribute, 'Task Action', 'list_dim_alias');
+
+endif;
+#endregion

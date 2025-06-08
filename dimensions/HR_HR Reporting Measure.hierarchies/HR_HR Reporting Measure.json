@@ -1,0 +1,15 @@
+{
+	"@type":"Hierarchy",
+	"Name":"HR_HR Reporting Measure",
+	"Elements":
+	[
+		{
+			"Name":"value",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"HR_HR Reporting Measure.subsets/Default.json"
+	]
+}

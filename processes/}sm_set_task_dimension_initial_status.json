@@ -1,0 +1,49 @@
+{
+	"@type":"Process",
+	"Name":"}sm_set_task_dimension_initial_status",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_set_task_dimension_initial_status.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"IgnoredInputVarName=V1€VarType=32€ColType=1165€"
+	],
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pVersion",
+			"Prompt":"Template",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pPlan",
+			"Prompt":"Type",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pTopStatus",
+			"Prompt":"Top Task Status",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pChildStatus",
+			"Prompt":"Child Task Status",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pGrandChildStatus",
+			"Prompt":"Grand Child Status",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

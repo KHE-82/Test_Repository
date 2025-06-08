@@ -1,0 +1,16 @@
+{
+	"@type":"Subset",
+	"Name":"Qtr1",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Jul')"
+		},
+		{
+			"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Aug')"
+		},
+		{
+			"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Sep')"
+		}
+	]
+}

@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"}sm_create_task_status",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_create_task_status.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pStatus",
+			"Prompt":"New Plan ID",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

@@ -1,0 +1,45 @@
+{
+	"@type":"Process",
+	"Name":"}sm_fix_object_security",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_fix_object_security.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pDimensions",
+			"Prompt":"Fix Dimensions",
+			"Value":"Y",
+			"Type":"String"
+		},
+		{
+			"Name":"pCubes",
+			"Prompt":"Fix Cubes",
+			"Value":"Y",
+			"Type":"String"
+		},
+		{
+			"Name":"pSetting",
+			"Prompt":"Setting",
+			"Value":"READ",
+			"Type":"String"
+		},
+		{
+			"Name":"pGroup",
+			"Prompt":"Group (Blank for All)",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pProcesses",
+			"Prompt":"Fix Processes",
+			"Value":"Y",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

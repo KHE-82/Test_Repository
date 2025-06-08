@@ -1,0 +1,212 @@
+{
+	"@type":"NativeView",
+	"Name":"Active Form",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Month')/Hierarchies('Month')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Sep')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Sep YTD')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Scenario')/Hierarchies('Scenario')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Actual')"
+					},
+					{
+						"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Budget')"
+					},
+					{
+						"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Variance')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('GL Code')/Hierarchies('GL Code')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Fees - Audit, Accounting, Bank and Other')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42506')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42510')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42512')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42603')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42610')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Legal Services')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42623')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42850')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42864')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42999')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Printing')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42411')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42430')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42432')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42435')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42436')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Year')/Hierarchies('Year')"
+				},
+				"Expression":"TM1SubsetAll([Year])"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Year')/Hierarchies('Year')/Elements('2021-2022')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('All Cost Centres')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('Departmental')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('CORPSUPP')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('LEGAL')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('CFO')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('CORPBUS')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C1001')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('DISTRIBUTION')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('DOMESTIC')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('A2001')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('OVERSEAS')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('SUPPORT')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('INFRASTRUCTURE')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('STRATEGY')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('Administered')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('CORPSUPP')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('fin_Operating Statment Measure')/Hierarchies('fin_Operating Statment Measure')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('fin_Operating Statment Measure')/Hierarchies('fin_Operating Statment Measure')/Elements('value')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('fin_Operating Statment Measure')/Hierarchies('fin_Operating Statment Measure')/Elements('value')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":true,
+	"SuppressEmptyRows":true,
+	"FormatString":"0.#########"
+}

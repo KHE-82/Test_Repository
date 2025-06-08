@@ -1,0 +1,27 @@
+{
+	"@type":"Hierarchy",
+	"Name":"Balance Sheet Measure",
+	"Elements":
+	[
+		{
+			"Name":"Assumption factor",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Assumed Value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Source Value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Source GL Code",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"Balance Sheet Measure.subsets/Default.json"
+	]
+}

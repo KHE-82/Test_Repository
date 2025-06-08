@@ -1,0 +1,39 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vDimIx = DIMIX('}dimensions', pdimension);
+if (vDimix = 0);
+processquit;
+endif;
+
+if (pElement @= '');
+DIMENSIONDESTROY(pdimension);
+else;
+
+vEleIX = dimix(pdimension, pelement);
+if (vEleIx = 0);
+processquit;
+endif;
+
+if (pParent @='');
+DIMENSIONELEMENTDELETE(pdimension,pelement);
+else;
+DIMENSIONELEMENTCOMPONENTDELETE(pdimension, pparent, pelement);
+endif;
+endif;
+#endregion
+#region Metadata
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Data
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion

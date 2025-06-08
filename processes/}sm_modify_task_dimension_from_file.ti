@@ -1,0 +1,151 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+vTaskDimension = '';
+vBindingCube = '';
+
+if (pObjectType @= 'VERSION');
+vTaskDimension = vObjectPrefix | 'sm_versiontasks' | vObjectSeparator | pPlan | vObjectSeparator | pTemplate;
+vBindingCube = vObjectPrefix | 'sm_versionbindings' | vObjectSeparator | pPlan | vObjectSeparator | pTemplate;
+else;
+vTaskDimension = vObjectPrefix | 'sm_templatetasks' | vObjectSeparator | pTemplate;
+vBindingCube = vObjectPrefix | 'sm_templatebindings' | vObjectSeparator | pTemplate;
+endif;
+
+vEleIndex = DIMSIZ(vTaskDimension);
+while (vEleIndex > 0);
+
+DIMENSIONELEMENTDELETE(vTaskDimension, DIMNM(vTaskDimension, vEleIndex));
+
+vEleIndex = vEleIndex - 1;
+end;
+
+#DIMENSIONDELETEALLELEMENTS( vTaskDimension );
+
+DATASOURCENAMEFORSERVER =  pSourcefile;
+
+AttrInsert(vTaskDimension , '', 'source_type', 'S');
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+vParentIX = 0;
+if (vParent @= '');
+dimensionelementinsert(vTaskDimension, '', vElement, 'N');
+vLastAdded = vElement;
+
+if (vGroup @<> '');
+vGroupIX = DIMIX('}Groups', vGroup);
+if (vGroupIX = 0);
+#ADDGROUP(vGroup);
+endif;
+endif;
+
+elseif (vParent @= 'WORKBOOK');
+elseif (vParent @= 'BINDING');
+elseif(vParent @= 'ATTRIBUTE');
+elseif(vParent @= 'OWNER');
+else;
+
+dimensionelementinsert( vTaskDimension, vLastAdded, vElement, 'N');
+dimensionelementcomponentadd(vTaskDimension, vParent, vElement, 1);
+vLastAdded = vElement;
+if (vGroup @<> '');
+vGroupIX = DIMIX('}Groups', vGroup);
+if (vGroupIX = 0);
+#ADDGROUP(vGroup);
+endif;
+endif;
+endif;
+
+
+
+
+
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+if (vParent @= '');
+attrputs(vName, vTaskDimension, vElement, 'Name');
+attrputs(vGroup, vTaskDimension, vElement, 'Owner Group');
+attrputs(vName, vTaskDimension, vElement, 'Task');
+vTaskElement = vElement;
+
+#elseif (vParent @= 'WORKBOOK');
+#CellPuts( vGroup , vBindingCube,  vName, vTaskElement, 'workbook');
+#CellPuts( vSubset , vBindingCube,  vName, vTaskElement, 'worksheet');
+#CellPuts( vElement , vBindingCube,  vName, vTaskElement, 'workbook_path');
+
+elseif (vParent @= 'BINDING');
+CellPuts( vGroup , vBindingCube,  vName, vTaskElement, 'element');
+CellPuts( vSubset , vBindingCube,  vName, vTaskElement, 'subset');
+CellPuts( vElement , vBindingCube,  vName, vTaskElement, 'Alias');
+
+
+elseif(vParent @= 'OWNER');
+#ASSIGNCLIENTTOGROUP(vName, vGroup);
+
+elseif(vParent @= 'ATTRIBUTE');
+vAttrExists = DIMIX('}ElementAttributes_' | vTaskDimension, vGroup);
+if (vAttrExists > 0);
+if (vElement @= 'STRING');
+
+if(ELISANC('}sm_control_task_attributes', 'Alias', vGroup)  = 0);
+
+
+attrputs(vSubset, vTaskDimension, vName, vGroup);
+else;
+
+vUnique = 1;
+vTestIX = DIMIX(vTaskDimension, vGroup);
+vVerifyIX = DIMIX(vTaskDimension, vName);
+if(vTestIX > 0);
+if(vTestIX <> vVerifyIX);
+vUnique = 0;
+vGroup = vGroup | ' (' | vName | ')';
+endif;
+endif;
+
+
+endif;
+#attrputs(vSubset, vTaskDimension, vName, vGroup);
+ELSE;
+attrputn(NUMBR(vSubset), vTaskDimension, vName, vGroup);
+endif;
+endif;
+
+else;
+
+vTaskElement = vElement;
+
+attrputs(vName, vTaskDimension, vElement, 'Name');
+attrputs(vGroup, vTaskDimension, vElement, 'Owner Group');
+vMeIX = DIMIX(vTaskDimension, vElement);
+vAliasIX = DIMIX(vTaskDimension, vName);
+if (vAliasIX = 0 % vAliasIX = vMeIX);
+attrputs(vName, vTaskDimension, vElement, 'Task');
+endif;
+
+endif;
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+
+#endregion

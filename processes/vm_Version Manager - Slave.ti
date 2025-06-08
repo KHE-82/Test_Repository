@@ -1,0 +1,447 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*******************************************************************************************************************************************#
+#
+# Process:            vm_Version Manager - Slave
+
+# Purpose:            This process will copy data from 1 part of a cube to another.
+#                           It takes 3 parameters sCube, srcParams and destParams.
+#                           srcParams and destParama are both of the form 'Dim1;Element1|Dim2;Element2|...|Dimn;Elementn'.
+#                                  There can only be 1 element selected for each dimension.
+#                           The process can work on any cube with 3 to 14 dimensions, but can be modified to work on less or
+#                            more if required
+#
+# Written by:        Malcolm MacDonnell (Excelerated Consulting)
+#
+# Date:                 2/12/2011
+#
+#*******************************************************************************************************************************************#
+
+#---------------------------------------------------------------------------------
+#    CUBES
+#---------------------------------------------------------------------------------
+cbPreferences = 'sys_Client Preferences';
+cbScMgr = 'sys_Scenario Manager';
+
+#---------------------------------------------------------------------------------
+#    DIMENSIONS
+#---------------------------------------------------------------------------------
+dmAcc = 'GL Code';
+dmSalaryLevel = 'hr_Salary Level';
+
+#---------------------------------------------------------------------------------
+#    OTHER VARIABLES
+#---------------------------------------------------------------------------------
+sUser = TM1User;
+nChange = CELLGETN(cbPreferences, TM1User, 'Percentage Change');
+sSourceAccount = DIMENSIONELEMENTPRINCIPALNAME(dmAcc, CELLGETS(cbPreferences, sUser, 'Source Account'));
+sSourceYear = CELLGETS(cbPreferences, TM1User, 'Source Year');
+sSourceScenario = CELLGETS(cbPreferences, TM1User, 'Source Scenario');
+sClear = CELLGETS(cbScMgr, sCube, 'Clear');
+sIncrementLevel = CELLGETS(cbPreferences, TM1User, 'Increment Salary Level');
+
+IF(sCube @= 'fin_Balance Sheet' % sCube @= 'fin_CapEx' % sCube @= 'fin_CapEx Assets' % sCube @= 'fin_Cash Flow' % sCube @= 'fin_Operating Statement' % sCube @= 'HR_Salary');
+      nChange = 1 + nChange;
+ELSE;
+      nChange = 1;
+ENDIF;
+
+sSrc = '}' | sCube | 'SYSTEMec_tdrc_src';	
+sDest = '}' | sCube | 'SYSTEMec_tdrc_dest';
+
+#---------------------------------------------------------------------------------
+#    TURN OFF CUBE LOGGING
+#---------------------------------------------------------------------------------
+nFlag = CUBEGETLOGCHANGES(sCube);
+IF(nFlag = 1);
+      CUBESETLOGCHANGES (sCube, 0);
+ENDIF;
+
+#---------------------------------------------------------------------------------
+#    COUNT DIMENSIONS IN THE CUBE
+#---------------------------------------------------------------------------------
+nIdx = 1;
+
+WHILE (TABDIM (sCube, nIdx) @<> '');
+      nIdx = nIdx + 1;
+END;
+
+nDimCount = nIdx -1;
+
+#---------------------------------------------------------------------------------
+#    DELETE OLD VIEWS
+#---------------------------------------------------------------------------------
+VIEWDESTROY (sCube, sSrc);
+VIEWDESTROY (sCube, sDest);
+VIEWCREATE (sCube, sSrc);
+VIEWCREATE (sCube, sDest);
+
+#---------------------------------------------------------------------------------
+#    REBUILD SUBSETS AND VIEWS
+#---------------------------------------------------------------------------------
+
+# ---- Source
+
+sDims = srcParams;
+nIdx = SCAN (';', sDims);
+sDim = TRIM (SUBST (sDims, 1, nIdx -1));
+sDims = SUBST (sDims, nIdx +1, LONG (sDims));
+
+# parse the srcParams into dimensions and elements
+WHILE (sDim @<> '');
+
+      SUBSETDESTROY (sDim, sSrc);
+      SUBSETCREATE (sDim, sSrc);
+
+      # Get the element
+      nIdx = SCAN ('|', sDims);
+
+      IF(nIdx = 0);
+            nIdx = LONG (sDims) + 1;
+      ENDIF;
+
+      sEl = TRIM (SUBST (sDims, 1, nIdx -1));
+      sDims = SUBST (sDims, nIdx +1, LONG (sDims));
+
+      # If Consolidated get all the N-level components
+      IF(DTYPE (sDim, sEl) @= 'C');
+            nDimSize = DIMSIZ (sDim);
+            nElIdx = 1;
+
+            WHILE (nElIdx <= nDimSize);
+                  sComp = DIMNM (sDim, nElIdx);
+
+                  IF(ELISANC (sDim, sEl, sComp) = 1);
+                        SUBSETELEMENTINSERT (sDim, sSrc, sComp, 1);
+                  EndIf;
+
+                  nElIdx = nElIdx +1;
+            END;
+            SUBSETELEMENTINSERT (sDim, sSrc, sEl, 1);
+      ELSE;
+            SUBSETELEMENTINSERT (sDim, sSrc, sEl, 1);
+
+      ENDIF;
+
+      # Add it to the view
+      VIEWSUBSETASSIGN (sCube, sSrc, sDim, sSrc);
+
+      # Get the next Dim
+      nIdx = SCAN (';', sDims);
+      sDim = TRIM (SUBST (sDims, 1, nIdx -1));
+      sDims = SUBST (sDims, nIdx +1, LONG (sDims));
+
+END;
+
+# ---- Destination
+
+sDims = destParams;
+nIdx = SCAN (';', sDims);
+sDim = TRIM (SUBST (sDims, 1, nIdx -1));
+sDims = SUBST (sDims, nIdx +1, LONG (sDims));
+
+# parse the destParams into dimensions and elements
+WHILE (sDim @<> '');
+      SUBSETDESTROY (sDim, sDest);
+      SUBSETCREATE (sDim, sDest);
+
+      # Get the element
+      nIdx = SCAN ('|', sDims);
+
+      IF(nIdx = 0);
+            nIdx = LONG (sDims) + 1;
+      ENDIF;
+
+      sEl = TRIM (SUBST (sDims, 1, nIdx -1));
+      sDims = SUBST (sDims, nIdx +1, LONG (sDims));
+
+      # If Consolidated get all the N-level components
+      IF(DTYPE (sDim, sEl) @= 'C');
+            nDimSize = DIMSIZ (sDim);
+            nElIdx = 1;
+
+            WHILE (nElIdx <= nDIMSIZe);
+                  sComp = DIMNM (sDim, nElIdx);
+
+                  IF(ELISANC (sDim, sEl, sComp) = 1);
+                        SUBSETELEMENTINSERT (sDim, sDest, sComp, 1);
+                  EndIf;
+
+                  nElIdx = nElIdx +1;
+            END;
+            SUBSETELEMENTINSERT (sDim, sDest, sEl, 1);
+      ELSE;
+            SUBSETELEMENTINSERT (sDim, sDest, sEl, 1);
+      ENDIF;
+
+      # Add it to the view
+      VIEWSUBSETASSIGN (sCube, sDest, sDim, sDest);
+
+      # Get the next Dim
+      nIdx = SCAN (';', sDims);
+      sDim = TRIM (SUBST (sDims, 1, nIdx -1));
+      sDims = SUBST (sDims, nIdx +1, LONG (sDims));
+END;
+
+# ---- Fix up the views
+VIEWEXTRACTSKIPCALCSSET (sCube, sSrc, 1);
+VIEWEXTRACTSKIPZEROESSET(sCube, sSrc, 1);
+VIEWEXTRACTSKIPRULEVALUESSET(sCube, sSrc, 0);
+
+VIEWEXTRACTSKIPCALCSSET(sCube, sDest, 1);
+VIEWEXTRACTSKIPZEROESSET(sCube, sDest, 1);
+VIEWEXTRACTSKIPRULEVALUESSET(sCube, sDest, 0);
+
+#---------------------------------------------------------------------------------
+#    CLEAR TARGET AREA
+#---------------------------------------------------------------------------------
+IF(srcParams | '|' @<> destParams);
+      IF(sClear @<> 'Yes');
+            VIEWZEROOUT (sCube, sDest);
+      ENDIF;
+ENDIF;
+
+#---------------------------------------------------------------------------------
+#    SET DATASOURCE
+#---------------------------------------------------------------------------------
+DATASOURCENAMEFORSERVER = sCube;
+DATASOURCENAMEFORCLIENT = sCube;
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sSrc;
+
+ 
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------------------
+#    SWAP VALUES IN DESTIMATION DIMENSIONS
+#---------------------------------------------------------------------------------------------------
+
+sDims = destParams;
+nIdx = SCAN (';', sDims);
+sDim = TRIM (SUBST (sDims, 1, nIdx -1));
+sDims = SUBST (sDims, nIdx +1, LONG (sDims));
+
+WHILE (sDim @<> '');
+      # Get the element
+      nIdx = SCAN ('|', sDims);
+      sEl = TRIM (SUBST (sDims, 1, nIdx -1));
+      sDims = SUBST (sDims, nIdx +1, LONG (sDims));
+
+      IF(DTYPE (sDim, sEl) @= 'N');
+
+            # Replace the destination element
+            IF(TABDIM (sCube, 1) @= sDim);
+                  V1 = sEl;
+            ELSEIF (TABDIM (sCube, 2) @= sDim);
+                  V2 = sEl;
+            ELSEIF (TABDIM (sCube, 3) @= sDim);
+                  V3 = sEl;
+            ELSEIF (TABDIM (sCube, 4) @= sDim);
+                  V4 = sEl;
+            ELSEIF (TABDIM (sCube, 5) @= sDim);
+                  V5 = sEl;
+            ELSEIF (TABDIM (sCube, 6) @= sDim);
+                  V6 = sEl;
+            ELSEIF (TABDIM (sCube, 7) @= sDim);
+                  V7 = sEl;
+            ELSEIF (TABDIM (sCube, 8) @= sDim);
+                  V8 = sEl;
+            ELSEIF (TABDIM (sCube, 9) @= sDim);
+                  V9 = sEl;
+            ELSEIF (TABDIM (sCube, 10) @= sDim);
+                  V10 = sEl;
+            ELSEIF (TABDIM (sCube, 11) @= sDim);
+                  V11 = sEl;
+            ELSEIF (TABDIM (sCube, 12) @= sDim);
+                  V12 = sEl;
+            ELSEIF (TABDIM (sCube, 13) @= sDim);
+                  V13 = sEl;
+            ELSEIF (TABDIM (sCube, 14) @= sDim);
+                  V14 = sEl;
+            ELSEIF (TABDIM (sCube, 15) @= sDim);
+                  V15 = sEl;
+            ENDIF;
+      ENDIF;
+
+      # Get the next Dim
+      nIdx = SCAN (';', sDims);
+      sDim = TRIM (SUBST (sDims, 1, nIdx -1));
+      sDims = SUBST (sDims, nIdx +1, LONG (sDims));
+
+END;
+
+# Get the name of the last dim to test type
+sMeasure = TABDIM (sCube, nDimCount);
+
+# Make the process work for cubes from 3 to15 dims
+
+IF(nDimCount = 3);
+      IF(CELLISUPDATEABLE (sCube, V1, V2, V3) = 1);
+            IF(DTYPE (sMeasure, V3) @= 'N');
+                  CELLPUTN (NUMBR (V4) * nChange, sCube, V1, V2, V3);
+            ELSE;
+                  CELLPUTS (V4, sCube, V1, V2, V3);
+            ENDIF;
+      ENDIF;
+ELSEIF (nDimCount = 4);
+      IF(CELLISUPDATEABLE (sCube, V1, V2, V3, V4) = 1);
+            IF(DTYPE (sMeasure, V4) @= 'N');
+                  CELLPUTN (NUMBR (V5) * nChange, sCube, V1, V2, V3, V4);
+            ELSE;
+                  CELLPUTS (V5, sCube, V1, V2, V3, V4);
+            ENDIF;
+      ENDIF;
+ELSEIF (nDimCount = 5);
+      IF(CELLISUPDATEABLE (sCube, V1, V2, V3, V4, V5) = 1);
+            IF(DTYPE (sMeasure, V5) @= 'N');
+                  CELLPUTN (NUMBR (V6) * nChange, sCube, V1, V2, V3, V4, V5);
+            ELSE;
+                  CELLPUTS (V6, sCube, V1, V2, V3, V4, V5);
+            ENDIF;
+      ENDIF;
+ELSEIF (nDimCount = 6);
+      IF(CELLISUPDATEABLE (sCube, V1, V2, V3, V4, V5, V6) = 1);
+            IF(DTYPE (sMeasure, V6) @= 'N');
+                CellPutS(destParams|sCube| V1| V2| V3| V4| V5| V6, 'sys_Client Preferences', 'admin', 'Month' );
+                  CELLPUTN (NUMBR (V7) * nChange, sCube, V1, V2, V3, V4, V5, V6);
+            ELSE;
+                  CELLPUTS (V7, sCube, V1, V2, V3, V4, V5, V6);
+            ENDIF;
+      ENDIF;
+ELSEIF (nDimCount = 7);
+      IF(CELLISUPDATEABLE (sCube, V1, V2, V3, V4, V5, V6, V7) = 1);
+            IF(DTYPE (sMeasure, V7) @= 'N');
+                  CELLPUTN (Numbr (V8) * nChange, sCube, V1, V2, V3, V4, V5, V6, V7);
+            ELSE;
+                  CELLPUTS (V8, sCube, V1, V2, V3, V4, V5, V6, V7);
+            ENDIF;
+      ENDIF;
+ELSEIF (nDimCount = 8);
+      IF(CELLISUPDATEABLE (sCube, V1, V2, V3, V4, V5, V6, V7, V8) = 1);
+            IF(DTYPE (sMeasure, V8) @= 'N');
+                  CELLPUTN (Numbr (V9) * nChange, sCube, V1, V2, V3, V4, V5, V6, V7, V8);
+            ELSE;
+                  CELLPUTS (V9, sCube, V1, V2, V3, V4, V5, V6, V7, V8);
+            ENDIF;
+      ENDIF;
+ELSEIF (nDimCount = 9);
+      IF(CELLISUPDATEABLE (sCube, V1, V2, V3, V4, V5, V6, V7, V8, V9) = 1);
+            IF(DTYPE (sMeasure, V9) @= 'N');
+                  CELLPUTN (Numbr (V10) * nChange, sCube, V1, V2, V3, V4, V5, V6, V7, V8, V9);
+            ELSE;
+                  CELLPUTS (V10, sCube, V1, V2, V3, V4, V5, V6, V7, V8, V9);
+            ENDIF;
+      ENDIF;
+ELSEIF (nDimCount = 10);
+      IF(CELLISUPDATEABLE (sCube, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10) = 1);
+            IF(DTYPE (sMeasure, V10) @= 'N');
+                  CELLPUTN (Numbr (V11) * nChange, sCube, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10);
+            ELSE;
+                  CELLPUTS (V11, sCube, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10);
+            ENDIF;
+      ENDIF;
+ELSEIF (nDimCount = 11);
+      IF(CELLISUPDATEABLE (sCube, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11) = 1);
+            IF(DTYPE (sMeasure, V11) @= 'N');
+                  CELLPUTN (Numbr (V12) * nChange, sCube, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11);
+            ELSE;
+                  CELLPUTS (V12, sCube, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11);
+            ENDIF;
+      ENDIF;
+ELSEIF (nDimCount = 12);
+      IF(CELLISUPDATEABLE (sCube, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12) = 1);
+            IF(DTYPE (sMeasure, V12) @= 'N');
+                  CELLPUTN (Numbr (V13) * nChange, sCube, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12);
+            ELSE;
+                  CELLPUTS (V13, sCube, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12);
+            ENDIF;
+      ENDIF;
+ELSEIF (nDimCount = 13);
+      IF(CELLISUPDATEABLE (sCube, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13) = 1);
+            IF(DTYPE (sMeasure, V13) @= 'N');
+                  CELLPUTN (Numbr (V14) * nChange, sCube, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13);
+            ELSE;
+                  CELLPUTS (V14, sCube, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13);
+            ENDIF;
+      ENDIF;
+ELSEIF (nDimCount = 14);
+      IF(CELLISUPDATEABLE (sCube, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, V14) = 1);
+            IF(DTYPE (sMeasure, V14) @= 'N');
+                  CELLPUTN (Numbr (V15) * nChange, sCube, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, V14);
+            ELSE;
+                  CELLPUTS (V15, sCube, V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, V14);
+            ENDIF;
+      ENDIF;
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------
+#    DELETE TEMPORARY VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------
+
+# ---- Source
+
+VIEWDESTROY(sCube, sSrc);
+
+sDims = srcParams;
+nIdx = SCAN (';', sDims);
+sDim = TRIM (SUBST (sDims, 1, nIdx -1));
+sDims = SUBST (sDims, nIdx +1, LONG (sDims));
+
+WHILE(sDim @<> '');
+
+      SUBSETDESTROY (sDim, sSrc);
+
+      # Get the next Dim
+      nIdx = SCAN ('|', sDims);
+      sDims = SUBST (sDims, nIdx +1, LONG (sDims));
+      nIdx = SCAN (';', sDims);
+      sDim = TRIM (SUBST (sDims, 1, nIdx -1));
+      sDims = SUBST (sDims, nIdx +1, LONG (sDims));
+
+END;
+
+# ---- Destination
+
+VIEWDESTROY (sCube, sDest);
+
+sDims = destParams;
+nIdx = SCAN (';', sDims);
+sDim = TRIM (SUBST (sDims, 1, nIdx -1));
+sDims = SUBST (sDims, nIdx +1, LONG (sDims));
+
+WHILE(sDim @<> '');
+
+      SUBSETDESTROY(sDim, sDest);
+
+      # Get the next Dim
+      nIdx = SCAN ('|', sDims);
+      sDims = SUBST (sDims, nIdx +1, LONG (sDims));
+      nIdx = SCAN (';', sDims);
+      sDim = TRIM (SUBST (sDims, 1, nIdx -1));
+      sDims = SUBST (sDims, nIdx +1, LONG (sDims));
+
+END;
+
+#---------------------------------------------------------------------------------
+#    RESTORE CUBE LOGGING
+#---------------------------------------------------------------------------------
+CUBESETLOGCHANGES (sCube, nFlag);
+#endregion

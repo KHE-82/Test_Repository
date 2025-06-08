@@ -1,0 +1,61 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+
+vPlanDimension = vObjectPrefix | 'sm_plans' ;
+vDimIX = DIMIX(vPlanDimension , pPlan);
+
+if (vDimIX > 0);
+processquit;
+endif;
+
+vDimSiz = DIMSIZ(vPlanDimension);
+dimensionelementinsert(vPlanDimension , '', pPlan, 'N');
+
+vDimIX = DIMIX(vPlanDimension , pPlan);
+if (vDimIX = 0);
+processquit;
+endif;
+
+
+vTaskDimension = vObjectPrefix | 'sm_versions'  | vObjectSeparator | pPlan;
+dimensioncreate(vTaskDimension);
+
+
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+if (pName @<> '');
+attrputs(pName, vPlanDimension, pPlan, 'Plan');
+endif;
+
+AttrInsert(vTaskDimension , '', 'Version', 'A');
+AttrInsert(vTaskDimension , '', 'Add AdminGroup', 'S');
+AttrInsert(vTaskDimension , '', 'Description', 'S');
+AttrInsert(vTaskDimension , '', 'Name', 'S');
+AttrInsert(vTaskDimension , '', 'template', 'S');
+AttrInsert(vTaskDimension , '', 'Status', 'S');
+AttrInsert(vTaskDimension , '', 'Notes', 'S');
+AttrInsert(vTaskDimension , '', 'Start Date', 'S');
+AttrInsert(vTaskDimension , '', 'Due Date', 'S');
+AttrInsert(vTaskDimension , '', 'Security Setting', 'S');
+
+#endregion

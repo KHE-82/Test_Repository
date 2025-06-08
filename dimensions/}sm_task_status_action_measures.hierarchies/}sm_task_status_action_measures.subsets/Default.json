@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"Default",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('}sm_task_status_action_measures')/Hierarchies('}sm_task_status_action_measures')/Elements('New Action')"
+		}
+	]
+}

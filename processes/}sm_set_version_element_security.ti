@@ -1,0 +1,99 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+vVersionDim = vObjectPrefix | 'sm_versions' | vObjectSeparator | pPlan;
+vVersionStatus = attrs(vVersionDim, pVersion, 'Status');
+
+if (vVersionStatus @<> '');
+vSecuritySetting = attrs(vObjectPrefix | 'sm_version_status',  vVersionStatus, 'Element Level Security');
+
+if (vSecuritySetting @<> '');
+
+vElementSecurityCube = '}ElementSecurity_' | pPlan;
+
+vDim1 = TABDIM(vElementSecurityCube, 1);
+if (vDim1 @= '');
+CUBECREATE( vElementSecurityCube, pPlan, '}Groups');
+
+vGroupIndex = 1;
+vGroupCtr = DIMSIZ('}Groups');
+vVersionCtr = DIMSIZ(pPlan);
+while (vGroupIndex <= vGroupCtr);
+vGroup = DIMNM('}Groups', vGroupIndex);
+
+vVersionIndex = 1;
+while (vVersionIndex <= vVersionCtr);
+vVersion = DIMNM(pPlan, vVersionIndex);
+if (vGroup @= 'ADMIN');
+ElementSecurityPut('ADMIN', pPlan, vVersion, 'ADMIN');
+else;
+ElementSecurityPut('NONE', pPlan, vVersion, vGroup);
+endif;
+vVersionIndex = vVersionIndex + 1;
+end;
+
+vGroupIndex = vGroupIndex + 1;
+end;
+
+endif;
+
+endif;
+
+endif;
+
+
+
+
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+if (vSecuritySetting @<> '');
+
+vTaskDimension = vObjectPrefix | 'sm_versiontasks' | vObjectSeparator | pPlan | vObjectSeparator | pVersion;
+
+vGroupIndex = 1;
+vGroupCtr = DIMSIZ('}Groups');
+while (vGroupIndex <= vGroupCtr);
+vGroup = DIMNM('}Groups', vGroupIndex);
+
+if (vGroup @= 'ADMIN');
+ElementSecurityPut('ADMIN', pPlan, pVersion, 'ADMIN');
+else;
+ElementSecurityPut('NONE', pPlan, pVersion, vGroup);
+endif;
+
+vGroupIndex = vGroupIndex + 1;
+end;
+
+vTaskCount = DIMSIZ(vTaskDimension);
+vTaskIndex = 1;
+while (vTaskIndex <= vTaskCount);
+vTask = DIMNM( vTaskDimension, vTaskIndex);
+vOwnerGroup = attrs(vTaskDimension, vTask, 'Owner Group');
+if (vOwnerGroup @<> '');
+ElementSecurityPut(vSecuritySetting, pPlan, pVersion, vOwnerGroup);
+endif;
+vTaskIndex = vTaskIndex + 1;
+end;
+
+endif;
+#endregion

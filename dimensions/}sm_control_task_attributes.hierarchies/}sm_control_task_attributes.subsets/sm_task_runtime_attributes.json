@@ -1,0 +1,59 @@
+{
+	"@type":"Subset",
+	"Name":"sm_task_runtime_attributes",
+	"Alias":"Attribute",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Approve Comment')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Approved By')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('approved datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Completed By')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('completed datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Delegated By')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('delegated datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Due Date')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Rejected By')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('rejected datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Started By')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('started datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Status')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Submit Comment')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Submitted By')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('submitted datetime')"
+		},
+		{
+			"@id":"Dimensions('}sm_control_task_attributes')/Hierarchies('}sm_control_task_attributes')/Elements('Version Attributes')"
+		}
+	]
+}

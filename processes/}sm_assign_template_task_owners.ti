@@ -1,0 +1,59 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+vTaskDimension = vObjectPrefix | 'sm_templatetasks'  | vObjectSeparator | pTemplate;
+
+vExistingDimension = '}clients';
+
+
+if (pLoadSubset @<> '' & pSubset @<> '');
+
+vDimSize = SUBSETGETSIZE(vExistingDimension, pSubset);
+
+vLoadSize = SUBSETGETSIZE(vTaskDimension, pLoadSubset);
+vLoadIndex = 1;
+while (vLoadIndex <= vLoadSize);
+vLoadElement = SUBSETGETELEMENTNAME(vTaskDimension, pLoadSubset, vLoadIndex);
+
+vGroup = ATTRS(vTaskDimension, vLoadElement, 'Owner Group');
+if (vGroup @<> '');
+
+vIndex = 1;
+while (vIndex <= vDimSize);
+vClient = SUBSETGETELEMENTNAME(vExistingDimension, pSubset, vIndex);
+
+ASSIGNCLIENTTOGROUP(vClient, vGroup);
+
+vIndex = vIndex + 1;
+end;
+endif;
+
+vLoadIndex = vLoadIndex + 1;
+end;
+
+endif;
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+#endregion

@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=EU Report Activities 2.xlsx
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\EU Report Activities 2_20241219111114.xlsx
+REMOVEBLOBONDELETE=Yes

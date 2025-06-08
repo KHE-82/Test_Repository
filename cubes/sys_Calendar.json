@@ -1,0 +1,20 @@
+{
+	"@type":"Cube",
+	"Name":"sys_Calendar",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('Year')"
+		},
+		{
+			"@id":"Dimensions('Time Measures')"
+		},
+		{
+			"@id":"Dimensions('Month')"
+		},
+		{
+			"@id":"Dimensions('sys_Calendar Measure')"
+		}
+	],
+	"Views@Code.links":[]
+}

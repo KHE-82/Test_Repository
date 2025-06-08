@@ -1,0 +1,69 @@
+{
+	"@type":"Process",
+	"Name":"}Drill_Operating_Statement_to_Data_Set",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}Drill_Operating_Statement_to_Data_Set.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"IgnoredInputVarName=ID€VarType=33€ColType=1165€",
+		"IgnoredInputVarName=FinYear€VarType=32€ColType=1165€",
+		"IgnoredInputVarName=V3€VarType=32€ColType=1165€",
+		"IgnoredInputVarName=CostCentre€VarType=32€ColType=1165€",
+		"IgnoredInputVarName=GLCode€VarType=32€ColType=1165€",
+		"IgnoredInputVarName=FinMonth€VarType=32€ColType=1165€",
+		"IgnoredInputVarName=Narration€VarType=32€ColType=1165€",
+		"IgnoredInputVarName=PostDate€VarType=32€ColType=1165€",
+		"IgnoredInputVarName=Amount€VarType=33€ColType=1165€"
+	],
+	"DataSource":
+	{
+		"Type":"ODBC",
+		"dataSourceNameForClient":"FMIS",
+		"dataSourceNameForServer":"FMIS",
+		"password":"aaT01Nxf`w93N@VvNn=[LTB[XlTy1`gCnCLkXn@gS[Ysyewx<v0slOuGQgCi6gPeh:nuSbsZgxgCR4^GBP6Q\\5KW[8Wy0<WLS>N:OQ_noS[DMmVs>McDeV`MM`Mkr:Ysq=cUz6AIjM]t8GxGq5Vi_lNPD5eYb:_yfnKQ3Mg^@8ocDM2I[Eeg<w>1^?W^DhPtEa8XZv>C",
+		"query":"SELECT ID, FinYear, Scenario, CostCentre, GLCode, FinMonth, Narration, PostDate, Amount FROM GLDATA WHERE (Scenario = '?Scenario?' AND FinYear = '?Year?' AND CostCentre = left('?Cost Centre?',5) AND GLCode = left('?GL Code?',5) AND FinMonth = '?Month?')",
+		"userName":"",
+		"usesUnicode":false
+	},
+	"Parameters":
+	[
+		{
+			"Name":"cubename",
+			"Prompt":"r",
+			"Value":"Operating Statement",
+			"Type":"String"
+		},
+		{
+			"Name":"Year",
+			"Prompt":"ame",
+			"Value":"2000-2001",
+			"Type":"String"
+		},
+		{
+			"Name":"Scenario",
+			"Prompt":"r",
+			"Value":"Variance",
+			"Type":"String"
+		},
+		{
+			"Name":"Cost Centre",
+			"Prompt":"nce Sheet",
+			"Value":"DCITA",
+			"Type":"String"
+		},
+		{
+			"Name":"GL Code",
+			"Prompt":"tre",
+			"Value":"Balance Sheet",
+			"Type":"String"
+		},
+		{
+			"Name":"Month",
+			"Prompt":"e",
+			"Value":"Year",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

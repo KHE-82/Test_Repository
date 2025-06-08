@@ -1,0 +1,55 @@
+{
+	"@type":"Process",
+	"Name":"}sm_assign_task_owners",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_assign_task_owners.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"IgnoredInputVarName=V1€VarType=32€ColType=1165€"
+	],
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pTemplate",
+			"Prompt":"Template",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pSubset",
+			"Prompt":"Client Subset",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pLoadSubset",
+			"Prompt":"Load Subset",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pObjectType",
+			"Prompt":"Load Subset",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pPlan",
+			"Prompt":"Type",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pGroup",
+			"Prompt":"Group to use",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

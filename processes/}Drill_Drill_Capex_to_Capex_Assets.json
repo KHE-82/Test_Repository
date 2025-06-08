@@ -1,0 +1,59 @@
+{
+	"@type":"Process",
+	"Name":"}Drill_Drill_Capex_to_Capex_Assets",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}Drill_Drill_Capex_to_Capex_Assets.ti",
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForClient":"CapEx Assets",
+		"dataSourceNameForServer":"CapEx Assets",
+		"view":"DrillView"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"cubename",
+			"Prompt":"",
+			"Value":"CapEx",
+			"Type":"String"
+		},
+		{
+			"Name":"Year",
+			"Prompt":"",
+			"Value":"2000-2001",
+			"Type":"String"
+		},
+		{
+			"Name":"Scenario",
+			"Prompt":"",
+			"Value":"Variance",
+			"Type":"String"
+		},
+		{
+			"Name":"Asset Categories",
+			"Prompt":"",
+			"Value":"All Asset Categories",
+			"Type":"String"
+		},
+		{
+			"Name":"Asset Measures",
+			"Prompt":"",
+			"Value":"Purchase Price",
+			"Type":"String"
+		},
+		{
+			"Name":"Cost Centre",
+			"Prompt":"",
+			"Value":"DCITA",
+			"Type":"String"
+		},
+		{
+			"Name":"Month",
+			"Prompt":"",
+			"Value":"Year",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

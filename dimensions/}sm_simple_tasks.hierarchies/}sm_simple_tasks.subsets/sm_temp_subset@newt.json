@@ -1,0 +1,13 @@
+{
+	"@type":"Subset",
+	"Name":"sm_temp_subset@newt",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('}sm_simple_tasks')/Hierarchies('}sm_simple_tasks')/Elements('Payroll')"
+		},
+		{
+			"@id":"Dimensions('}sm_simple_tasks')/Hierarchies('}sm_simple_tasks')/Elements('Driver Based Expenses')"
+		}
+	]
+}

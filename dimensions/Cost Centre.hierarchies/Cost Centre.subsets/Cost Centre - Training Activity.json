@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"Cost Centre - Training Activity",
+	"Expression":"{DRILLDOWNMEMBER({[Cost Centre].[Cost Centre].[All Cost Centres]} , {[Cost Centre].[Cost Centre].[All Cost Centres]} , RECURSIVE)}"
+}

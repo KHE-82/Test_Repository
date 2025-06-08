@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"EU Net Resullt_BL",
+	"Expression":"{DRILLDOWNMEMBER({[GL Code].[GL Code].[Net Result]} , {[GL Code].[GL Code].[Net Result],[GL Code].[GL Code].[Expenses],[GL Code].[GL Code].[Net Result^Revenue]} , RECURSIVE)}"
+}

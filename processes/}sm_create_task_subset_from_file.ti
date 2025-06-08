@@ -1,0 +1,52 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+IF (pDimension @= '' % pSubset @= '' % pSourceFile @= '');
+PROCESSQUIT;
+ENDIF;
+
+IF (DIMENSIONEXISTS(pDimension) = 0);
+PROCESSQUIT;
+ENDIF;
+
+SUBSETDESTROY(pDimension, pSubset);
+IF (pAction @<> 'CREATE');
+PROCESSBREAK;
+ENDIF;
+
+SUBSETCREATE(pDimension, pSubset);
+vIndex = 1;
+
+DATASOURCENAMEFORSERVER =  pSourcefile;
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+IF (V1 @<> '');
+IF (DIMIX(pDimension, V1) > 0);
+SUBSETELEMENTINSERT( pDimension, pSubset, V1, vIndex);
+ENDIF;
+ENDIF;
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+#endregion

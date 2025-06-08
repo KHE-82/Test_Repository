@@ -1,0 +1,12 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_Calendar Measure",
+	"Elements":
+	[
+		{
+			"Name":"value",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"}sm_control_list_values",
+	"Hierarchies@Code.links":
+	[
+		"}sm_control_list_values.hierarchies/}sm_control_list_values.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('}sm_control_list_values')/Hierarchies('}sm_control_list_values')"
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"@type":"Cube",
+	"Name":"sys_Scenario Manager",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('}Cubes')"
+		},
+		{
+			"@id":"Dimensions('sys_Scenario Manager Measure')"
+		}
+	],
+	"Views@Code.links":
+	[
+		"sys_Scenario Manager.views/Default.json"
+	]
+}

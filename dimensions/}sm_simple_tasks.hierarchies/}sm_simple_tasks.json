@@ -1,0 +1,19 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}sm_simple_tasks",
+	"Elements":
+	[
+		{
+			"Name":"Payroll",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Driver Based Expenses",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"}sm_simple_tasks.subsets/sm_temp_subset@newt.json"
+	]
+}

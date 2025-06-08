@@ -1,0 +1,12 @@
+{
+	"@type":"Hierarchy",
+	"Name":"fin_Balance Sheet Measure",
+	"Elements":
+	[
+		{
+			"Name":"value",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

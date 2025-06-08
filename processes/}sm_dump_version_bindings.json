@@ -1,0 +1,33 @@
+{
+	"@type":"Process",
+	"Name":"}sm_dump_version_bindings",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_dump_version_bindings.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pVersion",
+			"Prompt":"Version",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pPlan",
+			"Prompt":"Plan",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pBlob",
+			"Prompt":"Blob Name",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

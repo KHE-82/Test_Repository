@@ -1,0 +1,137 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+if (pObjectType @= 'VERSION');
+vTaskDimension = vObjectPrefix | 'sm_templatetasks'  | vObjectSeparator | pTemplate;
+elseif (pObjectType @= 'WIZARD');
+vTaskDimension = vObjectPrefix | pTemplate;
+else;
+vTaskDimension = vObjectPrefix | 'sm_versiontasks'  | vObjectSeparator | pPlan | vObjectSeparator | pTemplate;
+endif;
+
+vExistingDimension = pDimension;
+
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+
+if (pDimension @<> '' & pSubset @<> '');
+
+
+vLoadSize = SUBSETGETSIZE(vTaskDimension, pLoadSubset);
+vLoadIndex = 1;
+while (vLoadIndex <= vLoadSize);
+vLoadElement = SUBSETGETELEMENTNAME(vTaskDimension, pLoadSubset, vLoadIndex);
+
+vDimSize = SUBSETGETSIZE(vExistingDimension, pSubset);
+vIndex = 1;
+while (vIndex <= vDimSize);
+vElement = vLoadElement | '-' | SUBSETGETELEMENTNAME(vExistingDimension, pSubset, vIndex);
+
+
+DIMENSIONELEMENTCOMPONENTADD(vTaskDimension, vLoadElement, vElement, 1);
+
+vGroup = '}' | 'smt_' | pTemplate | '_' | vElement;
+vGroupIndex = DIMIX('}groups', vGroup);
+
+if (vGroupIndex = 0);
+#ADDGROUP(vGroup);
+endif;
+
+vIndex = vIndex + 1;
+end;
+
+vLoadIndex = vLoadIndex + 1;
+end;
+
+endif;
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vSourceDimension = pDimension;
+
+
+vLoadSize = SUBSETGETSIZE(vTaskDimension, pLoadSubset);
+vLoadIndex = 1;
+while (vLoadIndex <= vLoadSize);
+vLoadElement = SUBSETGETELEMENTNAME(vTaskDimension, pLoadSubset, vLoadIndex);
+vLoadElementName = ATTRS(vTaskDimension, vLoadElement, 'Name');
+
+if (vLoadElementName @= '');
+vLoadElementName = ATTRS(vTaskDimension, vLoadElement, 'Task');
+if (vLoadElementName @= '');
+vLoadElementName = vLoadElement;
+endif;
+endif;
+
+
+vDimSize = SUBSETGETSIZE(vExistingDimension, pSubset);
+vIndex = 1;
+while (vIndex <= vDimSize);
+vOriginalElement = SUBSETGETELEMENTNAME(vExistingDimension, pSubset, vIndex);
+vElement = vLoadElement | '-' | vOriginalElement ;
+
+if (pAliasName @<> '');
+vOriginalAlias = attrs(pDimension, vOriginalElement, pAliasName);
+else;
+vOriginalAlias = vElement;
+endif;
+if (pAppendName @= 'Y' & vLoadElementName @<> '');
+vElementName = vOriginalAlias | ' (' | vLoadElementName | ')';
+else;
+vElementName = vOriginalAlias;
+endif;
+
+
+vMapIndex = 1;
+vMapMax = 3;
+while (vMapIndex <= vMapMax);
+vMapStr = str(vMapIndex, 1, 0);
+vParentValue = ATTRS(vTaskDimension, vLoadElement, 'dimension' | vMapStr);
+
+if (vParentValue @= '');
+ATTRPUTS(pDimension, vTaskDimension, vElement, 'dimension' | vMapStr);
+ATTRPUTS(pSubset, vTaskDimension, vElement, 'subset' | vMapStr);
+ATTRPUTS(vOriginalElement , vTaskDimension, vElement, 'element' | vMapStr);
+vMapIndex = vMapMax;
+else;
+ATTRPUTS(vParentValue, vTaskDimension, vElement, 'dimension' | vMapStr);
+ATTRPUTS(ATTRS(vTaskDimension, vLoadElement, 'subset' | vMapStr), vTaskDimension, vElement, 'subset' | vMapStr);
+ATTRPUTS(ATTRS(vTaskDimension, vLoadElement, 'element' | vMapStr) , vTaskDimension, vElement, 'element' | vMapStr);
+endif;
+vMapIndex = vMapIndex + 1;
+end;
+
+ATTRPUTS(vElement, vTaskDimension, vElement, 'task');
+ATTRPUTS(vElementName, vTaskDimension, vElement, 'Name');
+vGroup = '}' | 'smt_' | pTemplate | '_' | vElement;
+#ATTRPUTS(vGroup, vTaskDimension, vElement, 'Owner Group');
+
+vIndex = vIndex + 1;
+end;
+
+vLoadIndex = vLoadIndex + 1;
+end;
+ATTRPUTS(pTaskType, vTaskDimension, vElement, 'Type');
+
+
+#SECURITYREFRESH;
+#endregion

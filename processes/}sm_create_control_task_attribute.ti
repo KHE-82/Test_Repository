@@ -1,0 +1,37 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+if (pAttribute @= '' % pAttributeType @= '');
+processquit;
+endif;
+
+vDimension = '}sm_control_attributes';
+vFind = DIMIX(vDimension, pAttribute);
+
+if (vFind = 0);
+
+DIMENSIONELEMENTINSERT(vDimension, '', pAttribute, 'N');
+endif;
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vCount = SubsetGetSize(vDimension, pAttributeSubset);
+SubsetElementInsert(vDimension, pAttributeSubset, pAttribute,vCount + 1 );
+#endregion

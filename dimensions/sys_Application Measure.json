@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_Application Measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_Application Measure.hierarchies/sys_Application Measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_Application Measure')/Hierarchies('sys_Application Measure')"
+	}
+}

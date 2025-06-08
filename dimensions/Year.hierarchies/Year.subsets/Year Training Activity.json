@@ -1,0 +1,31 @@
+{
+	"@type":"Subset",
+	"Name":"Year Training Activity",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('Year')/Hierarchies('Year')/Elements('2011-2012')"
+		},
+		{
+			"@id":"Dimensions('Year')/Hierarchies('Year')/Elements('2012-2013')"
+		},
+		{
+			"@id":"Dimensions('Year')/Hierarchies('Year')/Elements('2013-2014')"
+		},
+		{
+			"@id":"Dimensions('Year')/Hierarchies('Year')/Elements('2014-2015')"
+		},
+		{
+			"@id":"Dimensions('Year')/Hierarchies('Year')/Elements('2015-2016')"
+		},
+		{
+			"@id":"Dimensions('Year')/Hierarchies('Year')/Elements('2016-2017')"
+		},
+		{
+			"@id":"Dimensions('Year')/Hierarchies('Year')/Elements('2017-2018')"
+		},
+		{
+			"@id":"Dimensions('Year')/Hierarchies('Year')/Elements('2018-2019')"
+		}
+	]
+}

@@ -1,0 +1,62 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+vVersionSecurityCube = vObjectPrefix | 'sm_versionsecuritycubes' | vObjectSeparator | pPlan;
+vVersionDimensionMapCube = vObjectPrefix | 'sm_versionsecuritydimensions' | vObjectSeparator | pPlan;
+
+if (pAction @= 'DELETE');
+
+if (TABDIM(vVersionSecurityCube , 1) @<> '');
+cubedestroy(vVersionSecurityCube  );
+endif;
+
+if (TABDIM( vVersionDimensionMapCube  , 1) @<> '');
+cubedestroy( vVersionDimensionMapCube  );
+endif;
+
+processbreak;
+endif;
+
+MDimName= vObjectPrefix | 'sm_versionsecurity_measures';
+
+if (TABDIM( vVersionSecurityCube, 1) @= '');
+
+##Create the Security cube
+CubeCreate(vVersionSecurityCube , '}Cubes', pPlan,MDimName);
+
+endif;
+
+
+if (TABDIM( vVersionDimensionMapCube   , 1) @= '');
+##Create the Dimension map cube
+CubeCreate( vVersionDimensionMapCube   , '}Dimensions', pPlan,MDimName);
+
+endif;
+
+
+
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+#Cubedestroy('}sm_versionsecuritycubes@plan_version');
+#dimensiondestroy('plan_version_measure');
+#endregion

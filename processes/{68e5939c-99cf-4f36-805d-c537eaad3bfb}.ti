@@ -1,0 +1,3 @@
+#region Prolog
+CubeDestroy( 'z.test' );
+#endregion

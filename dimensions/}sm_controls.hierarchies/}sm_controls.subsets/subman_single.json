@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"subman_single",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('}sm_controls')/Hierarchies('}sm_controls')/Elements('subman_object_prefix')"
+		}
+	]
+}

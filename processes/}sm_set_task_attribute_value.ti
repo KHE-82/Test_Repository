@@ -1,0 +1,52 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+VvtDimension=vObjectPrefix|'sm_versiontasks';
+VplantaskName=vObjectSeparator|Pplan;
+VversionName = vObjectSeparator|Pversion;
+VdimensionName=VvtDimension|VplantaskName|VversionName;
+Vlevel= DNLEV(VdimensionName);
+vAttributeDim = '}ElementAttributes_' | vdimensionName;
+
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vAttrIX = DIMIX(vAttributeDim, pAttribute);
+
+if (vAttrIX = 0);
+AttrInsert(vDimensionName, '', pAttribute, 'S');
+vAttrIX = DIMIX(vAttributeDim, pAttribute);
+if (vAttrIX = 0);
+PROCESSQUIT;
+endif;
+endif;
+vControlTaskIX = DIMIX('}sm_control_task_attributes', pAttribute);
+if (vControlTaskIX = 0);
+DIMENSIONELEMENTINSERT('}sm_control_task_attributes', '', pAttribute, 'N');
+endif;
+DIMENSIONELEMENTCOMPONENTADD('}sm_control_task_attributes', 'Version Attributes', pAttribute, 1);
+DIMENSIONELEMENTCOMPONENTADD('}sm_control_task_attributes', 'Text', pAttribute, 1);
+
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+AttrPutS(pValue, vDimensionName, pTask, pAttribute);
+SUBSETELEMENTINSERT('}sm_control_task_attributes', 'sm_task_runtime_attributes', pAttribute, 
+SUBSETGETSIZE('}sm_control_task_attributes', 'sm_task_runtime_attributes'));
+#endregion

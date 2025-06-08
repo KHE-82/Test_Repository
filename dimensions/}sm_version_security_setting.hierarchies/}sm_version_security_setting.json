@@ -1,0 +1,16 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}sm_version_security_setting",
+	"Elements":
+	[
+		{
+			"Name":"CELL",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"NONE",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

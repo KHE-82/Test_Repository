@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"}sm_version_security_setting",
+	"Hierarchies@Code.links":
+	[
+		"}sm_version_security_setting.hierarchies/}sm_version_security_setting.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('}sm_version_security_setting')/Hierarchies('}sm_version_security_setting')"
+	}
+}

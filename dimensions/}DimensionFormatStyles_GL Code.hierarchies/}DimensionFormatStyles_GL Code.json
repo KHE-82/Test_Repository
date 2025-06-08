@@ -1,0 +1,16 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}DimensionFormatStyles_GL Code",
+	"Elements":
+	[
+		{
+			"Name":"Auto Formatting",
+			"Type":"String"
+		},
+		{
+			"Name":"vickie",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

@@ -1,0 +1,36 @@
+{
+	"@type":"Cube",
+	"Name":"HR_HR Reporting",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('Year')"
+		},
+		{
+			"@id":"Dimensions('Scenario')"
+		},
+		{
+			"@id":"Dimensions('Age')"
+		},
+		{
+			"@id":"Dimensions('Gender')"
+		},
+		{
+			"@id":"Dimensions('Salary Level')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')"
+		},
+		{
+			"@id":"Dimensions('HR Measure')"
+		},
+		{
+			"@id":"Dimensions('Month')"
+		},
+		{
+			"@id":"Dimensions('HR_HR Reporting Measure')"
+		}
+	],
+	"Rules@Code.link":"HR_HR Reporting.rules",
+	"Views@Code.links":[]
+}

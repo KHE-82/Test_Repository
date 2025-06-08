@@ -1,0 +1,161 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+if (subst(pcube,1,14) @= '}cellsecurity_');
+processquit;
+endif;
+
+vCellSecurityCube = '}CellSecurity_' | pCube;
+
+if (TABDIM(vCellSecurityCube, 1) @<> '');
+if (pAction @= 'DELETE');
+cubedestroy(vCellSecurityCube );
+endif;
+#processbreak;
+vCreateCube = 'FALSE';
+else;
+vCreateCube = 'TRUE';
+endif;
+
+vEmptySubsetName = vCellSecurityCube;
+vEmptyViewName = '}sm_placeholder_view';
+
+if (VIEWEXISTS(vCellSecurityCube, vEmptyViewName) = 1);
+PROCESSBREAK;
+endif;
+
+vDim1 = '';
+vDim2 = '';
+vDim3 = '';
+vDim4 = '';
+vDim5 = '';
+vDim6 = '';
+vDim7 = '';
+vDim8 = '';
+vDim9 = '';
+vDim10 = '';
+vDim11 = '';
+vDim12 = '';
+vDim13 = '';
+vDim14 = '';
+vDim15 = '';
+vDim16 = '';
+
+vDims = '';
+vDimIndex = 1;
+vDimCount = 0;
+while (vDimIndex <= 16);
+vDim = TABDIM(pCube, vDimIndex);
+if (vDim @= '');
+vDimCount = vDimIndex - 1;
+vDimIndex = 17;
+else;
+if (vDimIndex = 1);
+vDim1 = vDim;
+elseif (vDimIndex = 2);
+vDim2 = vDim;
+elseif (vDimIndex = 3);
+vDim3 = vDim;
+elseif (vDimIndex = 4);
+vDim4 = vDim;
+elseif (vDimIndex = 5);
+vDim5 = vDim;
+elseif (vDimIndex = 6);
+vDim6 = vDim;
+elseif (vDimIndex = 7);
+vDim7 = vDim;
+elseif (vDimIndex = 8);
+vDim8 = vDim;
+elseif (vDimIndex = 9);
+vDim9 = vDim;
+elseif (vDimIndex = 10);
+vDim10 = vDim;
+elseif (vDimIndex = 11);
+vDim11 = vDim;
+elseif (vDimIndex = 12);
+vDim12 = vDim;
+elseif (vDimIndex = 13);
+vDim13 = vDim;
+elseif (vDimIndex = 14);
+vDim14 = vDim;
+elseif (vDimIndex = 15);
+vDim15 = vDim;
+elseif (vDimIndex = 16);
+processquit;
+endif;
+SUBSETDESTROY(vDim, vEmptySubsetName);
+SUBSETCREATE(vDim, vEmptySubsetName);
+vDimIndex = vDimIndex + 1;
+endif;
+end;
+
+if (vDimCount < 2 % vDimCount > 15);
+processquit;
+endif;
+
+if (vCreateCube @= 'TRUE');
+
+if (vDimCount = 2);
+CubeCreate(vCellSecurityCube, vDim1, vDim2, '}Groups');
+elseif (vDimCount = 3);
+CubeCreate(vCellSecurityCube, vDim1, vDim2, vDim3 , '}Groups');
+elseif (vDimCount = 4);
+CubeCreate(vCellSecurityCube, vDim1, vDim2, vDim3 , vDim4 ,  '}Groups');
+elseif (vDimCount = 5);
+CubeCreate(vCellSecurityCube, vDim1, vDim2, vDim3 , vDim4 , vDim5 ,  '}Groups');
+elseif (vDimCount = 6);
+CubeCreate(vCellSecurityCube, vDim1, vDim2, vDim3 , vDim4 , vDim5 , vDim6 ,  '}Groups');
+elseif (vDimCount = 7);
+CubeCreate(vCellSecurityCube, vDim1, vDim2, vDim3 , vDim4 , vDim5 , vDim6 , vDim7 ,  '}Groups');
+elseif (vDimCount = 8);
+CubeCreate(vCellSecurityCube, vDim1, vDim2, vDim3 , vDim4 , vDim5 , vDim6 , vDim7 , vDim8 ,  '}Groups');
+elseif (vDimCount = 9);
+CubeCreate(vCellSecurityCube, vDim1, vDim2, vDim3 , vDim4 , vDim5 , vDim6 , vDim7 , vDim8 , vDim9 ,  '}Groups');
+elseif (vDimCount = 10);
+CubeCreate(vCellSecurityCube, vDim1, vDim2, vDim3 , vDim4 , vDim5 , vDim6 , vDim7 , vDim8 , vDim9 , vDim10 ,  '}Groups');
+elseif (vDimCount = 11);
+CubeCreate(vCellSecurityCube, vDim1, vDim2, vDim3 , vDim4 , vDim5 , vDim6 , vDim7 , vDim8 , vDim9 , vDim10 , vDim11 ,  '}Groups');
+elseif (vDimCount = 12);
+CubeCreate(vCellSecurityCube, vDim1, vDim2, vDim3 , vDim4 , vDim5 , vDim6 , vDim7 , vDim8 , vDim9 , vDim10 , vDim11 , vDim12 ,  '}Groups');
+elseif (vDimCount = 13);
+CubeCreate(vCellSecurityCube, vDim1, vDim2, vDim3 , vDim4 , vDim5 , vDim6 , vDim7 , vDim8 , vDim9 , vDim10 , vDim11 , vDim12 , vDim13 ,  '}Groups');
+elseif (vDimCount = 14);
+CubeCreate(vCellSecurityCube, vDim1, vDim2, vDim3 , vDim4 , vDim5 , vDim6 , vDim7 , vDim8 , vDim9 , vDim10 , vDim11 , vDim12 , vDim13 , vDim14 ,  
+'}Groups');
+elseif (vDimCount = 15);
+CubeCreate(vCellSecurityCube, vDim1, vDim2, vDim3 , vDim4 , vDim5 , vDim6 , vDim7 , vDim8 , vDim9 , vDim10 , vDim11 , vDim12 , vDim13 , vDim14 , 
+vDim15 , '}Groups');
+endif;
+
+endif;
+
+SUBSETDESTROY('}Groups', vEmptySubsetName);
+SUBSETCREATE('}Groups', vEmptySubsetName);
+VIEWDESTROY(vCellSecurityCube, vEmptyViewName);
+VIEWCREATE(vCellSecurityCube, vEmptyViewName);
+
+vDimIndex = 1;
+while (vDimIndex <= vDimCount);
+vDim = TABDIM(pCube, vDimIndex);
+VIEWSUBSETASSIGN(vCellSecurityCube, vEmptyViewName, vDim, vEmptySubsetName);
+vDimIndex = vDimIndex + 1;
+end;
+VIEWSUBSETASSIGN(vCellSecurityCube, vEmptyViewName, '}Groups', vEmptySubsetName);
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion

@@ -1,0 +1,12 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}sm_properties_measures",
+	"Elements":
+	[
+		{
+			"Name":"Property",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

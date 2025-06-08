@@ -1,0 +1,33 @@
+{
+	"@type":"Process",
+	"Name":"}sm_create_control_task_attribute",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_create_control_task_attribute.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pAttribute",
+			"Prompt":"AttributeID",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pAttributeType",
+			"Prompt":"Attribute Type (Text)",
+			"Value":"Text",
+			"Type":"String"
+		},
+		{
+			"Name":"pAttributeSubset",
+			"Prompt":"Control Attribute Subset",
+			"Value":"sm_task_attributes",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

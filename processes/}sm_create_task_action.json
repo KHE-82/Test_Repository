@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"}sm_create_task_action",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_create_task_action.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pAction",
+			"Prompt":"Action",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

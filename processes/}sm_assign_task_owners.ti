@@ -1,0 +1,108 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+vAssignClients = 0;
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+if (pobjecttype @= 'VERSION');
+vTaskDimension = vObjectPrefix | 'sm_versiontasks' | vObjectSeparator | pPlan  | vObjectSeparator | pTemplate;
+elseif (pobjecttype @= 'WIZARD');
+vTaskDimension = vObjectPrefix | pTemplate;
+else;
+vTaskDimension = vObjectPrefix | 'sm_templatetasks'  | vObjectSeparator | pTemplate;
+endif;
+
+vExistingDimension = '}clients';
+
+
+if (pLoadSubset @<> '' & (pSubset @<> '' % pGroup @<> ''));
+
+vLoadSize = SUBSETGETSIZE(vTaskDimension, pLoadSubset);
+vLoadIndex = 1;
+
+
+while (vLoadIndex <= vLoadSize);
+vLoadElement = SUBSETGETELEMENTNAME(vTaskDimension, pLoadSubset, vLoadIndex);
+
+if (pGroup @= '');
+vGroup = ATTRS(vTaskDimension, vLoadElement, 'Owner Group');
+
+if (vGroup @= '');
+vGroup = vObjectPrefix | 'sm_' | vLoadElement;
+vGroupCheck = dimix('}groups', vgroup);
+
+
+if (vGroupCheck = 0);
+#ADDGROUP(vGroup);
+vGroupCheck = dimix('}groups', vgroup);
+endif;
+ATTRPUTS(vGroup, vTaskDimension, vLoadElement, 'owner group');
+
+endif;
+
+bAssignClients = 1;
+
+else;
+
+ATTRPUTS(pGroup, vTaskDimension, vLoadElement, 'owner group');
+endif;
+
+vLoadIndex = vLoadIndex + 1;
+end;
+
+endif;
+
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+if (bAssignClients = 1);
+
+
+vLoadIndex = 1;
+
+while (vLoadIndex <= vLoadSize);
+vLoadElement = SUBSETGETELEMENTNAME(vTaskDimension, pLoadSubset, vLoadIndex);
+
+vGroup = ATTRS(vTaskDimension, vLoadElement, 'Owner Group');
+
+if (vGroup @<> '');
+
+vDimSize = SUBSETGETSIZE(vExistingDimension, pSubset);
+
+vIndex = 1;
+while (vIndex <= vDimSize);
+vClient = SUBSETGETELEMENTNAME(vExistingDimension, pSubset, vIndex);
+
+ASSIGNCLIENTTOGROUP(vClient, vGroup);
+
+vIndex = vIndex + 1;
+end;
+
+endif;
+
+vLoadIndex = vLoadIndex + 1;
+end;
+
+endif;
+#endregion

@@ -1,0 +1,57 @@
+{
+	"@type":"Process",
+	"Name":"}sm_execute_task",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_execute_task.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"Paction",
+			"Prompt":"Action?",
+			"Value":"Submit",
+			"Type":"String"
+		},
+		{
+			"Name":"Puser",
+			"Prompt":"User?",
+			"Value":"Planner",
+			"Type":"String"
+		},
+		{
+			"Name":"Ptask_type",
+			"Prompt":"What's being Passed ?",
+			"Value":"subset",
+			"Type":"String"
+		},
+		{
+			"Name":"Ptask",
+			"Prompt":"element/subtask name ?",
+			"Value":"test",
+			"Type":"String"
+		},
+		{
+			"Name":"Pversion",
+			"Prompt":"Version name?",
+			"Value":"FY 2004 Budget",
+			"Type":"String"
+		},
+		{
+			"Name":"Pplan",
+			"Prompt":"Plan Name?",
+			"Value":"plan_version",
+			"Type":"String"
+		},
+		{
+			"Name":"pSecurityCubeDumpFile",
+			"Prompt":"Security Cube Dump File?",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

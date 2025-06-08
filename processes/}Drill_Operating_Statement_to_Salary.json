@@ -1,0 +1,53 @@
+{
+	"@type":"Process",
+	"Name":"}Drill_Operating_Statement_to_Salary",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}Drill_Operating_Statement_to_Salary.ti",
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForClient":"Salary",
+		"dataSourceNameForServer":"Salary",
+		"view":"DrillView"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"cubename",
+			"Prompt":"",
+			"Value":"Operating Statement",
+			"Type":"String"
+		},
+		{
+			"Name":"Year",
+			"Prompt":"",
+			"Value":"2006-2007",
+			"Type":"String"
+		},
+		{
+			"Name":"Scenario",
+			"Prompt":"",
+			"Value":"Budget",
+			"Type":"String"
+		},
+		{
+			"Name":"Cost Centre",
+			"Prompt":"",
+			"Value":"Total XYZ",
+			"Type":"String"
+		},
+		{
+			"Name":"GL Code",
+			"Prompt":"",
+			"Value":"Employee Expenses",
+			"Type":"String"
+		},
+		{
+			"Name":"Month",
+			"Prompt":"",
+			"Value":"Year",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

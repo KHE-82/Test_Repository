@@ -1,0 +1,27 @@
+{
+	"@type":"Process",
+	"Name":"}sm_create_versiontaskstatuses_cube",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_create_versiontaskstatuses_cube.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pPlan",
+			"Prompt":"Plan (Blank for All)",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pVersion",
+			"Prompt":"Version (Blank for ALL)",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

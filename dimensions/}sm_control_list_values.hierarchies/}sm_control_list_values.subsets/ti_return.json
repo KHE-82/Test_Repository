@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"ti_return",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {TM1FILTERBYPATTERN( {TM1SUBSETALL( [}sm_control_list_values] )}, \"ti_return\")}, ALL, RECURSIVE )}, 0)}"
+}

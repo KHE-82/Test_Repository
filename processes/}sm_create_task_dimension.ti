@@ -1,0 +1,199 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+
+if (pObjectType @= 'VERSION');
+vTaskDimension = vObjectPrefix | 'sm_versiontasks' | vObjectSeparator | pPlan  | vObjectSeparator | pTemplate;
+
+elseif (pObjectType @= 'WIZARD');
+vTaskDimension = vObjectPrefix | pTemplate;
+dimensioncreate(vTaskDimension);
+
+vAttributeDim = '}sm_control_task_attributes';
+vAttributeSubset = 'sm_template_attributes';
+
+vAttrSize = SUBSETGETSIZE(vAttributeDim , vAttributeSubset );
+
+vAttrIndex = 1;
+while (vAttrIndex <= vAttrSize);
+vAttr = SUBSETGETELEMENTNAME(vAttributeDim , vAttributeSubset , vAttrIndex);
+
+if (ELISANC(vAttributeDim, 'Alias', vAttr) > 0);
+AttrInsert(vTaskDimension , '', vAttr, 'A');
+
+elseif (ELISANC(vAttributeDim, 'Text', vAttr) > 0);
+AttrInsert(vTaskDimension , '', vAttr, 'S');
+
+elseif (ELISANC(vAttributeDim, 'Numeric', vAttr) > 0);
+AttrInsert(vTaskDimension , '', vAttr, 'N');
+
+endif;
+
+vAttrIndex = vAttrIndex + 1;
+end;
+
+else;
+vTaskDimension = vObjectPrefix | 'sm_templatetasks'  | vObjectSeparator | pTemplate;
+endif;
+
+
+
+bFixHierarchy = 0;
+
+if (pLoadType @= 'SUBSET');
+
+if (pDimension @<> '' & pSubset @<> '');
+vExistingDimension = pDimension;
+vDimSize = SUBSETGETSIZE(vExistingDimension, pSubset);
+vIndex = 1;
+while (vIndex <= vDimSize);
+vElement = SUBSETGETELEMENTNAME(vExistingDimension, pSubset, vIndex);
+if (ELCOMPN(vExistingDimension, vElement) > 0);
+DIMENSIONELEMENTINSERT(vTaskDimension, '', vElement, 'C');
+else;
+DIMENSIONELEMENTINSERT(vTaskDimension, '', vElement, 'N');
+endif;
+
+vGroup = '}' | 'smt_' | pTemplate | '_' | vElement;
+#ADDGROUP(vGroup);
+
+vIndex = vIndex + 1;
+end;
+bFixHierarchy = 1;
+endif;
+
+elseif (pLoadType @= 'TEMPLATE');
+
+if (pExistingTemplate @<> '');
+vExistingDimension = vObjectPrefix | 'sm_templatetasks'  | vObjectSeparator | pExistingTemplate;
+vDimSize = DIMSIZ(vExistingDimension);
+vIndex = 1;
+while (vIndex <= vDimSize);
+vElement = DIMNM(vExistingDimension, vIndex);
+DIMENSIONELEMENTINSERT(vTaskDimension, '', vElement, 'N');
+vIndex = vIndex + 1;
+end;
+bFixHierarchy = 1;
+
+endif;
+
+elseif (pLoadType @= 'ELEMENT');
+
+
+endif;
+
+vSourceDimension = '';
+bFixHierarchy = 0;
+
+if (pLoadType @= 'SUBSET');
+
+vSourceDimension = pDimension;
+bFixHierarchy = 1;
+
+elseif (pLoadType @= 'TEMPLATE');
+
+vSourceDimension = vExistingDimension;
+bFixHierarchy = 1;
+
+
+endif;
+
+if (bFixHierarchy = 1);
+vTaskSize = DIMSIZ(vTaskDimension);
+
+vTaskIndex = 1;
+while (vTaskIndex <= vTaskSize);
+vTaskElement = DIMNM(vTaskDimension, vTaskIndex);
+
+vCheckIndex = 1;
+while (vCheckIndex <= vTaskSize);
+
+if (vCheckIndex <> vTaskIndex);
+vCheckElement = DIMNM(vTaskDimension, vCheckIndex);
+
+if (ELISCOMP(vSourceDimension, vCheckElement, vTaskElement) = 1);
+
+DimensionElementComponentAdd(vTaskDimension, vTaskElement, vCheckElement, 1);
+endif;
+endif;
+
+vCheckIndex = vCheckIndex + 1;
+end;
+vTaskIndex = vTaskIndex + 1;
+end;
+
+endif;
+
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vSourceDimension = '';
+bFixHierarchy = 0;
+
+if (pLoadType @= 'SUBSET');
+
+vSourceDimension = pDimension;
+bFixHierarchy = 1;
+
+vDimSize = DIMSIZ(vTaskDimension);
+vIndex = 1;
+while (vIndex <= vDimSize);
+vElement = DIMNM(vTaskDimension, vIndex);
+ATTRPUTS(pDimension, vTaskDimension, vElement, 'dimension1');
+ATTRPUTS(pSubset, vTaskDimension, vElement, 'subset1');
+ATTRPUTS(vElement, vTaskDimension, vElement, 'element1');
+ATTRPUTS(ATTRS(vSourceDimension, vElement, pAliasName), vTaskDimension, vElement, 'task');
+ATTRPUTS(ATTRS(vSourceDimension, vElement, pAliasName), vTaskDimension, vElement, 'Name');
+vGroup = '}' | 'smt_' | pTemplate | '_' | vElement;
+#ATTRPUTS(vGroup, vTaskDimension, vElement, 'Owner Group');
+vIndex = vIndex + 1;
+end;
+#SECURITYREFRESH;
+
+elseif (pLoadType @= 'TEMPLATE');
+
+vSourceDimension = vExistingDimension;
+bFixHierarchy = 1;
+
+vDimSize = DIMSIZ(vTaskDimension);
+vAttrSize = DIMSIZ('}ElementAttributes_' | vTaskDimension);
+
+vIndex = 1;
+while (vIndex <= vDimSize);
+vElement = DIMNM(vTaskDimension, vIndex);
+vAttrIndex = 1;
+while (vAttrIndex <= vAttrSize);
+vAttr = DIMNM('}ElementAttributes_' | vTaskDimension, vAttrIndex);
+ATTRPUTS(ATTRS(vExistingDimension, vElement, vAttr), vTaskDimension, vElement, vAttr);
+vAttrIndex = vAttrIndex + 1;
+end;
+
+vIndex = vIndex + 1;
+end;
+
+endif;
+
+#endregion

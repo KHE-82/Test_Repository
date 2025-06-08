@@ -1,0 +1,289 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+
+vDimension = vObjectPrefix | 'sm_task_action' ;
+vDimIX = DIMIX(vDimension , pAction );
+
+if (vDimIX > 0);
+processquit;
+endif;
+
+
+vDimSiz = DIMSIZ(vDimension);
+dimensionelementinsert(vDimension , '', pAction, 'N');
+
+vDimIX = DIMIX(vDimension , pAction);
+if (vDimIX = 0);
+processquit;
+endif;
+
+vDim = vObjectPrefix | 'sm_control_task_attributes';
+vAttr = pAction | ' User';
+if (DIMIX(vDim, vAttr) = 0);
+DIMENSIONELEMENTINSERT(vDim, '', vAttr, 'N');
+endif;
+DIMENSIONELEMENTCOMPONENTADD(vDim, 'Text', vAttr, 0);
+DIMENSIONELEMENTCOMPONENTADD(vDim, 'Version Attributes', vAttr, 0);
+
+vAttr = pAction | ' Datetime';
+if (DIMIX(vDim, vAttr) = 0);
+DIMENSIONELEMENTINSERT(vDim, '', vAttr, 'N');
+endif;
+DIMENSIONELEMENTCOMPONENTADD(vDim, 'Text', vAttr, 0);
+DIMENSIONELEMENTCOMPONENTADD(vDim, 'Version Attributes', vAttr, 0);
+
+vAttr = pAction | ' Comment';
+if (DIMIX(vDim, vAttr) = 0);
+DIMENSIONELEMENTINSERT(vDim, '', vAttr, 'N');
+endif;
+DIMENSIONELEMENTCOMPONENTADD(vDim, 'Text', vAttr, 0);
+DIMENSIONELEMENTCOMPONENTADD(vDim, 'Version Attributes', vAttr, 0);
+
+vAttr = pAction | ' Subject';
+if (DIMIX(vDim, vAttr) = 0);
+DIMENSIONELEMENTINSERT(vDim, '', vAttr, 'N');
+endif;
+DIMENSIONELEMENTCOMPONENTADD(vDim, 'Text', vAttr, 0);
+DIMENSIONELEMENTCOMPONENTADD(vDim, 'Template Attributes', vAttr, 0);
+
+vAttr = pAction | ' Message';
+if (DIMIX(vDim, vAttr) = 0);
+DIMENSIONELEMENTINSERT(vDim, '', vAttr, 'N');
+endif;
+DIMENSIONELEMENTCOMPONENTADD(vDim, 'Text', vAttr, 0);
+DIMENSIONELEMENTCOMPONENTADD(vDim, 'Template Attributes', vAttr, 0);
+
+
+
+vDim = vObjectPrefix | 'sm_control_attributes';
+vAttr = pAction | ' User';
+if (DIMIX(vDim, vAttr) = 0);
+DIMENSIONELEMENTINSERT(vDim, '', vAttr, 'N');
+endif;
+
+vAttr = pAction | ' Datetime';
+if (DIMIX(vDim, vAttr) = 0);
+DIMENSIONELEMENTINSERT(vDim, '', vAttr, 'N');
+endif;
+
+vAttr = pAction | ' Comment';
+if (DIMIX(vDim, vAttr) = 0);
+DIMENSIONELEMENTINSERT(vDim, '', vAttr, 'N');
+endif;
+
+vAttr = pAction | ' Subject';
+if (DIMIX(vDim, vAttr) = 0);
+DIMENSIONELEMENTINSERT(vDim, '', vAttr, 'N');
+endif;
+
+vAttr = pAction | ' Message';
+DIMENSIONELEMENTINSERT(vDim, '', vAttr, 'N');
+
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vPlansDim = vObjectPrefix | 'sm_plans' ;
+vTemplatesDim = vObjectPrefix | 'sm_templates' ;
+
+vPlanCount = DIMSIZ(vPlansDim);
+vPlanIndex = 1;
+while (vPlanIndex <= vPlanCount);
+vPlan = DIMNM(vPlansDim, vPlanIndex);
+
+vVersionsDim = vObjectPrefix | 'sm_versions' | vObjectSeparator | vPlan;
+vVersionCount = DIMSIZ(vVersionsDim);
+vVersionIndex = 1;
+while (vVersionIndex <= vVersionCount);
+vDim = vObjectPrefix | 'sm_versiontasks' |  vObjectSeparator | vPlan | vObjectSeparator | DIMNM(vVersionsDim, vVersionIndex);
+
+vAttr = pAction | ' User';
+if (DIMIX('}ElementAttributes_' | vDim, vAttr) = 0);
+ATTRINSERT(vDim, '', vAttr, 'S');
+endif;
+
+vAttr = pAction | ' Datetime';
+if (DIMIX('}ElementAttributes_' | vDim, vAttr) = 0);
+ATTRINSERT(vDim, '', vAttr, 'S');
+endif;
+
+vAttr = pAction | ' Comment';
+if (DIMIX('}ElementAttributes_' | vDim, vAttr) = 0);
+ATTRINSERT(vDim, '', vAttr, 'S');
+endif;
+
+vAttr = pAction | ' Subject';
+if (DIMIX('}ElementAttributes_' | vDim, vAttr) = 0);
+ATTRINSERT(vDim, '', vAttr, 'S');
+endif;
+
+vAttr = pAction | ' Message';
+if (DIMIX('}ElementAttributes_' | vDim, vAttr) = 0);
+ATTRINSERT(vDim, '', vAttr, 'S');
+endif;
+
+vVersionIndex = vVersionIndex + 1;
+end;
+
+vPlanIndex = vPlanIndex + 1;
+end;
+
+vTemplateCount = DIMSIZ(vTemplatesDim);
+vTemplateIndex = 1;
+while (vTemplateIndex <= vTemplateCount);
+vDim = vObjectPrefix | 'sm_templatetasks' | vObjectSeparator | DIMNM(vTemplatesDim, vTemplateIndex);
+
+vAttr = pAction | ' Subject';
+if (DIMIX('}ElementAttributes_' | vDim, vAttr) = 0);
+ATTRINSERT(vDim, '', vAttr, 'S');
+endif;
+
+vAttr = pAction | ' Message';
+if (DIMIX('}ElementAttributes_' | vDim, vAttr) = 0);
+ATTRINSERT(vDim, '', vAttr, 'S');
+endif;
+
+vTemplateIndex = vTemplateIndex + 1;
+end;
+
+vDim = vObjectPrefix | 'sm_control_attributes';
+vAttr = pAction | ' User';
+vSub = 'sm_multi_task_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+vSub = 'sm_task_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+vSub = 'sm_multi_task_template_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+vSub = 'sm_task_template_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+
+vAttr = pAction | ' Datetime';
+vSub = 'sm_multi_task_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+vSub = 'sm_task_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+vSub = 'sm_multi_task_template_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+vSub = 'sm_task_template_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+
+vAttr = pAction | ' Comment';
+vSub = 'sm_multi_task_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+vSub = 'sm_task_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+vSub = 'sm_multi_task_template_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+vSub = 'sm_task_template_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+
+vAttr = pAction | ' Subject';
+vSub = 'sm_multi_task_template_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+vSub = 'sm_task_template_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+
+vAttr = pAction | ' Message';
+DIMENSIONELEMENTINSERT(vDim, '', vAttr, 'N');
+vSub = 'sm_multi_task_template_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+vSub = 'sm_task_template_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+
+vCube = vObjectPrefix | 'sm_control_attribute_settings';
+vAttr = pAction | ' User';
+vLoop = 1;
+while (vLoop <= 2);
+if (vLoop = 1);
+vType = 'Task Attributes';
+else;
+vType = 'New Task Structure';
+endif;
+
+vAttr = pAction | ' User';
+CELLPUTS('dropdown', vCube, vAttr, vType, 'control_type');
+CELLPUTS('', vCube, vAttr, vType, 'display_name');
+CELLPUTS('dim', vCube, vAttr, vType, 'list_type');
+CELLPUTS('}Clients', vCube, vAttr, vType, 'list_dim');
+CELLPUTS('N', vCube, vAttr, vType, 'read_only');
+CELLPUTS('', vCube, vAttr, vType, 'linked_attribute');
+
+vAttr = pAction | ' Datetime';
+CELLPUTS('date', vCube, vAttr, vType, 'control_type');
+CELLPUTS('', vCube, vAttr, vType, 'display_name');
+CELLPUTS('', vCube, vAttr, vType, 'list_type');
+CELLPUTS('', vCube, vAttr, vType, 'list_dim');
+CELLPUTS('N', vCube, vAttr, vType, 'read_only');
+CELLPUTS('', vCube, vAttr, vType, 'linked_attribute');
+
+vAttr = pAction | ' Subject';
+CELLPUTS('mailtextbox', vCube, vAttr, vType, 'control_type');
+CELLPUTS('', vCube, vAttr, vType, 'display_name');
+CELLPUTS('', vCube, vAttr, vType, 'list_type');
+CELLPUTS('', vCube, vAttr, vType, 'list_dim');
+CELLPUTS('N', vCube, vAttr, vType, 'read_only');
+CELLPUTS(pAction | ' Message', vCube, vAttr, vType, 'linked_attribute');
+
+vAttr = pAction | ' Message';
+CELLPUTS('mailmltextbox', vCube, vAttr, vType, 'control_type');
+CELLPUTS('', vCube, vAttr, vType, 'display_name');
+CELLPUTS('', vCube, vAttr, vType, 'list_type');
+CELLPUTS('', vCube, vAttr, vType, 'list_dim');
+CELLPUTS('N', vCube, vAttr, vType, 'read_only');
+CELLPUTS(pAction | ' Subject', vCube, vAttr, vType, 'linked_attribute');
+
+vLoop = vLoop + 1;
+end;
+
+
+vDim = vObjectPrefix | 'sm_control_task_attributes';
+vAttr = pAction | ' User';
+vSub = 'sm_task_runtime_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+
+vAttr = pAction | ' Datetime';
+vSub = 'sm_task_runtime_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+
+vAttr = pAction | ' Comment';
+vSub = 'sm_task_runtime_attributes';
+vSubCount = SUBSETGETSIZE(vDim, vSub);
+SUBSETELEMENTINSERT(vDim, vSub, vAttr, vSubCount + 1);
+
+#endregion

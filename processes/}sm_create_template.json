@@ -1,0 +1,27 @@
+{
+	"@type":"Process",
+	"Name":"}sm_create_template",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_create_template.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pTemplate",
+			"Prompt":"New Template ID",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pName",
+			"Prompt":"Name",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

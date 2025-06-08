@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=USERmytestblob.xlsx.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\USERmytestblob.xlsx_20250407035622.xlsm
+REMOVEBLOBONDELETE=Yes

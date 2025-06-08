@@ -1,0 +1,42 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+if (pAttribute @= '' % pAttributeType @= '');
+processquit;
+endif;
+
+
+vDimension = '}sm_control_task_attributes';
+vFind = DIMIX(vDimension, pAttribute);
+
+
+if (vFind = 0);
+
+DIMENSIONELEMENTINSERT(vDimension, '', pAttribute, 'N');
+endif;
+DIMENSIONELEMENTCOMPONENTADD(vDimension, pAttributeType, pAttribute, 1);
+
+if(pAttributeOwner @<> '');
+DIMENSIONELEMENTCOMPONENTADD(vDimension, pAttributeOwner, pAttribute, 1);
+endif;
+
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+#endregion

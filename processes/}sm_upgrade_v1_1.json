@@ -1,0 +1,20 @@
+{
+	"@type":"Process",
+	"Name":"}sm_upgrade_v1_1",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_upgrade_v1_1.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"IgnoredInputVarName=V1€VarType=32€ColType=1165€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForClient":"}sm_controls",
+		"dataSourceNameForServer":"}sm_controls",
+		"subset":"subman_single"
+	},
+	"Parameters":[],
+	"Variables":[]
+}

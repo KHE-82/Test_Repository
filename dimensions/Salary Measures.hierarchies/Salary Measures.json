@@ -1,0 +1,284 @@
+{
+	"@type":"Hierarchy",
+	"Name":"Salary Measures",
+	"Elements":
+	[
+		{
+			"Name":"Employee Name",
+			"Type":"String"
+		},
+		{
+			"Name":"Position ID",
+			"Type":"String"
+		},
+		{
+			"Name":"Position Description",
+			"Type":"String"
+		},
+		{
+			"Name":"Salary Level",
+			"Type":"String"
+		},
+		{
+			"Name":"Data Entry Measures",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"FTE",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Hourly Rate",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Valid Salary Level",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Salaries and On Costs",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Salary",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Accommodation",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Other",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SES Vehicle",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Salary Rate (CA)",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Salary Rate (Inc)",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Salary Rate",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"On Costs",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Work in Progress",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Long Service Leave",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ComCare",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Performance Pay",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Training and Development",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Telecommunications",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Information Technology",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Superannuation",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Annual Leave (Days Provided)",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Annual Leave (Days Drawdown)",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Annual Leave",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Salary Amount",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Annual Leave Drawdown",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Data Entry Measures",
+			"ComponentName":"FTE",
+			"Weight":0
+		},
+		{
+			"ParentName":"Data Entry Measures",
+			"ComponentName":"Hourly Rate",
+			"Weight":0
+		},
+		{
+			"ParentName":"Data Entry Measures",
+			"ComponentName":"Valid Salary Level",
+			"Weight":0
+		},
+		{
+			"ParentName":"Salaries and On Costs",
+			"ComponentName":"Salary",
+			"Weight":1
+		},
+		{
+			"ParentName":"Salaries and On Costs",
+			"ComponentName":"Work in Progress",
+			"Weight":1
+		},
+		{
+			"ParentName":"Salaries and On Costs",
+			"ComponentName":"Long Service Leave",
+			"Weight":1
+		},
+		{
+			"ParentName":"Salaries and On Costs",
+			"ComponentName":"Annual Leave",
+			"Weight":1
+		},
+		{
+			"ParentName":"Salaries and On Costs",
+			"ComponentName":"ComCare",
+			"Weight":1
+		},
+		{
+			"ParentName":"Salaries and On Costs",
+			"ComponentName":"Superannuation",
+			"Weight":1
+		},
+		{
+			"ParentName":"Salaries and On Costs",
+			"ComponentName":"Performance Pay",
+			"Weight":1
+		},
+		{
+			"ParentName":"Salaries and On Costs",
+			"ComponentName":"Training and Development",
+			"Weight":1
+		},
+		{
+			"ParentName":"Salaries and On Costs",
+			"ComponentName":"Telecommunications",
+			"Weight":1
+		},
+		{
+			"ParentName":"Salaries and On Costs",
+			"ComponentName":"Information Technology",
+			"Weight":1
+		},
+		{
+			"ParentName":"Salaries and On Costs",
+			"ComponentName":"Accommodation",
+			"Weight":1
+		},
+		{
+			"ParentName":"Salaries and On Costs",
+			"ComponentName":"Other",
+			"Weight":1
+		},
+		{
+			"ParentName":"Salaries and On Costs",
+			"ComponentName":"SES Vehicle",
+			"Weight":1
+		},
+		{
+			"ParentName":"Salary",
+			"ComponentName":"Salary Amount",
+			"Weight":1
+		},
+		{
+			"ParentName":"Salary",
+			"ComponentName":"Annual Leave Drawdown",
+			"Weight":1
+		},
+		{
+			"ParentName":"On Costs",
+			"ComponentName":"Work in Progress",
+			"Weight":0
+		},
+		{
+			"ParentName":"On Costs",
+			"ComponentName":"Long Service Leave",
+			"Weight":0
+		},
+		{
+			"ParentName":"On Costs",
+			"ComponentName":"ComCare",
+			"Weight":0
+		},
+		{
+			"ParentName":"On Costs",
+			"ComponentName":"Performance Pay",
+			"Weight":0
+		},
+		{
+			"ParentName":"On Costs",
+			"ComponentName":"Training and Development",
+			"Weight":0
+		},
+		{
+			"ParentName":"On Costs",
+			"ComponentName":"Telecommunications",
+			"Weight":0
+		},
+		{
+			"ParentName":"On Costs",
+			"ComponentName":"Information Technology",
+			"Weight":0
+		},
+		{
+			"ParentName":"On Costs",
+			"ComponentName":"Superannuation",
+			"Weight":0
+		},
+		{
+			"ParentName":"On Costs",
+			"ComponentName":"Annual Leave (Days Provided)",
+			"Weight":0
+		},
+		{
+			"ParentName":"On Costs",
+			"ComponentName":"Annual Leave (Days Drawdown)",
+			"Weight":0
+		},
+		{
+			"ParentName":"On Costs",
+			"ComponentName":"Annual Leave",
+			"Weight":0
+		},
+		{
+			"ParentName":"On Costs",
+			"ComponentName":"SES Vehicle",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"Salary Measures.subsets/Default.json"
+	]
+}

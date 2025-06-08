@@ -1,0 +1,834 @@
+SKIPCHECK;
+# DB('fin_CapEx', !Year, !Scenario, !Asset Categories, !Asset Measures, !Cost Centre, !Month)
+# DB('fin_CapEx Assets', !Year, !Asset Categories, !Asset Measures, !Cost Centre, !Asset Numbers)
+# DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, !GL Code, !Month)
+# DB('fin_Balance Sheet', !Year, !Scenario, !Cost Centre, !GL Code, !Month BS)
+
+# RULE 1
+# Prevent rules from affecting certain scenarios. Have now taken STETs off for 2003/04 onwards
+['Actual'] = 0;
+
+# RULE 2
+# Calculate closing book value (Closing Book Value for Year = Closing Book Value for June)
+['Closing Book Value', 'Year'] = C: ['Closing Book Value', 'Jun'];
+
+# RULE 3
+# Calculate the Opening Book Value for July, opening book value is now the purchase price of assets from the asset cube
+['Opening Book Value', 'Jul'] = N:
+# Equals the Closing Book Value of July
+DB('fin_CapEx Assets', !Year, !Asset Categories, 'Purchase Price', !Cost Centre, 'All Assets','value');
+
+# RULE 4
+# Calculate Closing Book Value for all other months
+['Closing Book Value'] = N:['Opening Book Value'] + ['Additions'] + ['Revaluations'] - ['Disposals'];
+
+# RULE 5
+# Calculate Opening Book Value for Year (Opening Book Value for year = Opening Book Value for July)
+['Opening Book Value', 'Year'] = C: ['Opening Book Value', 'Jul'];
+
+# RULE 6
+# Calculate opening book value for all other months (Opening Book Value = Last month's Closing Book Value)
+['Opening Book Value'] = N:
+DB('fin_CapEx', !Year, !Scenario, !Asset Categories, 'Closing Book Value', !Cost Centre, ATTRS('Month', !Month, 'Last_Mth'),'value');
+
+# RULE 7
+# Depreciation is equal to depreciation calculated in the assets cube + depreciation calculated on purchases - disposals +/- revaluations
+['Depreciation'] = N:ROUNDP(
+# Check that Closing Book Value not zero
+IF(['Closing Book Value'] >= 0,
+# Calculated Depreciation = (Annual Depreciation charge from assets cube (prior year) / 12)
+DB('fin_CapEx Assets', !Year, !Asset Categories, 'Depreciation', !Cost Centre, 'All Assets','value') /12 +
+ROUNDP(((DB('fin_CapEx', !Year, !Scenario, !Asset Categories, 'Additions', !Cost Centre, !Month | ' YTD','value') +
+DB('fin_CapEx', !Year, !Scenario, !Asset Categories, 'Revaluations', !Cost Centre, !Month | ' YTD','value') -
+DB('fin_CapEx', !Year, !Scenario, !Asset Categories, 'Disposals', !Cost Centre, !Month | ' YTD','value'))
+* (ATTRN('Asset Categories', !Asset Categories, 'Dep. Rate') \ 100) \ 12),2),
+# If closing book value is 0 then depreciation is 0
+0), 2);
+
+# RULE 8
+# Accumulated Depreciation for July
+['Accumulated Depreciation', 'Jul'] = N:
+['Depreciation', 'Jul'] +
+DB('fin_CapEx Assets', !Year, !Asset Categories, 'Accumulated Depreciation', !Cost Centre, 'All Assets','value');
+
+# RULE 9
+# Calculate Accumulated Depreciation for Year (Accumulated Depreciation for Year = Accumulated Depreciation for June)
+['Accumulated Depreciation', 'Year'] = C: ['Accumulated Depreciation', 'Jun'];
+
+# RULE 10
+# Calculate Accumulated Depreciation for all other months populated according to standard calculation
+['Accumulated Depreciation'] = N:
+['Depreciation'] +
+DB('fin_CapEx', !Year, !Scenario, !Asset Categories, 'Accumulated Depreciation', !Cost Centre, ATTRS('Month', !Month, 'Last_Mth'),'value');
+
+# RULE 11
+# Calculate written down value for year (Written Down Value for Year = Written Down Value for June)
+['Written Down Value', 'Year'] = C: ['Written Down Value', 'Jun'];
+
+# RULE 12
+# Calculate written down value for all other months (all other months populated according to standard calculation)
+['Written Down Value'] = N: ['Closing Book Value'] - ['Accumulated Depreciation'];
+
+
+
+FEEDERS;
+# INTERNAL FEEDERS;
+
+# RULE 1
+# No feeders required
+
+# RULE 2
+# No feeders required
+
+# RULE 3
+['Closing Book Value', 'Jun'] =>
+DB('fin_CapEx', DIMNM('Year',DIMIX('Year',!Year)+1), !Scenario, !Asset Categories, 'Opening Book Value', !Cost Centre, 'Jul','value');
+
+# RULE 4
+['Opening Book Value'] => ['Closing Book Value'];
+['Additions'] => ['Closing Book Value'];
+['Revaluations'] => ['Closing Book Value'];
+['Disposals'] => ['Closing Book Value'];
+
+# RULE 5
+# No feeders required
+
+# RULE 6
+['Closing Book Value'] =>
+DB('fin_CapEx', !Year, !Scenario, !Asset Categories, 'Opening Book Value', !Cost Centre, ATTRS('Month', !Month, 'Next_Mth'),'value');
+
+# RULE 7
+['Additions'] => ['Depreciation'];
+['Disposals'] => ['Depreciation'];
+['Revaluations'] => ['Depreciation'];
+
+# RULE 8
+['Accumulated Depreciation'] =>
+DB('fin_CapEx', IF(!Month @= 'Jun', DIMNM('Year',DIMIX('Year',!Year)+1), !Year), !Scenario, !Asset Categories, 'Depreciation', !Cost Centre, IF(!Month @='Jun', 'Jul', ATTRS('Month', !Month, 'Next_Mth')),'value');
+
+# RULE 9
+# No feeders required
+
+# RULE 10
+['Depreciation'] => ['Accumulated Depreciation'];
+['Accumulated Depreciation'] =>
+DB('fin_CapEx', !Year, !Scenario, !Asset Categories, 'Accumulated Depreciation', !Cost Centre, ATTRS('Month', !Month, 'Next_Mth'),'value');
+
+# RULE 11
+# No feeders required
+
+# RULE 12
+['Closing Book Value'] => ['Written Down Value'];
+['Accumulated Depreciation'] => ['Written Down Value'];
+
+# EXTERNAL FEEDERS
+# Operating Statement Cube
+['Computer Equipment', 'Depreciation'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '43503', !Month,'value');
+
+['Office Equipment', 'Depreciation'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '43506', !Month,'value');
+
+['Vehicles', 'Depreciation'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '43513', !Month,'value');
+
+['In House Developed Software', 'Depreciation'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '43505', !Month,'value');
+
+['Purchased Software', 'Depreciation'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '43505', !Month,'value');
+
+['Land and Buildings', 'Depreciation'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '43510', !Month,'value');
+
+['Intangibles', 'Depreciation'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '43501', !Month,'value');
+
+# Balance Sheet Cube
+['Computer Equipment', 'Closing Book Value', 'All Cost Centres'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, 'C3001', '13103', !Month,'value');
+
+['Office Equipment', 'Closing Book Value', 'All Cost Centres'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, 'C3001', '13106', !Month,'value');
+
+['Vehicles', 'Closing Book Value', 'All Cost Centres'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, 'C3001', '13113', !Month,'value');
+
+['In House Developed Software', 'Closing Book Value', 'All Cost Centres'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, 'C3001', '13104', !Month,'value');
+
+['Purchased Software', 'Closing Book Value', 'All Cost Centres'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, 'C3001', '13104', !Month,'value');
+
+['Land and Buildings', 'Closing Book Value', 'All Cost Centres'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, 'C3001', '13112', !Month,'value');
+
+['Intangibles', 'Closing Book Value', 'All Cost Centres'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, 'C3001', '13111', !Month,'value');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

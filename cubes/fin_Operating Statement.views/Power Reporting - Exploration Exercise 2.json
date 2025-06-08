@@ -1,0 +1,40 @@
+{
+	"@type":"MDXView",
+	"Name":"Power Reporting - Exploration Exercise 2",
+	"MDX@Code.link":"Power Reporting - Exploration Exercise 2.mdx",
+	"Meta" : 
+	{
+		"Aliases" : 
+		{
+			"[Cost Centre].[Cost Centre]" : "MEMBER_NAME",
+			"[GL Code].[GL Code]" : "Code and Description",
+			"[Scenario].[Scenario]" : "MEMBER_NAME"
+		},
+		"ContextSets" : 
+		{
+			"[Scenario].[Scenario]" : 
+			{
+				"Expression" : "{[Scenario].[Scenario].[Actual Allocation Summary^Actual]}"
+			},
+			"[Year].[Year]" : 
+			{
+				"Expression" : "{TM1SUBSETALL([Year])}"
+			},
+			"[fin_Operating Statment Measure].[fin_Operating Statment Measure]" : 
+			{
+				"Expression" : "{[fin_Operating Statment Measure].[fin_Operating Statment Measure].[value]}"
+			}
+		},
+		"ExpandAboves" : 
+		{
+			"[Scenario].[Scenario]" : false,
+			"[Year].[Year]" : false,
+			"[fin_Operating Statment Measure].[fin_Operating Statment Measure]" : false
+		}
+	},
+	"TM1Data" : 
+	{
+		"Cube" : "fin_Operating Statement",
+		"Server" : "agency_x"
+	}
+}

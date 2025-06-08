@@ -1,0 +1,31 @@
+{
+	"@type":"Subset",
+	"Name":"Default",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('HR Measure')/Hierarchies('HR Measure')/Elements('Headcount')"
+		},
+		{
+			"@id":"Dimensions('HR Measure')/Hierarchies('HR Measure')/Elements('Full Time')"
+		},
+		{
+			"@id":"Dimensions('HR Measure')/Hierarchies('HR Measure')/Elements('Part Time')"
+		},
+		{
+			"@id":"Dimensions('HR Measure')/Hierarchies('HR Measure')/Elements('Temporary')"
+		},
+		{
+			"@id":"Dimensions('HR Measure')/Hierarchies('HR Measure')/Elements('Accrued Entitlements (Days)')"
+		},
+		{
+			"@id":"Dimensions('HR Measure')/Hierarchies('HR Measure')/Elements('Annual Leave Days Accrued')"
+		},
+		{
+			"@id":"Dimensions('HR Measure')/Hierarchies('HR Measure')/Elements('LSL Days Accrued')"
+		},
+		{
+			"@id":"Dimensions('HR Measure')/Hierarchies('HR Measure')/Elements('Sick Days Accrued')"
+		}
+	]
+}

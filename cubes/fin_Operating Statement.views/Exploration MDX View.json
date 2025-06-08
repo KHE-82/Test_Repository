@@ -1,0 +1,34 @@
+{
+	"@type":"MDXView",
+	"Name":"Exploration MDX View",
+	"MDX@Code.link":"Exploration MDX View.mdx",
+	"Meta" : 
+	{
+		"Aliases" : 
+		{
+			"[GL Code].[GL Code]" : "MEMBER_NAME",
+			"[Year].[Year]" : "MEMBER_NAME"
+		},
+		"ContextSets" : 
+		{
+			"[Scenario].[Scenario]" : 
+			{
+				"Expression" : "{{[Scenario].[Scenario].[Actual Allocation Summary^Actual],[Scenario].[Scenario].[Actual Allocation Summary^Actual].CHILDREN}}"
+			},
+			"[Year].[Year]" : 
+			{
+				"Expression" : "{[Year].[Year].[2012-2013]}"
+			}
+		},
+		"ExpandAboves" : 
+		{
+			"[GL Code].[GL Code]" : false,
+			"[Year].[Year]" : false
+		}
+	},
+	"TM1Data" : 
+	{
+		"Cube" : "fin_Operating Statement",
+		"Server" : "agency_x"
+	}
+}

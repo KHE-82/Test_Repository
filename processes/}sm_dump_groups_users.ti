@@ -1,0 +1,30 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vClientCount = DIMSIZ('}Clients');
+vClientIndex = 1;
+while (vClientIndex <= vClientCount );
+vClient = DIMNM('}Clients', vClientIndex);
+
+vMember = CELLGETS('}ClientGroups', vClient, pGroup);
+if (vMember @= pGroup);
+ASCIIOUTPUT(pDumpFile, vClient);
+endif;
+
+vClientIndex = vClientIndex + 1;
+end;
+#endregion
+#region Metadata
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Data
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion

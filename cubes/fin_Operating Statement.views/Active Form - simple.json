@@ -1,0 +1,37 @@
+{
+	"@type":"MDXView",
+	"Name":"Active Form - simple",
+	"MDX@Code.link":"Active Form - simple.mdx",
+	"Meta" : 
+	{
+		"Aliases" : {},
+		"ContextSets" : 
+		{
+			"[Cost Centre].[Cost Centre]" : 
+			{
+				"Expression" : "{[Cost Centre].[Cost Centre].[All Cost Centres], [Cost Centre].[Cost Centre].[Departmental], [Cost Centre].[Cost Centre].[CORPSUPP], [Cost Centre].[Cost Centre].[LEGAL], [Cost Centre].[Cost Centre].[CFO], [Cost Centre].[Cost Centre].[CORPBUS], [Cost Centre].[Cost Centre].[C1001], [Cost Centre].[Cost Centre].[DISTRIBUTION], [Cost Centre].[Cost Centre].[DOMESTIC], [Cost Centre].[Cost Centre].[A2001], [Cost Centre].[Cost Centre].[OVERSEAS], [Cost Centre].[Cost Centre].[SUPPORT], [Cost Centre].[Cost Centre].[INFRASTRUCTURE], [Cost Centre].[Cost Centre].[STRATEGY], [Cost Centre].[Cost Centre].[Administered]}"
+			},
+			"[Scenario].[Scenario]" : 
+			{
+				"Expression" : "{[Scenario].[Scenario].[Actual], [Scenario].[Scenario].[Budget], [Scenario].[Scenario].[Variance]}"
+			},
+			"[Year].[Year]" : 
+			{
+				"Expression" : "{TM1SubsetAll([Year])}"
+			},
+			"[fin_Operating Statment Measure].[fin_Operating Statment Measure]" : 
+			{
+				"Expression" : "{[fin_Operating Statment Measure].[fin_Operating Statment Measure].[value]}"
+			}
+		},
+		"ExpandAboves" : 
+		{
+			"[Cost Centre].[Cost Centre]" : false,
+			"[GL Code].[GL Code]" : false,
+			"[Month].[Month]" : false,
+			"[Scenario].[Scenario]" : false,
+			"[Year].[Year]" : false,
+			"[fin_Operating Statment Measure].[fin_Operating Statment Measure]" : false
+		}
+	}
+}

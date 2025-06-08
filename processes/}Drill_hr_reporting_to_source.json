@@ -1,0 +1,83 @@
+{
+	"@type":"Process",
+	"Name":"}Drill_hr_reporting_to_source",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}Drill_hr_reporting_to_source.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"IgnoredInputVarName=EmployeeName€VarType=32€ColType=1165€",
+		"IgnoredInputVarName=SalaryLevel€VarType=32€ColType=1165€",
+		"IgnoredInputVarName=V3€VarType=32€ColType=1165€",
+		"IgnoredInputVarName=V4€VarType=32€ColType=1165€",
+		"IgnoredInputVarName=FTE€VarType=33€ColType=1165€"
+	],
+	"DataSource":
+	{
+		"Type":"ODBC",
+		"dataSourceNameForClient":"HRIS",
+		"dataSourceNameForServer":"HRIS",
+		"password":"x@:^=2W4E_[mKvycCJsmvdx0aiHitoJp_udcFu3YMdWPlCS3VW3Dm_YDkGl\\jcDNI7Ep:2abF<YTe[7=L0xbDmsnt?kc1Z9Nbn6S\\t:UFi`;JwGGCood1ECWkYq12^Py`CG@nRebYOGLwRpjfYBBFt?0jAbqPQz5mco;^6upiDN4v68_W;5YGqQx[[5wU>CG@YVWu<w8",
+		"query":"SELECT EmployeeName, SalaryLevel, Gender, Age, FTE FROM HRData WHERE (FinYear = '?Year?' AND CostCentre = left('?Cost Centre?',5) AND Month ='?Month?');",
+		"userName":"",
+		"usesUnicode":false
+	},
+	"Parameters":
+	[
+		{
+			"Name":"cubename",
+			"Prompt":"r",
+			"Value":"HR Reporting",
+			"Type":"String"
+		},
+		{
+			"Name":"Year",
+			"Prompt":"ame",
+			"Value":"2006-2007",
+			"Type":"String"
+		},
+		{
+			"Name":"Scenario",
+			"Prompt":"r",
+			"Value":"Actual",
+			"Type":"String"
+		},
+		{
+			"Name":"Age",
+			"Prompt":"ario",
+			"Value":"All Age Groups",
+			"Type":"String"
+		},
+		{
+			"Name":"Gender",
+			"Prompt":"o",
+			"Value":"All Genders",
+			"Type":"String"
+		},
+		{
+			"Name":"Salary Level",
+			"Prompt":"E",
+			"Value":"All Salary Levels",
+			"Type":"String"
+		},
+		{
+			"Name":"Cost Centre",
+			"Prompt":"",
+			"Value":"Total XYZ",
+			"Type":"String"
+		},
+		{
+			"Name":"HR Measure",
+			"Prompt":"",
+			"Value":"FTE",
+			"Type":"String"
+		},
+		{
+			"Name":"Month",
+			"Prompt":"sure",
+			"Value":"Year",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

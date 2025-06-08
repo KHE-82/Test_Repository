@@ -1,0 +1,39 @@
+{
+	"@type":"Process",
+	"Name":"}sm_update_version_security_cube",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_update_version_security_cube.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pPlan",
+			"Prompt":"PlanVersion",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pVersion",
+			"Prompt":"Version",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pCube",
+			"Prompt":"Element to update",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pAction",
+			"Prompt":"SET",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

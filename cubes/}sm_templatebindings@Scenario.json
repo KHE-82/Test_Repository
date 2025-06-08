@@ -1,0 +1,20 @@
+{
+	"@type":"Cube",
+	"Name":"}sm_templatebindings@Scenario",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('}Dimensions')"
+		},
+		{
+			"@id":"Dimensions('}sm_templatetasks@Scenario')"
+		},
+		{
+			"@id":"Dimensions('}sm_binding_measures')"
+		}
+	],
+	"Views@Code.links":
+	[
+		"}sm_templatebindings@Scenario.views/sm_task_bindings.json"
+	]
+}

@@ -1,0 +1,32 @@
+{
+	"@type":"NativeView",
+	"Name":"sm_display_name",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('}sm_control_attribute_measures')/Hierarchies('}sm_control_attribute_measures')/Subsets('sm_display_name')"
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('}sm_control_attributes')/Hierarchies('}sm_control_attributes')/Subsets('sm_all_control_attributes')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('}sm_control_attribute_types')/Hierarchies('}sm_control_attribute_types')/Subsets('sm_all_control_attribute_types')"
+			}
+		}
+	],
+	"Titles":[],
+	"SuppressEmptyColumns":true,
+	"SuppressEmptyRows":true,
+	"FormatString":"0.#########"
+}

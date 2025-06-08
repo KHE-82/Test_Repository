@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"}sm_properties_measures",
+	"Hierarchies@Code.links":
+	[
+		"}sm_properties_measures.hierarchies/}sm_properties_measures.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('}sm_properties_measures')/Hierarchies('}sm_properties_measures')"
+	}
+}

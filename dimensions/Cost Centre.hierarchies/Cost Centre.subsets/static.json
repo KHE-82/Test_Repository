@@ -1,0 +1,151 @@
+{
+	"@type":"Subset",
+	"Name":"static",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2001')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2002')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2003')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2004')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2005')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2006')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2007')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2008')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2009')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2010')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C3001')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C3002')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C4001')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C4002')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C4003')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C4004')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C4005')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C1001')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('A1001')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('A2001')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('O1001')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('O1002')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('O1003')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('A3001')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('A3002')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('A3003')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('S1001')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('S1002')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('S1003')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('B1001')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('B1002')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('B1003')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('I1001')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('D2001')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('D2002')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('D2003')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('D3001')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('D3002')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('D3003')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('D3004')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('D1001')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('AD001')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('AD002')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('AD003')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('AD004')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('AD005')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('AD006')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('System')"
+		}
+	]
+}

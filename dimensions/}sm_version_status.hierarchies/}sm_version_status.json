@@ -1,0 +1,24 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}sm_version_status",
+	"Elements":
+	[
+		{
+			"Name":"In Progress",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Under Development",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Finished",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Inactive",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

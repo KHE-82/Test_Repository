@@ -1,0 +1,114 @@
+{
+	"@type":"Hierarchy",
+	"Name":"Age",
+	"Elements":
+	[
+		{
+			"Name":"All Age Groups",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"15 - 20",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"20 - 25",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"25 - 30",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"30 - 35",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"35 - 40",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"40 - 45",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"45 - 50",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"50 - 55",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"55 - 60",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"60 - 65",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"65+",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"All Age Groups",
+			"ComponentName":"15 - 20",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Age Groups",
+			"ComponentName":"20 - 25",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Age Groups",
+			"ComponentName":"25 - 30",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Age Groups",
+			"ComponentName":"30 - 35",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Age Groups",
+			"ComponentName":"35 - 40",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Age Groups",
+			"ComponentName":"40 - 45",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Age Groups",
+			"ComponentName":"45 - 50",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Age Groups",
+			"ComponentName":"50 - 55",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Age Groups",
+			"ComponentName":"55 - 60",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Age Groups",
+			"ComponentName":"60 - 65",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Age Groups",
+			"ComponentName":"65+",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":[]
+}

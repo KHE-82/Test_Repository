@@ -1,0 +1,6 @@
+['Auto Formatting']=S:DB(
+'}DimensionFormats_Formatting'
+,'Level ' | TRIM(STR(ELLEV('GL Code',!GL Code),2,0))
+,'Auto Formatting GL'
+,!}DimensionFormatItems
+,!}DimensionFormatAttributes);

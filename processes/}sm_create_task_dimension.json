@@ -1,0 +1,70 @@
+{
+	"@type":"Process",
+	"Name":"}sm_create_task_dimension",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_create_task_dimension.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"IgnoredInputVarName=V1€VarType=32€ColType=1165€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForClient":"}sm_controls",
+		"dataSourceNameForServer":"}sm_controls",
+		"subset":"subman_single"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pTemplate",
+			"Prompt":"Template",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pDimension",
+			"Prompt":"Source Dimension",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pSubset",
+			"Prompt":"Source Subset",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pExistingTemplate",
+			"Prompt":"Existing Template",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pLoadType",
+			"Prompt":"Load Type",
+			"Value":"SUBSET",
+			"Type":"String"
+		},
+		{
+			"Name":"pAliasName",
+			"Prompt":"Alias Name",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pObjectType",
+			"Prompt":"lias Name",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pPlan",
+			"Prompt":"Type",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

@@ -1,0 +1,166 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+# Loop through planning manager dimensions
+vDimCount = DIMSIZ('}dimensions');
+vDimIndex = 1;
+
+while (vDimIndex <= vDimCount);
+vDim = DIMNM('}dimensions', vDimIndex);
+
+if (SUBST(vDim, 1, 4) @= '}sm_');
+
+# Test to see if an attribute cube exists for the current dimension
+vAttrDim = '}ElementAttributes_' | vDim;
+vTest = TABDIM(vAttrDim,1);
+if (vTest @<> '');
+
+# Loop through all attributes in the dimension looking for attributes that have a matching language attribute
+# _ENGLISH or _GERMAN or _FRENCH
+vAttrCount = DIMSIZ(vAttrDim);
+vAttrIndex = 1;
+while (vAttrIndex <= vAttrCount);
+vAttr = DIMNM(vAttrDim,  vAttrIndex);
+
+vFromAttr = vAttr | '_' | pLanguage;
+vFromExists = DIMIX(vAttrDim, vFromAttr);
+if (vFromExists > 0);
+
+# Loop through all elements in the dimension moving the attribute value from the language to the main
+vEleCount = DIMSIZ(vDim);
+vEleIndex = 1;
+while (vEleIndex <= vEleCount);
+vEle = DIMNM(vDim, vEleIndex);
+
+ATTRPUTS(ATTRS(vDim, vEle, vFromAttr), vDim, vEle, vAttr);
+vEleIndex = vEleIndex + 1;
+end;
+
+endif;
+
+vAttrIndex = vAttrIndex + 1;
+end;
+
+endif;
+
+endif;
+
+vDimIndex = vDimIndex + 1;
+end;
+
+# set default task status parameters
+vParameter = 'Default Delegation Task Status';
+vStatus = ATTRS('}sm_client_properties', vParameter, 'Default Value');
+vNewStatus = ATTRS('}sm_task_status', vStatus, 'Status_' | pLanguage);
+ATTRPUTS(vNewStatus, '}sm_client_properties', vParameter, 'Default Value');
+
+vParameter = 'Default Completable Task Status';
+vStatus = ATTRS('}sm_client_properties', vParameter, 'Default Value');
+vNewStatus = ATTRS('}sm_task_status', vStatus, 'Status_' | pLanguage);
+ATTRPUTS(vNewStatus, '}sm_client_properties', vParameter, 'Default Value');
+
+# set up cube to fix in data section
+vCube = '}sm_control_attribute_settings';
+# set up element to translate
+vElement = 'display_name';
+# Clear out current element settings
+VIEWZEROOUT(vCube, 'sm_display_name');
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+if (v3 @= vElement | '_' | pLanguage);
+CellPutS(value, vCube, v1, v2, vElement);
+
+endif;
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vCube = '}sm_task_status_action';
+vDim1 = '}sm_user_role';
+vDim2 = '}sm_task_action';
+vDim3 = '}sm_task_status';
+vDim4 = '}sm_task_type';
+vDim5 = '}sm_task_status_action_measures';
+vIndexDim1 = 1;
+vCtrDim1 = DIMSIZ(vDim1);
+while (vIndexDim1 <= vCtrDim1);
+vEleDim1 = DIMNM(vDim1, vIndexDim1);
+
+vIndexDim2 = 1;
+vCtrDim2 = DIMSIZ(vDim2);
+while (vIndexDim2 <= vCtrDim2);
+vEleDim2 = DIMNM(vDim2, vIndexDim2);
+
+vIndexDim3 = 1;
+vCtrDim3 = DIMSIZ(vDim3);
+while (vIndexDim3 <= vCtrDim3);
+vEleDim3 = DIMNM(vDim3, vIndexDim3);
+
+vIndexDim4 = 1;
+vCtrDim4 = DIMSIZ(vDim4);
+while (vIndexDim4 <= vCtrDim4);
+vEleDim4 = DIMNM(vDim4, vIndexDim4);
+
+vIndexDim5 = 1;
+vCtrDim5 = DIMSIZ(vDim5);
+while (vIndexDim5 <= vCtrDim5);
+vEleDim5 = DIMNM(vDim5, vIndexDim5);
+
+vVal = CellGetS(vCube, vEleDim1, vEleDim2, vEleDim3, vEleDim4, vEleDim5);
+if (vVal @<> '');
+CellPutS(ATTRS('}sm_task_status', vVal, 'Status_' | pLanguage), vCube, vEleDim1, vEleDim2, vEleDim3, vEleDim4, vEleDim5);
+endif;
+
+vIndexDim5 = vIndexDim5 + 1;
+end;
+vIndexDim4 = vIndexDim4 + 1;
+end;
+vIndexDim3 = vIndexDim3 + 1;
+end;
+vIndexDim2 = vIndexDim2 + 1;
+end;
+vIndexDim1 = vIndexDim1 + 1;
+end;
+
+
+vDim = '}sm_task_status';
+vIndexDim = 1;
+vCtrDim = DIMSIZ(vDim);
+while (vIndexDim <= vCtrDim);
+vEleDim = DIMNM(vDim, vIndexDim);
+
+vAttr = 'Default for Owner Complete';
+vVal = ATTRS(vDim, vEleDim, vAttr);
+if (vVal @<> '');
+AttrPuts(ATTRS('}sm_task_action', vVal, 'Action_' | pLanguage),  vDim, vEleDim, vAttr);
+endif;
+
+
+vAttr = 'Default for Delegator';
+vVal = ATTRS(vDim, vEleDim, vAttr);
+if (vVal @<> '');
+AttrPuts(ATTRS('}sm_task_action', vVal, 'Action_' | pLanguage),  vDim, vEleDim, vAttr);
+endif;
+
+vAttr = 'Default for Owner';
+vVal = ATTRS(vDim, vEleDim, vAttr);
+if (vVal @<> '');
+AttrPuts(ATTRS('}sm_task_action', vVal, 'Action_' | pLanguage),  vDim, vEleDim, vAttr);
+endif;
+
+vIndexDim = vIndexDim + 1;
+end;
+#endregion

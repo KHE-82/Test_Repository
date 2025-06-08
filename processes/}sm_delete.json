@@ -1,0 +1,33 @@
+{
+	"@type":"Process",
+	"Name":"}sm_delete",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}sm_delete.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pObjectType",
+			"Prompt":"Object Type",
+			"Value":"WIZARD",
+			"Type":"String"
+		},
+		{
+			"Name":"pObject",
+			"Prompt":"Object ID",
+			"Value":"sm_plan_wizard_temp_",
+			"Type":"String"
+		},
+		{
+			"Name":"pPlan",
+			"Prompt":"Plan",
+			"Value":"plan_version",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

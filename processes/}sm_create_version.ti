@@ -1,0 +1,203 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+
+vPlanDimension = vObjectPrefix | 'sm_plans';
+vDimIX = DIMIX(vPlanDimension, pPlan);
+
+if (vDimIX = 0);
+processquit;
+endif;
+
+vVersionDimension = vObjectPrefix | 'sm_versions' | vObjectSeparator | pPlan;
+vDimIX = DIMIX(vVersionDimension, pVersion);
+
+if (vDimIX > 0);
+processquit;
+endif;
+
+vDimSiz = DIMSIZ(vVersionDimension);
+dimensionelementinsert(vVersionDimension, '', pVersion, 'N');
+
+vCustVersionIX = DIMIX(pPlan, pVersion);
+if (vCustVersionIX = 0);
+dimensionelementinsert(pPlan, '', pVersion, 'N');
+endif;
+
+vDimIX = DIMIX(vVersionDimension, pVersion);
+if (vDimIX = 0);
+processquit;
+endif;
+
+
+vTaskDimension = vObjectPrefix | 'sm_versiontasks'  | vObjectSeparator | pPlan  | vObjectSeparator | pVersion;
+dimensioncreate(vTaskDimension);
+
+
+pExistingTemplate = pTemplate;
+if (pExistingTemplate @<> '');
+if (pCopyType @= 'TEMPLATE');
+vExistingDimension = vObjectPrefix | 'sm_templatetasks'  | vObjectSeparator | pExistingTemplate;
+elseif (pCopyType @= 'VERSION');
+vExistingDimension = vObjectPrefix | 'sm_versiontasks'   | vObjectSeparator | pPlan | vObjectSeparator | pExistingTemplate;
+endif;
+endif;
+
+vAttributeDim = '}sm_control_task_attributes';
+vAttributeSubset = 'sm_template_attributes';
+
+vAttrSize = SUBSETGETSIZE(vAttributeDim , vAttributeSubset );
+
+vAttrIndex = 1;
+while (vAttrIndex <= vAttrSize);
+vAttr = SUBSETGETELEMENTNAME(vAttributeDim , vAttributeSubset , vAttrIndex);
+
+if (ELISANC(vAttributeDim, 'Alias', vAttr) > 0);
+AttrInsert(vTaskDimension , '', vAttr, 'A');
+
+elseif (ELISANC(vAttributeDim, 'Text', vAttr) > 0);
+AttrInsert(vTaskDimension , '', vAttr, 'S');
+
+elseif (ELISANC(vAttributeDim, 'Numeric', vAttr) > 0);
+AttrInsert(vTaskDimension , '', vAttr, 'N');
+
+endif;
+
+vAttrIndex = vAttrIndex + 1;
+end;
+
+vAttributeDim = '}sm_control_task_attributes';
+vAttributeSubset = 'sm_version_attributes';
+
+vAttrSize = SUBSETGETSIZE(vAttributeDim , vAttributeSubset );
+
+vAttrIndex = 1;
+while (vAttrIndex <= vAttrSize);
+vAttr = SUBSETGETELEMENTNAME(vAttributeDim , vAttributeSubset , vAttrIndex);
+
+if (ELISANC(vAttributeDim, 'Alias', vAttr) > 0);
+AttrInsert(vTaskDimension , '', vAttr, 'A');
+
+elseif (ELISANC(vAttributeDim, 'Text', vAttr) > 0);
+AttrInsert(vTaskDimension , '', vAttr, 'S');
+
+elseif (ELISANC(vAttributeDim, 'Numeric', vAttr) > 0);
+AttrInsert(vTaskDimension , '', vAttr, 'N');
+
+endif;
+
+vAttrIndex = vAttrIndex + 1;
+end;
+
+vTaskDimension = vObjectPrefix | 'sm_versiontasks'  | vObjectSeparator | pPlan  | vObjectSeparator | pVersion;
+vBindingCube = vObjectPrefix | 'sm_versionbindings'  | vObjectSeparator | pPlan  | vObjectSeparator | pVersion;
+vBindingMeasures = vObjectPrefix | 'sm_binding_measures' ;
+vDimensions = '}dimensions';
+CUBECREATE( vBindingCube, vDimensions, vTaskDimension, vBindingMeasures);
+
+vBindingsView = 'sm_task_bindings';
+VIEWCREATE(vBindingCube, vBindingsView);
+ViewSetSkipZeroes(vBindingCube, vBindingsView, 1);
+VIEWROWDIMENSIONSET(vBindingCube, vBindingsView, vDimensions, 1);
+VIEWROWDIMENSIONSET(vBindingCube, vBindingsView, vTaskDimension, 2);
+VIEWCOLUMNDIMENSIONSET(vBindingCube, vBindingsView, vBindingMeasures, 1);
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+if (pExistingTemplate @<> '');
+vDimSize = DIMSIZ(vExistingDimension);
+vIndex = 1;
+while (vIndex <= vDimSize);
+vElement = DIMNM(vExistingDimension, vIndex);
+
+
+DIMENSIONELEMENTINSERT(vTaskDimension, '', vElement, 'N');
+vIndex = vIndex + 1;
+end;
+
+vTaskSize = DIMSIZ(vTaskDimension);
+
+vTaskIndex = 1;
+while (vTaskIndex <= vTaskSize);
+vTaskElement = DIMNM(vTaskDimension, vTaskIndex);
+
+vSourceDimension = vExistingDimension;
+vCheckIndex = 1;
+while (vCheckIndex <= vTaskSize);
+
+if (vCheckIndex <> vTaskIndex);
+vCheckElement = DIMNM(vTaskDimension, vCheckIndex);
+
+if (ELISCOMP(vSourceDimension, vCheckElement, vTaskElement) = 1);
+
+DimensionElementComponentAdd(vTaskDimension, vTaskElement, vCheckElement, 1);
+endif;
+endif;
+
+vCheckIndex = vCheckIndex + 1;
+end;
+vTaskIndex = vTaskIndex + 1;
+end;
+
+endif;
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+if (pName @<> '');
+attrputs(pName, vVersionDimension, pVersion, 'Version');
+endif;
+if (pTemplate @<> '');
+attrputs(pTemplate, vVersionDimension, pVersion, 'Template');
+endif;
+attrputs(pStatus, vVersionDimension, pVersion, 'Status');
+attrputs(pNotes, vVersionDimension, pVersion, 'Notes');
+attrputs(pStart, vVersionDimension, pVersion, 'Start Date');
+attrputs(pDue, vVersionDimension, pVersion, 'Due Date');
+attrputs(pSecuritySetting, vVersionDimension, pVersion, 'Security Setting');
+attrputs(pAddAdminGroup, vVersionDimension, pVersion, 'Add AdminGroup');
+
+
+
+vDimSize = DIMSIZ(vTaskDimension);
+vAttrSize = DIMSIZ('}ElementAttributes_' | vExistingDimension);
+
+vIndex = 1;
+while (vIndex <= vDimSize);
+vElement = DIMNM(vTaskDimension, vIndex);
+vAttrIndex = 1;
+while (vAttrIndex <= vAttrSize);
+vAttr = DIMNM('}ElementAttributes_' | vExistingDimension, vAttrIndex);
+ATTRPUTS(ATTRS(vExistingDimension, vElement, vAttr), vTaskDimension, vElement, vAttr);
+vAttrIndex = vAttrIndex + 1;
+end;
+vIndex = vIndex + 1;
+end;
+
+
+
+vAttributesView = 'sm_task_attributes';
+vAttributesCube = '}ElementAttributes_' | vObjectPrefix | 'sm_versiontasks'  | vObjectSeparator | pPlan | vObjectSeparator | pVersion;
+
+VIEWCREATE(vAttributesCube, vAttributesView);
+ViewSetSkipZeroes(vAttributesCube, vAttributesView, 1);
+VIEWROWDIMENSIONSET(vAttributesCube, vAttributesView,vTaskDimension, 1);
+VIEWCOLUMNDIMENSIONSET(vAttributesCube, vAttributesView, vAttributesCube, 2);
+
+#endregion

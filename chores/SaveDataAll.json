@@ -1,0 +1,20 @@
+{
+	"@type":"Chore",
+	"Name":"SaveDataAll",
+	"StartTime":"2008-10-17T10:51:45Z",
+	"DSTSensitive":false,
+	"Active":true,
+	"ExecutionMode":"SingleCommit",
+	"Frequency":"P1DT00H00M00S",
+	"Tasks":
+	[
+		{
+			"Step":0,
+			"Parameters":[],
+			"Process":
+			{
+				"@id":"Processes('SaveDataAll')"
+			}
+		}
+	]
+}

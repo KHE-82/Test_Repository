@@ -1,0 +1,12 @@
+{
+	"@type":"Hierarchy",
+	"Name":"fin_Cash Flow Measure",
+	"Elements":
+	[
+		{
+			"Name":"value",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

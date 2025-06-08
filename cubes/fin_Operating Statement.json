@@ -1,0 +1,58 @@
+{
+	"@type":"Cube",
+	"Name":"fin_Operating Statement",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('Year')"
+		},
+		{
+			"@id":"Dimensions('Scenario')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')"
+		},
+		{
+			"@id":"Dimensions('GL Code')"
+		},
+		{
+			"@id":"Dimensions('Month')"
+		},
+		{
+			"@id":"Dimensions('fin_Operating Statment Measure')"
+		}
+	],
+	"Rules@Code.link":"fin_Operating Statement.rules",
+	"Views@Code.links":
+	[
+		"fin_Operating Statement.views/Active Form.json",
+		"fin_Operating Statement.views/BL Test Data Entry.json",
+		"fin_Operating Statement.views/Data Entry.json",
+		"fin_Operating Statement.views/Default.json",
+		"fin_Operating Statement.views/EU Activity 3.json",
+		"fin_Operating Statement.views/Exploration View VUE.json",
+		"fin_Operating Statement.views/Active Form - simple.json",
+		"fin_Operating Statement.views/Cube View - Training Activity.json",
+		"fin_Operating Statement.views/EU Activity 6c.json",
+		"fin_Operating Statement.views/Exploration MDX View.json",
+		"fin_Operating Statement.views/Exploration View.json",
+		"fin_Operating Statement.views/Exploration View XBV.json",
+		"fin_Operating Statement.views/Hierarchy View.json",
+		"fin_Operating Statement.views/MDX - Generate View.json",
+		"fin_Operating Statement.views/Power Reporting - Custom Report 1.json",
+		"fin_Operating Statement.views/Power Reporting - Dynamic Report 1.json",
+		"fin_Operating Statement.views/Power Reporting - Exploration Exercise 1.json",
+		"fin_Operating Statement.views/Power Reporting - Exploration Exercise 2.json",
+		"fin_Operating Statement.views/Power Reporting - Quick Report 1.json",
+		"fin_Operating Statement.views/Power Reporting - Quick Report 1b.json",
+		"fin_Operating Statement.views/Power Reporting - Quick Report Data Entry.json",
+		"fin_Operating Statement.views/Power Reporting - Universal Report 1.json",
+		"fin_Operating Statement.views/Power Reporting - Universal Report 6a.json",
+		"fin_Operating Statement.views/Power Reporting - Universal Report 6b.json",
+		"fin_Operating Statement.views/Quick Report.json",
+		"fin_Operating Statement.views/Sheet7.json",
+		"fin_Operating Statement.views/Sort and Filter View.json",
+		"fin_Operating Statement.views/Sort and Filter View - after.json",
+		"fin_Operating Statement.views/Universal Report Basis.json"
+	]
+}

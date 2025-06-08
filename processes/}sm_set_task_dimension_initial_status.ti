@@ -1,0 +1,67 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+
+vTaskDimension = vObjectPrefix | 'sm_versiontasks' | vObjectSeparator | pPlan  | vObjectSeparator | pVersion;
+
+#
+# loop through all task nodes in the dimension to identify the top node and set it's status
+#
+vTopIX = 0;
+vDimSize = DIMSIZ(vTaskDimension);
+vTaskIX = 1;
+while (vTaskIX  <= vDimSize);
+vTask = DIMNM(vTaskDimension, vTaskIX);
+if (ELPARN(vTaskDimension, vTask) = 0);
+vTopIX = vTaskIX;
+vTopLevel = ELLEV(vTaskDimension, vTask);
+vStatus = pTopStatus;
+ATTRPUTS(vStatus, vTaskDimension, vTask, 'Status');
+endif;
+
+vTaskIX  = vTaskIX + 1;
+end;
+
+
+#
+# loop through all task nodes in the dimension setting the children and grand children
+#
+vTaskIX = 1;
+while (vTaskIX  <= vDimSize);
+vTask = DIMNM(vTaskDimension, vTaskIX);
+if (vTaskIX <> vTopIX);
+if (ELLEV(vTaskDimension, vTask) = vTopLevel - 1);
+vStatus = pChildStatus;
+else;
+vStatus = pGrandChildStatus;
+endif;
+ATTRPUTS(vStatus, vTaskDimension, vTask, 'Status');
+endif;
+
+
+vTaskIX  = vTaskIX + 1;
+end;
+#endregion
+#region Metadata
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+
+#endregion
+#region Data
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+#endregion

@@ -1,0 +1,39 @@
+{
+	"@type":"MDXView",
+	"Name":"Power Reporting - Universal Report 6b",
+	"MDX@Code.link":"Power Reporting - Universal Report 6b.mdx",
+	"Meta" : 
+	{
+		"Aliases" : 
+		{
+			"[Cost Centre].[Cost Centre]" : "MEMBER_NAME",
+			"[GL Code].[GL Code]" : "MEMBER_NAME",
+			"[Month].[Month]" : "MEMBER_NAME",
+			"[Year].[Year]" : "MEMBER_NAME"
+		},
+		"ContextSets" : 
+		{
+			"[Scenario].[Scenario]" : 
+			{
+				"Expression" : "{[Scenario].[Scenario].[Variance^Actual],[Scenario].[Scenario].[Budget],[Scenario].[Scenario].[Variance]}"
+			},
+			"[Year].[Year]" : 
+			{
+				"Expression" : "{[Year].[Year].MEMBERS}"
+			},
+			"[fin_Operating Statment Measure].[fin_Operating Statment Measure]" : 
+			{
+				"Expression" : "{[fin_Operating Statment Measure].[fin_Operating Statment Measure].[value]}"
+			}
+		},
+		"ExpandAboves" : 
+		{
+			"[Cost Centre].[Cost Centre]" : false,
+			"[GL Code].[GL Code]" : false,
+			"[Month].[Month]" : false,
+			"[Scenario].[Scenario]" : false,
+			"[Year].[Year]" : false,
+			"[fin_Operating Statment Measure].[fin_Operating Statment Measure]" : false
+		}
+	}
+}

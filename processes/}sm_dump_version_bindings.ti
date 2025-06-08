@@ -1,0 +1,48 @@
+#region Prolog
+
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+
+vObjectPrefix = attrs('}sm_controls', 'subman_object_prefix', 'value');
+vObjectSeparator = attrs('}sm_controls', 'subman_object_separator', 'value');
+
+
+vCube = vObjectPrefix | 'sm_versionbindings' | vObjectSeparator | pPlan | vObjectSeparator | pVersion;
+vTaskDimension = vObjectPrefix | 'sm_versiontasks' | vObjectSeparator | pPlan | vObjectSeparator | pVersion;
+
+vTaskSize = DIMSIZ(vTaskDimension);
+
+vDimSize = DIMSIZ('}Dimensions');
+vDimIndex = 1;
+
+while (vDimIndex <= vDimSize);
+vDim = DIMNM('}Dimensions', vDimIndex);
+
+vTaskIndex = 1;
+while (vTaskIndex <= vTaskSize);
+vTask = DIMNM(vTaskDimension, vTaskIndex);
+vSubSet = CELLGETS(vCube, vDim, vTask, 'subset');
+vElement = CELLGETS(vCube, vDim, vTask, 'element');
+vAlias = CELLGETS(vCube, vDim, vTask, 'Alias');
+if (vSubset @<> '' % vElement @<> '' % vAlias @<> '');
+ASCIIOUTPUT(pBlob, vDim, vTask, vSubset, vElement, vAlias);
+endif;
+
+vTaskIndex = vTaskIndex  + 1;
+end;
+
+vDimIndex = vDimIndex + 1;
+end;
+#endregion
+#region Metadata
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Data
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion
+#region Epilog
+#****GENERATED STATEMENTS START****
+#****GENERATED STATEMENTS FINISH****
+#endregion

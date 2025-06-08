@@ -1,0 +1,449 @@
+FEEDSTRINGS;
+SKIPCHECK;
+# DB('Salary', !Year, !Scenario, !Salary ID, !Salary Level, !Cost Centre, !Month, !Salary Measures)
+# DB('Operating Statement', !Year, !Scenario, !Cost Centre, !GL Code, !Month)
+# DB('Calendar', !Year, !Time Measures, !Month)
+
+# RULE 1
+# Prevent consolidations for Assumption values from working
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Superannuation'] = C: 0;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Long Service Leave'] = C: 0;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Annual Leave'] = C: 0;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Comcare'] = C: 0;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Performance Pay'] = C: 0;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Training and Development'] = C: 0;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Telecommunications'] = C: 0;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Information Technology'] = C: 0;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Accommodation'] = C: 0;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Annual Leave (Days Provided)'] = C: 0;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Annual Leave (Days Drawdown)'] = C: 0;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'SES Vehicle'] = C: 0;
+
+# RULE 2
+# Prevent rules from working against assumption cells in the cube
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Superannuation'] = STET;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Long Service Leave'] = STET;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Comcare'] = STET;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Performance Pay'] = STET;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Training and Development'] = STET;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Telecommunications'] = STET;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Information Technology'] = STET;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Accommodation'] = STET;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Annual Leave (Days Provided)'] = STET;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Annual Leave (Days Drawdown)'] = STET;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Other'] = 0;
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'SES Vehicle'] = STET;
+['Data Entry', 'Other'] = STET;
+
+# RULE 3
+# FTE to average across months
+['FTE', 'Aug YTD'] = C:  (['FTE', 'Jul'] + ['FTE', 'Aug']) \ 2;
+['FTE', 'Sep YTD'] = C:  (['FTE', 'Jul'] + ['FTE', 'Aug'] + ['FTE', 'Sep']) \3;
+['FTE', 'Oct YTD'] = C:  (['FTE', 'Jul'] + ['FTE', 'Aug'] + ['FTE', 'Sep'] + ['FTE', 'Oct']) \4;
+['FTE', 'Nov YTD'] = C:  (['FTE', 'Jul'] + ['FTE', 'Aug'] + ['FTE', 'Sep'] + ['FTE', 'Oct'] + ['FTE', 'Nov']) \5;
+['FTE', 'Dec YTD'] = C:  (['FTE', 'Jul'] + ['FTE', 'Aug'] + ['FTE', 'Sep'] + ['FTE', 'Oct'] + ['FTE', 'Nov'] + ['FTE', 'Dec']) \6;
+['FTE', 'Jan YTD'] = C:  (['FTE', 'Jul'] + ['FTE', 'Aug'] + ['FTE', 'Sep'] + ['FTE', 'Oct'] + ['FTE', 'Nov'] + ['FTE', 'Dec'] + ['FTE', 'Jan']) \7;
+['FTE', 'Feb YTD'] = C:  (['FTE', 'Jul'] + ['FTE', 'Aug'] + ['FTE', 'Sep'] + ['FTE', 'Oct'] + ['FTE', 'Nov'] + ['FTE', 'Dec'] + ['FTE', 'Jan'] + ['FTE', 'Feb']) \8;
+['FTE', 'Mar YTD'] = C:  (['FTE', 'Jul'] + ['FTE', 'Aug'] + ['FTE', 'Sep'] + ['FTE', 'Oct'] + ['FTE', 'Nov'] + ['FTE', 'Dec'] + ['FTE', 'Jan'] + ['FTE', 'Feb'] + ['FTE', 'Mar']) \9;
+['FTE', 'Apr YTD'] = C:  (['FTE', 'Jul'] + ['FTE', 'Aug'] + ['FTE', 'Sep'] + ['FTE', 'Oct'] + ['FTE', 'Nov'] + ['FTE', 'Dec'] + ['FTE', 'Jan'] + ['FTE', 'Feb'] + ['FTE', 'Mar'] + ['FTE', 'Apr']) \10;
+['FTE', 'May YTD'] = C:  (['FTE', 'Jul'] + ['FTE', 'Aug'] + ['FTE', 'Sep'] + ['FTE', 'Oct'] + ['FTE', 'Nov'] + ['FTE', 'Dec'] + ['FTE', 'Jan'] + ['FTE', 'Feb'] + ['FTE', 'Mar'] + ['FTE', 'Apr'] + ['FTE', 'May']) \11;
+['FTE', 'Jun YTD'] = C:  (['FTE', 'Jul'] + ['FTE', 'Aug'] + ['FTE', 'Sep'] + ['FTE', 'Oct'] + ['FTE', 'Nov'] + ['FTE', 'Dec'] + ['FTE', 'Jan'] + ['FTE', 'Feb'] + ['FTE', 'Mar'] + ['FTE', 'Apr'] + ['FTE', 'May'] + ['FTE', 'Jun']) \12;
+['FTE', 'Year'] = C:  ['FTE', 'Jun YTD'];
+['FTE', 'Qtr 1'] = C:  (['FTE', 'Jul'] + ['FTE', 'Aug'] + ['FTE', 'Sep']) \3;
+['FTE', 'Qtr 2'] = C:  (['FTE', 'Oct'] + ['FTE', 'Nov'] + ['FTE', 'Dec']) \3;
+['FTE', 'Qtr 3'] = C:  (['FTE', 'Jan'] + ['FTE', 'Feb'] + ['FTE', 'Mar']) \3;
+['FTE', 'Qtr 4'] = C:  (['FTE', 'Apr'] + ['FTE', 'May'] + ['FTE', 'Jun']) \3;
+
+['Actual']=STET;
+
+# RULE 4
+# Monthly Consolidations to equal the last value in the consolidation
+['Salary Rate', 'Year'] = C:  ['Salary Rate', 'Jun'];
+['Salary Rate', 'Jul YTD'] = C:  ['Salary Rate', 'Jul'];
+['Salary Rate', 'Aug YTD'] = C:  ['Salary Rate', 'Aug'];
+['Salary Rate', 'Sep YTD'] = C:  ['Salary Rate', 'Sep'];
+['Salary Rate', 'Oct YTD'] = C:  ['Salary Rate', 'Oct'];
+['Salary Rate', 'Nov YTD'] = C:  ['Salary Rate', 'Nov'];
+['Salary Rate', 'Dec YTD'] = C:  ['Salary Rate', 'Dec'];
+['Salary Rate', 'Jan YTD'] = C:  ['Salary Rate', 'Jan'];
+['Salary Rate', 'Feb YTD'] = C:  ['Salary Rate', 'Feb'];
+['Salary Rate', 'Mar YTD'] = C:  ['Salary Rate', 'Mar'];
+['Salary Rate', 'Apr YTD'] = C:  ['Salary Rate', 'Apr'];
+['Salary Rate', 'May YTD'] = C:  ['Salary Rate', 'May'];
+['Salary Rate', 'Jun YTD'] = C:  ['Salary Rate', 'Jun'];
+
+# RULE 5
+# Control how data is entered against any of the following cells
+['Salary Id':'Assumption', 'Cost Centre':'System', 'Salary Rate (CA)'] = STET;
+['Data Entry', 'Jul', 'Salary Level'] =S: STET;
+['Data Entry', 'Jul', 'Position Description'] =S: STET;
+['Data Entry', 'Jul', 'Position ID'] =S: STET;
+['Data Entry', 'Jul', 'Employee Name'] =S: STET;
+['Data Entry', 'Salary Level'] =S: '';
+['Data Entry', 'Position Description'] =S: '';
+['Data Entry', 'Position ID'] =S: '';
+['Data Entry', 'Employee Name'] =S: '';
+['Data Entry', 'FTE'] =N: STET;
+['Data Entry', 'Hourly Rate'] =N: STET;
+['Data Entry', 'Salary Rate'] =N: 0;
+['Data Entry', 'Salary Rate (CA)'] =N: 0;
+['Data Entry', 'Salary Rate (Inc)'] =N: 0;
+
+# RULE 6
+# Prevent the Salary Rate (Inc) measure from being used where a value has been entered against Salary Rate (CA)
+['Salary Id':'Assumption', 'Cost Centre':'System', 'Salary Rate (Inc)'] = N:
+IF(['Salary Rate (CA)'] <>0,
+# There is a CA value so prevent data entry
+0,
+# There is no CA value so permit data entry
+STET);
+
+# RULE 7
+# Calculate the current salary rate based on the Salary Rate (CA), Salary Rate (Inc) and previous months values
+['Salary Id':'Assumption', 'Cost Centre':'System', 'Salary Rate'] = N:
+# Check if a new Certified agreement value has been entered
+IF (['Salary Rate (CA)'] <> 0,
+# Yes - use it
+['Salary Rate (CA)'],
+# No so check for a Increase Rate (%)
+IF(['Salary Rate (Inc)'] <> 0,
+# Yes - an increase rate has been entered so use it
+DB('HR_Salary', IF(!month @='Jul', DIMNM('year', dimix('year',!year)-1),!year), !scenario, !salary ID, !salary level, !cost centre, ATTRS('Month', !Month, 'prev'), 'salary rate')
+* (1 + ['Salary Rate (Inc)']),
+# No - there is no increase rate or CA value so use the prior period value
+DB('HR_Salary', if(!month @='Jul', DIMNM('year', dimix('year',!year)-1),!year), !scenario, !salary ID, !salary level, !cost centre, ATTRS('Month', !Month, 'prev'), 'salary rate')
+)
+);
+
+# RULE 8
+# Valid Salary Level
+# Use 1 if the Salary Level exists and 0 if it doesn't
+['Jul', 'Data Entry', 'Valid Salary Level'] = N:
+# Test the Salary Level to see if it exists in the Salary Level dimension
+IF(DIMIX('Salary Level', DB('HR_Salary', !year, !scenario, !salary ID, 'Data Entry', !cost centre, 'Jul', 'Salary Level')) <>0,
+# Yes the Salary level exists so assign a value of 1
+1,
+# No the Salary level does not exist so assign a value of 0
+0
+);
+['Data Entry', 'Valid Salary Level'] = 0;
+
+# RULE 9
+# Calculate the annual leave provision rate
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Annual Leave'] = N:
+# Apply rounding
+ROUNDP(
+(
+# Take days provided
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Annual Leave (Days Provided)']
+# and break down to a percentage
+/(52*5)*100
+) +
+(
+# Take days provided
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Annual Leave (Days Drawdown)']
+# and break down to a percentage
+/(52*5)*-100
+)
+,4);
+
+# RULE 10
+# Calculate Salary Amount
+['Data Entry', 'Salary Amount'] = N:
+# Apply Rounding
+ROUNDP(
+# Test the salary level does not equal contractor
+IF(DB('HR_Salary', !year, !scenario, !salary ID, 'Data Entry', !cost centre, 'Jul', 'Salary Level') @<> 'Contractor',
+# No - The record is not for a contractor so formula is FTE * Time * Salary
+['FTE'] * (DB('sys_calendar', !year, ATTRS('Salary Measures', 'Salary Amount', 'Calc Basis'), !month,'value')\ DB('sys_calendar', !year, ATTRS('Salary Measures', 'Salary Amount', 'Calc Basis'), 'year','value')) * DB('HR_salary', !year, !scenario, 'Assumpt
+ion', DB('HR_salary', !year, !scenario, !Salary ID, 'data entry',  !Cost Centre, 'Jul', 'Salary Level','value'), 'System', !month, 'Salary Rate','value'),
+# Yes - The record is for a contractor so formula is FTE * hourly rate
+['FTE'] * DB('HR_Salary', !year, !scenario, !salary ID, 'data entry', !cost centre, !month, 'Hourly Rate','value')
+),
+0);
+
+# RULE 11
+# Annual Leave on-cost
+['Data Entry', 'Annual Leave'] = N:
+# Apply rounding
+ROUNDP(
+# Test if the Salary Level is contractor - we don't calculate leave for contractors
+IF(DB('HR_salary', !year, !scenario, !Salary Id, 'data entry',  !Cost Centre, 'Jul', 'Salary Level') @= 'contractor',
+# Yes - so assign a value of 0
+0,
+# No - Then calculate Annual Leave on all Salary levels.
+['Salary Amount'] * ['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Annual Leave'] \ 100),
+0);
+
+# RULE 12
+# Long Service Leave on-cost
+['Data Entry', 'Long Service Leave'] = N:
+# Apply rounding
+ROUNDP(
+# Test if the Salary Level is contractor - we don't calculate leave for contractors
+IF(DB('HR_salary', !year, !scenario, !Salary Id, 'data entry',  !Cost Centre, 'Jul', 'Salary Level') @= 'contractor',
+# Yes - so assign a value of 0
+0,
+# No - Then calculate Long Service Leave on all Salary levels.
+['Salary Amount'] * ['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Long Service Leave'] \ 100),
+0);
+
+# RULE 13
+# Comcare on-cost
+['Data Entry', 'Comcare'] = N:
+# Apply rounding
+ROUNDP(
+# Test if the Salary Level is contractor - we don't calculate leave for contractors
+IF(DB('HR_salary', !year, !scenario, !Salary Id, 'data entry',  !Cost Centre, 'Jul', 'Salary Level') @= 'contractor',
+# Yes - so assign a value of 0
+0,
+# No - Then calculate Comcare on all Salary levels.
+['Salary Amount'] * ['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'ComCare'] \ 100),
+0);
+
+# RULE 14
+# Superannuation on-cost
+['Data Entry', 'Superannuation'] = N:
+# Apply rounding
+ROUNDP(
+# Test if the Salary Level is contractor - we don't calculate leave for contractors
+IF(DB('HR_salary', !year, !scenario, !Salary Id, 'data entry',  !Cost Centre, 'Jul', 'Salary Level') @= 'contractor',
+# Yes - so assign a value of 0
+0,
+# No - Then calculate Superannuation on all Salary levels.
+['Salary Amount'] * ['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Superannuation'] \ 100),
+0);
+
+# RULE 15
+# Performance Pay on-cost
+['Data Entry', 'Performance Pay'] = N:
+# Apply rounding
+ROUNDP(
+# Test if the Salary Level is contractor - we don't calculate leave for contractors
+IF(DB('HR_salary', !year, !scenario, !Salary Id, 'data entry',  !Cost Centre, 'Jul', 'Salary Level') @= 'contractor',
+# Yes - so assign a value of 0
+0,
+# No - Then calculate Performance Pay on all Salary levels.
+['Salary Amount'] * ['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Performance Pay'] \ 100),
+0);
+
+# RULE 16
+# Training and Development on-cost
+['Data Entry', 'Training and Development'] = N:
+# Apply rounding
+ROUNDP(
+# Test if the Salary Level is contractor - we don't calculate leave for contractors
+IF(DB('HR_salary', !year, !scenario, !Salary Id, 'data entry',  !Cost Centre, 'Jul', 'Salary Level') @= 'contractor',
+# Yes - so assign a value of 0
+0,
+# No - Then calculate Training and Development on all Salary levels.
+['Salary Amount'] * ['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Training and Development'] \ 100),
+0);
+
+# RULE 17
+# Telecommunications on-cost
+['Data Entry', 'Telecommunications'] = N:
+# Apply rounding
+ROUNDP(
+# Test if the Salary Level is contractor - we don't calculate leave for contractors
+IF(DB('HR_Salary', !year, !scenario, !Salary Id, 'data entry',  !Cost Centre, 'Jul', 'Salary Level') @= 'contractor',
+# Yes - so assign a value of 0
+0,
+# No - Then calculate Telecommunications on all Salary levels.
+['Salary Amount'] * ['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Telecommunications'] \ 100),
+0);
+
+# RULE 18
+# Information Technology on-cost
+['Data Entry', 'Information Technology'] = N:
+# Apply rounding
+ROUNDP(
+# Test if the Salary Level is contractor - we don't calculate leave for contractors
+IF(DB('HR_Salary', !year, !scenario, !Salary Id, 'data entry',  !Cost Centre, 'Jul', 'Salary Level') @= 'contractor',
+# Yes - so assign a value of 0
+0,
+# No - Then calculate Information Technology on all Salary levels.
+['Salary Amount'] * ['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Information Technology'] \ 100),
+0);
+
+# RULE 19
+# Accommodation on-cost
+['Data Entry', 'Accommodation'] = N:
+# Apply rounding
+ROUNDP(
+# Test if the Salary Level is contractor - we don't calculate leave for contractors
+IF(DB('HR_Salary', !year, !scenario, !Salary Id, 'data entry',  !Cost Centre, 'Jul', 'Salary Level') @= 'contractor',
+# Yes - so assign a value of 0
+0,
+# No - Then calculate Accommodation on all Salary levels.
+['Salary Amount'] * ['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Accommodation'] \ 100),
+0);
+
+# RULE 20
+# SES Vehicles on-cost
+['Data Entry', 'SES Vehicle'] = N:
+# Apply rounding
+ROUNDP(
+# Test if the Salary Level is SES
+IF(SUBST(DB('HR_salary', !year, !scenario, !Salary Id, 'data entry',  !Cost Centre, 'Jul', 'Salary Level'),1 ,3) @<> 'SES',
+# Yes - so assign a value of 0
+0,
+# No - Then calculate SES Vehicle on all SES Salary levels.
+['Salary Amount'] * ['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'SES Vehicle'] \ 100),
+0);
+
+# RULE 21
+# Move the data from Data Entry across to the relevant cube area
+# Strings
+[] = S:
+# Test if the current salary level matches the one against the data entry block
+IF(DB('HR_salary', !year, !scenario, !salary ID, 'data entry', !cost centre, 'Jul', 'Salary Level') @= !Salary Level,
+# Yes - so bring across the values
+DB('HR_salary', !year, !scenario, !salary ID, 'data entry', !cost centre, !month, !salary measures),
+# No the salary level does not match so STET
+STET);
+
+# Numbers
+[] = N:
+# Test if the current salary level matches the one against the data entry block
+IF(DB('HR_salary', !year, !scenario, !salary ID, 'data entry', !cost centre, 'Jul', 'Salary Level') @= !Salary Level,
+# Yes - so bring across the values
+DB('HR_salary', !year, !scenario, !salary ID, 'data entry', !cost centre, !month, !salary measures),
+# No the salary level does not match so STET
+STET);
+
+FEEDERS;
+# RULE 1
+# No feeder required
+
+# RULE 2
+# No feeder required
+
+# RULE 3
+# No feeder required
+
+# RULE 4
+# No feeder required
+
+# RULE 5
+# No feeder required
+
+# RULE 6
+# Feed Salary Rate (CA) into Salary Rate (Inc)
+['Salary Id':'Assumption', 'Cost Centre':'System', 'Salary Rate (CA)'] =>
+['Salary Id':'Assumption', 'Cost Centre':'System', 'Salary Rate (Inc)'];
+
+# RULE 7
+# Feed the Salary Rate rule
+['Salary Id':'Assumption', 'Cost Centre':'System', 'Salary Rate (CA)'] =>
+['Salary Id':'Assumption', 'Cost Centre':'System', 'Salary Rate'];
+['Salary Id':'Assumption', 'Cost Centre':'System', 'Salary Rate (Inc)'] =>
+['Salary Id':'Assumption', 'Cost Centre':'System', 'Salary Rate'];
+['Salary Id':'Assumption', 'Cost Centre':'System', 'Salary Rate'] =>
+DB('salary', IF(!month @='Jun', DIMNM('year', dimix('year',!year)+1),!year), !scenario, !salary ID, !salary level, !cost centre, ATTRS('Month', !Month, 'next'), 'Salary Rate');
+
+# RULE 8
+# Feed the string salary level into the valid salary level calculation
+['Data Entry', 'Jul', 'Salary Level'] => ['Data Entry', 'Jul', 'Valid Salary Level'];
+
+# RULE 9
+# Feed days provided into thje rate calculation
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Annual Leave (Days Provided)'] =>
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Annual Leave'];
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Annual Leave (Days Drawdown)'] =>
+['Salary Id':'Assumption', 'Salary Level':'Assumption', 'Cost Centre':'System', 'Annual Leave'];
+
+# RULE 10
+# Feed FTE into the Salary Amount calculation
+['FTE'] => ['Salary Amount'];
+
+# RULE 11
+# Annual Leave
+['Data Entry', 'Salary Amount'] => ['Data Entry', 'Annual Leave'];
+
+# RULE 12
+# Long Service Leave
+['Data Entry', 'Salary Amount'] => ['Data Entry', 'Long Service Leave'];
+
+# RULE 13
+# Comcare
+['Data Entry', 'Salary Amount'] => ['Data Entry', 'Comcare'];
+
+# RULE 14
+# Superannuation
+['Data Entry', 'Salary Amount'] => ['Data Entry', 'Superannuation'];
+
+# RULE 15
+# Performance Pay
+['Data Entry', 'Salary Amount'] => ['Data Entry', 'Performance Pay'];
+
+# RULE 16
+# Training and Development
+['Data Entry', 'Salary Amount'] => ['Data Entry', 'Training and Development'];
+
+# RULE 17
+# Telecommunications
+['Data Entry', 'Salary Amount'] => ['Data Entry', 'Telecommunications'];
+
+# RULE 18
+# Information Technology
+['Data Entry', 'Salary Amount'] => ['Data Entry', 'Information Technology'];
+
+# RULE 19
+# Accommodation
+['Data Entry', 'Salary Amount'] => ['Data Entry', 'Accommodation'];
+
+# RULE 20
+# SES Vehicle
+['Data Entry', 'Salary Amount'] => ['Data Entry', 'SES Vehicle'];
+
+# RULE 21
+['Data Entry'] =>
+DB('HR_salary', !year, !scenario, !salary ID, DB('HR_salary', !year, !scenario, !salary ID, 'data entry', !cost centre, 'Jul', 'Salary Level'), !cost centre, !month, !salary measures);
+
+# EXTERNAL FEEDERS
+# Operating Statement Cube
+['Total Salary IDs', 'All Salary Levels','Salary Amount'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '40500', !Month,'value');
+
+['Total Salary IDs', 'All Salary Levels','Annual Leave'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '40595', !Month,'value');
+
+['Total Salary IDs', 'All Salary Levels','Long Service Leave'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '40596', !Month,'value');
+
+['Total Salary IDs', 'All Salary Levels','Superannuation'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '40531', !Month,'value');
+
+['Total Salary IDs', 'All Salary Levels','Performance Pay'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '40511', !Month,'value');
+
+['Total Salary IDs', 'All Salary Levels','Other'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '40503', !Month,'value');
+
+['Total Salary IDs', 'All Salary Levels','ComCare'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '40565', !Month,'value');
+
+['Total Salary IDs', 'All Salary Levels','Accommodation'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '40570', !Month,'value');
+
+['Total Salary IDs', 'All Salary Levels','Telecommunications'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '40555', !Month,'value');
+
+['Total Salary IDs', 'All Salary Levels','Information Technology'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '40555', !Month,'value');
+
+['Total Salary IDs', 'All Salary Levels','Training and Development'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '42615', !Month,'value');
+
+['Total Salary IDs', 'All Salary Levels','SES Vehicle'] =>
+DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, '40591', !Month,'value');
+
+# CA_POOLS CUBE
+['Total Salary IDs', 'Data Entry', 'Year', 'FTE'] =>
+DB('CA_Pools', !Year, !Scenario, !Cost Centre, 'FTEs');
+
+
+
+
+

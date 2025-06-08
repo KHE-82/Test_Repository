@@ -1,0 +1,1263 @@
+{
+	"@type":"NativeView",
+	"Name":"Default",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Month')/Hierarchies('Month')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Year')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Jul YTD')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Aug YTD')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Jul')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Aug')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Sep YTD')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Oct YTD')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Nov YTD')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Dec YTD')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Jan YTD')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Feb YTD')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Mar YTD')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Apr YTD')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('May YTD')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Jun YTD')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('QTR 1')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('QTR 2')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('QTR 3')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('QTR 4')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('GL Code')/Hierarchies('GL Code')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Balance Sheet')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Net Result')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Revenue')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Service Level Agreement Revenue')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('51012')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Allocated SLA')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Item Funding')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Item - 1')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Item - 2')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Item - 3')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Item - Other')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Item - Overhead 1')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Item - Overhead 2')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Interest Received from Bank Account')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('52101')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Allocated Interest')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Revenue from Government')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('19914')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('56050')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('CapApp')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Allocated Appropriation')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Revenue - Other')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('56354')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Allocated Other Revenue')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Operating Activities')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('51016')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('56350')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('56351')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('56361')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('56362')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('56368')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('56369')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('50150')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('56330')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('56331')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('56400')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('51011')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('56356')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('56357')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('56359')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('51017')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('56358')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('56364')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('56370')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('56371')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('50462')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('54000')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('54100')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('54103')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('54105')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('54106')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('54108')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('54110')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Expenses')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Employee Expenses')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Employee Direct')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40500')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40531')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40503')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40591')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Employee Indirect')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40501')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40502')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40511')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40512')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40530')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40595')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40596')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40554')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40555')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40565')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40559')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40560')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40561')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40562')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40563')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40564')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40569')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40570')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42621')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40557')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42045')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42615')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40550')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('40566')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42665')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Allocated Employee Expenses')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Operating Expenses')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Supplier Expenses')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Allocated Supplier Expenses')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Travel')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Travel - Domestic')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42000')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42001')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42002')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42003')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42004')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42010')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42041')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42043')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42044')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42054')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42222')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42223')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42224')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42225')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42613')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Travel - Overseas')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42020')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42021')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42040')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42042')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42081')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42212')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42213')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42214')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42215')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Travel - Other Vehicles')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42050')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42051')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42052')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42053')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Travel - SES Vehicles')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42060')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42061')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42062')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42063')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42064')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Computers (Non-Asset)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42170')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42191')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42172')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42173')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42180')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42980')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42150')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42153')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42156')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42165')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Office Machines and Furniture (Non-Asset)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42425')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42426')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42427')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42434')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42433')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42400')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Property Operating Expenses')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42900')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42901')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42902')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42903')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42904')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42906')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42907')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42911')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42950')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Communications')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42800')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42801')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42802')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42803')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42804')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42805')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42807')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42808')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42820')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42821')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42822')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42823')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Freight and Storage')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42310')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42312')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42810')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42811')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42832')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42320')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42323')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42331')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42625')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Security Expenses')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42419')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42421')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42429')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42503')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42505')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42602')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42619')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42908')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Conferences and Training')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42201')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42203')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42208')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42226')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42227')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42228')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42600')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42601')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42620')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42629')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42640')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42205')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Medical and Surgical Supplies')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('49615')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('49616')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('49617')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('49618')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('49619')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('49620')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('49621')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('49622')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('49623')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('49624')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Consultants and Contractors')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42254')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42255')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42256')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42257')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42260')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42618')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42617')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('44444')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Legal Services')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42623')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42850')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42864')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42999')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Office Supplies')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42405')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42406')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42422')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42501')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42502')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42504')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42666')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Advertising')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Gazette')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42101')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Press')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42102')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Advertising - Other')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42104')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42105')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42106')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42641')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Printing')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42411')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42430')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42432')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42435')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42436')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Publications and Subscriptions')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42100')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42450')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42452')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42453')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42456')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42457')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42458')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42459')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42460')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Insurance')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42649')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42657')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Fees - Audit, Accounting, Bank and Other')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42506')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42510')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42512')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42603')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42610')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Supplier Expenses - Other')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42605')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42611')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42626')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42672')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43759')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('47002')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Depreciation and Amortisation')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43501')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43503')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43504')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43505')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43506')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43508')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43509')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43510')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43511')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43513')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43611')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43612')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43613')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43614')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43615')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43616')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43617')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43618')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('43619')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Allocated Depreciation and Amortisation')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Statistical Accounts')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('FTE')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Floor Space')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('PCs')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Allocated Costs')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Allocated Revenue')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Allocated Expenses')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Cash Flow Statement')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Cash at beginning of reporting period')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Net Increase (Decrease) in Cash Held')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Operating Activities (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Cash Received - Operating')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Appropriations for Outputs (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('adj - Appropriations for Outputs (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Sale of Goods and Services (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('adj - Sale of Goods and Services (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('GST refunds (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('adj - GST refunds (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Interest Received (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('adj - Interest Received (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Cash Used - Operating')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Employees (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('adj - Employees (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Suppliers (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('adj - Suppliers (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Core Suppliers')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Investing Activities (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Cash Received - Investing (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Proceeds from sale of PPE')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('adj - Proceeds from sale of PPE')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Proceeds from Sale of Investments')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('adj - Proceeds from sale of investments')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Cash Used - Investing (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Purchase of PPE (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('adj - Purchase of PPE')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Purchase of Investments')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('adj - Purchase of Investments')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Financing Activities (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Cash Received - Financing')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Transfer from trust fund (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('adj - Transfer from trust fund (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Other (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('adj - Other (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Cash Used - Financing')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Repayment of Leases (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('adj - Repayment of Leases (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Repayment of debt (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('adj - Repayment of debt (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Borrowing costs (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('adj - Borrowing costs (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Capital Use paid (CF)')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('adj - Capital Use Paid')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Year')/Hierarchies('Year')"
+				},
+				"Expression":"TM1SubsetAll([Year])"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Year')/Hierarchies('Year')/Elements('2020-2021')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('All Cost Centres')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('Departmental')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('CORPSUPP')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('LEGAL')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('CFO')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('CORPBUS')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C1001')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('DISTRIBUTION')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('DOMESTIC')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('A2001')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('OVERSEAS')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('SUPPORT')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('INFRASTRUCTURE')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('STRATEGY')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('Administered')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('All Cost Centres')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Scenario')/Hierarchies('Scenario')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Actual')"
+					},
+					{
+						"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Budget')"
+					},
+					{
+						"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Variance')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Actual')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('fin_Operating Statment Measure')/Hierarchies('fin_Operating Statment Measure')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('fin_Operating Statment Measure')/Hierarchies('fin_Operating Statment Measure')/Elements('value')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('fin_Operating Statment Measure')/Hierarchies('fin_Operating Statment Measure')/Elements('value')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":true,
+	"SuppressEmptyRows":true,
+	"FormatString":"0.#########"
+}

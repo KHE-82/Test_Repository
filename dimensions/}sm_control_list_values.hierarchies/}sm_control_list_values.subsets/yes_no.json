@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"yes_no",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {TM1FILTERBYPATTERN( {TM1SUBSETALL( [}sm_control_list_values] )}, \"yes_no\")}, ALL, RECURSIVE )}, 0)}"
+}

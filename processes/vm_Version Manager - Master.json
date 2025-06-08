@@ -1,0 +1,33 @@
+{
+	"@type":"Process",
+	"Name":"vm_Version Manager - Master",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"vm_Version Manager - Master.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€_ParameterConstraints=e30=€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psSourceAccount",
+			"Prompt":"",
+			"Value":"Net Result",
+			"Type":"String"
+		},
+		{
+			"Name":"psSourceCostCentre",
+			"Prompt":"",
+			"Value":"All Cost Centres",
+			"Type":"String"
+		},
+		{
+			"Name":"psTargetCostCentre",
+			"Prompt":"",
+			"Value":"All Cost Centres",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

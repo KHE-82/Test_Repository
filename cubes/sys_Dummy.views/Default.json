@@ -1,0 +1,168 @@
+{
+	"@type":"NativeView",
+	"Name":"Default",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Subsets('Default')"
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('Month')/Hierarchies('Month')/Subsets('Default')"
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('Year')/Hierarchies('Year')/Subsets('Default')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Year')/Hierarchies('Year')/Elements('2007-2008')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Subsets('Default')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Variance')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Subsets('Default')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('CORPSUPP')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Subsets('Default')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Balance Sheet')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Subsets('Default')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('Total Salary IDs')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('Salary Level')/Hierarchies('Salary Level')/Subsets('Default')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Salary Level')/Hierarchies('Salary Level')/Elements('All Salary Levels')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('Score')/Hierarchies('Score')/Subsets('Default')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Score')/Hierarchies('Score')/Elements('Score')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('Asset Categories')/Hierarchies('Asset Categories')/Subsets('Default')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Asset Categories')/Hierarchies('Asset Categories')/Elements('All Asset Categories')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('Asset Measures')/Hierarchies('Asset Measures')/Subsets('Default')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Asset Measures')/Hierarchies('Asset Measures')/Elements('Purchase Price')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('Asset Numbers')/Hierarchies('Asset Numbers')/Subsets('Default')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Asset Numbers')/Hierarchies('Asset Numbers')/Elements('All Assets')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('Balance Sheet Measure')/Hierarchies('Balance Sheet Measure')/Subsets('Default')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Balance Sheet Measure')/Hierarchies('Balance Sheet Measure')/Elements('Assumption factor')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('HR Measure')/Hierarchies('HR Measure')/Subsets('Default')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('HR Measure')/Hierarchies('HR Measure')/Elements('Headcount')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('HR_HR Reporting Measure')/Hierarchies('HR_HR Reporting Measure')/Subsets('Default')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('HR_HR Reporting Measure')/Hierarchies('HR_HR Reporting Measure')/Elements('value')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('HR_Salary Measure')/Hierarchies('HR_Salary Measure')/Subsets('Default')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('HR_Salary Measure')/Hierarchies('HR_Salary Measure')/Elements('value')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":false,
+	"SuppressEmptyRows":false,
+	"FormatString":"0.#########"
+}

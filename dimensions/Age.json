@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"Age",
+	"Hierarchies@Code.links":
+	[
+		"Age.hierarchies/Age.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('Age')/Hierarchies('Age')"
+	}
+}

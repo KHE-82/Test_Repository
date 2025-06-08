@@ -1,0 +1,49 @@
+{
+	"@type":"MDXView",
+	"Name":"Sheet7",
+	"MDX@Code.link":"Sheet7.mdx",
+	"Meta" : 
+	{
+		"Aliases" : 
+		{
+			"[GL Code].[appropriation type]" : "MEMBER_NAME",
+			"[GL Code].[entry type]" : "MEMBER_NAME",
+			"[Scenario].[Scenario]" : "MEMBER_NAME",
+			"[Year].[Year]" : "MEMBER_NAME"
+		},
+		"ContextSets" : 
+		{
+			"[Cost Centre].[Cost Centre]" : 
+			{
+				"Expression" : "{TM1SUBSETALL([Cost Centre].[Cost Centre])}"
+			},
+			"[Month].[Month]" : 
+			{
+				"Expression" : "{[Month].[Month].[Year^Jul]}"
+			},
+			"[Scenario].[Scenario]" : 
+			{
+				"Expression" : "{[Scenario].[Scenario].[Variance^Budget]}"
+			},
+			"[Year].[Year]" : 
+			{
+				"Expression" : "{[Year].[Year].[2008-2009],[Year].[Year].[2007-2008]}"
+			}
+		},
+		"ExpandAboves" : 
+		{
+			"[Cost Centre].[Cost Centre]" : false,
+			"[GL Code].[appropriation type]" : false,
+			"[GL Code].[entry type]" : false,
+			"[Month].[Month]" : false,
+			"[Scenario].[Scenario]" : false,
+			"[Year].[Year]" : false,
+			"[fin_Operating Statment Measure].[fin_Operating Statment Measure]" : false
+		}
+	},
+	"TM1Data" : 
+	{
+		"Cube" : "fin_Operating Statement",
+		"Server" : "agency_x"
+	}
+}

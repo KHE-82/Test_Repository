@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"}sm_binding_measures",
+	"Hierarchies@Code.links":
+	[
+		"}sm_binding_measures.hierarchies/}sm_binding_measures.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('}sm_binding_measures')/Hierarchies('}sm_binding_measures')"
+	}
+}
