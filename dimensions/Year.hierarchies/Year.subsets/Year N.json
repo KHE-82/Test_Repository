@@ -1,5 +1,0 @@
-{
-	"@type":"Subset",
-	"Name":"Year N",
-	"Expression":"{TM1SUBSETALL([Year])}"
-}

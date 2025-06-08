@@ -1,5 +1,0 @@
-{
-	"@type":"Subset",
-	"Name":"client_tar year",
-	"Expression":"{STRTOSET(\"{[year].[\" + [sys_client preferences].([}clients].[admin],[sys_client preferences measure].[target year]) + \"]}\")}"
-}

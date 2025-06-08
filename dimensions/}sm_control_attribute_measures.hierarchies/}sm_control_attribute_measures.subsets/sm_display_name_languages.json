@@ -1,5 +1,0 @@
-{
-	"@type":"Subset",
-	"Name":"sm_display_name_languages",
-	"Expression":"{TM1FILTERBYPATTERN( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [}sm_control_attribute_measures] )}, 0)}, \"display_name_*\")}"
-}

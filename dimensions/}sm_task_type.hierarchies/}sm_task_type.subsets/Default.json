@@ -1,6 +1,0 @@
-{
-	"@type":"Subset",
-	"Name":"Default",
-	"Alias":"Task Type",
-	"Expression":"TM1SubsetAll([}sm_task_type])"
-}

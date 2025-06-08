@@ -1,5 +1,0 @@
-{
-	"@type":"Subset",
-	"Name":"sm_template_attributes",
-	"Expression":"{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {TM1SubsetBasis()}, ALL, RECURSIVE )}, 0)}"
-}

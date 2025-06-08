@@ -1,6 +1,0 @@
-{
-	"@type":"Subset",
-	"Name":"sm_all_task_status",
-	"Alias":"Status",
-	"Expression":"{TM1SORT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [}sm_task_status] )}, 0)}, ASC)}"
-}

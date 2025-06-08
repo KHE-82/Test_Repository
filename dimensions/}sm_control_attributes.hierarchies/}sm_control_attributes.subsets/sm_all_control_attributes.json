@@ -1,5 +1,0 @@
-{
-	"@type":"Subset",
-	"Name":"sm_all_control_attributes",
-	"Expression":"{TM1FILTERBYLEVEL( {TM1SUBSETALL( [}sm_control_attributes] )}, 0)}"
-}
