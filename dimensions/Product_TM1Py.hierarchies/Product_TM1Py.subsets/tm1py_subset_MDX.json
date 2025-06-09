@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"tm1py_subset_MDX",
+	"Expression":"[Product_TM1Py].[Product_TM1Py].members"
+}
