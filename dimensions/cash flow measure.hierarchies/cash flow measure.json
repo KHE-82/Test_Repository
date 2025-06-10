@@ -1,0 +1,23 @@
+{
+	"@type":"Hierarchy",
+	"Name":"cash flow measure",
+	"Elements":
+	[
+		{
+			"Name":"PL and BS data",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"derivation weightings",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"system derived",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"cash flow measure.subsets/$BSApportionment.json"
+	]
+}

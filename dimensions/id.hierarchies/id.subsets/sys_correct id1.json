@@ -1,0 +1,16 @@
+{
+	"@type":"Subset",
+	"Name":"sys_correct id1",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('id')/Hierarchies('id')/Elements('00568')"
+		},
+		{
+			"@id":"Dimensions('id')/Hierarchies('id')/Elements('00598')"
+		},
+		{
+			"@id":"Dimensions('id')/Hierarchies('id')/Elements('00614')"
+		}
+	]
+}

@@ -1,0 +1,13 @@
+{
+	"@type":"Subset",
+	"Name":"sys_DISER",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('SPP754')"
+		},
+		{
+			"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('SPP877')"
+		}
+	]
+}

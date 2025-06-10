@@ -1,0 +1,118 @@
+{
+	"@type":"Subset",
+	"Name":"sys_Equity",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7299')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7250')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7210')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7211')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7212')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7225')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7216')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7201')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7220')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7218')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7219')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7202')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7230')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7231')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7232')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7233')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7234')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7235')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7236')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7237')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7238')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7239')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7222')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7221')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7207')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7226')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7203')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7205')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7206')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7209')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7227')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7591')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7592')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7593')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7594')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7599')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7240')"
+		}
+	]
+}

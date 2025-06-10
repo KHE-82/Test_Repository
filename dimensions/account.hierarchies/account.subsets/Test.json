@@ -1,0 +1,16 @@
+{
+	"@type":"Subset",
+	"Name":"Test",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('1280004')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2220001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2230098')"
+		}
+	]
+}

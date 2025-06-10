@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"sys_print",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Total reason')"
+		}
+	]
+}

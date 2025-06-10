@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"all-n",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('-')"
+		}
+	]
+}

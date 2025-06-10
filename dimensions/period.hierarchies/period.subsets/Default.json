@@ -1,0 +1,22 @@
+{
+	"@type":"Subset",
+	"Name":"Default",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('2021-2022')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('2022-2023')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('2023-2024')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('2024-2025')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('2025-2026')"
+		}
+	]
+}

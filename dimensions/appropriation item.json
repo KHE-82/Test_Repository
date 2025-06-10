@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"appropriation item",
+	"Hierarchies@Code.links":
+	[
+		"appropriation item.hierarchies/appropriation item.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')"
+	}
+}

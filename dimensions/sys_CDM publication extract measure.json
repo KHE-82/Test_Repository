@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_CDM publication extract measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_CDM publication extract measure.hierarchies/sys_CDM publication extract measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_CDM publication extract measure')/Hierarchies('sys_CDM publication extract measure')"
+	}
+}

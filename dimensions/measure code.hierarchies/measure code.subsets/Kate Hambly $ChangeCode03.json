@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"Kate Hambly $ChangeCode03",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00000')"
+		}
+	]
+}

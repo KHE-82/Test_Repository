@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_YesNo",
+	"Hierarchies@Code.links":
+	[
+		"sys_YesNo.hierarchies/sys_YesNo.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_YesNo')/Hierarchies('sys_YesNo')"
+	}
+}

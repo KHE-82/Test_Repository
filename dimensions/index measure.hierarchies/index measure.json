@@ -1,0 +1,20 @@
+{
+	"@type":"Hierarchy",
+	"Name":"index measure",
+	"Elements":
+	[
+		{
+			"Name":"previous index",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"index",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adjustment factor",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

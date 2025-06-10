@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_all-n",
+	"Alias":"AE Stage Description",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1SUBSETALL( [reporting stage] )}, 0)}"
+}

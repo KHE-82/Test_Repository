@@ -1,0 +1,20 @@
+{
+	"@type":"Subset",
+	"Name":"sys_Rep Measure Resourcing",
+	"Alias":"code and description",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('sys_Meas Total Resourcing')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('1280004')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9300000')"
+		}
+	]
+}

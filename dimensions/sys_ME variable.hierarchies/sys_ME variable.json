@@ -1,0 +1,72 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_ME variable",
+	"Elements":
+	[
+		{
+			"Name":"ME_headline year",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ME year",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ME_period",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ME_save location",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_ME Import Directory",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_ME ExportDirectory",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ME_Journal Title Suffix",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ME_Journal Title",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ME_ReasonCode",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ME_Comment Justification",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"AE_headline year",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ME_Flat FileName",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ME_archive scenario",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ME Actuals Period",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ME GEUS Mapping Flag",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ME T1 Mapping Flag",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

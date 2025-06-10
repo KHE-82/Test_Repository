@@ -1,0 +1,13 @@
+{
+	"@type":"Subset",
+	"Name":"AE Account template",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('-')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12600')"
+		}
+	]
+}

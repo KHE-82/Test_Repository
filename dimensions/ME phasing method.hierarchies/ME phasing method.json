@@ -1,0 +1,59 @@
+{
+	"@type":"Hierarchy",
+	"Name":"ME phasing method",
+	"Elements":
+	[
+		{
+			"Name":"equal spread (pro-rata)",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"seasonal spread quarterly",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"seasonal spread bi monthly",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"seasonal spread half yearly",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"number of pay runs",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"number of working days",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"zero out spread (clear all)",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"M001",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"M002",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"M003",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"M004",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"M005",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"ME phasing method.subsets/sys_all-n.json"
+	]
+}

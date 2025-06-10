@@ -1,0 +1,20 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_Dimension Replicate Measure",
+	"Elements":
+	[
+		{
+			"Name":"Replicate",
+			"Type":"String"
+		},
+		{
+			"Name":"Attributes",
+			"Type":"String"
+		},
+		{
+			"Name":"Name",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

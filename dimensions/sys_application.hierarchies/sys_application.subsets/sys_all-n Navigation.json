@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_all-n Navigation",
+	"Alias":"Navigation Search",
+	"Expression":"{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [sys_application] )}, 0)}, [sys_application].[Active Navigation Flag] = \"Y\")}"
+}

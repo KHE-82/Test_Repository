@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_push pumpkin measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_push pumpkin measure.hierarchies/sys_push pumpkin measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_push pumpkin measure')/Hierarchies('sys_push pumpkin measure')"
+	}
+}

@@ -1,0 +1,16 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_report display",
+	"Elements":
+	[
+		{
+			"Name":"Collapse",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Expand",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

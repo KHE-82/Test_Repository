@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_ME variable",
+	"Hierarchies@Code.links":
+	[
+		"sys_ME variable.hierarchies/sys_ME variable.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_ME variable')/Hierarchies('sys_ME variable')"
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"@type":"Subset",
+	"Name":"K.McKay_$geuspvt",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('3360004')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		}
+	]
+}

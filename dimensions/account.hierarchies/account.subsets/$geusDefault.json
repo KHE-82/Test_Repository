@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"$geusDefault",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1SUBSETALL( [account] )}, 0)}"
+}

@@ -1,0 +1,160 @@
+{
+	"@type":"Subset",
+	"Name":"all-n",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Administered Revenue')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Approp (Economic Security) Bill (No.1) 08-09')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation (NTER) Bill (No. 1) 2007-2008')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation (Regional Telecommunications Services) Bill 2005-2006')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 1')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 1 - Capital Budget (DCB) - - Non Operating')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 2 - New Administered Expenses')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 2 - SPP')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 3')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 4 - New Administered Expenses')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 4 - SPP')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 5')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 6 - New Administered Expenses')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 6 - SPP')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Type - Unallocated')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 2 - Non Operating - Administered Assets and Liabilities')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 2 - Non Operating - Equity Injection')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 2 - Non Operating - Loan')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 2 - Non Operating - Previous Years Outputs')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 4 - Non Operating - Administered Assets and Liabilities')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 4 - Non Operating - Equity Injection')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 4 - Non Operating - Loan')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 4 - Non Operating - Previous Years Outputs')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 6 - Non Operating - Administered Assets and Liabilities')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 6 - Non Operating - Equity Injection')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 6 - Non Operating - Loan')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 6 - Non Operating - Previous Years Outputs')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Departmental Revenue')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('GST payments (s30A FMA)')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Other Receipts from Independent Sources')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Other Receipts from Independent Sources (CAC entities only)')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parl Bill 1 - Non Operating - Administered Assets and Liabilities')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parl Bill 1 - Non Operating - Equity Injection')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parl Bill 1 - Non Operating - Loan')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parl Bill 1 - Non Operating - Previous Years Outputs')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parl Bill 2 - Non Operating - Administered Assets and Liabilities')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parl Bill 2 - Non Operating - Equity Injection')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parl Bill 2 - Non Operating - Loan')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parl Bill 2 - Non Operating - Previous Years Outputs')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parliamentary Appropriation Bill 1')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parliamentary Appropriation Bill 2')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Receipts from Independent Sources (Appropriation)')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Receipts from Independent Sources (Revenue Authority)')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Refunds of Receipts (s28 FMA)')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Retained Prior Years Appropriation')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Special Account')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Special Appropriation')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Special Capital Appropriation')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Special Public Money / Assets Held in Trust')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Supply Bill 1')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Supply Bill 2')"
+		}
+	]
+}

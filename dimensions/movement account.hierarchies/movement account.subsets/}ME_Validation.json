@@ -1,0 +1,11 @@
+{
+	"@type":"Subset",
+	"Name":"}ME_Validation",
+	"Alias":"code and description",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('Total movement')"
+		}
+	]
+}

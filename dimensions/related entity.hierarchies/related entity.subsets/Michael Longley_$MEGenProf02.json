@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"Michael Longley_$MEGenProf02",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1SUBSETALL( [related entity] )}, 0)}"
+}

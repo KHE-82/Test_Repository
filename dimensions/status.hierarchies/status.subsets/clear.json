@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"clear",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('status')/Hierarchies('status')/Elements('data')"
+		}
+	]
+}

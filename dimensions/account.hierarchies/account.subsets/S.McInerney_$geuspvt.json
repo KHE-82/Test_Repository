@@ -1,0 +1,13 @@
+{
+	"@type":"Subset",
+	"Name":"S.McInerney_$geuspvt",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2230002')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		}
+	]
+}

@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"Amy Vu_$MEGenProf02",
+	"Expression":"{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [movement account] )}, 0)}, [movement account].[editable] = \"\")}"
+}

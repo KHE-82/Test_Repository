@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"sys_BudgetRound",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[scenario].[sys_Budget Round]}, ALL, RECURSIVE )}, 0)}"
+}

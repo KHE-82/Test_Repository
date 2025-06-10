@@ -1,0 +1,16 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_ME display",
+	"Elements":
+	[
+		{
+			"Name":"Month To Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Year To Date",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

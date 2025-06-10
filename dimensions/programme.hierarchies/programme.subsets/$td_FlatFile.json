@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"$td_FlatFile",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('cash flow')"
+		}
+	]
+}

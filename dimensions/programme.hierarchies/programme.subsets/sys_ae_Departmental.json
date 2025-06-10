@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_ae_Departmental",
+	"Alias":"code and description",
+	"Expression":"{TM1SORT({FILTER( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[programme].[Departmental programmes]}, ALL, RECURSIVE )}, 0)}, [programme].[disabled] = \"\")}, ASC)}"
+}

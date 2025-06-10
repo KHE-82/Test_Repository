@@ -1,0 +1,94 @@
+{
+	"@type":"Hierarchy",
+	"Name":"account type",
+	"Elements":
+	[
+		{
+			"Name":"Total account groups",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Expense",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Cash Payment",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Customer Numbers",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Recognition",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Write Offs",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Cash Recoveries",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Cash",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Accrual",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"No Type",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Total account groups",
+			"ComponentName":"Expense",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total account groups",
+			"ComponentName":"Cash Payment",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total account groups",
+			"ComponentName":"Customer Numbers",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total account groups",
+			"ComponentName":"Recognition",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total account groups",
+			"ComponentName":"Write Offs",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total account groups",
+			"ComponentName":"Cash Recoveries",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total account groups",
+			"ComponentName":"Cash",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total account groups",
+			"ComponentName":"Accrual",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"account type.subsets/sys_account type.json"
+	]
+}

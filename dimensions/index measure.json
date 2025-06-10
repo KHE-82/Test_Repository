@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"index measure",
+	"Hierarchies@Code.links":
+	[
+		"index measure.hierarchies/index measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('index measure')/Hierarchies('index measure')"
+	}
+}

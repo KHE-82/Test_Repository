@@ -1,0 +1,915 @@
+{
+	"@type":"Hierarchy",
+	"Name":"id row",
+	"Elements":
+	[
+		{
+			"Name":"All Rows",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"IR0001",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0002",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0003",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0004",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0005",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0006",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0007",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0008",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0009",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0010",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0011",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0012",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0013",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0014",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0015",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0016",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0017",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0018",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0019",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0020",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0021",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0022",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0023",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0024",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0025",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0026",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0027",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0028",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0029",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0030",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0031",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0032",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0033",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0034",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0035",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0036",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0037",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0038",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0039",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0040",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0041",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0042",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0043",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0044",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0045",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0046",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0047",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0048",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0049",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0050",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0051",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0052",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0053",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0054",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0055",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0056",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0057",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0058",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0059",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0060",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0061",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0062",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0063",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0064",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0065",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0066",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0067",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0068",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0069",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0070",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0071",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0072",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0073",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0074",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0075",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0076",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0077",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0078",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0079",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0080",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0081",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0082",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0083",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0084",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0085",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0086",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0087",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0088",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0089",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0090",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0091",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0092",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0093",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0094",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0095",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0096",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0097",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0098",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0099",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IR0100",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0001",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0002",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0003",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0004",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0005",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0006",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0007",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0008",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0009",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0010",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0011",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0012",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0013",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0014",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0015",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0016",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0017",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0018",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0019",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0020",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0021",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0022",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0023",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0024",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0025",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0026",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0027",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0028",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0029",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0030",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0031",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0032",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0033",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0034",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0035",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0036",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0037",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0038",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0039",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0040",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0041",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0042",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0043",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0044",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0045",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0046",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0047",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0048",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0049",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0050",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0051",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0052",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0053",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0054",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0055",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0056",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0057",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0058",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0059",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0060",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0061",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0062",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0063",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0064",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0065",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0066",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0067",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0068",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0069",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0070",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0071",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0072",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0073",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0074",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0075",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0076",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0077",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0078",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0079",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0080",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0081",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0082",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0083",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0084",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0085",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0086",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0087",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0088",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0089",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0090",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0091",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0092",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0093",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0094",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0095",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0096",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0097",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0098",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0099",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Rows",
+			"ComponentName":"IR0100",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":[]
+}

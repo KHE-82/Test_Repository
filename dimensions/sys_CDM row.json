@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_CDM row",
+	"Hierarchies@Code.links":
+	[
+		"sys_CDM row.hierarchies/sys_CDM row.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_CDM row')/Hierarchies('sys_CDM row')"
+	}
+}

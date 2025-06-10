@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"jurisdiction",
+	"Hierarchies@Code.links":
+	[
+		"jurisdiction.hierarchies/jurisdiction.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')"
+	}
+}

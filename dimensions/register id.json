@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"register id",
+	"Hierarchies@Code.links":
+	[
+		"register id.hierarchies/register id.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('register id')/Hierarchies('register id')"
+	}
+}

@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"sys_print",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('Total SPP')"
+		}
+	]
+}

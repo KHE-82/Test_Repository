@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_CDM extract ID",
+	"Hierarchies@Code.links":
+	[
+		"sys_CDM extract ID.hierarchies/sys_CDM extract ID.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')"
+	}
+}

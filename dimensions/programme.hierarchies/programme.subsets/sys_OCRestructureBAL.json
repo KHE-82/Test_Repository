@@ -1,0 +1,19 @@
+{
+	"@type":"Subset",
+	"Name":"sys_OCRestructureBAL",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('1069.01.BAL')"
+		},
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('1074.01.BAL')"
+		},
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('1080.00.BAL')"
+		},
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('1085.01.BAL')"
+		}
+	]
+}

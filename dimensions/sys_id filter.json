@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_id filter",
+	"Hierarchies@Code.links":
+	[
+		"sys_id filter.hierarchies/sys_id filter.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_id filter')/Hierarchies('sys_id filter')"
+	}
+}

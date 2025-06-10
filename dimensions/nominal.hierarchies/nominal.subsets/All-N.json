@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"All-N",
+	"Expression":"{TM1SUBSETALL( [nominal] )}"
+}

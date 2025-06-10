@@ -1,0 +1,48 @@
+{
+	"@type":"Hierarchy",
+	"Name":"mapping",
+	"Elements":
+	[
+		{
+			"Name":"programme",
+			"Type":"String"
+		},
+		{
+			"Name":"account",
+			"Type":"String"
+		},
+		{
+			"Name":"movement account",
+			"Type":"String"
+		},
+		{
+			"Name":"related entity",
+			"Type":"String"
+		},
+		{
+			"Name":"jurisdiction",
+			"Type":"String"
+		},
+		{
+			"Name":"unmapped",
+			"Type":"String"
+		},
+		{
+			"Name":"account override",
+			"Type":"String"
+		},
+		{
+			"Name":"SAP CO Mapping",
+			"Type":"String"
+		},
+		{
+			"Name":"SAP FC Mapping",
+			"Type":"String"
+		},
+		{
+			"Name":"Made up data",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

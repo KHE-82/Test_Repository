@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"Kate Hambly_$sysMeasBulkProcess",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('headline year')/Hierarchies('headline year')/Elements('HL2024-2025')"
+		}
+	]
+}

@@ -1,0 +1,36 @@
+{
+	"@type":"Hierarchy",
+	"Name":"AE note register measure",
+	"Elements":
+	[
+		{
+			"Name":"Used",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Description",
+			"Type":"String"
+		},
+		{
+			"Name":"Created By",
+			"Type":"String"
+		},
+		{
+			"Name":"Created Date",
+			"Type":"String"
+		},
+		{
+			"Name":"Status",
+			"Type":"String"
+		},
+		{
+			"Name":"Completed by",
+			"Type":"String"
+		},
+		{
+			"Name":"Completed Date",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

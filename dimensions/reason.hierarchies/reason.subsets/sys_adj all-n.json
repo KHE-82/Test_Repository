@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_adj all-n",
+	"Alias":"CBMS code and description",
+	"Expression":"{FILTER( {TM1SORT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [reason] )}, 0)}, ASC)}, [reason].[disabled] = \"\")}"
+}

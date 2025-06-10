@@ -1,0 +1,92 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_application testing measure",
+	"Elements":
+	[
+		{
+			"Name":"Test Number",
+			"Type":"String"
+		},
+		{
+			"Name":"Tested By",
+			"Type":"String"
+		},
+		{
+			"Name":"Test Date",
+			"Type":"String"
+		},
+		{
+			"Name":"Status",
+			"Type":"String"
+		},
+		{
+			"Name":"Fixed By",
+			"Type":"String"
+		},
+		{
+			"Name":"Fix Date",
+			"Type":"String"
+		},
+		{
+			"Name":"Retest By",
+			"Type":"String"
+		},
+		{
+			"Name":"ReTest Date",
+			"Type":"String"
+		},
+		{
+			"Name":"Workbook Name",
+			"Type":"String"
+		},
+		{
+			"Name":"Object type",
+			"Type":"String"
+		},
+		{
+			"Name":"Object Name",
+			"Type":"String"
+		},
+		{
+			"Name":"Action",
+			"Type":"String"
+		},
+		{
+			"Name":"Required Result",
+			"Type":"String"
+		},
+		{
+			"Name":"Comments",
+			"Type":"String"
+		},
+		{
+			"Name":"Number of tests",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Passed",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Failed",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Fixed",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ReTested",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Not Completed",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ReTest Required",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

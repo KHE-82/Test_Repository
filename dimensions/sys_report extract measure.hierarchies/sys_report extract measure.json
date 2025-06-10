@@ -1,0 +1,172 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_report extract measure",
+	"Elements":
+	[
+		{
+			"Name":"Used",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"counter",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Headline Year",
+			"Type":"String"
+		},
+		{
+			"Name":"Stage",
+			"Type":"String"
+		},
+		{
+			"Name":"ID",
+			"Type":"String"
+		},
+		{
+			"Name":"Status",
+			"Type":"String"
+		},
+		{
+			"Name":"Outcome",
+			"Type":"String"
+		},
+		{
+			"Name":"Related Entity",
+			"Type":"String"
+		},
+		{
+			"Name":"Function",
+			"Type":"String"
+		},
+		{
+			"Name":"Reason",
+			"Type":"String"
+		},
+		{
+			"Name":"Reason Description",
+			"Type":"String"
+		},
+		{
+			"Name":"SPP",
+			"Type":"String"
+		},
+		{
+			"Name":"Measure Code",
+			"Type":"String"
+		},
+		{
+			"Name":"Measure Title",
+			"Type":"String"
+		},
+		{
+			"Name":"Appropriation Type",
+			"Type":"String"
+		},
+		{
+			"Name":"Movement Account",
+			"Type":"String"
+		},
+		{
+			"Name":"Movement Account Description",
+			"Type":"String"
+		},
+		{
+			"Name":"Appropriation Item",
+			"Type":"String"
+		},
+		{
+			"Name":"Appropriation Item Description",
+			"Type":"String"
+		},
+		{
+			"Name":"Programme Code",
+			"Type":"String"
+		},
+		{
+			"Name":"Programme Description",
+			"Type":"String"
+		},
+		{
+			"Name":"Account",
+			"Type":"String"
+		},
+		{
+			"Name":"Account Description",
+			"Type":"String"
+		},
+		{
+			"Name":"Jurisdiction",
+			"Type":"String"
+		},
+		{
+			"Name":"PA",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"RB",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"NB",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE01",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE02",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE03",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE04",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE05",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE06",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE07",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE08",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE09",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE10",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE11",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE12",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE13",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Title",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

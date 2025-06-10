@@ -1,0 +1,716 @@
+{
+	"@type":"Hierarchy",
+	"Name":"appropriation type",
+	"Elements":
+	[
+		{
+			"Name":"Total approp types",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"A001",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"A002",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"A003",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"A004",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"A005",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"A006",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"A007",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"A008",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"A009",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"A010",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Special Appropriation",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"A200",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"A300",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Administered Revenue",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Approp (Economic Security) Bill (No.1) 08-09",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Appropriation (NTER) Bill (No. 1) 2007-2008",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Appropriation (Regional Telecommunications Services) Bill 2005-2006",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Appropriation Bill 1",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Appropriation Bill 1 - Capital Budget (DCB) - - Non Operating",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Appropriation Bill 2 - New Administered Expenses",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Appropriation Bill 2 - SPP",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Appropriation Bill 3",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Appropriation Bill 4 - New Administered Expenses",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Appropriation Bill 4 - SPP",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Appropriation Bill 5",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Appropriation Bill 6 - New Administered Expenses",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Appropriation Bill 6 - SPP",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Appropriation Type - Unallocated",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Bill 2 - Non Operating - Administered Assets and Liabilities",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Bill 2 - Non Operating - Equity Injection",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Bill 2 - Non Operating - Loan",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Bill 2 - Non Operating - Previous Years Outputs",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Bill 4 - Non Operating - Administered Assets and Liabilities",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Bill 4 - Non Operating - Equity Injection",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Bill 4 - Non Operating - Loan",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Bill 4 - Non Operating - Previous Years Outputs",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Bill 6 - Non Operating - Administered Assets and Liabilities",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Bill 6 - Non Operating - Equity Injection",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Bill 6 - Non Operating - Loan",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Bill 6 - Non Operating - Previous Years Outputs",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Departmental Revenue",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"GST payments (s30A FMA)",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Other Receipts from Independent Sources",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Other Receipts from Independent Sources (CAC entities only)",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Parl Bill 1 - Non Operating - Administered Assets and Liabilities",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Parl Bill 1 - Non Operating - Equity Injection",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Parl Bill 1 - Non Operating - Loan",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Parl Bill 1 - Non Operating - Previous Years Outputs",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Parl Bill 2 - Non Operating - Administered Assets and Liabilities",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Parl Bill 2 - Non Operating - Equity Injection",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Parl Bill 2 - Non Operating - Loan",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Parl Bill 2 - Non Operating - Previous Years Outputs",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Parliamentary Appropriation Bill 1",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Parliamentary Appropriation Bill 2",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Parliamentary Appropriation Bill 1 - Capital Budget (DCB) - - Non Operating",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Receipts from Independent Sources (Appropriation)",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Receipts from Independent Sources (Revenue Authority)",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Refunds of Receipts (s28 FMA)",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Retained Prior Years Appropriation",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Special Account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Special Capital Appropriation",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Special Public Money / Assets Held in Trust",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Supply Bill 1",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Supply Bill 2",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Receipts/Payments from/to Independent Sources - FMA Act s31, FMA Reg 15 - F2008C00384 (FMA only)",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2016-17 only - Residual Appropriation Bill 1",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2016-17 only - Residual Appropriation Bill 1 - Capital Budget (DCB) - - Non Operating",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2016-17 only - Residual Appropriation Bill 2 - Non Operating - Equity Injection",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2016-17 only - Residual Appropriation Bill 2 - SPP",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Appropriation Type - Unallocated - Capital Budget (DCB) - - Non Operating",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Supply Bill 2 - SPP",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Supply Bill 1 - Capital Budget (DCB) - - Non Operating",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Supply Bill 2 - Non Operating - Equity Injection",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Total Appropriations",
+			"Type":"Consolidated"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"A001",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"A002",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"A003",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"A004",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"A005",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"A006",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"A007",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"A008",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"A009",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"A010",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Special Appropriation",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"A200",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"A300",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Administered Revenue",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Approp (Economic Security) Bill (No.1) 08-09",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Appropriation (NTER) Bill (No. 1) 2007-2008",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Appropriation (Regional Telecommunications Services) Bill 2005-2006",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Appropriation Bill 1",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Appropriation Bill 1 - Capital Budget (DCB) - - Non Operating",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Appropriation Bill 2 - New Administered Expenses",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Appropriation Bill 2 - SPP",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Appropriation Bill 3",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Appropriation Bill 4 - New Administered Expenses",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Appropriation Bill 4 - SPP",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Appropriation Bill 5",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Appropriation Bill 6 - New Administered Expenses",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Appropriation Bill 6 - SPP",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Appropriation Type - Unallocated",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Bill 2 - Non Operating - Administered Assets and Liabilities",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Bill 2 - Non Operating - Equity Injection",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Bill 2 - Non Operating - Loan",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Bill 2 - Non Operating - Previous Years Outputs",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Bill 4 - Non Operating - Administered Assets and Liabilities",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Bill 4 - Non Operating - Equity Injection",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Bill 4 - Non Operating - Loan",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Bill 4 - Non Operating - Previous Years Outputs",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Bill 6 - Non Operating - Administered Assets and Liabilities",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Bill 6 - Non Operating - Equity Injection",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Bill 6 - Non Operating - Loan",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Bill 6 - Non Operating - Previous Years Outputs",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Departmental Revenue",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"GST payments (s30A FMA)",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Other Receipts from Independent Sources",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Other Receipts from Independent Sources (CAC entities only)",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Parl Bill 1 - Non Operating - Administered Assets and Liabilities",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Parl Bill 1 - Non Operating - Equity Injection",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Parl Bill 1 - Non Operating - Loan",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Parl Bill 1 - Non Operating - Previous Years Outputs",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Parl Bill 2 - Non Operating - Administered Assets and Liabilities",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Parl Bill 2 - Non Operating - Equity Injection",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Parl Bill 2 - Non Operating - Loan",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Parl Bill 2 - Non Operating - Previous Years Outputs",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Parliamentary Appropriation Bill 1",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Parliamentary Appropriation Bill 2",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Parliamentary Appropriation Bill 1 - Capital Budget (DCB) - - Non Operating",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Receipts from Independent Sources (Appropriation)",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Receipts from Independent Sources (Revenue Authority)",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Refunds of Receipts (s28 FMA)",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Retained Prior Years Appropriation",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Special Account",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Special Capital Appropriation",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Special Public Money / Assets Held in Trust",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Supply Bill 1",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Supply Bill 2",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Receipts/Payments from/to Independent Sources - FMA Act s31, FMA Reg 15 - F2008C00384 (FMA only)",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"2016-17 only - Residual Appropriation Bill 1",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"2016-17 only - Residual Appropriation Bill 1 - Capital Budget (DCB) - - Non Operating",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"2016-17 only - Residual Appropriation Bill 2 - Non Operating - Equity Injection",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"2016-17 only - Residual Appropriation Bill 2 - SPP",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Appropriation Type - Unallocated - Capital Budget (DCB) - - Non Operating",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Supply Bill 2 - SPP",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Supply Bill 1 - Capital Budget (DCB) - - Non Operating",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approp types",
+			"ComponentName":"Supply Bill 2 - Non Operating - Equity Injection",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Appropriations",
+			"ComponentName":"Appropriation Bill 1",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Appropriations",
+			"ComponentName":"Appropriation Bill 2 - SPP",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Appropriations",
+			"ComponentName":"Appropriation Bill 3",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Appropriations",
+			"ComponentName":"Appropriation Bill 4 - SPP",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Appropriations",
+			"ComponentName":"Appropriation Bill 5",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Appropriations",
+			"ComponentName":"Appropriation Bill 6 - SPP",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"appropriation type.subsets/$ChangeCode.json",
+		"appropriation type.subsets/$parameters.json",
+		"appropriation type.subsets/$td_FlatFile.json",
+		"appropriation type.subsets/all-n.json",
+		"appropriation type.subsets/Kate Hambly $ChangeCode03.json",
+		"appropriation type.subsets/sys_adj all-n.json",
+		"appropriation type.subsets/sys_all-n.json",
+		"appropriation type.subsets/sys_print.json"
+	]
+}

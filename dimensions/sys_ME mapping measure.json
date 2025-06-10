@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_ME mapping measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_ME mapping measure.hierarchies/sys_ME mapping measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_ME mapping measure')/Hierarchies('sys_ME mapping measure')"
+	}
+}

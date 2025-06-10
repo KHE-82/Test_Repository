@@ -1,0 +1,20 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_ME variable measure",
+	"Elements":
+	[
+		{
+			"Name":"old",
+			"Type":"String"
+		},
+		{
+			"Name":"value",
+			"Type":"String"
+		},
+		{
+			"Name":"importance",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

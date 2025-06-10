@@ -1,0 +1,20 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_period display",
+	"Elements":
+	[
+		{
+			"Name":"Current",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Next 10 FE",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Prior Year Actual",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

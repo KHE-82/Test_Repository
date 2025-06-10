@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_adj No Move",
+	"Alias":"code and description",
+	"Expression":"{[movement account].[-]}"
+}

@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"sysRep_ParamEDAdj",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('cash flow')"
+		}
+	]
+}

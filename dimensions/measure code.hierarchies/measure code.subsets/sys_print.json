@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"sys_print",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('Total Measures')"
+		}
+	]
+}

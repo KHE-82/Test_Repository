@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"Kate Hambly_$sysMeasBulkProcess",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('current')"
+		}
+	]
+}

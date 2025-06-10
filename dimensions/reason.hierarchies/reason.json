@@ -1,0 +1,791 @@
+{
+	"@type":"Hierarchy",
+	"Name":"reason",
+	"Elements":
+	[
+		{
+			"Name":"Total reason",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Government decision or measure",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1004",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1005",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1008",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1009",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1011",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1012",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1015",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1018",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1019",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1020",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1021",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1022",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1029",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1032",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1033",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Balance Sheet or Related Entity",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1036",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1038",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Whole of Government Savings",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1040",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1041",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1042",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1045",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1046",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1047",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1048",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1049",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"CBMS 1  reason codes",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Slippage in budget measure",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Change in interest rates",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Changes in price & wage indices",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Changes in number of unemployment beneficiaries",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Changes in foreign exchange rates",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"25% of male total AWE commitment",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Changes in interest or foreign exchange rates",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"PDI Changes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Changes in beneficiary numbers excluding unemployment",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Change in beneficiary composition or average rates",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Program specific - beneficiary or rate changes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Program specific - other",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Borrowings",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Equity Injections",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Application of efficiency dividend",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Receipts from independent sources",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Approved movement of funds between years",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Movement of administered funds between years",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Self balancing transfers between same year",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Section 32 Transfers",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Eliminations",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Changes/Restatement of Opening Balances",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Creation of the New 3rd Forward Year Estimates'",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Competitive neutrality",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Provisional Estimate",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Other",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Other variations not elsewhere defined",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Other changes in program specific parameters",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"27th Period",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Departmental Capital Budget (DCB) - Temporary Adjustments",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Related Entity",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_Rep Parameters and FE3",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"sys_Total Reason",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"sys_Policy Decisions",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"sys_Economic Parameters",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"sys_Public Dept Interest",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"sys_Program Specific Parameter Variations",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"sys_Other Variations",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"sys_Actuals",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"sys_Other",
+			"Type":"Consolidated"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"Government decision or measure",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1004",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1005",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1008",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1009",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1011",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1012",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1015",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1018",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1019",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1020",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1021",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1022",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1029",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1032",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1033",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"Balance Sheet or Related Entity",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1036",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1038",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"Whole of Government Savings",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1040",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1041",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1042",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1045",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1046",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1047",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1048",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"1049",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total reason",
+			"ComponentName":"CBMS 1  reason codes",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Slippage in budget measure",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Change in interest rates",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Changes in price & wage indices",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Changes in number of unemployment beneficiaries",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Changes in foreign exchange rates",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"25% of male total AWE commitment",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Changes in interest or foreign exchange rates",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"PDI Changes",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Changes in beneficiary numbers excluding unemployment",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Change in beneficiary composition or average rates",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Program specific - beneficiary or rate changes",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Program specific - other",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Borrowings",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Equity Injections",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Application of efficiency dividend",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Receipts from independent sources",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Approved movement of funds between years",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Movement of administered funds between years",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Self balancing transfers between same year",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Section 32 Transfers",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Eliminations",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Changes/Restatement of Opening Balances",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Creation of the New 3rd Forward Year Estimates'",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Competitive neutrality",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Provisional Estimate",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Other",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Other variations not elsewhere defined",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Other changes in program specific parameters",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"27th Period",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Departmental Capital Budget (DCB) - Temporary Adjustments",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS 1  reason codes",
+			"ComponentName":"Related Entity",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Rep Parameters and FE3",
+			"ComponentName":"1004",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Rep Parameters and FE3",
+			"ComponentName":"1015",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Rep Parameters and FE3",
+			"ComponentName":"1033",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Total Reason",
+			"ComponentName":"sys_Policy Decisions",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Total Reason",
+			"ComponentName":"sys_Economic Parameters",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Total Reason",
+			"ComponentName":"sys_Public Dept Interest",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Total Reason",
+			"ComponentName":"sys_Program Specific Parameter Variations",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Total Reason",
+			"ComponentName":"sys_Other Variations",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Total Reason",
+			"ComponentName":"sys_Actuals",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Total Reason",
+			"ComponentName":"sys_Other",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Total Reason",
+			"ComponentName":"CBMS 1  reason codes",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Policy Decisions",
+			"ComponentName":"Government decision or measure",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Economic Parameters",
+			"ComponentName":"1004",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Economic Parameters",
+			"ComponentName":"1005",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Economic Parameters",
+			"ComponentName":"1008",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Public Dept Interest",
+			"ComponentName":"1009",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Program Specific Parameter Variations",
+			"ComponentName":"1011",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Program Specific Parameter Variations",
+			"ComponentName":"1012",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Other Variations",
+			"ComponentName":"1015",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Other Variations",
+			"ComponentName":"1018",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Other Variations",
+			"ComponentName":"1019",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Other Variations",
+			"ComponentName":"1020",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Other Variations",
+			"ComponentName":"1021",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Other Variations",
+			"ComponentName":"1022",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Other Variations",
+			"ComponentName":"1029",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Other Variations",
+			"ComponentName":"1032",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Other Variations",
+			"ComponentName":"1033",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Other Variations",
+			"ComponentName":"Balance Sheet or Related Entity",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Other Variations",
+			"ComponentName":"Whole of Government Savings",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Actuals",
+			"ComponentName":"1038",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Actuals",
+			"ComponentName":"1040",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Other",
+			"ComponentName":"1041",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Other",
+			"ComponentName":"1042",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Other",
+			"ComponentName":"1045",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Other",
+			"ComponentName":"1046",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Other",
+			"ComponentName":"1047",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Other",
+			"ComponentName":"1048",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_Other",
+			"ComponentName":"1049",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"reason.subsets/$ChangeCode.json",
+		"reason.subsets/$td_FlatFile.json",
+		"reason.subsets/all-n.json",
+		"reason.subsets/Kate Hambly $ChangeCode03.json",
+		"reason.subsets/sys_adj all-n.json",
+		"reason.subsets/sys_Parameters Reason.json",
+		"reason.subsets/sys_print.json",
+		"reason.subsets/Test.json"
+	]
+}

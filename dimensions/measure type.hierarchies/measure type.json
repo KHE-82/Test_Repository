@@ -1,0 +1,45 @@
+{
+	"@type":"Hierarchy",
+	"Name":"measure type",
+	"Elements":
+	[
+		{
+			"Name":"Total Measure type",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Expenses",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Revenue",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Capital",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Total Measure type",
+			"ComponentName":"Expenses",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measure type",
+			"ComponentName":"Revenue",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measure type",
+			"ComponentName":"Capital",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"measure type.subsets/sys_all-n.json"
+	]
+}

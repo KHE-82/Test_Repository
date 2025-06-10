@@ -1,0 +1,29 @@
+{
+	"@type":"Cube",
+	"Name":"programme details",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('headline year')"
+		},
+		{
+			"@id":"Dimensions('scenario')"
+		},
+		{
+			"@id":"Dimensions('programme')"
+		},
+		{
+			"@id":"Dimensions('programme measure')"
+		}
+	],
+	"Rules@Code.link":"programme details.rules",
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('programme measure')"
+	},
+	"Views@Code.links":
+	[
+		"programme details.views/$CreateFE3II.json",
+		"programme details.views/Default.json"
+	]
+}

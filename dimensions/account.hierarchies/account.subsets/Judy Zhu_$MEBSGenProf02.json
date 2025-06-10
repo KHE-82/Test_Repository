@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"Judy Zhu_$MEBSGenProf02",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		}
+	]
+}

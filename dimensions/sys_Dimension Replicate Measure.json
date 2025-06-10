@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_Dimension Replicate Measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_Dimension Replicate Measure.hierarchies/sys_Dimension Replicate Measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_Dimension Replicate Measure')/Hierarchies('sys_Dimension Replicate Measure')"
+	}
+}

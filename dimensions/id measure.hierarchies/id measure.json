@@ -1,0 +1,499 @@
+{
+	"@type":"Hierarchy",
+	"Name":"id measure",
+	"Elements":
+	[
+		{
+			"Name":"CBMS ID",
+			"Type":"String"
+		},
+		{
+			"Name":"used",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"variation no",
+			"Type":"String"
+		},
+		{
+			"Name":"programme",
+			"Type":"String"
+		},
+		{
+			"Name":"programme code",
+			"Type":"String"
+		},
+		{
+			"Name":"programme description",
+			"Type":"String"
+		},
+		{
+			"Name":"title",
+			"Type":"String"
+		},
+		{
+			"Name":"title2",
+			"Type":"String"
+		},
+		{
+			"Name":"title3",
+			"Type":"String"
+		},
+		{
+			"Name":"title4",
+			"Type":"String"
+		},
+		{
+			"Name":"description",
+			"Type":"String"
+		},
+		{
+			"Name":"description2",
+			"Type":"String"
+		},
+		{
+			"Name":"description3",
+			"Type":"String"
+		},
+		{
+			"Name":"description4",
+			"Type":"String"
+		},
+		{
+			"Name":"comments",
+			"Type":"String"
+		},
+		{
+			"Name":"status",
+			"Type":"String"
+		},
+		{
+			"Name":"ID reference",
+			"Type":"String"
+		},
+		{
+			"Name":"reason",
+			"Type":"String"
+		},
+		{
+			"Name":"reason description",
+			"Type":"String"
+		},
+		{
+			"Name":"outcome",
+			"Type":"String"
+		},
+		{
+			"Name":"measure",
+			"Type":"String"
+		},
+		{
+			"Name":"CBMS measure code",
+			"Type":"String"
+		},
+		{
+			"Name":"function",
+			"Type":"String"
+		},
+		{
+			"Name":"spp",
+			"Type":"String"
+		},
+		{
+			"Name":"appropriation item",
+			"Type":"String"
+		},
+		{
+			"Name":"appropriation item description",
+			"Type":"String"
+		},
+		{
+			"Name":"appropriation type",
+			"Type":"String"
+		},
+		{
+			"Name":"appropriation type description",
+			"Type":"String"
+		},
+		{
+			"Name":"apply parameters",
+			"Type":"String"
+		},
+		{
+			"Name":"funding life",
+			"Type":"String"
+		},
+		{
+			"Name":"end date",
+			"Type":"String"
+		},
+		{
+			"Name":"parameter adjustment generated",
+			"Type":"String"
+		},
+		{
+			"Name":"efficiency dividend adjustment generated",
+			"Type":"String"
+		},
+		{
+			"Name":"include in AEs",
+			"Type":"String"
+		},
+		{
+			"Name":"value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"government decision",
+			"Type":"String"
+		},
+		{
+			"Name":"government decision date",
+			"Type":"String"
+		},
+		{
+			"Name":"disagree cashflow",
+			"Type":"String"
+		},
+		{
+			"Name":"zero cashflow account",
+			"Type":"String"
+		},
+		{
+			"Name":"viewID",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Control Type",
+			"Type":"String"
+		},
+		{
+			"Name":"Adjustment Type",
+			"Type":"String"
+		},
+		{
+			"Name":"costing ID",
+			"Type":"String"
+		},
+		{
+			"Name":"created by",
+			"Type":"String"
+		},
+		{
+			"Name":"created date",
+			"Type":"String"
+		},
+		{
+			"Name":"submitted by",
+			"Type":"String"
+		},
+		{
+			"Name":"submitted date",
+			"Type":"String"
+		},
+		{
+			"Name":"authorised by",
+			"Type":"String"
+		},
+		{
+			"Name":"authorised date",
+			"Type":"String"
+		},
+		{
+			"Name":"cancelled by",
+			"Type":"String"
+		},
+		{
+			"Name":"cancelled date",
+			"Type":"String"
+		},
+		{
+			"Name":"account",
+			"Type":"String"
+		},
+		{
+			"Name":"jurisdiction",
+			"Type":"String"
+		},
+		{
+			"Name":"movement account",
+			"Type":"String"
+		},
+		{
+			"Name":"related entity",
+			"Type":"String"
+		},
+		{
+			"Name":"MA_Adjustment dimension",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 01",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 02",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 03",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 04",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 05",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 06",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 07",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 08",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 09",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 10",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 01 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 02 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 03 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 04 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 05 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 06 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 07 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 08 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 09 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"Attachment 10 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"Claimed User",
+			"Type":"String"
+		},
+		{
+			"Name":"Group Adj Type",
+			"Type":"String"
+		},
+		{
+			"Name":"agency",
+			"Type":"String"
+		},
+		{
+			"Name":"use new cash flow derivation",
+			"Type":"String"
+		},
+		{
+			"Name":"account favourite template",
+			"Type":"String"
+		},
+		{
+			"Name":"published title",
+			"Type":"String"
+		},
+		{
+			"Name":"bulk processing flag",
+			"Type":"String"
+		},
+		{
+			"Name":"approver comments",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_headline year",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_scenario",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_id",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_programme code",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_programme description",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_title",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_description",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_status",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_reason",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_outcome",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_measure",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_CBMS measure code",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_function",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_spp",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_appropriation item",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_appropriation type",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_adjustment type",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_control type",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 01",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 02",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 03",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 04",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 05",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 06",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 07",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 08",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 09",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 10",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 01 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 02 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 03 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 04 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 05 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 06 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 07 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 08 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 09 Desc",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_Attachment 10 Desc",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"id measure.subsets/$Split.json"
+	]
+}

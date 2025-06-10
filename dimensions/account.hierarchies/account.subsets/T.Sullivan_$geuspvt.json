@@ -1,0 +1,16 @@
+{
+	"@type":"Subset",
+	"Name":"T.Sullivan_$geuspvt",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2252002')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2423001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		}
+	]
+}

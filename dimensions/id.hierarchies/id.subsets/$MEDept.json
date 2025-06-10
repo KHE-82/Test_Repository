@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"$MEDept",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('id')/Hierarchies('id')/Elements('0000A')"
+		}
+	]
+}

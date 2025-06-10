@@ -1,0 +1,36 @@
+{
+	"@type":"Hierarchy",
+	"Name":"measure fund type",
+	"Elements":
+	[
+		{
+			"Name":"Total Fund Type",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"ongoing",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"terminating",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Total Fund Type",
+			"ComponentName":"ongoing",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Fund Type",
+			"ComponentName":"terminating",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"measure fund type.subsets/sys_all-n.json"
+	]
+}

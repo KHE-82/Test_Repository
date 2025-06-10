@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"reporting stage",
+	"Hierarchies@Code.links":
+	[
+		"reporting stage.hierarchies/reporting stage.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('reporting stage')/Hierarchies('reporting stage')"
+	}
+}

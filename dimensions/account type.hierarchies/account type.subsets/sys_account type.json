@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"sys_account type",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1SUBSETALL( [account type] )}, 0)}"
+}

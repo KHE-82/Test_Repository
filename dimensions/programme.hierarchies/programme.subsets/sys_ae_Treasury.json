@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_ae_Treasury",
+	"Alias":"code and description",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[programme].[Treasury Programmes]}, ALL, RECURSIVE )}, 0)}\r"
+}

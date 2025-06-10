@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"$MEDept",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('-')"
+		}
+	]
+}

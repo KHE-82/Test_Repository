@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_flatfile scenario",
+	"Hierarchies@Code.links":
+	[
+		"sys_flatfile scenario.hierarchies/sys_flatfile scenario.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_flatfile scenario')/Hierarchies('sys_flatfile scenario')"
+	}
+}

@@ -1,0 +1,121 @@
+{
+	"@type":"Subset",
+	"Name":"$ME_Profiles",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('-')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('10500')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12600')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12800')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12900')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('14100')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15200')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15500')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('18300')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('23900')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('24200')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('24900')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('44300')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('44500')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('44800')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('45000')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('45500')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('47500')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('49100')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('49200')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('50600')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('50700')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('50800')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('50900')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('51400')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('53800')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('23800')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('53700')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('72200')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15100')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15700')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12200')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('23100')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12300')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('43800')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('80500')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('22000')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12500')"
+		}
+	]
+}

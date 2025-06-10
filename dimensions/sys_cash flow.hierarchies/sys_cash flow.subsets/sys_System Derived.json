@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"sys_System Derived",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('sys_cash flow')/Hierarchies('sys_cash flow')/Elements('System Derived')"
+		}
+	]
+}

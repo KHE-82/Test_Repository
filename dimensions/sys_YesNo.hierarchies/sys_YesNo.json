@@ -1,0 +1,16 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_YesNo",
+	"Elements":
+	[
+		{
+			"Name":"Yes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"No",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

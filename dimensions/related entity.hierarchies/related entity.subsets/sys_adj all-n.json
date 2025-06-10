@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_adj all-n",
+	"Alias":"code and description",
+	"Expression":"{{{ [related entity].[-] },{ [related entity].[49800] }},{ EXCEPT( {TM1SORT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [related entity] )}, 0)}, ASC)}, {{ [related entity].[Cash flow] },{ [related entity].[49800] },{ [related entity].[-] }}) }}"
+}

@@ -1,0 +1,14 @@
+{
+	"@type":"Subset",
+	"Name":"Top-Level Progs",
+	"Alias":"code and description",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('Administered Programmes')"
+		},
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('Departmental Programmes')"
+		}
+	]
+}

@@ -1,0 +1,16 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_report extract type",
+	"Elements":
+	[
+		{
+			"Name":"Starting Base and Adjustments",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Adjusted Base",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

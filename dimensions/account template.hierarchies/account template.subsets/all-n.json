@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"all-n",
+	"Alias":"title",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1SUBSETALL( [account template] )}, 0)}"
+}

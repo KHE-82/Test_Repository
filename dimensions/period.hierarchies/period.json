@@ -1,0 +1,1024 @@
+{
+	"@type":"Hierarchy",
+	"Name":"period",
+	"Elements":
+	[
+		{
+			"Name":"2004-2005",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2005-2006",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2006-2007",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2007-2008",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2008-2009",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2009-2010",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2010-2011",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2011-2012",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2012-2013",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2013-2014",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2014-2015",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2015-2016",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2016-2017",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2017-2018",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2018-2019",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2019-2020",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2020-2021",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2021-2022",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2022-2023",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2023-2024",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2024-2025",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2025-2026",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2026-2027",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2027-2028",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2028-2029",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2029-2030",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2030-2031",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2031-2032",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2032-2033",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2033-2034",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2034-2035",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2035-2036",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2036-2037",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2037-2038",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2038-2039",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2039-2040",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2040-2041",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2041-2042",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2042-2043",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2043-2044",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2044-2045",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2045-2046",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"P0",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Year",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Jul",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Aug",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Sep",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Oct",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Nov",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Dec",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Jan",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Feb",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Mar",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Apr",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"May",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Jun",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Jul YTD",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Aug YTD",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Sep YTD",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Oct YTD",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Nov YTD",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Dec YTD",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Jan YTD",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Feb YTD",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Mar YTD",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Apr YTD",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"May YTD",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Jun YTD",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"cash flow",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Total years",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"0000-0000",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Year",
+			"ComponentName":"Jul",
+			"Weight":1
+		},
+		{
+			"ParentName":"Year",
+			"ComponentName":"Aug",
+			"Weight":1
+		},
+		{
+			"ParentName":"Year",
+			"ComponentName":"Sep",
+			"Weight":1
+		},
+		{
+			"ParentName":"Year",
+			"ComponentName":"Oct",
+			"Weight":1
+		},
+		{
+			"ParentName":"Year",
+			"ComponentName":"Nov",
+			"Weight":1
+		},
+		{
+			"ParentName":"Year",
+			"ComponentName":"Dec",
+			"Weight":1
+		},
+		{
+			"ParentName":"Year",
+			"ComponentName":"Jan",
+			"Weight":1
+		},
+		{
+			"ParentName":"Year",
+			"ComponentName":"Feb",
+			"Weight":1
+		},
+		{
+			"ParentName":"Year",
+			"ComponentName":"Mar",
+			"Weight":1
+		},
+		{
+			"ParentName":"Year",
+			"ComponentName":"Apr",
+			"Weight":1
+		},
+		{
+			"ParentName":"Year",
+			"ComponentName":"May",
+			"Weight":1
+		},
+		{
+			"ParentName":"Year",
+			"ComponentName":"Jun",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jul YTD",
+			"ComponentName":"P0",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jul YTD",
+			"ComponentName":"Jul",
+			"Weight":1
+		},
+		{
+			"ParentName":"Aug YTD",
+			"ComponentName":"P0",
+			"Weight":1
+		},
+		{
+			"ParentName":"Aug YTD",
+			"ComponentName":"Jul",
+			"Weight":1
+		},
+		{
+			"ParentName":"Aug YTD",
+			"ComponentName":"Aug",
+			"Weight":1
+		},
+		{
+			"ParentName":"Sep YTD",
+			"ComponentName":"P0",
+			"Weight":1
+		},
+		{
+			"ParentName":"Sep YTD",
+			"ComponentName":"Jul",
+			"Weight":1
+		},
+		{
+			"ParentName":"Sep YTD",
+			"ComponentName":"Aug",
+			"Weight":1
+		},
+		{
+			"ParentName":"Sep YTD",
+			"ComponentName":"Sep",
+			"Weight":1
+		},
+		{
+			"ParentName":"Oct YTD",
+			"ComponentName":"P0",
+			"Weight":1
+		},
+		{
+			"ParentName":"Oct YTD",
+			"ComponentName":"Jul",
+			"Weight":1
+		},
+		{
+			"ParentName":"Oct YTD",
+			"ComponentName":"Aug",
+			"Weight":1
+		},
+		{
+			"ParentName":"Oct YTD",
+			"ComponentName":"Sep",
+			"Weight":1
+		},
+		{
+			"ParentName":"Oct YTD",
+			"ComponentName":"Oct",
+			"Weight":1
+		},
+		{
+			"ParentName":"Nov YTD",
+			"ComponentName":"P0",
+			"Weight":1
+		},
+		{
+			"ParentName":"Nov YTD",
+			"ComponentName":"Jul",
+			"Weight":1
+		},
+		{
+			"ParentName":"Nov YTD",
+			"ComponentName":"Aug",
+			"Weight":1
+		},
+		{
+			"ParentName":"Nov YTD",
+			"ComponentName":"Sep",
+			"Weight":1
+		},
+		{
+			"ParentName":"Nov YTD",
+			"ComponentName":"Oct",
+			"Weight":1
+		},
+		{
+			"ParentName":"Nov YTD",
+			"ComponentName":"Nov",
+			"Weight":1
+		},
+		{
+			"ParentName":"Dec YTD",
+			"ComponentName":"P0",
+			"Weight":1
+		},
+		{
+			"ParentName":"Dec YTD",
+			"ComponentName":"Jul",
+			"Weight":1
+		},
+		{
+			"ParentName":"Dec YTD",
+			"ComponentName":"Aug",
+			"Weight":1
+		},
+		{
+			"ParentName":"Dec YTD",
+			"ComponentName":"Sep",
+			"Weight":1
+		},
+		{
+			"ParentName":"Dec YTD",
+			"ComponentName":"Oct",
+			"Weight":1
+		},
+		{
+			"ParentName":"Dec YTD",
+			"ComponentName":"Nov",
+			"Weight":1
+		},
+		{
+			"ParentName":"Dec YTD",
+			"ComponentName":"Dec",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jan YTD",
+			"ComponentName":"P0",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jan YTD",
+			"ComponentName":"Jul",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jan YTD",
+			"ComponentName":"Aug",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jan YTD",
+			"ComponentName":"Sep",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jan YTD",
+			"ComponentName":"Oct",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jan YTD",
+			"ComponentName":"Nov",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jan YTD",
+			"ComponentName":"Dec",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jan YTD",
+			"ComponentName":"Jan",
+			"Weight":1
+		},
+		{
+			"ParentName":"Feb YTD",
+			"ComponentName":"P0",
+			"Weight":1
+		},
+		{
+			"ParentName":"Feb YTD",
+			"ComponentName":"Jul",
+			"Weight":1
+		},
+		{
+			"ParentName":"Feb YTD",
+			"ComponentName":"Aug",
+			"Weight":1
+		},
+		{
+			"ParentName":"Feb YTD",
+			"ComponentName":"Sep",
+			"Weight":1
+		},
+		{
+			"ParentName":"Feb YTD",
+			"ComponentName":"Oct",
+			"Weight":1
+		},
+		{
+			"ParentName":"Feb YTD",
+			"ComponentName":"Nov",
+			"Weight":1
+		},
+		{
+			"ParentName":"Feb YTD",
+			"ComponentName":"Dec",
+			"Weight":1
+		},
+		{
+			"ParentName":"Feb YTD",
+			"ComponentName":"Jan",
+			"Weight":1
+		},
+		{
+			"ParentName":"Feb YTD",
+			"ComponentName":"Feb",
+			"Weight":1
+		},
+		{
+			"ParentName":"Mar YTD",
+			"ComponentName":"P0",
+			"Weight":1
+		},
+		{
+			"ParentName":"Mar YTD",
+			"ComponentName":"Jul",
+			"Weight":1
+		},
+		{
+			"ParentName":"Mar YTD",
+			"ComponentName":"Aug",
+			"Weight":1
+		},
+		{
+			"ParentName":"Mar YTD",
+			"ComponentName":"Sep",
+			"Weight":1
+		},
+		{
+			"ParentName":"Mar YTD",
+			"ComponentName":"Oct",
+			"Weight":1
+		},
+		{
+			"ParentName":"Mar YTD",
+			"ComponentName":"Nov",
+			"Weight":1
+		},
+		{
+			"ParentName":"Mar YTD",
+			"ComponentName":"Dec",
+			"Weight":1
+		},
+		{
+			"ParentName":"Mar YTD",
+			"ComponentName":"Jan",
+			"Weight":1
+		},
+		{
+			"ParentName":"Mar YTD",
+			"ComponentName":"Feb",
+			"Weight":1
+		},
+		{
+			"ParentName":"Mar YTD",
+			"ComponentName":"Mar",
+			"Weight":1
+		},
+		{
+			"ParentName":"Apr YTD",
+			"ComponentName":"P0",
+			"Weight":1
+		},
+		{
+			"ParentName":"Apr YTD",
+			"ComponentName":"Jul",
+			"Weight":1
+		},
+		{
+			"ParentName":"Apr YTD",
+			"ComponentName":"Aug",
+			"Weight":1
+		},
+		{
+			"ParentName":"Apr YTD",
+			"ComponentName":"Sep",
+			"Weight":1
+		},
+		{
+			"ParentName":"Apr YTD",
+			"ComponentName":"Oct",
+			"Weight":1
+		},
+		{
+			"ParentName":"Apr YTD",
+			"ComponentName":"Nov",
+			"Weight":1
+		},
+		{
+			"ParentName":"Apr YTD",
+			"ComponentName":"Dec",
+			"Weight":1
+		},
+		{
+			"ParentName":"Apr YTD",
+			"ComponentName":"Jan",
+			"Weight":1
+		},
+		{
+			"ParentName":"Apr YTD",
+			"ComponentName":"Feb",
+			"Weight":1
+		},
+		{
+			"ParentName":"Apr YTD",
+			"ComponentName":"Mar",
+			"Weight":1
+		},
+		{
+			"ParentName":"Apr YTD",
+			"ComponentName":"Apr",
+			"Weight":1
+		},
+		{
+			"ParentName":"May YTD",
+			"ComponentName":"P0",
+			"Weight":1
+		},
+		{
+			"ParentName":"May YTD",
+			"ComponentName":"Jul",
+			"Weight":1
+		},
+		{
+			"ParentName":"May YTD",
+			"ComponentName":"Aug",
+			"Weight":1
+		},
+		{
+			"ParentName":"May YTD",
+			"ComponentName":"Sep",
+			"Weight":1
+		},
+		{
+			"ParentName":"May YTD",
+			"ComponentName":"Oct",
+			"Weight":1
+		},
+		{
+			"ParentName":"May YTD",
+			"ComponentName":"Nov",
+			"Weight":1
+		},
+		{
+			"ParentName":"May YTD",
+			"ComponentName":"Dec",
+			"Weight":1
+		},
+		{
+			"ParentName":"May YTD",
+			"ComponentName":"Jan",
+			"Weight":1
+		},
+		{
+			"ParentName":"May YTD",
+			"ComponentName":"Feb",
+			"Weight":1
+		},
+		{
+			"ParentName":"May YTD",
+			"ComponentName":"Mar",
+			"Weight":1
+		},
+		{
+			"ParentName":"May YTD",
+			"ComponentName":"Apr",
+			"Weight":1
+		},
+		{
+			"ParentName":"May YTD",
+			"ComponentName":"May",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jun YTD",
+			"ComponentName":"P0",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jun YTD",
+			"ComponentName":"Jul",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jun YTD",
+			"ComponentName":"Aug",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jun YTD",
+			"ComponentName":"Sep",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jun YTD",
+			"ComponentName":"Oct",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jun YTD",
+			"ComponentName":"Nov",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jun YTD",
+			"ComponentName":"Dec",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jun YTD",
+			"ComponentName":"Jan",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jun YTD",
+			"ComponentName":"Feb",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jun YTD",
+			"ComponentName":"Mar",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jun YTD",
+			"ComponentName":"Apr",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jun YTD",
+			"ComponentName":"May",
+			"Weight":1
+		},
+		{
+			"ParentName":"Jun YTD",
+			"ComponentName":"Jun",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2005-2006",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2006-2007",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2007-2008",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2008-2009",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2009-2010",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2010-2011",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2011-2012",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2012-2013",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2013-2014",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2014-2015",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2015-2016",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2016-2017",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2017-2018",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2018-2019",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2019-2020",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2020-2021",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2021-2022",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2022-2023",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2023-2024",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2024-2025",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2025-2026",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2026-2027",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2027-2028",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2028-2029",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2029-2030",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2030-2031",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2031-2032",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2032-2033",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2033-2034",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2034-2035",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2035-2036",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2036-2037",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2037-2038",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2038-2039",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2039-2040",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2040-2041",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2041-2042",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2042-2043",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2043-2044",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2044-2045",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total years",
+			"ComponentName":"2045-2046",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"period.subsets/$BSApportionment.json",
+		"period.subsets/$ME_FlatFile.json",
+		"period.subsets/$ME_Profiles.json",
+		"period.subsets/$MEDept.json",
+		"period.subsets/$td_FlatFile.json",
+		"period.subsets/Admin_$FE3Step03.json",
+		"period.subsets/Amy Vu_$MEGenProf02.json",
+		"period.subsets/Default.json",
+		"period.subsets/MA Default.json",
+		"period.subsets/Michael Longley_$MEGenProf02.json",
+		"period.subsets/sys_all years.json",
+		"period.subsets/}ME_Validation.json"
+	]
+}

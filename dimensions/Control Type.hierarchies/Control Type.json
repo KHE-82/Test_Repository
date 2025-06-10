@@ -1,0 +1,127 @@
+{
+	"@type":"Hierarchy",
+	"Name":"Control Type",
+	"Elements":
+	[
+		{
+			"Name":"Total Control Type",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Administered",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Departmental",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"National Partnerships",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Administered Outcome 01",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Administered Outcome 02",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Administered Outcome 03",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Administered Outcome 04",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Departmental Outcome 01",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Departmental Outcome 02",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Departmental Outcome 03",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Departmental Outcome 04",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Total Control Type",
+			"ComponentName":"Administered",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Control Type",
+			"ComponentName":"Departmental",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Control Type",
+			"ComponentName":"Administered Outcome 01",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Control Type",
+			"ComponentName":"Administered Outcome 02",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Control Type",
+			"ComponentName":"Administered Outcome 03",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Control Type",
+			"ComponentName":"Administered Outcome 04",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Control Type",
+			"ComponentName":"Departmental Outcome 01",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Control Type",
+			"ComponentName":"Departmental Outcome 02",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Control Type",
+			"ComponentName":"Departmental Outcome 03",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Control Type",
+			"ComponentName":"Departmental Outcome 04",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Control Type",
+			"ComponentName":"National Partnerships",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Control Type",
+			"ComponentName":"SPP",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"Control Type.subsets/sys_all-n.json",
+		"Control Type.subsets/sys_treasury.json"
+	]
+}

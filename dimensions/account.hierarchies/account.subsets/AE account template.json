@@ -1,0 +1,43 @@
+{
+	"@type":"Subset",
+	"Name":"AE account template",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2300001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('3340096')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('5233009')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('5233029')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211006')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211006')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212005')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212008')"
+		}
+	]
+}

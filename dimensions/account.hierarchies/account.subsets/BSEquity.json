@@ -1,0 +1,39 @@
+{
+	"@type":"Subset",
+	"Name":"BSEquity",
+	"ExpandAbove":true,
+	"Alias":"code and description",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100011')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100012')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100013')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100015')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100016')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100002')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100003')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100000')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4000000')"
+		}
+	]
+}

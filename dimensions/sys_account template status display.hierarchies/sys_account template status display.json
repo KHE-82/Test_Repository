@@ -1,0 +1,20 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_account template status display",
+	"Elements":
+	[
+		{
+			"Name":"All",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Active",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Inactive",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

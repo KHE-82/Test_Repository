@@ -1,0 +1,11 @@
+{
+	"@type":"Subset",
+	"Name":"sysRep_RecoWBAdj",
+	"Alias":"description",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('cash flow')"
+		}
+	]
+}

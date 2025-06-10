@@ -1,0 +1,37 @@
+{
+	"@type":"Subset",
+	"Name":"$Favourites6",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('1232098')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('1270001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2331003')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('3365001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('5233013')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211007')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211098')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212006')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212008')"
+		}
+	]
+}

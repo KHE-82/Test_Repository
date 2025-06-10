@@ -1,0 +1,223 @@
+{
+	"@type":"Subset",
+	"Name":"$MEDept",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('-')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('10500')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12600')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12800')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12900')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('14100')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15200')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15500')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('18300')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('23900')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('24200')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('24900')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('44300')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('44500')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('44800')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('45000')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('45500')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('47500')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('49100')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('49200')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('50600')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('50700')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('50800')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('50900')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('51400')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('53800')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('23800')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('53700')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('72200')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15100')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15700')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12200')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('23100')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12300')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('43800')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('80500')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('22000')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12500')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15600')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12700')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('10800')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('20400')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('48100')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('43600')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('43500')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15000')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('44600')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('43100')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('48000')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('14300')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12000')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12400')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('13200')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('13900')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('54200')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15300')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('13700')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12100')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('41500')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('14400')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('47600')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('47300')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('16400')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('24100')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('24400')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('17800')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('47700')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('53600')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('16300')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('42000')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('30100')"
+		},
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('Cash flow')"
+		}
+	]
+}

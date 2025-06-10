@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"Sys_All SPP_CBMS Level",
+	"Alias":"code and description",
+	"Expression":"{descendants([programme].[admin SPP],2,SELF)}"
+}

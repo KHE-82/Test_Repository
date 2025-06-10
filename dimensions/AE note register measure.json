@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"AE note register measure",
+	"Hierarchies@Code.links":
+	[
+		"AE note register measure.hierarchies/AE note register measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('AE note register measure')/Hierarchies('AE note register measure')"
+	}
+}

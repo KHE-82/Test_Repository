@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_A100",
+	"Alias":"code and description",
+	"Expression":"{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[appropriation item].[100]}, ALL, RECURSIVE )}, 0)}, ASC)}"
+}

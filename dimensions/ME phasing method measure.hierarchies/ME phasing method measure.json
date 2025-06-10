@@ -1,0 +1,16 @@
+{
+	"@type":"Hierarchy",
+	"Name":"ME phasing method measure",
+	"Elements":
+	[
+		{
+			"Name":"value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"comment",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

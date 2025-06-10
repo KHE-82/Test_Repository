@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"Kelly Hackett_$sysMeasBulkList",
+	"Expression":"{{ [measure code].[M00000] },{FILTER({TM1SORT( { EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [measure code] )}, 0)}, { [measure code].[M00000] }) }, DESC)},[measure code].[current] = \"Y\")}}"
+}

@@ -1,0 +1,16 @@
+{
+	"@type":"Subset",
+	"Name":"AE Account template",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('-')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7592')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7593')"
+		}
+	]
+}

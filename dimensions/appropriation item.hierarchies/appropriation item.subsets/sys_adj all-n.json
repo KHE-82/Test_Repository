@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_adj all-n",
+	"Alias":"code and description",
+	"Expression":"{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [appropriation item] )}, 0)}, [appropriation item].[default approp item] = \"\")}"
+}

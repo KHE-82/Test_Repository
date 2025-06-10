@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_adj No Related Entity",
+	"Alias":"code and description",
+	"Expression":"{[related entity].[-]}"
+}

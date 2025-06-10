@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"tmp_ID_Khristian",
+	"Hierarchies@Code.links":
+	[
+		"tmp_ID_Khristian.hierarchies/tmp_ID_Khristian.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('tmp_ID_Khristian')/Hierarchies('tmp_ID_Khristian')"
+	}
+}

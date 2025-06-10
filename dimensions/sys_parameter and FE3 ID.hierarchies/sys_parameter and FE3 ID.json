@@ -1,0 +1,16 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_parameter and FE3 ID",
+	"Elements":
+	[
+		{
+			"Name":"Opening Base",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Closing Base",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"account template measure",
+	"Hierarchies@Code.links":
+	[
+		"account template measure.hierarchies/account template measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('account template measure')/Hierarchies('account template measure')"
+	}
+}

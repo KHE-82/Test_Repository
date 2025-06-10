@@ -1,0 +1,22 @@
+{
+	"@type":"Subset",
+	"Name":"ME Default",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('current')"
+		},
+		{
+			"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('MYEFO')"
+		},
+		{
+			"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('Budget')"
+		},
+		{
+			"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('CBMS')"
+		},
+		{
+			"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('CBMS RECO')"
+		}
+	]
+}

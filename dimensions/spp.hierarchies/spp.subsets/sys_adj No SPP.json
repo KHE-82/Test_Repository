@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_adj No SPP",
+	"Alias":"code and description",
+	"Expression":"{[spp].[-]}"
+}

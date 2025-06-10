@@ -1,0 +1,386 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Adj - View Adjustment
+#**** DESCRIPTION:       This process creates a view and puts a flag on all combinations
+#****			
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 07/10/2015    KG             Initial Revision
+#***********************************************************************************************************************
+
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS CUBE DIMENSIONS
+#******************************************************************************************************************
+cbID = 'AE id details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmID = 'id';
+dmIDMeas = 'id measure';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+
+#******************************************************************************************************************
+#*** DECLARE PROGRAMME DETAILS CUBE
+#******************************************************************************************************************
+cbProg = snProg | ' details';
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+dmCtrlType = 'control type';
+dmFavID = 'favourites_id';
+
+#******************************************************************************************************************
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#******************************************************************************************************************
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sNoMeasCode = ATTRS(dmVar, 'No Measure Code', 'value');
+sDefFavID = ATTRS(dmVar, 'Default favourite id template', 'value');
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED FOR VIEWS
+#******************************************************************************************************************
+sView = sUser | ' $ViewAdj';
+sStatus = 'data';
+sAcc = 'account template';
+sPer = '0000-0000';
+
+#******************************************************************************************************************
+#*** USER DETAILS & AE ID DETAILS
+#******************************************************************************************************************
+#sHLYear = CELLGETS (cbClient, psUser, 'geus hlyear', 'value');
+#sScenario = CELLGETS (cbClient, psUser, 'geus scenario', 'value');
+#sID = CELLGETS (cbClient, psUser, 'geus adj', 'value');
+
+sProg = CELLGETS (cbID, psHLYear, psScenario, psID, snProg | ' code');
+sReason = CELLGETS (cbID, psHLYear, psScenario, psID, 'reason');
+sOC = CELLGETS (cbID, psHLYear, psScenario, psID, 'outcome');
+sMeasCode = CELLGETS (cbID, psHLYear, psScenario, psID, 'measure');
+sFunc = CELLGETS (cbID, psHLYear, psScenario, psID, 'function');
+sSPP = CELLGETS (cbID, psHLYear, psScenario, psID, 'spp');
+sType = CELLGETS (cbID, psHLYear, psScenario, psID, 'appropriation type');
+sItem = CELLGETS (cbID, psHLYear, psScenario, psID, 'appropriation item');
+sFavID =  CELLGETS (cbID, psHLYear, psScenario, psID, 'account favourite template');
+
+
+
+#*****************************************************************************************************************************************************
+#**** STEP 1 - CLEAR EXISTING MAPPING TO ACCOUNTS
+#**** THIS PROCESS CLEARS OUT THE FLAGS MADE ON 0000-0000
+#*****************************************************************************************************************************************************
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbAE, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmPer, sView);
+
+#******************************************************************************************************************
+#*** CREATE SUBSETS
+#******************************************************************************************************************
+# Headline Year
+SUBSETCREATE (dmHLYear, sView);
+SUBSETELEMENTINSERT (dmHLYear, sView, psHLYear, 1);
+
+# Scenario
+SUBSETCREATE (dmScenario, sView);
+SUBSETELEMENTINSERT (dmScenario, sView, psScenario, 1);
+
+
+# ID
+SUBSETCREATE (dmID, sView);
+SUBSETELEMENTINSERT (dmID, sView, psID, 1);
+
+# Period
+SUBSETCREATE (dmPer, sView);
+SUBSETELEMENTINSERT (dmPer, sView, sPer, 1);
+
+
+
+#******************************************************************************************************************
+#*** BUILD VIEW
+#******************************************************************************************************************
+VIEWCREATE (cbAE, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmHLYear, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmScenario, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmID, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmPer, sView);
+
+
+#VIEWSETSKIPZEROES (cbAE, sView, 1);
+#VIEWSETSKIPCALCS (cbAE, sView, 1);
+
+VIEWEXTRACTSKIPZEROESSET (cbAE, sView, 1);
+VIEWEXTRACTSKIPRULEVALUESSET (cbAE, sView, 1);
+VIEWEXTRACTSKIPCALCSSET (cbAE, sView, 1);
+
+VIEWZEROOUT (cbAE, sView);
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbAE, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmPer, sView);
+
+
+#*****************************************************************************************************************************************************
+#**** STEP 2 - CREATE SOURCE VIEW
+#**** THIS PROCESS RELIES ON THE OLD VALUES TO TRANSFER THE DATA TO NEW VALUES
+#*****************************************************************************************************************************************************
+VIEWDESTROY (cbAE, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmStatus, sView);
+SUBSETDESTROY (dmOC, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmFunc, sView);
+SUBSETDESTROY (dmReason, sView);
+SUBSETDESTROY (dmSPP, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmType, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmItem, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmJur, sView);
+SUBSETDESTROY (dmPer, sView);
+
+
+#******************************************************************************************************************
+#*** CREATE SUBSETS
+#******************************************************************************************************************
+# Headline Year
+SUBSETCREATE (dmHLYear, sView);
+SUBSETELEMENTINSERT (dmHLYear, sView, psHLYear, 1);
+
+# Scenario
+SUBSETCREATE (dmScenario, sView);
+SUBSETELEMENTINSERT (dmScenario, sView, psScenario, 1);
+
+
+# Status 
+SUBSETCREATE (dmStatus, sView);
+SUBSETELEMENTINSERT (dmStatus, sView, sStatus, 1);
+
+# Outcome
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmOC | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmOC, sView, MDX);
+
+#SUBSETCREATE (dmOC, sView);
+#SUBSETELEMENTINSERT (dmOC, sView, sOC, 1);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmRE, sView, MDX);
+
+# Function
+SUBSETCREATE (dmFunc, sView);
+SUBSETELEMENTINSERT (dmFunc, sView, sFunc, 1);
+
+# Reason
+SUBSETCREATE (dmReason, sView);
+SUBSETELEMENTINSERT (dmReason, sView, sReason, 1);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmSPP, sView, MDX);
+
+# Measure Code
+SUBSETCREATE (dmMeasCode, sView);
+SUBSETELEMENTINSERT (dmMeasCode, sView, sMeasCode, 1);
+
+# Appropriation Type
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmType | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmType, sView, MDX);
+
+# Movement Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmMA, sView, MDX);
+
+# Appropriation Item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmItem, sView, MDX);
+
+# Programme
+SUBSETCREATE (dmProg, sView);
+SUBSETELEMENTINSERT (dmProg, sView, sProg, 1);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmAcc, sView, MDX);
+
+# ID
+SUBSETCREATE (dmID, sView);
+SUBSETELEMENTINSERT (dmID, sView, psID, 1);
+
+#  Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmJur, sView, MDX);
+
+# Period
+MDX = '{{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}, [' | dmPer | '].[type] = "annual")},[0000-0000]}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmPer, sView, MDX);
+
+
+#******************************************************************************************************************
+#*** BUILD VIEW
+#******************************************************************************************************************
+VIEWCREATE (cbAE, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmHLYear, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmScenario, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmStatus, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmOC, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmRE, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmFunc, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmReason, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmSPP, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmMeasCode, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmType, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmMA, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmItem, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmProg, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmAcc, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmID, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmJur, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmPer, sView);
+
+VIEWEXTRACTSKIPZEROESSET (cbAE, sView, 1);
+VIEWEXTRACTSKIPRULEVALUESSET (cbAE, sView, 1);
+VIEWEXTRACTSKIPCALCSSET (cbAE, sView, 1);
+
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#******************************************************************************************************************
+#*** POST ACCOUNT FLAG BASED ON FAVOURITES
+#******************************************************************************************************************
+sPer = '0000-0000';
+
+IF (CELLISUPDATEABLE (cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer) = 1);
+	CELLPUTN (1, cbAE,  vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer);
+	#ASCIIOUTPUT ('checkfav.txt', cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer);
+ENDIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+
+VIEWDESTROY (cbAE, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmStatus, sView);
+SUBSETDESTROY (dmOC, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmFunc, sView);
+SUBSETDESTROY (dmReason, sView);
+SUBSETDESTROY (dmSPP, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmType, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmItem, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmJur, sView);
+SUBSETDESTROY (dmPer, sView);
+
+
+#******************************************************************************************************************
+#*** EXECUTE PROCESS TO UPDATE CLIENT PREFERENCE PICKLIST
+#******************************************************************************************************************
+sProcess = 'sys_Client - Update Client Prefrence Picklists';
+EXECUTEPROCESS(sProcess, 'psUser', sUser, 'psHLYear', psHLYear, 'psScenario', psScenario);
+#endregion

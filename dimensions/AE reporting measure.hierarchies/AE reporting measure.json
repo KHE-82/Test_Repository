@@ -1,0 +1,12 @@
+{
+	"@type":"Hierarchy",
+	"Name":"AE reporting measure",
+	"Elements":
+	[
+		{
+			"Name":"value",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

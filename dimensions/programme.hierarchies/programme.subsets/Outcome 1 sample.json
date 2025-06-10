@@ -1,0 +1,17 @@
+{
+	"@type":"Subset",
+	"Name":"Outcome 1 sample",
+	"Alias":"code and description",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('Administered Programmes')"
+		},
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('Departmental Programmes')"
+		},
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('cash flow')"
+		}
+	]
+}

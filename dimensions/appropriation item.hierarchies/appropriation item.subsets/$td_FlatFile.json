@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"$td_FlatFile",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('Total approp item')"
+		}
+	]
+}

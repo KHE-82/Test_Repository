@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"Kate Hambly_$sysMeasBulkList",
+	"Expression":"{ [measure code].[M00000]}"
+}

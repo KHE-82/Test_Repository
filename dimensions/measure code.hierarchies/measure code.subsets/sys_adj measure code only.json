@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_adj measure code only",
+	"Alias":"CBMS code and description",
+	"Expression":"{TM1SORTBYINDEX( {FILTER( {FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [measure code] )}, 0)}, [measure code].[Non-Measure] = \"\")}, [measure code].[Active] = \"Y\")}, DESC)}"
+}

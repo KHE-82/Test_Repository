@@ -1,0 +1,13 @@
+{
+	"@type":"Subset",
+	"Name":"$Favourites4",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2331003')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		}
+	]
+}

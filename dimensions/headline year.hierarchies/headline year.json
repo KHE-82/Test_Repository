@@ -1,0 +1,140 @@
+{
+	"@type":"Hierarchy",
+	"Name":"headline year",
+	"Elements":
+	[
+		{
+			"Name":"Total headline year",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"HL2019-2020",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"HL2020-2021",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"HL2021-2022",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"HL2022-2023",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"HL2023-2024",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"HL2024-2025",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"HL2025-2026",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"HL2026-2027",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"HL2027-2028",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"HL2028-2029",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"HL2029-2030",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Total headline year",
+			"ComponentName":"HL2019-2020",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total headline year",
+			"ComponentName":"HL2020-2021",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total headline year",
+			"ComponentName":"HL2021-2022",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total headline year",
+			"ComponentName":"HL2022-2023",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total headline year",
+			"ComponentName":"HL2023-2024",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total headline year",
+			"ComponentName":"HL2024-2025",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total headline year",
+			"ComponentName":"HL2025-2026",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total headline year",
+			"ComponentName":"HL2026-2027",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total headline year",
+			"ComponentName":"HL2027-2028",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total headline year",
+			"ComponentName":"HL2028-2029",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total headline year",
+			"ComponentName":"HL2029-2030",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"headline year.subsets/$BSApportionment.json",
+		"headline year.subsets/$ChangeCode.json",
+		"headline year.subsets/$CreateFE3II.json",
+		"headline year.subsets/$LoadAEAdj.json",
+		"headline year.subsets/$ME_FlatFile.json",
+		"headline year.subsets/$ME_Profiles.json",
+		"headline year.subsets/$MEDept.json",
+		"headline year.subsets/$parameters.json",
+		"headline year.subsets/$Search.json",
+		"headline year.subsets/$Split.json",
+		"headline year.subsets/$td_FlatFile.json",
+		"headline year.subsets/Amy Vu_$MEGenProf02.json",
+		"headline year.subsets/clear.json",
+		"headline year.subsets/Current.json",
+		"headline year.subsets/Default.json",
+		"headline year.subsets/Hattie Huang $NewAdj03.json",
+		"headline year.subsets/Jill Fu $NewAdj03.json",
+		"headline year.subsets/Kate Hambly $ChangeCode03.json",
+		"headline year.subsets/Kate Hambly_$sysMeasBulkProcess.json",
+		"headline year.subsets/ME Default.json",
+		"headline year.subsets/Michael Longley_$MEGenProf02.json",
+		"headline year.subsets/sys_all-n.json",
+		"headline year.subsets/Test 06_$ChangeCodeView.json",
+		"headline year.subsets/}ME_Validation.json"
+	]
+}

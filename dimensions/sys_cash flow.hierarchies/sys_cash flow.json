@@ -1,0 +1,21 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_cash flow",
+	"Elements":
+	[
+		{
+			"Name":"System Derived",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Agency Entered",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"sys_cash flow.subsets/sys_Agency Entered.json",
+		"sys_cash flow.subsets/sys_all-n.json",
+		"sys_cash flow.subsets/sys_System Derived.json"
+	]
+}

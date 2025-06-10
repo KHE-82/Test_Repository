@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"sys_bulk process id filter list",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[sys_id filter].[ID List]}, ALL, RECURSIVE )}, 0)}"
+}

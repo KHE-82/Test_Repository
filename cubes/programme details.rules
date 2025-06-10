@@ -1,0 +1,6 @@
+# RULE 0001 : Create CDM Program Description - Required for CDM
+['sys_CDM Prog Desc'] = S:
+IF (DB('}ElementAttributes_programme', !programme, 'description') @='',
+DB('}ElementAttributes_programme', !programme, 'code and description'),
+DB('}ElementAttributes_programme', !programme, 'description'));
+

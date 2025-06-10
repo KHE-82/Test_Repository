@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"$BSApportionment",
+	"Expression":"{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [period] )}, 0)}, [period].[type] = \"nMonth\")}"
+}

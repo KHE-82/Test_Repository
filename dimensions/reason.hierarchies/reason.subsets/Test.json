@@ -1,0 +1,184 @@
+{
+	"@type":"Subset",
+	"Name":"Test",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Government decision or measure')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1004')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1005')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1008')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1009')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1011')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1012')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1015')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1018')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1019')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1020')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1021')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1022')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1029')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1032')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1033')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Balance Sheet or Related Entity')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1036')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1038')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Whole of Government Savings')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1040')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1041')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1042')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1045')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1046')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1047')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1048')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1049')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Slippage in budget measure')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Change in interest rates')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Changes in price & wage indices')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Changes in number of unemployment beneficiaries')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Changes in foreign exchange rates')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('25% of male total AWE commitment')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Changes in interest or foreign exchange rates')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('PDI Changes')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Changes in beneficiary numbers excluding unemployment')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Change in beneficiary composition or average rates')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Program specific - beneficiary or rate changes')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Program specific - other')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Borrowings')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Equity Injections')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Application of efficiency dividend')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Receipts from independent sources')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Approved movement of funds between years')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Movement of administered funds between years')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Self balancing transfers between same year')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Section 32 Transfers')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Eliminations')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Changes/Restatement of Opening Balances')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Creation of the New 3rd Forward Year Estimates''')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Competitive neutrality')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Provisional Estimate')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Other')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Other variations not elsewhere defined')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Other changes in program specific parameters')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('27th Period')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Departmental Capital Budget (DCB) - Temporary Adjustments')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Related Entity')"
+		}
+	]
+}

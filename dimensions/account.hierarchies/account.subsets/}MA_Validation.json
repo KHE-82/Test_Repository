@@ -1,0 +1,20 @@
+{
+	"@type":"Subset",
+	"Name":"}MA_Validation",
+	"Alias":"code and description",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100002')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100002')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('006a')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('5310000')"
+		}
+	]
+}

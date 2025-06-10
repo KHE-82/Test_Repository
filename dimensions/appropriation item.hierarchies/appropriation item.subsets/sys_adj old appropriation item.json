@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_adj old appropriation item",
+	"Alias":"code and description",
+	"Expression":"{{[appropriation item].[-]},{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[appropriation item].[CBMS 1 appropriation item]}, ALL, RECURSIVE )}, 0)}, ASC)}}"
+}

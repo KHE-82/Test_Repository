@@ -1,0 +1,16 @@
+{
+	"@type":"Hierarchy",
+	"Name":"account template record type",
+	"Elements":
+	[
+		{
+			"Name":"data entry",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"mapping",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

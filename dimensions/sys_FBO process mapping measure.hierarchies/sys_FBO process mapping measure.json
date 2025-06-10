@@ -1,0 +1,28 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_FBO process mapping measure",
+	"Elements":
+	[
+		{
+			"Name":"Source Account",
+			"Type":"String"
+		},
+		{
+			"Name":"Source Movement Account",
+			"Type":"String"
+		},
+		{
+			"Name":"Target Account",
+			"Type":"String"
+		},
+		{
+			"Name":"Target Movement Account",
+			"Type":"String"
+		},
+		{
+			"Name":"Description",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

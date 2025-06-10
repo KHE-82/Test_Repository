@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"measure fund type",
+	"Hierarchies@Code.links":
+	[
+		"measure fund type.hierarchies/measure fund type.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('measure fund type')/Hierarchies('measure fund type')"
+	}
+}

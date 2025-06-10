@@ -1,0 +1,7 @@
+{
+	"@type":"Subset",
+	"Name":"CBS",
+	"ExpandAbove":true,
+	"Alias":"code and description",
+	"Expression":"{ EXCEPT( {TM1DRILLDOWNMEMBER( {TM1SubsetBasis()}, ALL, RECURSIVE )}, { [account].[9000020] }) }"
+}

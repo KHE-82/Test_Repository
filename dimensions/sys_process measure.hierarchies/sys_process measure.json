@@ -1,0 +1,36 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_process measure",
+	"Elements":
+	[
+		{
+			"Name":"active flag",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"completed flag",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"error flag",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"error description",
+			"Type":"String"
+		},
+		{
+			"Name":"status flag",
+			"Type":"String"
+		},
+		{
+			"Name":"archive process flag",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"recover process flag",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

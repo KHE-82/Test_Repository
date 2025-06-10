@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_adj No Jur",
+	"Alias":"Code and Description",
+	"Expression":"{[jurisdiction].[-]}"
+}

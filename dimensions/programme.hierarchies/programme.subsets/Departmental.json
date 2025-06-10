@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"Departmental",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[programme].[Departmental programmes]}, ALL, RECURSIVE )}, 0)}"
+}

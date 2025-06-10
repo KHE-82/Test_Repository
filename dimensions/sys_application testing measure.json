@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_application testing measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_application testing measure.hierarchies/sys_application testing measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')"
+	}
+}

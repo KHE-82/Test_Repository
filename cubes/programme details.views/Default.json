@@ -1,0 +1,72 @@
+{
+	"@type":"NativeView",
+	"Name":"Default",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('programme measure')/Hierarchies('programme measure')"
+				},
+				"Expression":"TM1SubsetAll([programme measure])"
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('programme')/Hierarchies('programme')"
+				},
+				"Alias":"code and description",
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('Total Programmes')"
+					},
+					{
+						"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('Administered Programmes')"
+					},
+					{
+						"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('Departmental Programmes')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('headline year')/Hierarchies('headline year')/Subsets('Default')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('headline year')/Hierarchies('headline year')/Elements('HL2025-2026')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('scenario')/Hierarchies('scenario')"
+				},
+				"Expression":"TM1SubsetAll([scenario])"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('current')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":false,
+	"SuppressEmptyRows":false,
+	"FormatString":"0.#########"
+}

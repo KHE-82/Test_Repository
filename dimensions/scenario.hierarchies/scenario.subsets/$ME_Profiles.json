@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"$ME_Profiles",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('current')"
+		}
+	]
+}

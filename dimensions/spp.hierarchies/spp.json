@@ -1,0 +1,490 @@
+{
+	"@type":"Hierarchy",
+	"Name":"spp",
+	"Elements":
+	[
+		{
+			"Name":"Total SPP",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"-",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Specific Purpose Payments",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"ADV035",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"INT035",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"LGA039",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP706",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP787",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP858",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP994",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP995",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP996",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP1019",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP1024",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP127",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP533",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP632",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP752",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP754",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP776",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP789",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP790",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP827",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP845",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP860",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP877",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP893",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP899",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP903",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP915",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP927",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP928",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP930",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP931",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP945",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP946",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP947",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP951",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP954",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP971",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP1007",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP1012",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP1020",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP1051",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP1060",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP1021",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SPP1078",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Total SPP",
+			"ComponentName":"-",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total SPP",
+			"ComponentName":"Specific Purpose Payments",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"ADV035",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"INT035",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"LGA039",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP706",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP787",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP858",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP994",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP995",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP996",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP1007",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP1012",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP1019",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP1020",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP1021",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP1024",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP1051",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP1060",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP127",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP533",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP632",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP752",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP754",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP776",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP789",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP790",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP827",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP845",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP860",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP877",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP893",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP899",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP903",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP915",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP927",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP928",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP930",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP931",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP945",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP946",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP947",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP951",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP954",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP971",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"SPP1078",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"spp.subsets/$ChangeCode.json",
+		"spp.subsets/$td_FlatFile.json",
+		"spp.subsets/Admin $NewAdj03.json",
+		"spp.subsets/Admin_$FE3Step03.json",
+		"spp.subsets/all-n.json",
+		"spp.subsets/Amy Vu $NewAdj03.json",
+		"spp.subsets/Amy Vu_$MEGenProf02.json",
+		"spp.subsets/Courtney Zha $NewAdj03.json",
+		"spp.subsets/Diane Humes $NewAdj03.json",
+		"spp.subsets/Dinesh Yoganantham $NewAdj03.json",
+		"spp.subsets/Heidi Bell $NewAdj03.json",
+		"spp.subsets/Joel Che $NewAdj03.json",
+		"spp.subsets/Joseph Augusto $NewAdj03.json",
+		"spp.subsets/Judy Zhu $NewAdj03.json",
+		"spp.subsets/Karen Incher $NewAdj03.json",
+		"spp.subsets/Kate Hambly $ChangeCode03.json",
+		"spp.subsets/Kate Hambly $NewAdj03.json",
+		"spp.subsets/Katherine Zheng $NewAdj03.json",
+		"spp.subsets/Kelly Hackett $NewAdj03.json",
+		"spp.subsets/Khristian Gimena $NewAdj03.json",
+		"spp.subsets/Kiren Lewis $NewAdj03.json",
+		"spp.subsets/Michael Longley $NewAdj03.json",
+		"spp.subsets/Michael Longley_$MEGenProf02.json",
+		"spp.subsets/Sally Kerr $NewAdj03.json",
+		"spp.subsets/Sian Cameron $NewAdj03.json",
+		"spp.subsets/sys_ACMA.json",
+		"spp.subsets/sys_adj No SPP.json",
+		"spp.subsets/sys_AGD.json",
+		"spp.subsets/sys_all-n.json",
+		"spp.subsets/sys_Austrade.json",
+		"spp.subsets/sys_DAWE.json",
+		"spp.subsets/sys_Defence.json",
+		"spp.subsets/sys_DESE.json",
+		"spp.subsets/sys_DISER.json",
+		"spp.subsets/sys_DITRDC.json",
+		"spp.subsets/sys_DVA.json",
+		"spp.subsets/sys_Finance.json",
+		"spp.subsets/sys_Health.json",
+		"spp.subsets/sys_Homeaffairs.json",
+		"spp.subsets/sys_NIAA.json",
+		"spp.subsets/sys_NRRA.json",
+		"spp.subsets/sys_PMC.json",
+		"spp.subsets/sys_print.json",
+		"spp.subsets/sys_Social Services.json",
+		"spp.subsets/sys_Treasury_ASIC.json",
+		"spp.subsets/sys_Treasury_CDRD.json",
+		"spp.subsets/sys_Treasury_FHOB.json",
+		"spp.subsets/sys_Treasury_FSD.json",
+		"spp.subsets/sys_Treasury_GRA.json",
+		"spp.subsets/sys_Treasury_GST.json",
+		"spp.subsets/sys_Treasury_INFRA.json",
+		"spp.subsets/sys_Treasury_JHardieLoan.json",
+		"spp.subsets/sys_Treasury_LMPD.json",
+		"spp.subsets/sys_Treasury_NSPPs.json",
+		"spp.subsets/sys_Treasury_OtherGRA.json",
+		"spp.subsets/sys_Treasury_RIPD.json",
+		"spp.subsets/sys_Treasury_SPD.json",
+		"spp.subsets/sys_Treasury_SPP685.json",
+		"spp.subsets/sys_Treasury_SRG.json"
+	]
+}

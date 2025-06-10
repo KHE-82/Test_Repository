@@ -1,0 +1,34 @@
+{
+	"@type":"Subset",
+	"Name":"$ME_FlatFile",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('-')"
+		},
+		{
+			"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('ACT')"
+		},
+		{
+			"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('NSW')"
+		},
+		{
+			"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('QLD')"
+		},
+		{
+			"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('NT')"
+		},
+		{
+			"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('WA')"
+		},
+		{
+			"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('SA')"
+		},
+		{
+			"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('VIC')"
+		},
+		{
+			"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('TAS')"
+		}
+	]
+}
