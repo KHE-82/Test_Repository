@@ -3,7 +3,7 @@
 	"Name":"TM1pyTI",
 	"HasSecurityAccess":false,
 	"Code@Code.link":"TM1pyTI.ti",
-	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"UIData":"_ParameterConstraints=e30=€",
 	"VariablesUIData":
 	[
 		"VarType=33€ColType=827€",
