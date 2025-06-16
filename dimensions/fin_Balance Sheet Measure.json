@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"fin_Balance Sheet Measure",
+	"Hierarchies@Code.links":
+	[
+		"fin_Balance Sheet Measure.hierarchies/fin_Balance Sheet Measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('fin_Balance Sheet Measure')/Hierarchies('fin_Balance Sheet Measure')"
+	}
+}

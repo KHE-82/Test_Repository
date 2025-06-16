@@ -1,0 +1,562 @@
+{
+	"@type":"Hierarchy",
+	"Name":"Salary ID",
+	"Elements":
+	[
+		{
+			"Name":"Total Salary IDs",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"01",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"02",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"03",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"04",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"05",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"06",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"07",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"08",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"09",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"10",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"11",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"12",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"13",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"14",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"15",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"16",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"17",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"18",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"19",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"20",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"21",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"22",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"23",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"24",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"25",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"26",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"27",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"28",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"29",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"30",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"31",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"32",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"33",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"34",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"35",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"36",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"37",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"38",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"39",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"40",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"41",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"42",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"43",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"44",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"45",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"46",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"47",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"48",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"49",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"50",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"60",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"59",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"58",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"57",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"56",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"55",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"54",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"53",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"52",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"51",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Assumption",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"01",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"02",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"03",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"04",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"05",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"06",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"07",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"08",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"09",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"10",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"11",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"12",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"13",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"14",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"15",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"16",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"17",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"18",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"19",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"20",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"21",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"22",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"23",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"24",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"25",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"26",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"27",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"28",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"29",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"30",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"31",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"32",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"33",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"34",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"35",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"36",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"37",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"38",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"39",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"40",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"41",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"42",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"43",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"44",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"45",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"46",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"47",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"48",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"49",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"50",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"60",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"59",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"58",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"57",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"56",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"55",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"54",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"53",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"52",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Salary IDs",
+			"ComponentName":"51",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"Salary ID.subsets/Default.json"
+	]
+}

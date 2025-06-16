@@ -1,0 +1,490 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_ME Setup - Populate P0 June Data
+#**** DESCRIPTION:       This process creates a view from the AE Adj cube and post data to ME4_reporting cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 28/02/2018    KG             Initial Revision
+#**** 08/06/2018	KG	  Added nOldValue for Jun (Operating Values) to ensure it appends data.
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#--------------------------------------------------------------------------------------------------------------------------
+#*** DIMENSION ATTRIBUTES
+#--------------------------------------------------------------------------------------------------------------------------
+dmReasonAttr = '}ElementAttributes_reason';
+dmAccAttr = '}ElementAttributes_account';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+dmProgMeas = snProg | ' measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE MONTHLY ESTIMATES CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+#cbME = 'ME reporting';
+#dmMEMeas = 'ME reporting measure';
+cbME = 'ME4_adjustments';
+dmMEMeas = 'ME4_adjustment_measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+	sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+	lScan = SCAN('/',sUser) + 1;
+	sUser = SUBST(sUser, lScan, 9);
+ELSE;
+	sUser = TM1User();
+ENDIF;
+
+sMEView = sUser | ' $MEClearTransferP0';
+sAEVIew = sUser | ' $METransferP0';
+
+sStatus = 'Total approved';
+sOC = 'Total outcomes';
+sReason = 'Total reason';
+sFunc = 'Total functions';
+sSPP = 'Total SPP';
+sAppType = 'Total approp types';
+sItem = 'Total approp item';
+sMeasCode = 'Total Measures';
+sID = 'Total IDs';
+#sPeriod2 = ATTRS('variables', 'ME year', 'value');
+#sPeriod1 = DIMNM('period', DIMIX('period', sPeriod2) - 1);
+
+sPeriod2 = psSourcePeriod;
+sPeriod1 = DIMNM(dmPer, DIMIX(dmPer, sPeriod2) - 1);
+sRptMeas = 'value';
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#*** STEP 1 - CLEAR TARGET CUBE 
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbME, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS****#
+#---------------------------------------------------------------------------------------------------------------------------
+# headline year
+SubsetCreate(dmHLYear, sMEView);
+SubsetElementInsert(dmHLYear, sMEView, psTargetHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sMEView);
+SubsetElementInsert(dmScenario, sMEView, psTargetScenario, 1);
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbME, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmHLYear, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmScenario, sMEView);
+
+VIEWZEROOUT (cbME, sMEView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbME, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#*** STEP 2 - CREATE SOURCE VIEW 
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmOC, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmFunc, sAEView);
+SUBSETDESTROY (dmReason, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmType, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS****#
+#---------------------------------------------------------------------------------------------------------------------------
+# headline year
+SubsetCreate(dmHLYear, sAEView);
+SubsetElementInsert(dmHLYear, sAEView, psSourceHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sAEView);
+SubsetElementInsert(dmScenario, sAEView, psSourceScenario, 1);
+
+# Status
+SubsetCreate(dmStatus, sAEView);
+SubsetElementInsert(dmStatus, sAEView, sStatus, 1);
+
+# Outcome
+SubsetCreate(dmOC, sAEView);
+SubsetElementInsert(dmOC, sAEView, sOC, 1);
+
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Function
+SubsetCreate(dmFunc, sAEView);
+SubsetElementInsert(dmFunc, sAEView, sFunc, 1);
+
+# Reason
+SubsetCreate(dmReason, sAEView);
+SubsetElementInsert(dmReason, sAEView, sReason, 1);
+
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Measure Code
+SubsetCreate(dmMeasCode, sAEView);
+SubsetElementInsert(dmMeasCode, sAEView, sMeasCode, 1);
+
+# Appropriation Type
+SubsetCreate(dmType, sAEView);
+SubsetElementInsert(dmType, sAEView, sAppType, 1);
+
+
+# Movement Account
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}, [' | dmMA |'].[editable] = "")}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Appropriation Item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Account
+#MDX = '{ EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}, { [' | dmAcc | '].[9000701], [' | dmAcc | '].[9000702]}) }';
+MDX = '{{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[9000130]}, ALL, RECURSIVE )}, 0)},{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[3800001]}, ALL, RECURSIVE )}, 0)},{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[9000003]}, ALL, RECURSIVE )}, 0)}} ';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# ID
+SubsetCreate(dmID, sAEView);
+SubsetElementInsert(dmID, sAEView, sID, 1);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Period
+SubsetCreate(dmPer, sAEView);
+SubsetElementInsert(dmPer, sAEView, sPeriod1, 1);
+SubsetElementInsert(dmPer, sAEView, sPeriod2, 2);
+
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbAE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmHLYear, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmScenario, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmStatus, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmOC, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmRE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmFunc, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmReason, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmSPP, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMeasCode, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmType, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMA, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmItem, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmProg, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmAcc, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmID, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmJur, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmPer, sAEView);
+
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbAE, sAEView, 1);
+ViewSuppressZeroesSet(cbAE, sAEView, 1);
+ViewExtractSkipCalcsSet(cbAE, sAEView, 0);
+ViewExtractSkipRuleValuesSet (cbAE, sAEView, 0);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sAEView;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+sAcctAppnReqQM = '';
+sMvtAcctAppnReqQM = '';
+
+
+sMACheck = ATTRS(dmAcc , vsAcc , 'movement account Required');
+sAcctAppnReqQM = ATTRS(dmAcc , vsAcc , 'Appropriation Type Required');
+sMvtAcctAppnReqQM = ATTRS(dmMA , vsMA , 'Appropriation Type Required');
+
+IF (sMACheck @= '');
+	IF(sAcctAppnReqQM @='');
+		sApprnItem = '-';
+	ELSE;
+		sApprnItem = vsSourceItem;
+	ENDIF;
+
+ELSE;
+	IF (sMvtAcctAppnReqQM @='');
+		sApprnItem = '-';
+	ELSE;
+		sApprnItem = vsSourceItem;
+	ENDIF;
+ENDIF;
+
+vsItem = sApprnItem;
+
+#------------------------------------------------------------------------------------
+## Need to skip any of the move account codes on provisions is they came in they have a tendence to turnup in the flat file but will not load.
+#------------------------------------------------------------------------------------
+IF ((ELISANC(dmAcc, '3345100', vsAcc) = 1) % (ELISANC(dmAcc, '3365100', vsAcc) = 1) % (ELISANC(dmAcc, '3380100', vsAcc) = 1));
+	 ITEMSKIP;
+ENDIF;
+
+sID = '0000A';
+
+# IF element is a PL account, or a BS account that requires a movement account but movement account is not equal to 7131, 7161 or 7211,
+# or account is 5234201 or 5234301 or 5234501
+
+#  CBMS-R - 
+#  ELISANC
+#5232300 - Gross student loans
+#5232100 - Gross other loans and advances
+#5232500 - Gross loans to other government agencies
+#5232200 - Loans to state and territory governments
+
+IF ((ELISANC(dmAcc, '9000130', vsAcc) = 1) % (ELISANC(dmAcc, '2332000', vsAcc) = 1) % (ELISANC(dmAcc, '9000003', vsAcc) = 1) %
+	((ATTRS(dmAcc, vsAcc, 'movement account required') @= 'Y') & ((vsMA @<> '7131' ) & (vsMA @<> '7161') & (vsMA @<> '7211'))) %
+	(vsAcc @= '5234201' % vsAcc @= '5234301' % vsAcc @= '5234501' % vsAcc @= '6100001'));
+
+	#------------------------------------------------------------------------------------
+	#--- THEN P00 = 0 and JUN = profile year
+	#------------------------------------------------------------------------------------
+	IF (vsPer @= sPeriod1);
+		ItemSkip;
+	ENDIF;
+
+	IF (vsPer @= sPeriod2);
+		MayYTDValue = CellGetN(cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, sID, vsJur, 'May YTD', sRptMeas);
+		IF (CELLISUPDATEABLE (cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, sID, vsJur, 'Jun', sRptMeas) = 1);
+			nOldValue = CELLGETN (cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, sID, vsJur, 'Jun', sRptMeas);
+			CellPutN((vnValue + nOldValue) - MayYTDValue, cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, sID, vsJur, 'Jun', sRptMeas);
+
+			#--------------------------------------------------------------
+			#---- Populate account template for account to show as extra line in data entry screen
+			#--------------------------------------------------------------
+#			CellPutN(1, cbME, psTargetHLYear, psTargetScenario, '-', vsSPP, '-', vsProg, vsItem, 'account template', sID, '-', 'Jun', sRptMeas);
+
+		ENDIF;
+	ENDIF;
+
+ENDIF;
+
+#------------------------------------------------------------------------------------
+# IF movement account is 7131 or 7161 or 7211 or account is 5234101
+#------------------------------------------------------------------------------------
+IF ((vsMA @= '7131') % (vsMA @= '7161') % (vsMA @= '7211') % (vsAcc @= '5234101'));
+
+	# THEN P00 =  profile year and Jun = 0
+	IF (vsPer @= sPeriod1);
+		ItemSkip;
+	ENDIF;
+
+	IF (vsPer @= sPeriod2);
+		nOldValue = CellGetN(cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, sID, vsJur, 'P00', sRptMeas);
+		IF (CellisUpdateable(cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, sID, vsJur, 'P00', sRptMeas) = 1);
+			CellPutN(vnValue + nOldValue, cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, sID, vsJur, 'P00', sRptMeas);
+
+			#--------------------------------------------------------------
+			#---- Populate account template for account to show as extra line in data entry screen
+			#--------------------------------------------------------------
+#			CellPutN(1, cbME, psTargetHLYear, psTargetScenario, '-', vsSPP, '-', vsProg, vsItem, 'account template', sID, '-', 'Jun', sRptMeas);
+
+		ENDIF;
+	ENDIF;
+ENDIF;
+
+#------------------------------------------------------------------------------------
+# IF account is a BS account that doesn't require a movement account (ie all remaining BS accounts)
+#------------------------------------------------------------------------------------
+IF ((ELISANC(dmAcc, '3800001', vsAcc) = 1) & (ATTRS(dmAcc, vsAcc, 'movement account required') @<> 'Y') & (vsAcc @<> '5234101' & 
+	vsAcc @<> '5234201' & vsAcc @<> '5234301' & vsAcc @<> '5234501'));
+
+	#------------------------------------------------------------------------------------
+	#--- THEN P00 = profile year minus 1 and Jun = profile year less previous year
+	#------------------------------------------------------------------------------------
+	IF (vsPer @= sPeriod1);
+
+		#------------------------------------------------------------------------------------
+		# P00
+		#------------------------------------------------------------------------------------
+		nOldValue = CellGetN(cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, sID, vsJur, 'P00', sRptMeas);
+
+		IF (CellisUpdateable(cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, sID, vsJur, 'P00', sRptMeas) =1);
+			CellPutN(vnValue + nOldValue, cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, sID, vsJur, 'P00', sRptMeas);
+
+			#--------------------------------------------------------------
+			#---- Populate account template for account to show as extra line in data entry screen
+			#--------------------------------------------------------------
+#			CellPutN(1, cbME, psTargetHLYear, psTargetScenario, '-', vsSPP, '-', vsProg, vsItem, 'account template', sID, '-', 'Jun', sRptMeas);
+		ENDIF;
+
+		#------------------------------------------------------------------------------------
+		# Jun
+		#------------------------------------------------------------------------------------
+		nOldValue = CellGetN(cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, sID, vsJur, 'Jun', sRptMeas);
+	
+		IF (CellisUpdateable(cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, sID, vsJur, 'Jun', sRptMeas) = 1);
+			CellPutN(nOldValue - vnValue, cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, sID, vsJur, 'Jun', sRptMeas);
+
+			#--------------------------------------------------------------
+			#---- Populate account template for account to show as extra line in data entry screen
+			#--------------------------------------------------------------
+#			CellPutN(1, cbME, psTargetHLYear, psTargetScenario, '-', vsSPP, '-', vsProg, vsItem, 'account template', sID, '-', 'Jun', sRptMeas);
+
+		ENDIF;
+
+	ENDIF;
+
+	IF (vsPer @= sPeriod2);
+		nOldValue = CellGetN(cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, sID, vsJur, 'Jun', sRptMeas);
+		IF (CellisUpdateable(cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, sID, vsJur, 'Jun', sRptMeas) = 1);
+			CellPutN(vnValue + nOldValue, cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, sID, vsJur, 'Jun', sRptMeas);
+
+			#--------------------------------------------------------------
+			#---- Populate account template for account to show as extra line in data entry screen
+			#--------------------------------------------------------------
+#			CellPutN(1, cbME, psTargetHLYear, psTargetScenario, '-', vsSPP, '-', vsProg, vsItem, 'account template', sID, '-', 'Jun', sRptMeas);
+
+		ENDIF;
+
+	ENDIF;
+
+ENDIF;
+
+
+#--------------------------------------------------------------
+#---- Populate account template for account to show as extra line in data entry screen
+#--------------------------------------------------------------
+IF (vsAcc @<> '6100001');
+	CellPutN(1, cbME, psTargetHLYear, psTargetScenario, '-', vsSPP, '-', vsProg, '-', 'account template', sID, '-', 'Jun', sRptMeas);
+ENDIF;
+
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmOC, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmFunc, sAEView);
+SUBSETDESTROY (dmReason, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmType, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+#endregion

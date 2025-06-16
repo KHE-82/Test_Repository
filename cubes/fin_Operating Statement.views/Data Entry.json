@@ -1,0 +1,274 @@
+{
+	"@type":"NativeView",
+	"Name":"Data Entry",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Month')/Hierarchies('Month')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Year')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Jul')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Aug')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Sep')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Oct')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Nov')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Dec')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Jan')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Feb')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Mar')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Apr')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('May')"
+					},
+					{
+						"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Jun')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('GL Code')/Hierarchies('GL Code')"
+				},
+				"Alias":"Code and Description",
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('Communications')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42800')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42801')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42802')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42803')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42804')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42805')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42807')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42808')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42820')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42821')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42822')"
+					},
+					{
+						"@id":"Dimensions('GL Code')/Hierarchies('GL Code')/Elements('42823')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Year')/Hierarchies('Year')"
+				},
+				"Expression":"TM1SubsetAll([Year])"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Year')/Hierarchies('Year')/Elements('2022-2023')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('All Cost Centres')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('Departmental')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('CORPSUPP')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('LEGAL')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2001')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2002')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2003')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2004')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2005')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2006')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2007')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2008')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2009')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2010')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('CFO')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C3001')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C3002')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('CORPBUS')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C1001')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('DISTRIBUTION')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('DOMESTIC')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('A2001')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('OVERSEAS')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('SUPPORT')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('INFRASTRUCTURE')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('STRATEGY')"
+					},
+					{
+						"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('Administered')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2001')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Scenario')/Hierarchies('Scenario')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Actual')"
+					},
+					{
+						"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Budget')"
+					},
+					{
+						"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Variance')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Budget')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('fin_Operating Statment Measure')/Hierarchies('fin_Operating Statment Measure')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('fin_Operating Statment Measure')/Hierarchies('fin_Operating Statment Measure')/Elements('value')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('fin_Operating Statment Measure')/Hierarchies('fin_Operating Statment Measure')/Elements('value')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":false,
+	"SuppressEmptyRows":false,
+	"FormatString":"0.#########"
+}

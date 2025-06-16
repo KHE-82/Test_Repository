@@ -1,0 +1,93 @@
+{
+	"@type":"NativeView",
+	"Name":"BL Test Data Entry",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Month')/Hierarchies('Month')"
+				},
+				"Expression":"{[Month].[Month].[Year], [Month].[Month].[Jul], [Month].[Month].[Aug], [Month].[Month].[Sep], [Month].[Month].[Oct], [Month].[Month].[Nov], [Month].[Month].[Dec], [Month].[Month].[Jan], [Month].[Month].[Feb], [Month].[Month].[Mar], [Month].[Month].[Apr], [Month].[Month].[May], [Month].[Month].[Jun]}"
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('GL Code')/Hierarchies('GL Code')"
+				},
+				"Alias":"Code and Description",
+				"Expression":"{[GL Code].[GL Code].[Communications], [GL Code].[GL Code].[42800], [GL Code].[GL Code].[42801], [GL Code].[GL Code].[42802], [GL Code].[GL Code].[42803], [GL Code].[GL Code].[42804], [GL Code].[GL Code].[42805], [GL Code].[GL Code].[42807], [GL Code].[GL Code].[42808], [GL Code].[GL Code].[42820], [GL Code].[GL Code].[42821], [GL Code].[GL Code].[42822], [GL Code].[GL Code].[42823]}"
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Year')/Hierarchies('Year')"
+				},
+				"Expression":"{TM1SubsetAll([Year])}"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Year')/Hierarchies('Year')/Elements('2022-2023')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')"
+				},
+				"Expression":"{[Cost Centre].[Cost Centre].[All Cost Centres], [Cost Centre].[Cost Centre].[Departmental], [Cost Centre].[Cost Centre].[CORPSUPP], [Cost Centre].[Cost Centre].[LEGAL], [Cost Centre].[Cost Centre].[C2001], [Cost Centre].[Cost Centre].[C2002], [Cost Centre].[Cost Centre].[C2003], [Cost Centre].[Cost Centre].[C2004], [Cost Centre].[Cost Centre].[C2005], [Cost Centre].[Cost Centre].[C2006], [Cost Centre].[Cost Centre].[C2007], [Cost Centre].[Cost Centre].[C2008], [Cost Centre].[Cost Centre].[C2009], [Cost Centre].[Cost Centre].[C2010], [Cost Centre].[Cost Centre].[CFO], [Cost Centre].[Cost Centre].[C3001], [Cost Centre].[Cost Centre].[C3002], [Cost Centre].[Cost Centre].[CORPBUS], [Cost Centre].[Cost Centre].[C1001], [Cost Centre].[Cost Centre].[DISTRIBUTION], [Cost Centre].[Cost Centre].[DOMESTIC], [Cost Centre].[Cost Centre].[A2001], [Cost Centre].[Cost Centre].[OVERSEAS], [Cost Centre].[Cost Centre].[SUPPORT], [Cost Centre].[Cost Centre].[INFRASTRUCTURE], [Cost Centre].[Cost Centre].[STRATEGY], [Cost Centre].[Cost Centre].[Administered]}"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Cost Centre')/Hierarchies('Cost Centre')/Elements('C2001')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Scenario')/Hierarchies('Scenario')"
+				},
+				"Expression":"{[Scenario].[Scenario].[Actual], [Scenario].[Scenario].[Budget], [Scenario].[Scenario].[Variance]}"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('Scenario')/Hierarchies('Scenario')/Elements('Budget')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('fin_Operating Statment Measure')/Hierarchies('fin_Operating Statment Measure')"
+				},
+				"Expression":"{[fin_Operating Statment Measure].[fin_Operating Statment Measure].[value]}"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('fin_Operating Statment Measure')/Hierarchies('fin_Operating Statment Measure')/Elements('value')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":false,
+	"SuppressEmptyRows":false,
+	"FormatString":"0.00"
+}

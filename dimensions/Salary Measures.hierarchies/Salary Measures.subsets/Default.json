@@ -1,0 +1,115 @@
+{
+	"@type":"Subset",
+	"Name":"Default",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Employee Name')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Position ID')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Position Description')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Salary Level')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('FTE')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Hourly Rate')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Valid Salary Level')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Salary Amount')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Annual Leave Drawdown')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Work in Progress')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Long Service Leave')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Annual Leave')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('ComCare')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Superannuation')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Performance Pay')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Training and Development')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Telecommunications')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Information Technology')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Accommodation')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Other')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('SES Vehicle')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Salary Rate (CA)')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Salary Rate (Inc)')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Salary Rate')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Work in Progress')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Long Service Leave')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('ComCare')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Performance Pay')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Training and Development')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Telecommunications')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Information Technology')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Superannuation')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Annual Leave (Days Provided)')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Annual Leave (Days Drawdown)')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('Annual Leave')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')/Hierarchies('Salary Measures')/Elements('SES Vehicle')"
+		}
+	]
+}

@@ -1,0 +1,51 @@
+{
+	"@type":"Process",
+	"Name":"sys_ME Data Entry - Clear Profiles",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_ME Data Entry - Clear Profiles.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psHLYear",
+			"Prompt":"",
+			"Value":"HL2018-2019",
+			"Type":"String"
+		},
+		{
+			"Name":"psScenario",
+			"Prompt":"",
+			"Value":"current",
+			"Type":"String"
+		},
+		{
+			"Name":"psNatManager",
+			"Prompt":"",
+			"Value":"H&CS Program Management",
+			"Type":"String"
+		},
+		{
+			"Name":"psID",
+			"Prompt":"",
+			"Value":"00001",
+			"Type":"String"
+		},
+		{
+			"Name":"psFile",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

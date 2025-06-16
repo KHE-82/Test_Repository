@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"fin_Cash Flow Measure",
+	"Hierarchies@Code.links":
+	[
+		"fin_Cash Flow Measure.hierarchies/fin_Cash Flow Measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('fin_Cash Flow Measure')/Hierarchies('fin_Cash Flow Measure')"
+	}
+}

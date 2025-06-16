@@ -1,0 +1,19 @@
+{
+	"@type":"Subset",
+	"Name":"Default",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('Balance Sheet Measure')/Hierarchies('Balance Sheet Measure')/Elements('Assumption factor')"
+		},
+		{
+			"@id":"Dimensions('Balance Sheet Measure')/Hierarchies('Balance Sheet Measure')/Elements('Assumed Value')"
+		},
+		{
+			"@id":"Dimensions('Balance Sheet Measure')/Hierarchies('Balance Sheet Measure')/Elements('Source Value')"
+		},
+		{
+			"@id":"Dimensions('Balance Sheet Measure')/Hierarchies('Balance Sheet Measure')/Elements('Source GL Code')"
+		}
+	]
+}

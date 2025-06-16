@@ -1,0 +1,16 @@
+{
+	"@type":"Subset",
+	"Name":"Default",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('Score')/Hierarchies('Score')/Elements('Score')"
+		},
+		{
+			"@id":"Dimensions('Score')/Hierarchies('Score')/Elements('Pass')"
+		},
+		{
+			"@id":"Dimensions('Score')/Hierarchies('Score')/Elements('Fail')"
+		}
+	]
+}

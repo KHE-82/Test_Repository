@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"Default",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('HR_HR Reporting Measure')/Hierarchies('HR_HR Reporting Measure')/Elements('value')"
+		}
+	]
+}

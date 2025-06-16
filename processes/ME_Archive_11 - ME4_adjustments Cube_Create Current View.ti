@@ -1,0 +1,59 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+# This process creates a view of all data in the CURRENT scenario in the me adjustments cube for the current ME year
+
+sCube = 'ME4_adjustments';
+sView = '$ME4Archive';
+sSubset = sView;
+sCube2 = 'ME4_reporting';
+sCube3 = 'ME balance sheet';
+sCube4 = 'MEA dept output attributions';
+
+sHLYear = 'HL' | ATTRS('variables', 'me archive year', 'old value');
+sScenario = ATTRS('variables', 'me archive scenario', 'old value');
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy(sCube, sView);
+ViewDestroy(sCube2, sView);
+ViewDestroy(sCube3, sView);
+ViewDestroy(sCube4, sView);
+SubsetDestroy('headline year', sSubset);
+SubsetDestroy('scenario', sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate('headline year', sSubset);
+SubsetElementInsert('headline year', sSubset, sHLYear, 1);
+
+# Scenario
+SubsetCreate('scenario', sSubset);
+SubsetElementInsert('scenario', sSubset, sScenario, 1);
+
+#****BUILD VIEW****#
+ViewCreate(sCube, sView);
+
+ViewSubsetAssign(sCube, sView, 'headline year', sSubset);
+ViewSubsetAssign(sCube, sView, 'scenario', sSubset);
+
+ViewSetSkipZeroes(sCube, sView, 1);
+ViewSetSkipCalcs(sCube, sView, 1);
+ViewExtractSkipRuleValuesSet (sCube, sView, 0);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

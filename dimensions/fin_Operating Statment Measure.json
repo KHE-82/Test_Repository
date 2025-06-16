@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"fin_Operating Statment Measure",
+	"Hierarchies@Code.links":
+	[
+		"fin_Operating Statment Measure.hierarchies/fin_Operating Statment Measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('fin_Operating Statment Measure')/Hierarchies('fin_Operating Statment Measure')"
+	}
+}

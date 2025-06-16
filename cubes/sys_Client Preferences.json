@@ -1,0 +1,14 @@
+{
+	"@type":"Cube",
+	"Name":"sys_Client Preferences",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('}Clients')"
+		},
+		{
+			"@id":"Dimensions('sys_Client Preferences Measure')"
+		}
+	],
+	"Views@Code.links":[]
+}

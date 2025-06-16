@@ -1,0 +1,104 @@
+{
+	"@type":"Hierarchy",
+	"Name":"HR Measure",
+	"Elements":
+	[
+		{
+			"Name":"Headcount",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Full Time",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Part Time",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Temporary",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FTE",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Training $ per head",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Sick days (duration)",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Sick days (occurences)",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Bradford Factor",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Voluntary Separations",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Staff turnover rate",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Annual Leave Days Accrued",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"LSL Days Accrued",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Sick Days Accrued",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Accrued Entitlements (Days)",
+			"Type":"Consolidated"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Headcount",
+			"ComponentName":"Full Time",
+			"Weight":1
+		},
+		{
+			"ParentName":"Headcount",
+			"ComponentName":"Part Time",
+			"Weight":1
+		},
+		{
+			"ParentName":"Headcount",
+			"ComponentName":"Temporary",
+			"Weight":1
+		},
+		{
+			"ParentName":"Accrued Entitlements (Days)",
+			"ComponentName":"Annual Leave Days Accrued",
+			"Weight":1
+		},
+		{
+			"ParentName":"Accrued Entitlements (Days)",
+			"ComponentName":"LSL Days Accrued",
+			"Weight":1
+		},
+		{
+			"ParentName":"Accrued Entitlements (Days)",
+			"ComponentName":"Sick Days Accrued",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"HR Measure.subsets/Default.json"
+	]
+}

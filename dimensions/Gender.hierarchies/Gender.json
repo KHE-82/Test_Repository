@@ -1,0 +1,33 @@
+{
+	"@type":"Hierarchy",
+	"Name":"Gender",
+	"Elements":
+	[
+		{
+			"Name":"All Genders",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Male",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Female",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"All Genders",
+			"ComponentName":"Male",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Genders",
+			"ComponentName":"Female",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":[]
+}

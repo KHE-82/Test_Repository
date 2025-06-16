@@ -1,0 +1,30 @@
+{
+	"@type":"Cube",
+	"Name":"fin_Cash Flow",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('Year')"
+		},
+		{
+			"@id":"Dimensions('Scenario')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')"
+		},
+		{
+			"@id":"Dimensions('GL Code')"
+		},
+		{
+			"@id":"Dimensions('Month')"
+		},
+		{
+			"@id":"Dimensions('fin_Cash Flow Measure')"
+		}
+	],
+	"Rules@Code.link":"fin_Cash Flow.rules",
+	"Views@Code.links":
+	[
+		"fin_Cash Flow.views/Power Reporting - Exercise 6.json"
+	]
+}

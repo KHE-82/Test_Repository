@@ -1,0 +1,28 @@
+{
+	"@type":"Hierarchy",
+	"Name":"Time Measures",
+	"Elements":
+	[
+		{
+			"Name":"Period Closed",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Days",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Weeks",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Pays",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Monthly",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

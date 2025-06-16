@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"zcreateclient",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"zcreateclient.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psuser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

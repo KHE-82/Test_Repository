@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_Client Preferences Measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_Client Preferences Measure.hierarchies/sys_Client Preferences Measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_Client Preferences Measure')/Hierarchies('sys_Client Preferences Measure')"
+	}
+}

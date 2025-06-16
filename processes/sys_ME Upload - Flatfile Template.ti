@@ -1,0 +1,355 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_ME Upload - Flatfile Template
+#**** DESCRIPTION:       This process creates a view from the AE Adj cube and post data to ME4_reporting cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 28/02/2018    KG             Initial Revision
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#--------------------------------------------------------------------------------------------------------------------------
+#*** DIMENSION ATTRIBUTES
+#--------------------------------------------------------------------------------------------------------------------------
+dmReasonAttr = '}ElementAttributes_reason';
+dmAccAttr = '}ElementAttributes_account';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+dmProgMeas = snProg | ' measure';
+
+dmNatManager = 'sys_ME national manager';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE MONTHLY ESTIMATES CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+#cbME = 'ME reporting';
+#dmMEMeas = 'ME reporting measure';
+cbME = 'ME4_adjustments';
+dmMEMeas = 'ME4_adjustment_measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+sImpFilePath = ATTRS(dmVar, 'sys_ImpFileExceptionLogs', ' value');
+#sErrorFile = sImpFilePath |  ' ME upload extract failed.csv'
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+	sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+	lScan = SCAN('/',sUser) + 1;
+	sUser = SUBST(sUser, lScan, 9);
+ELSE;
+	sUser = TM1User();
+ENDIF;
+
+
+sErrorFile = sImpFilePath |  sUser | ' ME upload extract failed.csv';
+
+sMEView = sUser | ' $MELoadCSV';
+
+sStatus = 'Total approved';
+sOC = 'Total outcomes';
+sReason = 'Total reason';
+sFunc = 'Total functions';
+sSPP = 'Total SPP';
+sAppType = 'Total approp types';
+sItem = 'Total approp item';
+sMeasCode = 'Total Measures';
+sID = 'Total IDs';
+
+sRptMeas = 'value';
+
+#*** FILE VALIDATION FLAG VARIABLES
+nLine = 1;
+nTotalValid = 0;
+
+
+
+#------------------------------------------------
+#---- Program Subset Used in View
+#------------------------------------------------
+sProgSubset = 'sysME_' | psNatManager;
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#*** STEP 1 - CLEAR VALIDATION 
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ATTRPUTS ('', dmVar, 'sys_ImpFileValidation', 'value');
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#*** STEP 2 - CLEAR TARGET CUBE 
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbME, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+SUBSETDESTROY (dmID, sMEView);
+#SUBSETDESTROY (dmProg, sMEView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS****#
+#---------------------------------------------------------------------------------------------------------------------------
+# headline year
+SubsetCreate(dmHLYear, sMEView);
+SubsetElementInsert(dmHLYear, sMEView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sMEView);
+SubsetElementInsert(dmScenario, sMEView, psScenario, 1);
+
+
+# ID
+SubsetCreate(dmID, sMEView);
+SubsetElementInsert(dmID, sMEView, psID, 1);
+
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbME, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmHLYear, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmScenario, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmProg, sProgSubset);
+VIEWSUBSETASSIGN (cbME, sMEView, dmID, sMEView);
+
+VIEWZEROOUT (cbME, sMEView);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbME, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+SUBSETDESTROY (dmID, sMEView);
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#*** STEP 3 - DEFINE DATA SOURCE
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+DATASOURCENAMEFORSERVER = psFile;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#-----------------------------------------------------------------------------
+#--- SKIP LINE IF IT DOES NOT HAVE FF FLAG
+#-----------------------------------------------------------------------------
+IF (vsFFFlag @<> 'FF');
+	ITEMSKIP;
+ENDIF;
+
+#-----------------------------------------------------------------------------
+#--- PERFORM A VALIDATION TEST 
+#-----------------------------------------------------------------------------
+nNatManagerValid = 0;
+nHLYearValid = 0;
+nScenarioValid = 0;
+
+#vsHLYear = 'HL2021-2022';
+
+#-----------------------------------------------------------------------------
+#--- Validation Checks
+#-----------------------------------------------------------------------------
+#-----------------------------------
+#---- Headline Year Check
+#-----------------------------------
+IF (psHLYear @<> vsHLYear);
+	nHLYearValid = nHLYearValid + 1;
+ENDIF;
+
+#-----------------------------------
+#---- Scenario Check
+#-----------------------------------
+IF (psScenario @<> vsScenario);
+	nScenarioValid = nScenarioValid + 1;
+ENDIF;
+
+#-----------------------------------
+#---- National Manager Check
+#-----------------------------------
+nIndexNatManager = DIMIX (dmNatManager, psNatManager);
+nIndexNatManagerData = DIMIX (dmNatManager, vsNatManager);
+IF (nIndexNatManager <> nIndexNatManagerData);
+#IF (psNatManager @<> vsNatManager);
+	nNatManagerValid = nNatManagerValid + 1;
+ENDIF;
+
+
+#--------------------------------------------------------------------------------------------------------------------------------------
+#--- VALIDATION CHECKS 
+nValid = nHLYearValid + nScenarioValid + nNatManagerValid;
+nTotalValid = nTotalValid + nValid;
+
+IF (nValid > 0);
+	IF (nHLYearValid >0);
+#		ASCIIOUTPUT (sImpFilePath | ' ME upload extract failed.csv', 'Headline Year does not match selected parameters error on line ', NUMBERTOSTRING(nLine), vsHLYear);
+		ASCIIOUTPUT (sErrorFile, 'Headline Year does not match selected parameters error on line ', NUMBERTOSTRING(nLine), vsHLYear);
+	ENDIF;
+
+	IF (nScenarioValid >0);
+#		ASCIIOUTPUT (sImpFilePath | ' ME upload extract failed.csv', 'Scenario does not match selected parameters error on line ', NUMBERTOSTRING(nLine), vsScenario);
+		ASCIIOUTPUT (sErrorFile, 'Scenario does not match selected parameters error on line ', NUMBERTOSTRING(nLine), vsScenario);
+	ENDIF;
+
+	IF (nNatManagerValid >0);
+#		ASCIIOUTPUT (sImpFilePath | ' ME upload extract failed.csv', 'National Manager does not match selected parameters error on line ', NUMBERTOSTRING(nLine), vsNatManager);
+		ASCIIOUTPUT (sErrorFile, 'National Manager does not match selected parameters error on line ', NUMBERTOSTRING(nLine), vsNatManager);
+	ENDIF;
+
+ENDIF;
+
+nLine = nLine + 1;
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#-----------------------------------------------------------------------------
+#--- SKIP LINE IF IT DOES NOT HAVE FF FLAG
+#-----------------------------------------------------------------------------
+IF (vsFFFlag @<> 'FF');
+	ITEMSKIP;
+ENDIF;
+
+
+
+#-----------------------------------------------------------------------------
+#--- SKIP DATA ENTRY IF SELECTED FILE LINES DOES NOT MATCH PARAMETERS
+#-----------------------------------------------------------------------------
+IF (nTotalValid > 0);
+	ATTRPUTS ('FAIL', dmVar, 'sys_ImpFileValidation', 'value');
+#	PROCESSERROR;
+	ITEMSKIP;
+ENDIF;
+
+#vsHLYear = 'HL2021-2022';
+vsID = '00001';
+
+#-----------------------------------------------------------------------------
+#--- POPULATE CUBE
+#-----------------------------------------------------------------------------
+
+#---- JUL
+IF (CELLISUPDATEABLE (cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Jul', sRptMeas) = 1);
+	CELLPUTN (ROUNDP(vnJul,0), cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Jul', sRptMeas);
+ENDIF;
+
+#--- AUG
+IF (CELLISUPDATEABLE (cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Aug', sRptMeas) = 1);
+	CELLPUTN (ROUNDP(vnAug,0), cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Aug', sRptMeas);
+ENDIF;
+
+#--- SEP
+IF (CELLISUPDATEABLE (cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Sep', sRptMeas) = 1);
+	CELLPUTN (ROUNDP(vnSep,0), cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Sep', sRptMeas);
+ENDIF;
+
+#--- OCT
+IF (CELLISUPDATEABLE (cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Oct', sRptMeas) = 1);
+	CELLPUTN (ROUNDP(vnOct,0), cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Oct', sRptMeas);
+ENDIF;
+
+#--- NOV
+IF (CELLISUPDATEABLE (cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Nov', sRptMeas) = 1);
+	CELLPUTN (ROUNDP(vnNov,0), cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Nov', sRptMeas);
+ENDIF;
+
+#--- DEC
+IF (CELLISUPDATEABLE (cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Dec', sRptMeas) = 1);
+	CELLPUTN (ROUNDP(vnDec,0), cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Dec', sRptMeas);
+ENDIF;
+
+#--- JAN
+IF (CELLISUPDATEABLE (cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Jan', sRptMeas) = 1);
+	CELLPUTN (ROUNDP(vnJan,0), cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Jan', sRptMeas);
+ENDIF;
+
+#--- FEB
+IF (CELLISUPDATEABLE (cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Feb', sRptMeas) = 1);
+	CELLPUTN (ROUNDP(vnFeb,0), cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Feb', sRptMeas);
+ENDIF;
+
+#--- MAR
+IF (CELLISUPDATEABLE (cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Mar', sRptMeas) = 1);
+	CELLPUTN (ROUNDP(vnMar,0), cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Mar', sRptMeas);
+ENDIF;
+
+#--- APR
+IF (CELLISUPDATEABLE (cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Apr', sRptMeas) = 1);
+	CELLPUTN (ROUNDP(vnApr,0), cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Apr', sRptMeas);
+ENDIF;
+
+#--- MAY
+IF (CELLISUPDATEABLE (cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'May', sRptMeas) = 1);
+	CELLPUTN (ROUNDP(vnMay,0), cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'May', sRptMeas);
+ENDIF;
+
+#--- JUN
+IF (CELLISUPDATEABLE (cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Jun', sRptMeas) = 1);
+	CELLPUTN (ROUNDP(vnJun,0), cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Jun', sRptMeas);
+ENDIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

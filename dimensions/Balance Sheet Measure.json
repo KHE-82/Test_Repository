@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"Balance Sheet Measure",
+	"Hierarchies@Code.links":
+	[
+		"Balance Sheet Measure.hierarchies/Balance Sheet Measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('Balance Sheet Measure')/Hierarchies('Balance Sheet Measure')"
+	}
+}

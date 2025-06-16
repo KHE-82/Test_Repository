@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"ME_Archive_14 - ME4_reporting_Create Current View",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"ME_Archive_14 - ME4_reporting_Create Current View.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[]
+}

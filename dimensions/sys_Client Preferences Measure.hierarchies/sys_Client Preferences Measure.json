@@ -1,0 +1,184 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_Client Preferences Measure",
+	"Elements":
+	[
+		{
+			"Name":"Increment Salary Level",
+			"Type":"String"
+		},
+		{
+			"Name":"Reporting Entity",
+			"Type":"String"
+		},
+		{
+			"Name":"Reporting Pay Period",
+			"Type":"String"
+		},
+		{
+			"Name":"Reporting Employee Number",
+			"Type":"String"
+		},
+		{
+			"Name":"Month",
+			"Type":"String"
+		},
+		{
+			"Name":"Year",
+			"Type":"String"
+		},
+		{
+			"Name":"Primary Drill Dimension",
+			"Type":"String"
+		},
+		{
+			"Name":"Percentage Change",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Contractor Percentage Change",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Budget Year",
+			"Type":"String"
+		},
+		{
+			"Name":"Budget Scenario",
+			"Type":"String"
+		},
+		{
+			"Name":"Budget Comparative Year 1",
+			"Type":"String"
+		},
+		{
+			"Name":"Budget Comparative Year 2",
+			"Type":"String"
+		},
+		{
+			"Name":"Budget Comparative Scenario 1",
+			"Type":"String"
+		},
+		{
+			"Name":"Budget Comparative Scenario 2",
+			"Type":"String"
+		},
+		{
+			"Name":"Budget Cost Centre Parent",
+			"Type":"String"
+		},
+		{
+			"Name":"Budget Cost Centre",
+			"Type":"String"
+		},
+		{
+			"Name":"Current Budget Entry Book",
+			"Type":"String"
+		},
+		{
+			"Name":"Reporting Scenario 1",
+			"Type":"String"
+		},
+		{
+			"Name":"Reporting Scenario 2",
+			"Type":"String"
+		},
+		{
+			"Name":"Reporting Scenario 3",
+			"Type":"String"
+		},
+		{
+			"Name":"Reporting Year",
+			"Type":"String"
+		},
+		{
+			"Name":"Reporting Budget Scenario",
+			"Type":"String"
+		},
+		{
+			"Name":"Reporting Cost Centre Parent",
+			"Type":"String"
+		},
+		{
+			"Name":"Reporting Cost Centre",
+			"Type":"String"
+		},
+		{
+			"Name":"Reporting Forecast Scenario",
+			"Type":"String"
+		},
+		{
+			"Name":"Reporting Project",
+			"Type":"String"
+		},
+		{
+			"Name":"Reporting Program",
+			"Type":"String"
+		},
+		{
+			"Name":"Reporting Internal Trading",
+			"Type":"String"
+		},
+		{
+			"Name":"Reporting Month",
+			"Type":"String"
+		},
+		{
+			"Name":"bud_Salary Row Dimension",
+			"Type":"String"
+		},
+		{
+			"Name":"Source Year",
+			"Type":"String"
+		},
+		{
+			"Name":"Source Scenario",
+			"Type":"String"
+		},
+		{
+			"Name":"Source Cost Centre",
+			"Type":"String"
+		},
+		{
+			"Name":"Target Year",
+			"Type":"String"
+		},
+		{
+			"Name":"Target Scenario",
+			"Type":"String"
+		},
+		{
+			"Name":"Target Cost Centre",
+			"Type":"String"
+		},
+		{
+			"Name":"Source Module",
+			"Type":"String"
+		},
+		{
+			"Name":"Target Module",
+			"Type":"String"
+		},
+		{
+			"Name":"Source Account",
+			"Type":"String"
+		},
+		{
+			"Name":"Budget Cost Category",
+			"Type":"String"
+		},
+		{
+			"Name":"Email Address",
+			"Type":"String"
+		},
+		{
+			"Name":"Adjustment Scenario",
+			"Type":"String"
+		},
+		{
+			"Name":"Validation Message",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

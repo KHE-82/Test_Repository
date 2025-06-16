@@ -1,0 +1,36 @@
+{
+	"@type":"Hierarchy",
+	"Name":"Text",
+	"Elements":
+	[
+		{
+			"Name":"Day",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Comment 1",
+			"Type":"String"
+		},
+		{
+			"Name":"File 1",
+			"Type":"String"
+		},
+		{
+			"Name":"File 2",
+			"Type":"String"
+		},
+		{
+			"Name":"File 3",
+			"Type":"String"
+		},
+		{
+			"Name":"File 4",
+			"Type":"String"
+		},
+		{
+			"Name":"File 5",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

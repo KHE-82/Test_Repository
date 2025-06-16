@@ -1,0 +1,76 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+# This process clears the destination area where the P0 and June data is going to be loaded.  It has had to be done as a separate
+# process rather than using the ViewZeroOut command, because there is a bug in TM1 where it appears the SkipRules command is not working.
+
+#**** CLEAR DESTINATION CELLS
+sCube = 'ME4_reporting';
+sView = '$clear';
+sSubset = sView;
+sHLYear = 'HL' | ATTRS('variables', 'ME year', 'value');
+sScenario = 'current';
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy(sCube, sView);
+SubsetDestroy('headline year', sSubset);
+SubsetDestroy('scenario', sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate('headline year', sSubset);
+SubsetElementInsert('headline year', sSubset, sHLYear, 1);
+
+# scenario
+SubsetCreate('scenario', sSubset);
+SubsetElementInsert('scenario', sSubset, sScenario, 1);
+
+#****BUILD VIEW****#
+ViewCreate(sCube, sView);
+ViewSubsetAssign(sCube, sView, 'headline year', sSubset);
+ViewSubsetAssign(sCube, sView, 'scenario', sSubset);
+
+ViewSetSkipZeroes(sCube, sView, 1);
+ViewSetSkipCalcs(sCube, sView, 1);
+ViewExtractSkipRuleValuesSet (sCube, sView, 1);
+
+DATASOURCETYPE='VIEW';
+DATASOURCENAMRFORSERVER=sCube;
+DATASOURCECUBEVIEW=sView;
+
+
+ViewZeroOut(sCube, sView);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#IF((sPeriod @<>'P00') & (sPeriod @<>'Jun'));
+#asciioutput('ian.txt',sPeriod);
+#	Itemskip;
+
+#ENDIF;
+
+
+#          IF (CellisUpdateable(sCube, sHLYear, sScenario, sStatus, sRE, sFunc, sMA, sProg, sAcc, sID, sJur, sPeriod) = 1);
+#               CellPutN(0, sCube, sHLYear, sScenario, sStatus, sRE, sFunc, sMA, sProg, sAcc, sID, sJur, sPeriod);
+#          ENDIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy(sCube, sView);
+SubsetDestroy('headline year', sHLYear);
+SubsetDestroy('scenario', sScenario);
+#endregion

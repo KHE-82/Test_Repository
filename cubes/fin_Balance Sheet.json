@@ -1,0 +1,30 @@
+{
+	"@type":"Cube",
+	"Name":"fin_Balance Sheet",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('Year')"
+		},
+		{
+			"@id":"Dimensions('Scenario')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')"
+		},
+		{
+			"@id":"Dimensions('GL Code')"
+		},
+		{
+			"@id":"Dimensions('Month BS')"
+		},
+		{
+			"@id":"Dimensions('fin_Balance Sheet Measure')"
+		}
+	],
+	"Rules@Code.link":"fin_Balance Sheet.rules",
+	"Views@Code.links":
+	[
+		"fin_Balance Sheet.views/Exploration with Calculation.json"
+	]
+}

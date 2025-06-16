@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"HR_HR Reporting Measure",
+	"Hierarchies@Code.links":
+	[
+		"HR_HR Reporting Measure.hierarchies/HR_HR Reporting Measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('HR_HR Reporting Measure')/Hierarchies('HR_HR Reporting Measure')"
+	}
+}

@@ -1,0 +1,3 @@
+#region Prolog
+CellPutS(psSrc,'sys_Client Preferences', 'Admin', 'Year' );
+#endregion

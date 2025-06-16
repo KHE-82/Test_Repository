@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_Calendar Measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_Calendar Measure.hierarchies/sys_Calendar Measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_Calendar Measure')/Hierarchies('sys_Calendar Measure')"
+	}
+}

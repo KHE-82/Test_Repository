@@ -1,0 +1,305 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               SME4_PopulateTransfertofromOPA_JNL
+#**** DESCRIPTION:       This process creates an adjustment in the ME4 Adjustments cube into the ME4_Reporting
+#****
+#****
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 28/11/2017	IRR	  Initial Revision
+#****
+#***********************************************************************************************************************
+
+
+
+sCube = 'ME4_Adjustments';
+sCubeDest = 'ME4_Reporting';
+sView = '$LoadAdjustmentforCMM';
+sView = '$LoadAdjustmentforCMM_clr';
+
+sSubset = sView;
+
+#sHLYear = 'HL' |ATTRS('variables', 'ME year', 'value');
+sScenario = ATTRS('variables', 'me scenario', 'value');
+sME_MAPeriod = ATTRS('variables', 'ME Actuals Period', 'value');
+
+#*** DECLARE DIMENSIONS ***#
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmRelatedEntity = 'related entity';
+dmspp = 'spp';
+dmMovAcc = 'movement account';
+dmProg = 'programme';
+dmApproItem = 'appropriation item';
+dmAcc = 'account';
+dmId = 'id';
+dmJuri = 'jurisdiction';
+dmPeriod = 'period';
+dmMeas = 'ME4_adjustments_measure';
+dmMeasRpt = 'ME4_reporting_measure';
+
+sTrgScenario = 'Current';
+sDestID = '0000B';
+dmVarMeas = 'Value';
+
+####  Destination View
+## No clear as we are going to increment on top
+
+
+
+### SOURCE VIEW
+#*** DECLARE SYSTEM DIMENSIONS ***#
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#**** DECLARE VARIABLES ****#
+sView = '$LoadData_Into_ME4_Adjustments';
+sSubset = sView;
+
+sHLYear =  'HL' | ATTRS (dmVar, 'ME year', 'value');
+sScenario = 'CMM Reco';
+sRelEntity = '49800';
+sSpp = '-';
+
+sMovAcc = '7593';
+sMovAcc1 = '7592';
+sMovAcc2 = '-';
+
+sCFAcc = '6211006';
+sCFAcc1 = '6212008';
+
+sAccount = '4100001';
+sId = '00001';
+sJurisdiction = '-';
+sMeasure = 'Value';
+
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy (sCube, sView);
+SubsetDestroy (dmHLYear, sSubset);
+SubsetDestroy (dmScenario, sSubset);
+SubsetDestroy (dmRelatedEntity, sSubset);
+SubsetDestroy (dmspp, sSubset);
+SubsetDestroy (dmMovAcc, sSubset);
+SubsetDestroy (dmProg, sSubset);
+SubsetDestroy (dmApproItem, sSubset);
+SubsetDestroy (dmAcc, sSubset);
+SubsetDestroy (dmId, sSubset);
+SubsetDestroy (dmJuri, sSubset);
+SubsetDestroy (dmPeriod, sSubset);
+SubsetDestroy (dmMeas, sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, sHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, sScenario, 1);
+
+# Related entity
+SubsetCreate(dmRelatedEntity, sSubset);
+SubsetElementInsert(dmRelatedEntity, sSubset, sRelEntity, 1);
+
+# SPP
+SubsetCreate(dmspp, sSubset);
+SubsetElementInsert(dmspp, sSubset,sSpp, 1);
+
+# Movement Account
+SubsetCreate(dmMovAcc, sSubset);
+SubsetElementInsert(dmMovAcc, sSubset,sMovAcc, 1);
+SubsetElementInsert(dmMovAcc, sSubset,sMovAcc1, 2);
+SubsetElementInsert(dmMovAcc, sSubset,sMovAcc2, 3);
+
+# Programme
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [programme] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Appropriation Item
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER({[appropriation item].[Total approp item]}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Account
+SubsetCreate(dmAcc, sSubset);
+SubsetElementInsert(dmAcc, sSubset,sAccount, 1);
+SubsetElementInsert(dmAcc, sSubset,sCFAcc, 2);
+SubsetElementInsert(dmAcc, sSubset,sCFAcc1, 3);
+
+
+
+# ID
+SubsetCreate(dmId, sSubset);
+SubsetElementInsert(dmId, sSubset,sID, 1);
+
+# Jurisdiction
+SubsetCreate(dmJuri, sSubset);
+SubsetElementInsert(dmJuri, sSubset,sJurisdiction, 1);
+
+# Period
+SubsetCreate(dmPeriod, sSubset);
+nMEMAPeriod = DIMIX(dmPeriod , sME_MAPeriod);
+
+IF(DIMIX(dmPeriod, 'Jul') <= nMEMAPeriod);
+	SubsetElementInsert(dmPeriod, sSubset,'Jul', 1);
+ENDIF;
+
+IF(DIMIX(dmPeriod, 'Aug') <= nMEMAPeriod);
+	SubsetElementInsert(dmPeriod, sSubset,'Aug', 1);
+ENDIF;
+
+IF(DIMIX(dmPeriod, 'Sep') <= nMEMAPeriod);
+	SubsetElementInsert(dmPeriod, sSubset,'Sep', 1);
+ENDIF;
+
+IF(DIMIX(dmPeriod, 'Oct') <= nMEMAPeriod);
+	SubsetElementInsert(dmPeriod, sSubset,'Oct', 1);
+ENDIF;
+
+IF(DIMIX(dmPeriod, 'Nov') <= nMEMAPeriod);
+	SubsetElementInsert(dmPeriod, sSubset,'Nov', 1);
+ENDIF;
+
+IF(DIMIX(dmPeriod, 'Dec') <= nMEMAPeriod);
+	SubsetElementInsert(dmPeriod, sSubset,'Dec', 1);
+ENDIF;
+
+IF(DIMIX(dmPeriod, 'Jan') <= nMEMAPeriod);
+	SubsetElementInsert(dmPeriod, sSubset,'Jan', 1);
+ENDIF;
+
+IF(DIMIX(dmPeriod, 'Feb') <= nMEMAPeriod);
+	SubsetElementInsert(dmPeriod, sSubset,'Feb', 1);
+ENDIF;
+
+IF(DIMIX(dmPeriod, 'Mar') <= nMEMAPeriod);
+	SubsetElementInsert(dmPeriod, sSubset,'Mar', 1);
+ENDIF;
+
+IF(DIMIX(dmPeriod, 'Apr') <= nMEMAPeriod);
+	SubsetElementInsert(dmPeriod, sSubset,'Apr', 1);
+ENDIF;
+
+IF(DIMIX(dmPeriod, 'May') <= nMEMAPeriod);
+	SubsetElementInsert(dmPeriod, sSubset,'May', 1);
+ENDIF;
+
+IF(DIMIX(dmPeriod, 'Jun') <= nMEMAPeriod);
+	SubsetElementInsert(dmPeriod, sSubset,'Jun', 1);
+ENDIF;
+
+
+#Measure
+SubsetCreate(dmMeas, sSubset);
+SubsetElementInsert(dmMeas, sSubset, 'value', 1);
+
+
+
+
+#****BUILD VIEW****#
+ViewCreate (sCube, sView);
+ViewSubsetAssign (sCube, sView, dmHLYear, sSubset);
+ViewSubsetAssign (sCube, sView, dmScenario, sSubset);
+ViewSubsetAssign (sCube, sView,dmRelatedEntity, sSubset);
+ViewSubsetAssign (sCube, sView,dmspp, sSubset);
+ViewSubsetAssign (sCube, sView,dmMovAcc, sSubset);
+ViewSubsetAssign (sCube, sView, dmProg, sSubset);
+ViewSubsetAssign (sCube, sView,dmApproItem, sSubset);
+ViewSubsetAssign (sCube, sView,dmAcc, sSubset);
+ViewSubsetAssign (sCube, sView,dmId, sSubset);
+ViewSubsetAssign (sCube, sView,dmJuri, sSubset);
+ViewSubsetAssign (sCube, sView,dmPeriod, sSubset);
+ViewSubsetAssign (sCube, sView, dmMeas, sSubset);
+
+VIEWEXTRACTSKIPCALCSSET(sCube, sView,0);
+
+DatasourceCubeview=sView;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF((vseAccount @='4100001') & (vseMvtAcc @= '-'));
+
+
+#ASCIIOUTPUT('ianwer.txt','Skip', sCubeDest,vseHLYear,sTrgScenario,vseRelEntity, vseSPP, vseMvtAcc ,'9998.01.10',vseAppItem,sAccount, sDestID ,sJurisdiction,vseperiod);
+	Itemskip;
+
+ENDIF;
+
+SMyValue = numbertostring(nMyValue);
+#ASCIIOUTPUT('20171128IRRCMMMakeJournal.txt',SMyValue, sCubeDest, vseHLYear,vseScenario,vseRelEntity,vseSpp,vseMvtAcc,vseProgramme,vseAppItem,vseAccount,vseId,vseJurisdiction,vsePeriod,'Value');
+
+#CellIncrementN(MyNValue, sCubeDest, vseHLYear,vseScenario,vseRelEntity,vseSpp,vseMvtAcc,vseProgramme,vseAppItem,vseAccount,vseId,vseJurisdiction,vsePeriod,'Value');
+
+
+#  If this is enter then add the values if this is reverse then remove the impact.
+IF(pseEnterRev @= 'Reverse');
+	nMyValue = nMyValue * -1;
+ENDIF;
+
+IF(vseProgramme @= '9998.01.10');
+
+#	ASCIIOUTPUT('ianwer.txt','skip',sCubeDest,vseHLYear,sTrgScenario,vseRelEntity, vseSPP, vseMvtAcc ,vseProgramme ,vseAppItem,vseAccount, sDestID ,sJurisdiction,vseperiod);
+	Itemskip;
+
+ENDIF;
+
+IF(vseProgramme @= '6104.01.01');
+#	ASCIIOUTPUT('ianwer.txt','Skip',sCubeDest,vseHLYear,sTrgScenario,vseRelEntity, vseSPP, vseMvtAcc ,vseProgramme ,vseAppItem,vseAccount, sDestID ,sJurisdiction,vseperiod);
+	Itemskip;
+
+ENDIF;
+
+CellIncrementN(nMyValue, sCubeDest, vseHLYear,sTrgScenario,vseRelEntity,vseSpp,vseMvtAcc,vseProgramme,vseAppItem,vseAccount,sDestID,vseJurisdiction,vsePeriod,'Value');
+# Put a reversal into equity so that the program balances - Accumulated Results - 7593 to 7211 no appropriations
+CellIncrementN(-nMyValue, sCubeDest, vseHLYear,sTrgScenario,'-',vseSpp,'7211',vseProgramme,'-',vseAccount,sDestID,vseJurisdiction,vsePeriod,'Value');
+
+#ASCIIOUTPUT('ianwer.txt','Input', sCubeDest,vseHLYear,sTrgScenario,vseRelEntity, vseSPP, vseMvtAcc ,vseProgramme ,vseAppItem,vseAccount, sDestID ,sJurisdiction,vseperiod);
+
+IF((ELISANC(dmProg , 'Administered programmes', vseProgramme)=1) % (ELISANC(dmProg , 'Administered Programmes  - As at Pre-ERC 1617',vseProgramme)=1) % (ELISANC(dmProg , 'Administered Programmes - As at Pre-ERC 1718', vseProgramme)=1)) ;
+
+
+#ASCIIOUTPUT('ianwer.txt','Reverse', sCubeDest,vseHLYear,sTrgScenario,vseRelEntity,vseSpp, vseMvtAcc ,'9998.01.10',vseAppItem,vseAccount, sDestID ,sJurisdiction,vseperiod);
+	CellIncrementN(-nMyValue, sCubeDest, vseHLYear ,sTrgScenario,vseRelEntity, vseSpp , vseMvtAcc ,'9998.01.10',vseAppItem,sAccount, sDestID ,sJurisdiction,vsePeriod,dmVarMeas);
+# Put a reversal into equity so that the program balances - Accumulated Results - 7593 to 7211 no appropriations
+	CellIncrementN(nMyValue, sCubeDest, vseHLYear ,sTrgScenario,'-', vseSpp , '72111' ,'9998.01.10','-',sAccount, sDestID ,sJurisdiction,vsePeriod,dmVarMeas);
+
+ENDIF;
+
+IF((ELISANC(dmProg , 'Departmental Programmes', vseProgramme)=1) % (ELISANC(dmProg , 'Departmental Programmes - As at Pre-ERC 1617', vseProgramme)=1) % (ELISANC(dmProg , 'Departmental Programmes - As at Pre-ERC 1718' ,vseProgramme)=1)) ;
+
+#ASCIIOUTPUT('ianwer.txt', 'Reverse', sCubeDest, vseHLYear , sTrgScenario,vseRelEntity,vseSpp,vseMvtAcc, '6104.01.01', vseAppItem , vseAccount, sDestID  ,sJurisdiction,vsePeriod);
+	CellIncrementN(-nMyValue, sCubeDest, vseHLYear , sTrgScenario,vseRelEntity, vseSpp,vseMvtAcc,'6104.01.01',vseAppItem ,vseAccount, sDestID ,sJurisdiction,vsePeriod,dmVarMeas);
+# Put a reversal into equity so that the program balances - Accumulated Results - 7593 to 7211 no appropriations
+	CellIncrementN(nMyValue, sCubeDest, vseHLYear , sTrgScenario,'-', vseSpp,'7211','6104.01.01','-' ,vseAccount, sDestID ,sJurisdiction,vsePeriod,dmVarMeas);
+
+ENDIF;
+
+
+
+
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

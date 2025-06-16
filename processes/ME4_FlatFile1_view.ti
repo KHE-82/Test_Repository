@@ -1,0 +1,491 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               ME4_FlatFile1_view
+#**** DESCRIPTION:       For the Monthly Estimates this process produces a flat file for each programme element flagged for output for CBMS.
+#****			
+#****
+#****		 A Generic feature for all Monthly Estimates clients
+#****                                  It takes parameters from the source worksheet:
+#****
+#****
+#****		Development notes.  At present all the N level programmes are included.  You need to configure it so that the CBMS level programmes are included.
+#****		Further how is this process to cope with the DSS programme structure where 9998 9999... is not the same as 5104 and 6104.
+#****		I think this is why you had the two cube thing in mind.
+#****		The file name and directory will need to be made into a parameter so that a unique file name is created each time.
+#**** 
+#**** MODIFICATION HISTORY:
+#****
+#****	Date		Initials	Comments
+#****  	====		======	=========
+#****  	21/12/2016	IRR	Initial Revision for Version 4 GEUS for CBMS-R
+#****	22/12/2016	IRR	Added code to substitute blanks for '-''s dashes.  Added CAM TM1 user code
+#****	10/02/2017	IRR	Downsaved for fall back for CBMS-R if new GEUS is not in production.
+#****	03/10/2017	IRR	Updated for GEUS v4 with YTD as N's in the period dimension
+#****	30/10/2017	IRR	Updated back to the regular period dimension.
+#****
+#****
+#****
+#****  STANDARDS REVIEW
+#****	Better Practices				Compliance?	Reviewer	Comments
+#****	=======					=====		=======	=============
+#****	Avoid the use of Public dynamic Subsets	Complies
+#****	Subset\View Creation vs DeleteallElements	Complies
+#****	TM1user but Suitable for CAM environment	Complies		
+#****	
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+#cbClientPick = '}PickList_sys_client preference';
+#cbClient = 'sys_client preference';
+dmClient = '}Clients';
+
+#******************************************************************************************************************
+#*** DECLARE SELECT PROGRAM CUBE DIMENSIONS
+#******************************************************************************************************************
+scbProSel ='sys_MEA_client_flatfile';
+sProSelDim1 = '}clients';
+sProSelDim2 = 'Programme';
+sProSelDim3 = 'sys_MEA_client_flatfile_measure';
+
+
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT GROUPS CUBE
+#******************************************************************************************************************
+cbGroups = '}ClientGroups';
+
+
+
+# Get the CAM or Non-CAM version of the user
+sUser = TM1User();
+
+# TEST A are we using CAM or Non-CAM to access TM1?  CAM is in use; or the user is not a CAM user, such as admin or a chore
+IF (SUBST(sUser,1,3) @= 'CAM');
+
+
+# An alternative CAM process included here just in case.  Ok to delete this if it is not need from the cloned process
+# This is the code in place at DSS
+             sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+             lScan = SCAN('\',sUser) + 1;
+             IF (lScan = 1);
+                             lScan = SCAN('/',sUser) + 1;
+             ENDIF;
+             sUser = SUBST(sUser, lScan, 9);
+
+ELSE;
+
+
+#  TEST A - FALSE Based on the user, CAM is NOT in use; or the user is NOT a CAM user, such as admin or a chore
+
+	# find the user name
+                sUser = TM1User();
+
+
+	# TEST B - Is the user really a scheduled chore?
+	# If the user come back with *R then the process is being called from a chore.  Any subsets from R* will not be valid.
+
+	IF(SCAN ('R*',sUser)<>0);
+
+		# TEST B TRUE - The user is really the scheduled chore.  Therefor Make the user admin
+
+		sUser = 'Admin';
+
+	ENDIF;
+	#<End TEST B>
+
+ENDIF;
+#<End TEST A>	
+
+#******************************************************************************************************************
+#*** DECLARE AE ADJUSTMENTS CUBE DIMENSIONS
+#******************************************************************************************************************
+scbME = 'ME4_reporting';
+sDIM1Y = 'headline year';
+sDIM2S = 'Scenario';
+sDIM3S = 'SPP';
+sDIM4R = 'Related Entity';
+#sDIM5F = 'Function';
+sDIM6MA = 'Movement Account';
+sDIM7AI = 'appropriation item';
+sDIM7P = 'Programme';
+sDIM8A = 'Account';
+sDIM9ID = 'ID';
+sDIM10J = 'Jurisdiction';
+sDIM11P = 'MAA_Period';
+sDIM11P = 'Period';
+sDIM12MEA = 'ME4_reporting_measure';
+sDIM13 = 'status';
+
+
+#dmStatus = 'status';
+#dmEntSeg = 'entity_seg';
+#dmInTrade = 'intrade_seg';
+#dmCWGrant = 'commonwealth grant';
+#dmReason = 'reason_code';
+#dmMA = 'movement account';
+#dmOC = 'output class';
+#dmAcc = 'account';
+#dmInitCode = 'initiative code';
+#dmPer = 'period';
+#dmAEMeas = 'AE adjustment measure';
+
+#**** DECLARE VARIABLES ****#
+#sCube = 'ma adjustments';
+sView = '}$ME4_FlatFile';
+sSubset = sView;
+#sHLYear = ATTRS ('variables', 'MA headline year', 'value');
+sHLYear = 'HL'|ATTRS ('variables', 'ME year', 'value');
+sScenario = 'Current';
+sScnario = 'MYEFO';
+sStatus = 'Total approved';
+sStatus = 'data';
+sID = 'Total IDs';
+sID = '0000B';
+#sID = '0000A';
+#sPeriod = ATTRS ('variables', 'MA period', 'value') | ' YTD';
+##	13/08/2015	3.0.2	IRR(EC)	Change to YTD module 
+sPeriod = ATTRS ('variables', 'MA period', 'value');
+sMeaMes = 'Value';
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy (scbME, sView);
+#SubsetDestroy (sDIM1Y, sSubset);
+#SubsetDestroy (sDIM2S, sSubset);
+#SubsetDestroy (sDIM3S, sSubset);
+#SubsetDestroy ('status', sSubset);
+#SubsetDestroy (sDIM4R, sSubset);
+#SubsetDestroy ('function', sSubset);
+#SubsetDestroy (sDIM6MA, sSubset);
+#SubsetDestroy (sDIM7P, sSubset);
+#SubsetDestroy (sDIM8A, sSubset);
+#SubsetDestroy (sDIM9ID, sSubset);
+#SubsetDestroy (sDIM10J, sSubset);
+#SubsetDestroy (sDIM11P, sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+IF(SubsetExists(sDIM1Y, sSubset)=0);
+	SubsetCreate(sDIM1Y, sSubset);
+ELSE;
+	SubsetDeleteAllElements(sDIM1Y, sSubset);
+ENDIF;
+
+SubsetElementInsert(sDIM1Y, sSubset, sHLYear, 1);
+
+# Scenario
+IF(SubsetExists(sDIM2S, sSubset)=0);
+	SubsetCreate(sDIM2S, sSubset);
+ELSE;
+	SubsetDeleteAllElements(sDIM2S, sSubset);
+ENDIF;
+
+SubsetElementInsert(sDIM2S, sSubset, sScenario, 1);
+
+# status
+#IF(SubsetExists(sDIM13, sSubset)=0);
+#	SubsetCreate(sDIM13, sSubset);
+#ELSE;
+#	SubsetDeleteAllElements(sDIM13, sSubset);
+#ENDIF;
+
+#SubsetElementInsert(sDIM13, sSubset, sStatus, 1); 
+
+# Related entity
+IF(SubsetExists(sDIM4R, sSubset)=0);
+	SubsetCreate(sDIM4R, sSubset);
+ELSE;
+	SubsetDeleteAllElements(sDIM4R, sSubset);	
+ENDIF;
+SubsetMDXSet( sDIM4R, sSubset, '{TM1SORT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [related entity] )}, 0)}, ASC)}'); 
+SubsetMDXSet( sDIM4R, sSubset, ''); 
+
+
+# SPP
+IF(SubsetExists(sDIM3S, sSubset)=0);
+	SubsetCreate(sDIM3S, sSubset);
+ELSE;
+	SubsetDeleteAllElements(sDIM3S, sSubset);	
+ENDIF;
+SubsetMDXSet( sDIM3S, sSubset, '{TM1SORT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [SPP] )}, 0)}, ASC)}'); 
+SubsetMDXSet( sDIM3S, sSubset, '');
+ 
+
+# Movement Account
+IF(SubsetExists(sDIM6MA, sSubset)=0);
+	SubsetCreate(sDIM6MA, sSubset);
+ELSE;
+	SubsetDeleteAllElements(sDIM6MA, sSubset);	
+ENDIF;
+SubsetMDXSet( sDIM6MA, sSubset, '{TM1SORT( { EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [movement account] )}, 0)}, { [movement account].[7201] }) }, ASC)}'); 
+SubsetMDXSet( sDIM6MA, sSubset, '');
+
+
+## Programme
+IF(SubsetExists(sDIM7P, sSubset)=0);
+	SubsetCreate (sDIM7P, sSubset);
+ELSE;
+	SubsetDeleteAllElements(sDIM7P, sSubset);	
+ENDIF;
+
+SubsetMDXSet( sDIM7P, sSubset, '{TM1SORT( {TM1SUBSETALL( [programme] )}, ASC)}'); 
+SubsetMDXSet( sDIM7P, sSubset, '');
+
+
+
+# Programme
+#IF(SubsetExists(sDIM7P, sSubset)=0);
+#	SubsetCreate (sDIM7P, sSubset);
+#ELSE;
+#	SubsetDeleteAllElements(sDIM7P, sSubset);	
+#ENDIF;
+#SubsetElementInsert (sDIM7P, sSubset, ProgRollup, 1);
+#SubsetMDXSet( sDIM7P, sSubset, '{TM1SORT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' |  sDIM7P  | '] )}, 0)}, ASC)}'); 
+#SubsetMDXSet( sDIM7P, sSubset, '');
+
+# Programme
+#sDim = sDIM7P;
+
+#lIndex = 1;
+#lCounter = 0;
+#lDimSize = DIMSIZ(sDim);
+
+#While (lIndex <= lDimSize);
+#     sElement = DIMNM(sDim, lIndex);
+#	sElementTest = CELLGETS('AEAMEA4_Programme',sUser,  sElement ,'Select');
+#     IF (sElementTest @='Y');
+#          lCounter = lCounter + 1;
+#          SubsetElementInsert(sDim, sSubset, sElement, lCounter);
+#     ENDIF;
+#     lIndex = lIndex + 1;
+#End;
+
+# Programme
+#IF(SubsetExists(sDIM7P, sSubset)=0);
+#	SubsetCreate (sDIM7P, sSubset);
+#ELSE;
+#	SubsetDeleteAllElements(sDIM7P, sSubset);	
+#ENDIF;
+#SubsetElementInsert (sDIM7P, sSubset, ProgRollup, 1);
+#SubsetMDXSet( sDIM7P, sSubset, '{TM1SORT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( ' |  sDIM7P  | ' )}, 0)}, ASC)}'); 
+
+#MDX = '{ DRILLDOWNMEMBER( {[programme].['|ProgRollup|']}, { ' |  sDIM7P  | '.['|ProgRollup|'] }) }';
+#SubsetMDXSet( sDIM7P, sSubset, MDX); 
+#SubsetMDXSet( sDIM7P, sSubset, '');
+
+
+
+###  Check me
+SubsetAliasSet( sDIM7P, sSubset, 'CBMS Prog' );
+
+
+# Appropriation
+IF(SubsetExists(sDIM7AI, sSubset)=0);
+	SubsetCreate(sDIM7AI, sSubset);
+ELSE;
+	SubsetDeleteAllElements(sDIM7AI, sSubset);	
+ENDIF;
+SubsetMDXSet( sDIM7AI, sSubset, '{TM1SORT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [appropriation item] )}, 0)}, ASC)}'); 
+SubsetMDXSet( sDIM7AI, sSubset, '');
+
+
+# Account
+IF(SubsetExists(sDIM8A, sSubset)=0);
+	SubsetCreate(sDIM8A, sSubset);
+ELSE;
+	SubsetDeleteAllElements(sDIM8A, sSubset);	
+ENDIF;
+SubsetMDXSet( sDIM8A, sSubset, '{FILTER( { EXCEPT( {TM1SORT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [account] )}, 0)}, ASC)}, { [account].[9000510], [account].[9000515], [account].[9000520], [account].[9000525] }) }, [account].[flat file] <> "N")}'); 
+SubsetMDXSet( sDIM8A, sSubset, '');
+
+#### v3.0.1 change
+## Add the cash flow opening balance to the MA flat file
+#          SubsetElementInsert(sDIM8A, sSubset,'6100001' , 1);
+## END V3.0.1 change
+
+# ID
+IF(SubsetExists(sDIM9ID, sSubset)=0);	
+	SubsetCreate (sDIM9ID, sSubset);
+ELSE;
+	SubsetDeleteAllElements(sDIM9ID, sSubset);	
+ENDIF;
+SubsetElementInsert (sDIM9ID, sSubset, sID, 1);
+
+# Jurisdiction
+IF(SubsetExists(sDIM10J, sSubset)=0);
+	SubsetCreate(sDIM10J, sSubset);
+ELSE;
+	SubsetDeleteAllElements(sDIM10J, sSubset);	
+ENDIF;
+SubsetMDXSet( sDIM10J, sSubset, '{TM1SORT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [jurisdiction] )}, 0)}, ASC)}'); 
+SubsetMDXSet( sDIM10J, sSubset, '');
+
+# Period
+IF(SubsetExists(sDIM11P, sSubset)=0);
+	SubsetCreate (sDIM11P, sSubset);
+ELSE;
+	SubsetDeleteAllElements(sDIM11P, sSubset);	
+ENDIF;
+SubsetMDXSet( sDIM11P, sSubset, '{FILTER( {TM1SUBSETALL( [' | sDIM11P | ' ] )}, [' | sDIM11P |'].[type] = "month")}'); 
+SubsetMDXSet( sDIM11P, sSubset, '');
+
+
+#  Measure
+IF(SubsetExists(sDIM12MEA, sSubset)=0);
+	SubsetCreate(sDIM12MEA, sSubset);
+ELSE;
+	SubsetDeleteAllElements(sDIM12MEA, sSubset);
+ENDIF;
+
+SubsetElementInsert(sDIM12MEA, sSubset, sMeaMes, 1);
+
+#****BUILD VIEW****#
+IF(ViewExists(scbME, sView)=0);
+	ViewCreate (scbME, sView);
+ENDIF;
+
+	ViewSubsetAssign (scbME, sView, sDIM1Y, sSubset);
+	ViewSubsetAssign (scbME, sView, sDIM2S, sSubset);
+	ViewSubsetAssign (scbME, sView, sDIM3S, sSubset);
+	ViewSubsetAssign (scbME, sView, sDIM4R, sSubset);
+
+	ViewSubsetAssign (scbME, sView, sDIM6MA, sSubset);
+	ViewSubsetAssign (scbME, sView, sDIM7P, sSubset);
+	ViewSubsetAssign (scbME, sView, sDIM7AI, sSubset);
+	ViewSubsetAssign (scbME, sView, sDIM8A, sSubset);
+	ViewSubsetAssign (scbME, sView, sDIM9ID, sSubset);
+	ViewSubsetAssign (scbME, sView, sDIM10J, sSubset);
+	ViewSubsetAssign (scbME, sView, sDIM11P, sSubset);
+#	ViewSubsetAssign (scbME, sView, sDIM11P, sSubset);
+	ViewSubsetAssign (scbME, sView, sDIM12MEA, sSubset);
+
+
+
+ViewRowDimensionSet (scbME, sView, sDIM11P, 1);
+ViewRowDimensionSet (scbME, sView, sDIM7P, 2);
+ViewRowDimensionSet (scbME, sView, sDIM8A, 3);
+ViewRowDimensionSet (scbME, sView, sDIM4R, 4);
+ViewRowDimensionSet (scbME, sView, sDIM3S, 5);
+#ViewRowDimensionSet (scbME, sView, sDIM7AI, 6);
+ViewRowDimensionSet (scbME, sView, sDIM10J, 7);
+ViewRowDimensionSet (scbME, sView, sDIM6MA, 8);
+
+ViewTitleElementSet (scbME, sView, sDIM1Y, 1);
+ViewTitleElementSet (scbME, sView, sDIM2S, 2);
+ViewTitleElementSet (scbME, sView, sDIM9ID, 3);
+
+#ViewColumnDimensionSet (scbME, sView,                       , 1);
+
+ViewSuppressZeroesSet (scbME, sView,1);
+ViewExtractSkipZeroesSet (scbME, sView, 1);
+ViewExtractSkipCalcsSet (scbME, sView, 0);
+
+DatasourceASCIIDecimalSeparator='.';
+DatasourceASCIIThousandSeparator='';
+
+
+DatasourceASCIIQuoteCharacter='';
+
+
+DatasourceCubeview=sView;
+
+sDataHeader = 0;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#IF(sProgram_4 @=ProgRollup);
+
+#	Itemskip;
+
+#ENDIF;
+
+
+#if (VALUE_IS_STRING=1, CellPutS(SVALUE,'MEA4_Reporting',sHLYear,sScenario,sRE,sSpp,sMA,sProgram_4,sAppropriation_item_4,sAccount,sID,sJurisdiction,sPeriod), CellPutN(NVALUE, 'MEA4_Reporting', sHLYear,sScenario,sRE,sSpp,sMA,sProgram_4,sAppropriation_item_4,sAccount,sID,sJurisdiction,sPeriod));
+
+sReasonCode = '1038';
+sJournalTitle = 'I am a Journal Title';
+sCmt_Justification = 'I am a Comment explaining the entry';
+
+# Write the header in the first row
+IF(sDataHeader = 0);
+	ASCIIOUTPUT('ME Flat File Sample.csv', 'Month' , 'Program' , 'Account' , 'Related Agency' , 'SPP' , 'Appropriation' , 'Jurisdiction' , 'Movement Account' , 'Adjustment Description'  , 'Cmt_Justification' , 'YTD Amount' , 'Reason Code');
+	sDataHeader = 1;
+ENDIF;
+
+sOutputProgamQMark = CELLGETS(scbProSel , psUser , sProgram_4 ,  'value');
+#ASCIIOUTPUT('Source AA Flat File Sample.csv' , sOutputProgamQMark  ,sProgram_4 , sAccount , sJournalTitle , sRE , sSpp , sAppropriation_item_4 , sJurisdiction , sMA  , sCmt_Justification , numbertostring (nMyValue), sReasonCode);
+
+
+IF(sOutputProgamQMark @<> 'Y');
+ASCIIOUTPUT('Reject AA Flat File Sample_ProgOut.csv' , sOutputProgamQMark  ,sProgram_4 , sAccount , sJournalTitle , sRE , sSpp , sAppropriation_item_4 , sJurisdiction , sMA  , sCmt_Justification , numbertostring (nMyValue), sReasonCode,vsePeriod);
+	Itemskip;
+
+ENDIF;
+
+sProgCFCBMS = '';
+sProgCFCBMS = CELLGETS('programme details', sHLYear, 'Actual Adjustments'  ,sProgram_4 , 'Actuals Cash Flow');
+
+IF((SUBST(sAccount,1,1) @= '6')  & (sProgCFCBMS @= 'Use CBMS CF'));
+ASCIIOUTPUT('Reject AA Flat File Sample_CFreason.csv' , sOutputProgamQMark  ,sProgram_4 , sAccount , sJournalTitle , sRE , sSpp , sAppropriation_item_4 , sJurisdiction , sMA  , sCmt_Justification , numbertostring (nMyValue), sReasonCode,vsePeriod);
+	Itemskip;
+
+ENDIF;
+
+# If not used related entity / related agency should be blank.
+IF(sRE @= '-');
+	sRE = '';
+ENDIF;
+
+# If not used the SPP should be blank.
+IF(sSPP @= '-');
+	sSPP = '';
+ENDIF;
+
+# If not used appropriation item should be blank.
+IF(sAppropriation_item_4 @= '-');
+	sAppropriation_item_4 = '';
+ENDIF;
+
+# If not used jurisdiction should be blank.
+IF(sJurisdiction @= '-');
+	sJurisdiction = '';
+ENDIF;
+
+# If not used movement account should be blank.
+IF(sMA @= '-');
+	sMA = '';
+ENDIF;
+
+# The jouirnal title is free text but it can be no longer than 60 characters.
+IF(LONG(sJournalTitle)>60);
+	sJournalTitle = SUBST(sJournalTitle, 1 , 60);
+ENDIF;
+
+# For monthly Actuals the Period YTD need to be converted to a three digit number 001=July, 002=August etc
+sAccountingPeriod = ATTRS(sDIM11P, sPeriod , 'period number');
+
+IF(sAccountingPeriod @='');
+	sAccountingPeriod = sPeriod|'period number ATT blank';
+ENDIF;
+
+ASCIIOUTPUT('ME Flat File Sample.csv' , sAccountingPeriod , sProgram_4 , sAccount , sRE , sSpp , sAppropriation_item_4 , sJurisdiction , sMA  , sJournalTitle, sCmt_Justification , numbertostring (nMyValue) , sReasonCode);
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

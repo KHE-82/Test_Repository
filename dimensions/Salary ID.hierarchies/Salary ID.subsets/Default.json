@@ -1,0 +1,190 @@
+{
+	"@type":"Subset",
+	"Name":"Default",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('Total Salary IDs')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('01')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('02')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('03')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('04')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('05')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('06')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('07')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('08')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('09')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('10')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('11')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('12')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('13')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('14')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('15')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('16')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('17')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('18')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('19')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('20')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('21')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('22')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('23')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('24')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('25')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('26')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('27')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('28')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('29')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('30')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('31')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('32')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('33')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('34')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('35')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('36')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('37')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('38')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('39')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('40')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('41')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('42')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('43')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('44')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('45')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('46')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('47')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('48')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('49')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('50')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('60')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('59')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('58')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('57')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('56')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('55')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('54')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('53')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('52')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')/Hierarchies('Salary ID')/Elements('51')"
+		}
+	]
+}

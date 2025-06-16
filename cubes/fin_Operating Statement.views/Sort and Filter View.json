@@ -1,0 +1,35 @@
+{
+	"@type":"MDXView",
+	"Name":"Sort and Filter View",
+	"MDX@Code.link":"Sort and Filter View.mdx",
+	"Meta" : 
+	{
+		"Aliases" : 
+		{
+			"[Cost Centre].[Cost Centre]" : "MEMBER_NAME",
+			"[GL Code].[GL Code]" : "MEMBER_NAME",
+			"[Month].[Month]" : "MEMBER_NAME",
+			"[Scenario].[Scenario]" : "MEMBER_NAME"
+		},
+		"ContextSets" : 
+		{
+			"[Year].[Year]" : 
+			{
+				"Expression" : "{TM1SubsetAll([Year])}"
+			},
+			"[fin_Operating Statment Measure].[fin_Operating Statment Measure]" : 
+			{
+				"Expression" : "{[fin_Operating Statment Measure].[fin_Operating Statment Measure].[value]}"
+			}
+		},
+		"ExpandAboves" : 
+		{
+			"[Cost Centre].[Cost Centre]" : false,
+			"[GL Code].[GL Code]" : false,
+			"[Month].[Month]" : false,
+			"[Scenario].[Scenario]" : false,
+			"[Year].[Year]" : false,
+			"[fin_Operating Statment Measure].[fin_Operating Statment Measure]" : false
+		}
+	}
+}

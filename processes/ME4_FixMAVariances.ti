@@ -1,0 +1,88 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+OldCubeLogChanges = CUBEGETLOGCHANGES('MA adjustments');
+CUBESETLOGCHANGES('MA adjustments', 0);
+#****End: Generated Statements****
+
+snProg = 'programme';
+
+sDIM1Y = 'headline year';
+sDIM2S = 'Scenario';
+sDIM3S = 'SPP';
+sDIM4R = 'Related Entity';
+sDIM5F = 'Function';
+sDIM6MA = 'Movement Account';
+sDIM7AI = 'appropriation item';
+sDIM7P = 'programme';
+sDIM8A = 'Account';
+sDIM9ID = 'ID';
+sDIM10J = 'Jurisdiction';
+sDIM11P = 'Period';
+sDIM12MEA = 'ME4_reporting_measure';
+
+seDestScn = 'Current';
+
+se2ndseScenario = 'Actual Adjustments';
+
+sMEMAPeriod = ATTRS('variables', 'MA period', 'value');
+
+
+sHLYear = ATTRS('variables', 'headline year', 'value');
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+seStatus='Data';
+seFunc='';
+#****End: Generated Statements****
+#endregion
+#region Data
+IF(9=0);
+#****Begin: Generated Statements***
+seStatus='Data';
+seFunc='';
+CellPutN(CellGetN('MA adjustments',vseHLYear,sScn,seStatus,seRE,seFunc,seMa,vseProg,sAccount,sID,seJur,sPeriod)+VNMyvalue,'MA adjustments',vseHLYear,sScn,seStatus,seRE,seFunc,seMa,vseProg,sAccount,sID,seJur,sPeriod);
+#****End: Generated Statements****
+
+
+#seStatus='Data';
+#seFunc='';
+#CellPutN(CellGetN('MA adjustments',sHLYear,sScn,seStatus,seRE,seFunc,seMa,sPRog,sAccount,sID,seJur,sPeriod)+VNMyvalue,'MA adjustments',sHLYR,sScn,seStatus,seRE,seFunc,seMa,sPRog,sAccount,sID,seJur,sPeriod);
+
+ENDIF;
+
+seProg = vseProg;
+
+		IF(DIMIX(sDIM7P, seProg) <>0);
+
+# 	Get programme element (deliberately at this position rather than at the beginning with the other elements)
+			sElType = DTYPE(sDIM7P, seProg);
+			sStartProg = seProg;
+			WHILE (sElType @= 'C');
+     				seProg = ELCOMP(sDIM7P, seProg, 1);
+     				sElType = DTYPE(sDIM7P, seProg);
+#				ASCIIOUTPUT('ian.txt',
+			END;
+
+		ENDIF;
+
+
+
+seFunc = CELLGETS('programme details',sHLYear, seDestScn,seProg,'Function');
+
+IF(CELLISUPDATEABLE('MA adjustments',vseHLYear,se2ndseScenario,'data',seRE,seFunc,seMa,seProg,sAccount,'0000A',seJur,sMEMAPeriod)=1);
+	CELLINCREMENTN(VNMyvalue,'MA adjustments',vseHLYear,se2ndseScenario,'data',seRE,seFunc,seMa,seProg,sAccount,'0000A',seJur,sMEMAPeriod);
+	ASCIIOUTPUT('ExportfixMAvariancesWrite.txt', numbertostring(VNMyvalue),'MA adjustments',vseHLYear,se2ndseScenario,'data',seRE,seFunc,seMa,seProg,sAccount,'0000A',seJur,sMEMAPeriod);
+ELSE;
+	ASCIIOUTPUT('ExportfixMAvariancesskip.txt', numbertostring(VNMyvalue),'MA adjustments',vseHLYear,se2ndseScenario,'data',seRE,seFunc,seMa,seProg,sAccount,'0000A',seJur,sMEMAPeriod);
+ENDIF;
+
+ASCIIOUTPUT('ExportfixMAvariances.txt', numbertostring(VNMyvalue),'MA adjustments',vseHLYear,se2ndseScenario,'data',seRE,seFunc,seMa,seProg,sAccount,'0000A',seJur,sMEMAPeriod);
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+CUBESETLOGCHANGES('MA adjustments', OldCubeLogChanges);
+#****End: Generated Statements****
+#endregion

@@ -1,0 +1,12 @@
+{
+	"@type":"Hierarchy",
+	"Name":"fin_CapEX Assets Measure",
+	"Elements":
+	[
+		{
+			"Name":"value",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

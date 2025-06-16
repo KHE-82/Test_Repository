@@ -1,0 +1,608 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               ME_FlatFile 00C - Load All Missing CF to sys_Extract
+#**** DESCRIPTION:       This process creates a view for the flatfile generation
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 15/05/2018    KG           Initial Revision - Copy of ME4 just to ensure it has a clean naming convention
+#**** 19/12/2018	KG	Made changes to ensure that actuals periods are getting derived from sys_ME variable cube instead of variable
+
+#***
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+#cbAE = 'ME4_reporting';
+cbAE = 'ME4_adjustments';
+
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CASH FLOW CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+cbCF = 'MEA4_Cash_Flow';
+dmAccCF = 'account_cf';
+dmAccOth = 'account_other';
+dmCFMeas = 'cash flow measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE EXTRACT CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+cbExtract = 'sys_ME4_extract';
+dmRowID = 'sys_ME4_extract row id';
+dmFFScenario = 'sys_flatfile scenario';
+dmExtractMeas = 'sys_flatfile measure';
+
+#--------------------------------------------------------------------------------------
+#*** DECLARE VARIABLES CUBE
+#--------------------------------------------------------------------------------------
+cbMEVar = 'sys_ME variable';
+
+sTitle = CELLGETS (cbMEVar, 'ME_Journal Title','Value');
+sReason = CELLGETS (cbMEVar, 'ME_ReasonCode','Value');
+sCmt_Justification = CELLGETS (cbMEVar, 'ME_Comment Justification','Value');
+
+#******************************************************************************************************************
+#*** DECLARE SELECT PROGRAM CUBE DIMENSIONS
+#******************************************************************************************************************
+scbProSel ='sys_MEA_client_flatfile';
+sProSelDim1 = '}clients';
+sProSelDim2 = 'Programme';
+sProSelDim3 = 'sys_MEA_client_flatfile_measure';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+#sHLYear = ATTRS(dmVar,'ME year','value');
+sHLYear =  CELLGETS (cbMEVar, 'ME year','Value');
+sScenario = ATTRS(dmVar, 'ME scenario', 'value');
+
+
+#--------------------------------------------------
+#--- GET ME Actuals Period From sys_ME Variable cube
+#--------------------------------------------------
+#sMAPeriod_MEver = ATTRS(dmMEVar,'ME Actuals Period','value');
+sMAYr = ATTRS(dmVar,'MA headline year','value');
+
+sMEYr = CELLGETS (cbMEVar,'ME_headline year','value');
+sMEActualsPeriod = CELLGETS (cbMEVar,'ME Actuals Period','value');
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sUser) + 1;
+#****	04/06/2015	IRR		Update to SCAN TM1 user prior to TM1 10.2.2 upgrade
+#IF test for moving from version 10.1.1 to TM1 version 10.2.2.  The }TM1_DefaultDisplayValue' with CAM changed from CAM_AD\.... to CAM_AD/....
+	IF(lScan=1);
+		lScan = SCAN('/',sUser) + 1;
+	ENDIF;
+     sUser = SUBST(sUser, lScan, 9);
+ELSE;
+     sUser = TM1User();
+ENDIF;
+
+
+sAEView = sUser | '_$CFMEFlatFile';
+sFFScenario = psFFScenario;
+sStatus = 'approved';
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CREATE SOURCE VIEW
+#*****************************************************************************************************************************************************
+sSourceMA = 'Total movement';
+sSourceAccOth = 'Total';
+sSourceCFMeas = 'system derived';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbCF, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmAccCF, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAccOth, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmCFMeas, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS****#
+#---------------------------------------------------------------------------------------------------------------------------
+# headline year
+SubsetCreate(dmHLYear, sAEView);
+SubsetElementInsert(dmHLYear, sAEView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sAEView);
+SubsetElementInsert(dmScenario, sAEView, psScenario, 1);
+
+# Movement Account
+SubsetCreate(dmMA, sAEView);
+SubsetElementInsert(dmMA, sAEView, sSourceMA, 1);
+
+# ID
+#MDX = '{ EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmID | '] )}, 0)}, { [' | dmID | '].[0000A], [' | dmID | '].[0000B], [' | dmID | '].[00FBO], [' | dmID | '].[Cash flow] }) }';
+#SUBSETCREATEBYMDX (sAEView, MDX);
+
+SubsetCreate(dmID, sAEView);
+SubsetElementInsert(dmID, sAEView, '0000B', 1);
+
+# Account
+MDX = '{TM1SORT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAccCF | '] )}, 0)} , ASC)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+#SUBSETMDXSET (dmAcc, sAEView, MDX);
+
+# Programme
+#MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmProg | '].[' | psProg | ']}, ALL, RECURSIVE )}, 0)}';
+MDX = '{FILTER( {TM1DRILLDOWNMEMBER( {[' | dmProg | '].[' | psProg | ']}, ALL, RECURSIVE )}, [' | dmProg | '].[CBMS Level Program] = "Y")}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+#SUBSETMDXSET (dmProg, sAEView, MDX);
+
+###  Check me
+SubsetAliasSet( dmProg, sAEView , 'CBMS Prog' );
+
+# Acc Other
+SubsetCreate(dmAccOth, sAEView);
+SubsetElementInsert(dmAccOth, sAEView, sSourceAccOth, 1);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+#SUBSETMDXSET (dmRE, sAEView, MDX);
+
+# Cash Flow Measure
+SubsetCreate(dmCFMeas, sAEView);
+SubsetElementInsert(dmCFMeas, sAEView, sSourceCFMeas, 1);
+
+# Period
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 1)}, [' | dmPer | '].[type] = "month")}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+#SUBSETMDXSET (dmPer, sAEView, MDX);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****BUILD VIEW****#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbCF, sAEView);
+VIEWSUBSETASSIGN (cbCF, sAEView, dmHLYear, sAEView);
+VIEWSUBSETASSIGN (cbCF, sAEView, dmScenario, sAEView);
+VIEWSUBSETASSIGN (cbCF, sAEView, dmMA, sAEView);
+VIEWSUBSETASSIGN (cbCF, sAEView, dmID, sAEView);
+VIEWSUBSETASSIGN (cbCF, sAEView, dmAccCF, sAEView);
+VIEWSUBSETASSIGN (cbCF, sAEView, dmProg, sAEView);
+VIEWSUBSETASSIGN (cbCF, sAEView, dmAccOth, sAEView);
+VIEWSUBSETASSIGN (cbCF, sAEView, dmRE, sAEView);
+VIEWSUBSETASSIGN (cbCF, sAEView, dmCFMeas, sAEView);
+VIEWSUBSETASSIGN (cbCF, sAEView, dmPer, sAEView);
+
+
+ViewSuppressZeroesSet (cbCF, sAEView,1);
+ViewExtractSkipZeroesSet (cbCF, sAEView, 1);
+ViewExtractSkipCalcsSet(cbCF, sAEView, 0);
+
+#DatasourceASCIIDecimalSeparator='.';
+#DatasourceASCIIThousandSeparator='';
+
+#*****************************************************************************************************************************************************
+#*** STEP 3 - GET ROW ID NUMBER ***#
+#*****************************************************************************************************************************************************
+sOldIDRow = '';
+
+#nRowID = CELLGETN(cbExtract, sUser, sFFScenario, psID, 'Total Rows', 'used') + 1;
+nRowID = 1;
+sRowID = NUMBERTOSTRING (nRowID);
+
+IF (LONG (sRowID) = 1);
+	sRowID = '000' | sRowID;
+ENDIF;
+
+IF (LONG (sRowID) = 2);
+	sRowID = '00' | sRowID;
+ENDIF;
+
+IF (LONG (sRowID) = 3);
+	sRowID = '0' |sRowID;
+ENDIF;
+
+lCounter = 0;
+
+
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sAEView;
+
+## 21/11/2017
+     sUser = TM1User();
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+IF(ATTRS(dmProg, vsProg, 'CBMS Level Program') @<>'Y');
+	Itemskip;
+ENDIF;
+
+sOutputProgamQMark = CELLGETS(scbProSel , psUser , vsProg ,  'value');
+
+IF(sOutputProgamQMark @<> 'Y');
+	Itemskip;
+
+ENDIF;
+
+# 14/11/2017 - UAT testing indicated that we should skip Periods 001 through 005 & 012 during MYEFO.  All rounds need to skip 012.
+
+# CBMS-R file will reject period 012, Jun YTD.  So lets just skip it.
+IF (psFFScenario @= 'upload');
+	IF(vsPer @= 'Jun YTD');
+		ITEMSKIP;
+	ENDIF;
+ENDIF;
+
+
+sShortvsPer=SUBST(vsPer, 1, 3);
+#sShortvsPer = vsPer;
+
+#IF( 'HL'|sHLYear @= sMAYr);
+IF( 'HL' | sHLYear @= sMEYr);
+
+	#IF(sMAPeriod_MEver @<>'');
+		#nIndxMAPeriod = DIMIX(dmPer,sMAPeriod_MEver);
+
+	IF(sMEActualsPeriod @<>'');
+		nIndxMAPeriod = DIMIX(dmPer, sMEActualsPeriod);
+	ELSE;
+		nIndxMAPeriod = 0;
+	ENDIF;
+
+	IF(dimix(dmPer,sShortvsPer) <= nIndxMAPeriod);
+		ITEMSKIP;
+
+	ENDIF;
+
+ENDIF;
+
+
+## <end> 14/11/2017 - UAT testing indicated that we should skip Periods 001 through 005 & 012 during MYEFO. 
+
+#------------------------------------------------------------------------------------------------------------
+#****  PERIOD
+#****
+#-------------------------------------------------------------------------------------------------------------
+# For monthly Actuals the Period YTD need to be converted to a three digit number 001=July, 002=August etc
+sAccountingPeriod = ATTRS(dmPer, vsPer , 'period number');
+
+IF(sAccountingPeriod @='');
+	sAccountingPeriod = vsPer|'period number ATT blank';
+ENDIF;
+
+#---------------------------------------------------------------------------------------------------------------------------
+#**** GET METADATA
+#---------------------------------------------------------------------------------------------------------------------------
+# sTitle sReason and cMt_justification in prolog
+
+sProg = vsProg;
+
+## Update this Meta Data for the Cash Flow
+sCashFlowQuery = CELLGETS(cbProg, vsHLYear, vsScenario, vsProg, 'Monthly Cash Flow' );
+
+#Use CBMS CF
+#Use GEUS CF
+#zero cash flow
+
+sDisagreeCF = '';
+sZeroCF  = '';
+
+IF(sCashFlowQuery @= 'Use GEUS CF');
+	sDisagreeCF = 'Y';	
+ENDIF;
+
+IF(sCashFlowQuery @= 'zero cash flow');
+	sZeroCF = 'Y';	
+ENDIF;
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#**** ONLY RUN THIS PROCESS IF DISAGREE CASH FLOW AND ZERO CASH FLOW
+#**** 20171023 - KG Updated
+#---------------------------------------------------------------------------------------------------------------------------
+IF (sDisagreeCF @<> 'Y' & sZeroCF @= '');
+	ITEMSKIP;
+ENDIF;
+
+
+sRE = DIMENSIONELEMENTPRINCIPALNAME (dmRE, vsRE);
+IF (sRE @= '-');
+	sRE = '';
+ENDIF;
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- ACCOUNT CODE
+#--- Some agency has customised account codes (DHS) 
+#--- This needs to be remapped using account attribute 'flatfile map'
+#---------------------------------------------------------------------------------------------------------------------------
+sAcc = DIMENSIONELEMENTPRINCIPALNAME(dmAcc, vsAccCF);
+
+sMA = DIMENSIONELEMENTPRINCIPALNAME (dmMA, vsMA);
+IF (sMA @= '-' % sMA @= 'Total movement');
+	sMA = '';
+ENDIF;
+
+sAccSPPRequired = ATTRS (dmAcc, sAcc, 'SPP Required');
+sAccMARequired = ATTRS (dmAcc, sAcc, 'movement account required');
+sAccJurRequired = ATTRS (dmAcc, sAcc, 'jurisdiction required');
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#**** CASH FLOW DO NOT REQUIRE JURISDICTIONS - KG 2071023
+#---------------------------------------------------------------------------------------------------------------------------
+sJur = '';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#**** CERTAIN ACCOUNT CODES REQUIRE APPROPRIATION, 
+#**** GET APPROPRIATION CODE FROM PROGRAMME DETAILS OR FROM ADJ
+#---------------------------------------------------------------------------------------------------------------------------
+
+IF (sAccMARequired @= '');
+	sAccAppropRequired = ATTRS (dmAcc, sAcc, 'Appropriation Type Required');
+ELSE;
+	sAccAppropRequired = ATTRS (dmMA, vsMA, 'Appropriation Type Required');
+ENDIF;
+
+#---------------------------------------------------------------------------------------------------------------------------
+#**** CASH FLOW DO NOT REQUIRE APPROPRIATIONS - KG 2071023
+#---------------------------------------------------------------------------------------------------------------------------
+IF (sAccAppropRequired @<> '');
+	sAppropriation = '';
+ELSE;
+	sAppropriation = '';
+ENDIF;
+
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#**** CERTAIN ACCOUNT CODES REQUIRE SPP
+#**** GET SPP CODE FROM PROGRAMME DETAILS OR FROM ADJ
+#---------------------------------------------------------------------------------------------------------------------------
+IF (sAccSPPRequired @<> '');
+	sSPPCheck = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'spp');
+	sSPP = DIMENSIONELEMENTPRINCIPALNAME (dmSPP, sSPPCheck);
+	IF (sSPP @= '-');
+		sSPP = '';
+	ENDIF;
+ELSE;
+	sSPP = '';
+ENDIF;
+
+sIDStatus = 'Total approved';
+sIDOC = 'Total outcomes';
+sIDFunc = 'Total functions';
+sIDType = 'Total approp types';
+sIDItem = 'Total approp item';
+sIDJur = 'Total jurisdictions';
+sIDSPP = '-';
+sIDMeasure = 'value';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#**** DO A CHECK FOR ACCOUNT IF VALUE ALREADY EXISTS IN CASH FLOW
+#--- We are trying to skip cash flow accounts that are NOT zero in the ME adjustment cube,
+#--- But are populated in the AE cash flow cube. Since this was already done in the first process
+#---------------------------------------------------------------------------------------------------------------------------
+nAECF = CELLGETN (cbAE, vsHLYear, vsScenario, vsRE ,sIDSPP, vsMA, vsProg, sIDItem, sAcc, vsID, sIDJur, vsPer, sIDMeasure);
+
+IF (nAECF <> 0);
+	ITEMSKIP;
+ENDIF;
+
+#---------------------------------------------------------------------------------------------------------------------------
+#**** CHECK ROW ID IS DIFFERENT AS PER PREVIOUS ROWS
+#--- This uses vsAcc instead of sAcc due to the mapping process and enables to separate lines
+#---------------------------------------------------------------------------------------------------------------------------
+IF (psFFScenario @= 'upload');
+	sIDRowCheck = vsID | vsProg |  sAcc | vsMA | vsRE | vsPer;
+ELSE;
+	sIDRowCheck = vsID | vsProg |  sAcc | vsMA | vsRE;
+ENDIF;
+
+
+IF (sOldIDRow @= sIDRowCheck);
+	#---------------------------------------------------------------------------------------------------------------------------
+	#**** SAME COMBINATION AS PREVIOUS ROW, SO USE SAME ROW ID
+	#---------------------------------------------------------------------------------------------------------------------------
+	# DO NOTHING
+	sRowID = sRowID;
+	CELLPUTN (1, cbExtract, sUser, sFFScenario, vsID, sRowID, 'used');
+ELSE;
+	#---------------------------------------------------------------------------------------------------------------------------
+	#**** DIFFERENT COMBINATION AS PREVIOUS ROW, SO POPULATE NEW USED COLUMNS
+	#---------------------------------------------------------------------------------------------------------------------------
+	nRowID = CELLGETN(cbExtract, sUser, sFFScenario, vsID, 'Total Rows', 'used') + 1;
+	sRowID = NUMBERTOSTRING (nRowID);
+
+	IF (LONG (sRowID) = 1);
+		sRowID = '000' | sRowID;
+	ENDIF;
+
+	IF (LONG (sRowID) = 2);
+		sRowID = '00' | sRowID;
+	ENDIF;
+
+	IF (LONG (sRowID) = 3);
+		sRowID = '0' | sRowID;
+	ENDIF;
+	CELLPUTN (1, cbExtract, sUser, sFFScenario, vsID, sRowID, 'used');
+ENDIF;
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#**** POPULATE DATA - METADATA (NEW)
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+CELLPUTS (sProg, cbExtract, sUser, sFFScenario, vsID, sRowID, 'programme');
+CELLPUTS (sReason, cbExtract, sUser, sFFScenario, vsID, sRowID, 'reason');
+CELLPUTS (sAcc, cbExtract, sUser, sFFScenario, vsID, sRowID, 'account');
+CELLPUTS (sRE, cbExtract, sUser, sFFScenario, vsID, sRowID, 'related entity');
+CELLPUTS (sSPP, cbExtract, sUser, sFFScenario, vsID, sRowID, 'spp');
+CELLPUTS (sAppropriation, cbExtract, sUser, sFFScenario, vsID, sRowID, 'appropriation');
+CELLPUTS (sJur, cbExtract, sUser, sFFScenario, vsID, sRowID, 'jurisdiction');
+CELLPUTS (sMA, cbExtract, sUser, sFFScenario, vsID, sRowID, 'movement account');
+sNewTitle = sProg | ' - ' | sTitle;
+CELLPUTS (sNewTitle, cbExtract, sUser, sFFScenario, vsID, sRowID, 'title');
+CELLPUTS (sCmt_Justification, cbExtract, sUser, sFFScenario, vsID, sRowID, 'Cmt_Justification');
+CELLPUTS (sAccountingPeriod, cbExtract, sUser, sFFScenario, vsID, sRowID, 'Month');
+#ASCIIOUTPUT('ian_Part_C.txt','write',vsHLYear,vsScenario,sSPP,sJur,sProg,sAcc,sMA,sRE,sAppropriation,numbertostring(vnValue));
+
+#sValue = NUMBERTOSTRING (vnValue);
+sValue = NUMBERTOSTRING (0);
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#**** POPULATE FINANCIAL DATA
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+IF (psFFScenario @= 'upload');
+	CELLPUTS (sValue, cbExtract, sUser, sFFScenario, vsID, sRowID, 'YTD Amount');
+ELSE;
+	#---------------------------------
+	#--- Post for Legacy Format
+	#---------------------------------
+	IF (vsPer @= 'Jul YTD');
+		CELLPUTS (sValue, cbExtract, sUser, sFFScenario, vsID, sRowID, 'Jul');
+	ENDIF;
+
+	IF (vsPer @= 'Aug YTD');
+		CELLPUTS (sValue, cbExtract, sUser, sFFScenario, vsID, sRowID, 'Aug');
+	ENDIF;
+
+	IF (vsPer @= 'Sep YTD');
+		CELLPUTS (sValue, cbExtract, sUser, sFFScenario, vsID, sRowID, 'Sep');
+	ENDIF;
+
+	IF (vsPer @= 'Oct YTD');
+		CELLPUTS (sValue, cbExtract, sUser, sFFScenario, vsID, sRowID, 'Oct');
+	ENDIF;
+
+	IF (vsPer @= 'Nov YTD');
+		CELLPUTS (sValue, cbExtract, sUser, sFFScenario, vsID, sRowID, 'Nov');
+	ENDIF;
+
+	IF (vsPer @= 'Dec YTD');
+		CELLPUTS (sValue, cbExtract, sUser, sFFScenario, vsID, sRowID, 'Dec');
+	ENDIF;
+
+	IF (vsPer @= 'Jan YTD');
+		CELLPUTS (sValue, cbExtract, sUser, sFFScenario, vsID, sRowID, 'Jan');
+	ENDIF;
+
+	IF (vsPer @= 'Feb YTD');
+		CELLPUTS (sValue, cbExtract, sUser, sFFScenario, vsID, sRowID, 'Feb');
+	ENDIF;
+
+	IF (vsPer @= 'Mar YTD');
+		CELLPUTS (sValue, cbExtract, sUser, sFFScenario, vsID, sRowID, 'Mar');
+	ENDIF;
+
+	IF (vsPer @= 'Apr YTD');
+		CELLPUTS (sValue, cbExtract, sUser, sFFScenario, vsID, sRowID, 'Apr');
+	ENDIF;
+
+	IF (vsPer @= 'May YTD');
+		CELLPUTS (sValue, cbExtract, sUser, sFFScenario, vsID, sRowID, 'May');
+	ENDIF;
+
+	IF (vsPer @= 'Jun YTD');
+		CELLPUTS (sValue, cbExtract, sUser, sFFScenario, vsID, sRowID, 'Jun');
+	ENDIF;
+
+ENDIF;
+
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#--- RE-CLASSIFY sOldIDRow variable
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+IF (psFFScenario @= 'upload');
+	sOldIDRow = vsID | vsProg | sAcc | vsMA | vsRE | vsPer;
+ELSE;
+	sOldIDRow = vsID | vsProg | sAcc | vsMA | vsRE;
+ENDIF;
+sRowID = sRowID;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbCF, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmAccCF, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAccOth, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmCFMeas, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+#endregion

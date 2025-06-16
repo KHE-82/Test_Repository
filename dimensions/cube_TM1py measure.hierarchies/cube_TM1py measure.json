@@ -1,0 +1,20 @@
+{
+	"@type":"Hierarchy",
+	"Name":"cube_TM1py measure",
+	"Elements":
+	[
+		{
+			"Name":"price",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"unit",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sales",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

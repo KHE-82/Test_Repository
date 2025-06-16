@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"Score",
+	"Hierarchies@Code.links":
+	[
+		"Score.hierarchies/Score.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('Score')/Hierarchies('Score')"
+	}
+}

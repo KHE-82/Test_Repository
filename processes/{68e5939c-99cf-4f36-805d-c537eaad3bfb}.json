@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"{68e5939c-99cf-4f36-805d-c537eaad3bfb}",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"{68e5939c-99cf-4f36-805d-c537eaad3bfb}.ti",
+	"UIData":"_ParameterConstraints=e30=€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[]
+}

@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"Salary Level",
+	"Hierarchies@Code.links":
+	[
+		"Salary Level.hierarchies/Salary Level.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('Salary Level')/Hierarchies('Salary Level')"
+	}
+}

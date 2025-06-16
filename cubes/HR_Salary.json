@@ -1,0 +1,30 @@
+{
+	"@type":"Cube",
+	"Name":"HR_Salary",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('Year')"
+		},
+		{
+			"@id":"Dimensions('Scenario')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')"
+		},
+		{
+			"@id":"Dimensions('Salary Level')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')"
+		},
+		{
+			"@id":"Dimensions('Month')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')"
+		}
+	],
+	"Rules@Code.link":"HR_Salary.rules",
+	"Views@Code.links":[]
+}

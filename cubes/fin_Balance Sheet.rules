@@ -1,0 +1,834 @@
+SKIPCHECK;
+# DB('fin_Balance Sheet', !Year, !Scenario, !Cost Centre, !GL Code, !Month BS)
+# DB('fin_Operating Statement', !Year, !Scenario, !Cost Centre, !GL Code, !Month)
+# DB('CapEx', !Year, !Scenario, !Asset Categories, !Asset Measures, !Cost Centre, !Month)
+# DB('fin_Balance Sheet Assumptions', !Year, !Scenario, !GL Code, !fin_Balance Sheet Measure)
+# DB('Cash Flow', !Year, !Scenario, !Cost Centre, !GL Code, !Month)
+
+# RULE 1
+# Prevent rules from affecting the Actual scenario
+['Actual'] = STET;
+
+# RULE 2
+# Make Period 0 for the current budget equal to the closing Actual position of the prior year
+['Budget', 'P0'] = N:
+DB('fin_Balance Sheet', DIMNM('Year', DIMIX('Year', !Year) -1), 'Actual', !Cost Centre, !GL Code, 'P13','value');
+
+# RULE 3
+# Calculate Accumulated Depreciation based on CapEx and fin_Operating Statement cube
+# Computer Equipment
+['C3001', '14103'] =N: -1 *
+(DB('fin_Operating Statement', !Year, !Scenario, 'Total XYZ', '43503', !Month BS,'value') +
+DB('fin_Balance Sheet', !Year, !Scenario, !Cost Centre, !GL Code, IF(!Month BS @= 'Jul', 'P0', ATTRS('Month',!Month BS,'Last_Mth')),'value'));
+
+# Office Equipment
+['C3001', '14106'] = N: -1 *
+(DB('fin_Operating Statement', !Year, !Scenario, 'Total XYZ', '43506', !Month BS,'value') +
+DB('fin_Balance Sheet', !Year, !Scenario, !Cost Centre, !GL Code, IF(!Month BS @= 'Jul', 'P0', ATTRS('Month',!Month BS,'Last_Mth')),'value'));
+
+# Motor Vehicles
+['C3001', '14113'] = N: -1 *
+(DB('fin_Operating Statement', !Year, !Scenario, 'Total XYZ', '43513', !Month BS,'value') +
+DB('fin_Balance Sheet', !Year, !Scenario, !Cost Centre, !GL Code, IF(!Month BS @= 'Jul', 'P0', ATTRS('Month',!Month BS,'Last_Mth')),'value'));
+
+# Software
+['C3001', '14104'] = N: -1 *
+(DB('fin_Operating Statement', !Year, !Scenario, 'Total XYZ', '43505', !Month BS,'value') +
+DB('fin_Balance Sheet', !Year, !Scenario, !Cost Centre, !GL Code, IF(!Month BS @= 'Jul', 'P0', ATTRS('Month',!Month BS,'Last_Mth')),'value'));
+
+# Land and Buildings
+['C3001', '14112'] = N: -1 *
+(DB('fin_Operating Statement', !Year, !Scenario, 'Total XYZ', '43510', !Month BS,'value') +
+DB('fin_Balance Sheet', !Year, !Scenario, !Cost Centre, !GL Code, IF(!Month BS @= 'Jul', 'P0', ATTRS('Month',!Month BS,'Last_Mth')),'value'));
+
+# Intangibles
+['C3001', '14111'] = N: -1 *
+(DB('fin_Operating Statement', !Year, !Scenario, 'Total XYZ', '43501', !Month BS,'value') +
+DB('fin_Balance Sheet', !Year, !Scenario, !Cost Centre, !GL Code, IF(!Month BS @= 'Jul', 'P0', ATTRS('Month',!Month BS,'Last_Mth')),'value'));
+
+# RULE 4
+# Calculate the balance against retained earnings as the Net Result from the fin_Operating Statement cube
+['C3001', 'Retained Earnings'] = N: -1 *
+(DB('fin_Balance Sheet', !Year, !Scenario, !Cost Centre, 'Retained Earnings', IF(!Month BS @= 'Jul', 'P0', ATTRS('Month',!Month BS,'Last_Mth')),'value') +
+DB('fin_Operating Statement', !Year, !Scenario, 'Total XYZ', 'Net Result', !Month BS,'value'));
+
+# RULE 5
+# Import asset vales from the CapEx cube
+# Computer Equipment
+['C3001', '13103'] = N:
+DB('CapEx', !Year, !Scenario, 'Computer Equipment', 'Closing Book Value', 'Total XYZ', !Month BS);
+
+# Office Equipment
+['C3001', '13106'] = N:
+DB('CapEx', !Year, !Scenario, 'Office Equipment', 'Closing Book Value', 'Total XYZ', !Month BS);
+
+# Motor Vehicles
+['C3001', '13113'] = N:
+DB('CapEx', !Year, !Scenario, 'Vehicles', 'Closing Book Value', 'Total XYZ', !Month BS);
+
+# Software
+['C3001', '13104'] = N:
+DB('CapEx', !Year, !Scenario, 'Computer Software', 'Closing Book Value', 'Total XYZ', !Month BS);
+
+# Land and Buildings
+['C3001', '13112'] = N:
+DB('CapEx', !Year, !Scenario, 'Land and Buildings', 'Closing Book Value', 'Total XYZ', !Month BS);
+
+# Intangibles
+['C3001', '13111'] = N:
+DB('CapEx', !Year, !Scenario, 'Intangibles', 'Closing Book Value', 'Total XYZ', !Month BS);
+
+# RULE 6
+# Calculate all other values based on the assumptions cube except for Cash which is the balancing value
+['C3001'] = N:
+# Check if the current GL Code is 19916 (Cash at Bank)
+IF(!GL Code @<> '19916',
+# Yes - the GL Code is not Cash at Bank then calculate the BS value based on the Assumptions cube
+DB('Balance Sheet Assumptions', !Year, !Scenario, !GL Code, !Month BS, 'Assumed Value'),
+# No - the GL Code is Cash at Bank then calculate this as the balancing figure
+(['Liabilities and Equity'] + ['Non Financial Assets'] + ['Receivables - Customers'] + ['Receivables - Other'] + ['Loans and Advances'] + ['Investments']) * -1);
+
+
+
+FEEDERS;
+# INTERNAL FEEDERS
+
+# RULE 1
+# No feeder required for this rule
+
+# RULE 2
+# Feed prior year Actual for Period 13 into Period 0 for Budget scenario
+['Actual', 'P13'] =>
+DB('fin_Balance Sheet', DIMNM('Year', DIMIX('Year', !Year) + 1), 'Budget', !Cost Centre, !GL Code, 'P0','value');
+
+# RULE 3
+# Computer Equipment
+['C3001', '14103'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, !Cost Centre, !GL Code, ATTRS('Month',!Month BS,'Next_Mth'),'value');
+
+# Office Equipment
+['C3001', '14106'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, !Cost Centre, !GL Code, ATTRS('Month',!Month BS,'Next_Mth'),'value');
+
+# Motor Vehicles
+['C3001', '14113'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, !Cost Centre, !GL Code, ATTRS('Month',!Month BS,'Next_Mth'),'value');
+
+# Software
+['C3001', '14104'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, !Cost Centre, !GL Code, ATTRS('Month',!Month BS,'Next_Mth'),'value');
+
+# Land and Buildings
+['C3001', '14112'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, !Cost Centre, !GL Code, ATTRS('Month',!Month BS,'Next_Mth'),'value');
+
+# Intangibles
+['C3001', '14111'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, !Cost Centre, !GL Code, ATTRS('Month',!Month BS,'Next_Mth'),'value');
+
+# RULE 4
+# Retained Earnings
+['C3001', 'Retained Earnings'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, !Cost Centre, !GL Code, ATTRS('Month',!Month BS,'Next_Mth'),'value');
+
+# RULE 5
+# This rule is fed from the CapEx cube
+
+# RULE 6
+# This rule is fed from the fin_Balance Sheet Assumptions cube
+# The exception is the balancing figure - cash
+[GLCode:'Balance Sheet'] => ['19916'];
+
+# EXTERNAL FEEDERS
+# Cash Flow Cube
+# Feed Jun into Jul next year
+['Actual'] =>
+DB('Cash Flow', IF(!Month BS @= 'Jun', DIMNM('Year', (DIMIX('Year', !Year)+1)), IF(!Month BS @= 'P13',DIMNM('Year', (DIMIX('Year', !Year)+1)), !Year)),
+'Actual', !Cost Centre, !GL Code,IF(!Month BS @= 'Jun', 'Jul',IF(!Month BS @= 'P13', 'Jul', ATTRS('Month', !Month BS, 'Next_Mth'))));
+
+['Actual'] =>
+DB('Cash Flow', !Year, 'Actual', !Cost Centre, !GL Code, !Month BS);
+
+['Budget'] =>
+DB('Cash Flow', IF(!Month BS @= 'Jun', DIMNM('Year', (DIMIX('Year', !Year)+1)), IF(!Month BS @= 'P13',DIMNM('Year', (DIMIX('Year', !Year)+1)), !Year)),
+'Budget', !Cost Centre, !GL Code,IF(!Month BS @= 'Jun', 'Jul',IF(!Month BS @= 'P13', 'Jul', ATTRS('Month', !Month BS, 'Next_Mth'))));
+
+['Budget'] =>
+DB('Cash Flow', !Year, 'Budget', !Cost Centre, !GL Code, !Month BS);
+
+# Feed rule three in cashflow cube
+['Equity'] =>
+DB('Cash Flow', !Year, !Scenario, !Cost Centre, 'adj - Capital Use Paid', !Month BS);
+
+[GLCode:'27570'] =>
+DB('Cash Flow', !Year, !Scenario, !Cost Centre, 'adj - Repayment of debt (CF)', !Month BS);
+
+['Cash at beginning of reporting period'] =>
+DB('Cash Flow', !Year, !Scenario, !Cost Centre, 'adj - Suppliers (CF)', !Month BS);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

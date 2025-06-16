@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"fin_CapEX Assets Measure",
+	"Hierarchies@Code.links":
+	[
+		"fin_CapEX Assets Measure.hierarchies/fin_CapEX Assets Measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('fin_CapEX Assets Measure')/Hierarchies('fin_CapEX Assets Measure')"
+	}
+}

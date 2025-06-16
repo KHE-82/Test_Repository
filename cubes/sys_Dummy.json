@@ -1,0 +1,59 @@
+{
+	"@type":"Cube",
+	"Name":"sys_Dummy",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('Year')"
+		},
+		{
+			"@id":"Dimensions('Scenario')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')"
+		},
+		{
+			"@id":"Dimensions('GL Code')"
+		},
+		{
+			"@id":"Dimensions('Salary ID')"
+		},
+		{
+			"@id":"Dimensions('Salary Level')"
+		},
+		{
+			"@id":"Dimensions('Score')"
+		},
+		{
+			"@id":"Dimensions('Asset Categories')"
+		},
+		{
+			"@id":"Dimensions('Asset Measures')"
+		},
+		{
+			"@id":"Dimensions('Asset Numbers')"
+		},
+		{
+			"@id":"Dimensions('Balance Sheet Measure')"
+		},
+		{
+			"@id":"Dimensions('HR Measure')"
+		},
+		{
+			"@id":"Dimensions('HR_HR Reporting Measure')"
+		},
+		{
+			"@id":"Dimensions('HR_Salary Measure')"
+		},
+		{
+			"@id":"Dimensions('Month')"
+		},
+		{
+			"@id":"Dimensions('Salary Measures')"
+		}
+	],
+	"Views@Code.links":
+	[
+		"sys_Dummy.views/Default.json"
+	]
+}

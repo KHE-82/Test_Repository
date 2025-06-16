@@ -1,0 +1,51 @@
+{
+	"@type":"MDXView",
+	"Name":"MDX - Generate View",
+	"MDX@Code.link":"MDX - Generate View.mdx",
+	"Meta" : 
+	{
+		"Aliases" : {},
+		"CalculatedMembers" : 
+		{
+			"[Month].[Month]" : 
+			[
+				
+				{
+					"Anchor" : "[Month].[Month].[Year]",
+					"Caption" : "Sep New",
+					"InsertionPosition" : "AFTER",
+					"MemberID" : "[Month].[Month].[Sep New]",
+					"Parent" : "[Month].[Month].[Year]"
+				}
+			]
+		},
+		"ContextSets" : 
+		{
+			"[Cost Centre].[Cost Centre]" : 
+			{
+				"Expression" : "{[Cost Centre].[Cost Centre].MEMBERS}"
+			},
+			"[Scenario].[Scenario]" : 
+			{
+				"Expression" : "{[Scenario].[Scenario].MEMBERS}"
+			},
+			"[Year].[Year]" : 
+			{
+				"Expression" : "{[Year].[Year].MEMBERS}"
+			},
+			"[fin_Operating Statment Measure].[fin_Operating Statment Measure]" : 
+			{
+				"Expression" : "{[fin_Operating Statment Measure].[fin_Operating Statment Measure].MEMBERS}"
+			}
+		},
+		"ExpandAboves" : 
+		{
+			"[Cost Centre].[Cost Centre]" : false,
+			"[GL Code].[GL Code]" : false,
+			"[Month].[Month]" : false,
+			"[Scenario].[Scenario]" : false,
+			"[Year].[Year]" : false,
+			"[fin_Operating Statment Measure].[fin_Operating Statment Measure]" : false
+		}
+	}
+}

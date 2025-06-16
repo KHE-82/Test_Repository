@@ -1,0 +1,674 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+####################################
+##
+##	Process: ME4_DataTransfer_from_MEAdjustmentstoME4Reporting
+##	Description:	This process does nothing.  As part of a bridging solution from Annual Actuals used in FY2015-2016 to the Annual Actuals Solution used for FY2016-2017 in CBMS-R.
+##	This process clears an area in the cube and copies data from the AA_reports_Cube used in FY2015-2016.
+##  
+##
+##	Date		Version	Author	Change Description
+##	25/05/2017	4.0.0	IRR(EC)	Intial and final version
+##	27/05/2017	4.0.0	IRR(EC)	Progress
+##	07/06/2017	4.0.0	IRR(EC)	Load on to the DSS T1T server
+##	15/06/2017	4.0.0	IRR(EC)	Updates for no appropriation item.  If there is time I am going to finess the flat file location too.
+##	16-17/06/2017	4.0.0	IRR(EC)	Clone the former process to make this process
+##	30/10/2017	4.0.0	IRR(EC)	Change this process and its name from AA4_DataTransfer_from_AARptstoAA4Reporting to ME4_DataTransfer_from_MEAdjustmentstoME4Reporting
+##	10/11/2017	4.0.0	IRR(EC)	Update the IDs impacted
+##	13/12/2017	4.0.0	IRR(EC)	Add if cell is updatable
+
+#****  STANDARDS REVIEW
+#****	Better Practices				Compliance?	Reviewer	Comments
+#****	=======					=====		=======	=============
+#****	Dimensions expressed as variable names	Y
+#****	Avoid the use of Public dynamic Subsets	
+#****	Subset\View Creation vs DeleteallElements	
+#****	TM1user but Suitable for CAM environment
+
+##	
+####################################	
+
+
+
+#*** DECLARE CUBES AND DIMENSIONS ***#
+snProg = 'programme';
+
+#sFile = ATTRS('variables','sys_AA ExportDirectory','value')|'AAAA4sSrc.cma';
+
+cbAARpts = 'ME adjustments';
+
+sCubeDest = 'ME4_reporting';
+
+sDIM1Y = 'headline year';
+sDIM2S = 'Scenario';
+
+sDIM3SPP = 'SPP';
+sDIM3S = 'Status';
+
+sDIM4R = 'Related Entity';
+sDIM5F = 'Function';
+sDIM6MA = 'Movement Account';
+sDIM7AI = 'appropriation item';
+sDIM7P = 'programme';
+sDIM8A = 'Account';
+sDIM9ID = 'ID';
+sDIM10J = 'Jurisdiction';
+sDIM11P = 'Period';
+sDIM12MEA = 'ME4_reporting_measure';
+
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+dmAASch = 'AA schedule';
+dmMeas = 'AA4_adjustments_measure';
+
+sHLYear = ATTRS('variables', 'headline year', 'value');
+sAAHLYear = 'HL' | ATTRS('variables', 'ME year', 'value');
+sAAPeriod = ATTRS('variables', 'AA period', 'value');
+
+sScenario = 'Current';
+sStatus = 'Total approved';
+sStatus = 'data';
+sID = 'Total IDs';
+sClrID = '0000B';
+sClrID_Trg = '00001';
+sReason = 'Total reason';
+sTotSch = 'Total Schedules';
+
+seMeasure = 'Value';
+
+#headline year
+#scenario
+#programme
+#programme measure
+
+scPdCube = 'programme details';
+
+sePdScenario = 'Current';
+sePdProMeaSPP = 'SPP';
+sePdProMeaAppn = 'appropriation item';
+
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+dmVar = 'variables';
+dmClients = '}Clients';
+
+
+#*** DECLARE SUBSETS AND VIEWS ***#
+# *** IDENTIFY CURRENT USER ***#
+
+
+# Standard code but I am not using Parameter user yet.
+#IF (psUser @= '');
+
+
+
+     sUser = TM1User();
+
+
+
+#ELSE;
+#     sUser = psUser;
+#ENDIF;
+
+
+
+#*** IF USER IS ADMIN, LEAVE AS IS ***#
+IF (sUser @= 'Admin');
+     sUser = sUser;
+ELSE;
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     IF (sUser @<> '');
+          lScan = SCAN('\',sUser) + 1;
+#IF test for moving from version 10.1.1 to TM1 version 10.2.2.  The }TM1_DefaultDisplayValue' with CAM changed from CAM_AD\.... to CAM_AD/....
+	IF(lScan=1);
+		lScan = SCAN('/',sUser) + 1;
+	ENDIF;
+          sUser = SUBST(sUser, lScan, 9);
+     ELSE;
+          sUser = TM1User();
+     ENDIF;
+ENDIF;
+
+
+
+
+
+
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED FOR VIEWS
+#******************************************************************************************************************
+sView = sUser | ' $MEAdj2ME4Rpt';
+sSubset = sView;
+
+OldCubeLogChanges = CUBEGETLOGCHANGES(sCubeDest);
+CUBESETLOGCHANGES(sCubeDest, 0);
+
+##### SOURCE VIEW
+
+IF(VIEWEXISTS(cbAARpts , sView)=0);
+
+	VIEWCREATE(cbAARpts , sView);
+
+ENDIF;
+
+
+## Headline Year
+IF(SUBSETEXISTS(dmHLYear   , sSubset)=0);
+	SubsetCreate(dmHLYear  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmHLYear  , sSubset);
+ENDIF;
+
+SubsetElementInsert(dmHLYear   , sSubset, sAAHLYear   , 1);
+
+
+##  Scenario
+IF(SUBSETEXISTS(dmScenario   , sSubset)=0);
+	SubsetCreate(dmScenario  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmScenario  , sSubset);
+ENDIF;
+SubsetElementInsert(dmScenario   , sSubset, 'Current'   , 1);
+
+
+##  dmStatus
+IF(SUBSETEXISTS(dmStatus   , sSubset)=0);
+	SubsetCreate(dmStatus  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmStatus  , sSubset);
+ENDIF;
+SubsetElementInsert(dmStatus   , sSubset, sStatus   , 1);
+
+
+## SPP
+#	IF(SUBSETEXISTS(dmSPP   , sSubset)=0);
+#		SubsetCreate(dmSPP  , sSubset);
+#	ELSE;
+#		SubsetDeleteAllElements(dmSPP  , sSubset);
+#	ENDIF;
+#	MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( ['|dmSPP|'] )}, 0)}';
+#	SUBSETMDXSET(dmSPP   , sSubset , MDX);
+#	SUBSETMDXSET(dmSPP  , sSubset , '');
+
+
+
+## Related Entity
+IF(SUBSETEXISTS(dmRE   , sSubset)=0);
+	SubsetCreate(dmRE  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmRE  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( ['|dmRE|'] )}, 0)}';
+SUBSETMDXSET(dmRE   , sSubset , MDX);
+SUBSETMDXSET(dmRE  , sSubset , '');
+
+
+## Function
+IF(SUBSETEXISTS(dmFunc   , sSubset)=0);
+	SubsetCreate(dmFunc  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmFunc  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( ['|dmFunc|'] )}, 0)}';
+SUBSETMDXSET(dmFunc   , sSubset , MDX);
+SUBSETMDXSET(dmFunc  , sSubset , '');
+
+
+## Movement Account
+IF(SUBSETEXISTS(dmMA   , sSubset)=0);
+	SubsetCreate(dmMA  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmMA  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( ['|dmMA|'] )}, 0)}';
+SUBSETMDXSET(dmMA   , sSubset , MDX);
+SUBSETMDXSET(dmMA  , sSubset , '');
+
+
+
+
+
+## Appropriation Item
+#	IF(SUBSETEXISTS(dmItem   , sSubset)=0);
+#		SubsetCreate(dmItem  , sSubset);
+#	ELSE;
+#		SubsetDeleteAllElements(dmItem  , sSubset);
+#	ENDIF;
+#	MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem |'] )}, 0)}';
+#	SUBSETMDXSET(dmItem   , sSubset , MDX);
+#	SUBSETMDXSET(dmItem  , sSubset , '');
+
+
+
+
+
+## Programme
+IF(SUBSETEXISTS(dmProg   , sSubset)=0);
+	SubsetCreate(dmProg  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmProg  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' |dmProg| '] )}, 0)}';
+SUBSETMDXSET(dmProg   , sSubset , MDX);
+SUBSETMDXSET(dmProg  , sSubset , '');
+
+
+## Account
+IF(SUBSETEXISTS(dmAcc   , sSubset)=0);
+	SubsetCreate(dmAcc  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmAcc  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' |dmAcc| '] )}, 0)}';
+SUBSETMDXSET(dmAcc   , sSubset , MDX);
+SUBSETMDXSET(dmAcc  , sSubset , '');
+
+
+
+
+## ID
+IF(SUBSETEXISTS(dmID   , sSubset)=0);
+	SubsetCreate(dmID  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmID  , sSubset);
+ENDIF;
+SubsetElementInsert(dmID   , sSubset, sClrID   , 1);
+SubsetElementInsert(dmID   , sSubset, sClrID_Trg   , 1);
+
+
+
+## Jurisdiction
+IF(SUBSETEXISTS(dmJur   , sSubset)=0);
+	SubsetCreate(dmJur  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmJur  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' |dmJur| '] )}, 0)}';
+SUBSETMDXSET(dmJur   , sSubset , MDX);
+SUBSETMDXSET(dmJur   , sSubset , '');
+
+
+
+
+
+## Period
+IF(SUBSETEXISTS(dmPer   , sSubset)=0);
+	SubsetCreate(dmPer  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmPer  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' |dmPer| '] )}, 0)}';
+SUBSETMDXSET(dmPer   , sSubset , MDX);
+SUBSETMDXSET(dmPer   , sSubset , '');
+
+
+## Period
+IF(SUBSETEXISTS(dmMeas   , sSubset)=0);
+	SubsetCreate(dmMeas  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmMeas  , sSubset);
+ENDIF;
+SubsetElementInsert(dmMeas   , sSubset, 'value'    , 1);
+
+
+
+ViewSubsetAssign(cbAARpts, sView ,dmHLYear , sSubset);
+ViewSubsetAssign(cbAARpts, sView ,dmScenario , sSubset);
+ViewSubsetAssign(cbAARpts, sView ,dmStatus , sSubset);
+ViewSubsetAssign(cbAARpts, sView ,dmRE , sSubset);
+ViewSubsetAssign(cbAARpts, sView ,dmFunc , sSubset);
+ViewSubsetAssign(cbAARpts, sView ,dmMA , sSubset);
+ViewSubsetAssign(cbAARpts, sView ,dmProg , sSubset);
+ViewSubsetAssign(cbAARpts, sView ,dmAcc , sSubset);
+ViewSubsetAssign(cbAARpts, sView ,dmID , sSubset);
+ViewSubsetAssign(cbAARpts, sView ,dmJur , sSubset);
+ViewSubsetAssign(cbAARpts, sView ,dmPer , sSubset);
+
+
+
+DatasourceCubeview = sView;
+
+### DEST VIEW FOR CLEAR
+
+
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED FOR VIEWS
+#******************************************************************************************************************
+sView = sUser | ' $MEAdj2ME4RptDest';
+sSubset = sView;
+
+
+
+
+
+IF(VIEWEXISTS(sCubeDest , sView)=0);
+
+	VIEWCREATE(sCubeDest , sView);
+
+ENDIF;
+
+
+## Headline Year
+IF(SUBSETEXISTS(dmHLYear   , sSubset)=0);
+	SubsetCreate(dmHLYear  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmHLYear  , sSubset);
+ENDIF;
+
+SubsetElementInsert(dmHLYear   , sSubset, sAAHLYear   , 1);
+
+
+
+
+##  Scenario
+IF(SUBSETEXISTS(dmScenario   , sSubset)=0);
+	SubsetCreate(dmScenario  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmScenario  , sSubset);
+ENDIF;
+SubsetElementInsert(dmScenario   , sSubset, 'Current'   , 1);
+
+
+## Related Entity
+IF(SUBSETEXISTS(dmRE   , sSubset)=0);
+	SubsetCreate(dmRE  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmRE  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( ['|dmRE|'] )}, 0)}';
+SUBSETMDXSET(dmRE   , sSubset , MDX);
+SUBSETMDXSET(dmRE  , sSubset , '');
+
+
+
+## SPP
+IF(SUBSETEXISTS(sDIM3SPP   , sSubset)=0);
+	SubsetCreate(sDIM3SPP  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(sDIM3SPP  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( ['|sDIM3SPP|'] )}, 0)}';
+SUBSETMDXSET(sDIM3SPP   , sSubset , MDX);
+SUBSETMDXSET(sDIM3SPP  , sSubset , '');
+
+
+
+
+
+## Movement Account
+IF(SUBSETEXISTS(dmMA   , sSubset)=0);
+	SubsetCreate(dmMA  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmMA  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( ['|dmMA|'] )}, 0)}';
+SUBSETMDXSET(dmMA   , sSubset , MDX);
+SUBSETMDXSET(dmMA  , sSubset , '');
+
+
+
+
+
+
+## Programme
+IF(SUBSETEXISTS(dmProg   , sSubset)=0);
+	SubsetCreate(dmProg  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmProg  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' |dmProg| '] )}, 0)}';
+SUBSETMDXSET(dmProg   , sSubset , MDX);
+SUBSETMDXSET(dmProg  , sSubset , '');
+
+
+
+## Appropriation Item
+IF(SUBSETEXISTS(dmItem   , sSubset)=0);
+	SubsetCreate(dmItem  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmItem  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem |'] )}, 0)}';
+SUBSETMDXSET(dmItem   , sSubset , MDX);
+SUBSETMDXSET(dmItem  , sSubset , '');
+
+
+## Account
+IF(SUBSETEXISTS(dmAcc   , sSubset)=0);
+	SubsetCreate(dmAcc  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmAcc  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' |dmAcc| '] )}, 0)}';
+SUBSETMDXSET(dmAcc   , sSubset , MDX);
+SUBSETMDXSET(dmAcc  , sSubset , '');
+
+
+
+
+## ID
+IF(SUBSETEXISTS(dmID   , sSubset)=0);
+	SubsetCreate(dmID  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmID  , sSubset);
+ENDIF;
+SubsetElementInsert(dmID   , sSubset, sClrID   , 1);
+SubsetElementInsert(dmID   , sSubset, sClrID_Trg   , 1);
+
+
+
+
+
+## Jurisdiction
+IF(SUBSETEXISTS(dmJur   , sSubset)=0);
+	SubsetCreate(dmJur  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmJur  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' |dmJur| '] )}, 0)}';
+SUBSETMDXSET(dmJur   , sSubset , MDX);
+SUBSETMDXSET(dmJur   , sSubset , '');
+
+
+
+
+
+## Period
+IF(SUBSETEXISTS(dmPer   , sSubset)=0);
+	SubsetCreate(dmPer  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmPer  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' |dmPer| '] )}, 0)}';
+SUBSETMDXSET(dmPer   , sSubset , MDX);
+SUBSETMDXSET(dmPer   , sSubset , '');
+
+
+## AA4_reporting_measure
+IF(SUBSETEXISTS(sDIM12MEA   , sSubset)=0);
+	SubsetCreate(sDIM12MEA  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(sDIM12MEA  , sSubset);
+ENDIF;
+
+SubsetElementInsert(sDIM12MEA   , sSubset, seMeasure   , 1);
+
+
+ViewSubsetAssign(sCubeDest , sView ,dmHLYear , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,dmScenario , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,dmRE , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,sDIM3SPP , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,dmMA , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,dmProg , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,dmItem , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,dmAcc , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,dmID , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,dmJur , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,dmPer , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,sDIM12MEA , sSubset);
+
+
+ViewZeroOut(sCubeDest , sView);
+
+	SubsetDeleteAllElements(dmHLYear  , sSubset);
+	SubsetDeleteAllElements(dmScenario  , sSubset);
+	SubsetDeleteAllElements(dmRE  , sSubset);
+	SubsetDeleteAllElements(sDIM3SPP  , sSubset);
+	SubsetDeleteAllElements(dmMA  , sSubset);
+	SubsetDeleteAllElements(dmProg  , sSubset);
+	SubsetDeleteAllElements(dmItem  , sSubset);
+	SubsetDeleteAllElements(dmAcc  , sSubset);
+	SubsetDeleteAllElements(dmID  , sSubset);
+	SubsetDeleteAllElements(dmJur  , sSubset);
+	SubsetDeleteAllElements(dmPer  , sSubset);
+	SubsetDeleteAllElements(sDIM12MEA  , sSubset);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#if (VALUE_IS_STRING=1, CellPutS(SVALUE,'AA reports',vseHeadlineYear,vseScenariovseSchedule,vseScenario,vseStatus,vseRE,vseFunc,vseMA,vseAppropriationItem,vseProg,vseAccount,vseID,vseJur,vsePeriod),
+# CellPutN(NVALUE, 'AA reports', vseHeadlineYear,vseScenariovseSchedule,vseScenario,vseStatus,vseRE,vseFunc,vseMA,vseAppropriationItem,vseProg,vseAccount,vseID,vseJur,vsePeriod));
+#if (VALUE_IS_STRING=1, CellPutS(SVALUE,'AA4_reporting',vseHeadlineYear,vseScenario,vseStatus,vseSPP,vseMA,vseProg,vseApprnItem,vseAcct,vseID,vseJuris,vsePeriod,vseMeasure), 
+
+# ME Adjustments
+#if (VALUE_IS_STRING=1, CellPutS(SVALUE,'ME adjustments',vseHeadlineYear,vseScenario,vseStatus,vseRE,vseFunc,vseMA,vseProg,vseAcct,vseID,vseJuris,vsePeriod), 
+#CellPutN(NVALUE, 'ME adjustments', vseHeadlineYear,vseScenario,vseStatus,vseRE,vseFunc,vseMA,vseProg,vseAcct,vseID,vseJuris,vsePeriod));
+
+seAItem = '-';
+
+# Search Appropriation Type and Appeoartion item to see if there is a mapping
+	IF((ATTRS(sDIM8A, vseAcct, 'Appropriation Type Required') @= 'Y') % (ATTRS(sDIM6MA, vseMA, 'Appropriation Type Required') @= 'Y'));
+
+
+		sAItemTemp = CELLGETS(scPdCube, sHLYear , sePdScenario , vseProg , sePdProMeaAppn);
+
+		IF(sAItemTemp @<> '');
+
+			seAItem = sAItemTemp;
+
+		ENDIF;
+#ASCIIOUTPUT('20161219ian.txt',sAcc,sMA, sAItemTemp,sApprType,sAItem);
+		
+
+	ENDIF;
+
+seSPP = '-';
+
+		sSPPTemp = CELLGETS(scPdCube, sHLYear , sePdScenario , vseProg , sePdProMeaSPP);
+
+		IF(sSPPTemp @<> '');
+
+			seSPP = sSPPTemp;
+
+		ENDIF;
+
+IF(CELLISUPDATEABLE(sCubeDest   ,   vseHeadlineYear   ,  vseScenario   ,  vseRE  ,  seSPP  ,  vseMA  ,  vseProg  ,  seAItem  ,  vseAcct  ,  vseID  , vseJuris  ,  vsePeriod , seMeasure)=1);
+	CellIncrementN(NVALUE, sCubeDest   ,   vseHeadlineYear   ,  vseScenario   ,  vseRE  ,  seSPP  ,  vseMA  ,  vseProg  ,  seAItem  ,  vseAcct  ,  vseID  , vseJuris  ,  vsePeriod , seMeasure);
+ENDIF;
+
+
+
+
+##DEBUGS in case I need them later.
+
+#		ASCIIOUTPUT('ianr.txt',sAItemTemp,scPdCube, sHLYear , sePdScenario , vseProg , sePdProMeaAppn);
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+CUBESETLOGCHANGES(sCubeDest, 1);
+
+IF(9=0);
+	SubsetDeleteAllElements(dmMeas  , sSubset);
+
+
+SubsetDeleteAllElements(dmHLYear  , sSubset);
+
+
+
+	SubsetDeleteAllElements(dmScenario  , sSubset);
+
+
+
+
+
+	SubsetDeleteAllElements(dmSPP  , sSubset);
+	SubsetDeleteAllElements(dmRE  , sSubset);
+
+
+
+
+
+	SubsetDeleteAllElements(dmMA  , sSubset);
+
+
+
+
+
+	SubsetDeleteAllElements(dmItem  , sSubset);
+
+
+
+
+
+
+
+SubsetDeleteAllElements(dmProg  , sSubset);
+
+
+
+
+SubsetDeleteAllElements(dmAcc  , sSubset);
+
+
+
+
+
+SubsetDeleteAllElements(dmID  , sSubset);
+
+
+
+
+
+
+SubsetDeleteAllElements(dmJur  , sSubset);
+
+
+
+
+
+
+SubsetDeleteAllElements(dmPer  , sSubset);
+
+ENDIF;
+#endregion

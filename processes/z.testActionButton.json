@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"z.testActionButton",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"z.testActionButton.ti",
+	"UIData":"_ParameterConstraints=e30=€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psSrc",
+			"Prompt":"",
+			"Value":"0",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

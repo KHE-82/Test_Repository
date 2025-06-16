@@ -1,0 +1,978 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               ME4_sys_Load_MA_CBMSR_Recodata_MAOR05Src_DSS
+#**** DESCRIPTION:       This process uploads a flatfile into GEUS
+#****			
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****	Date		Initials	Comments
+#****  	====		======	=========
+#****  	23/05/2017	IRR	Initial Revision for GEUS
+#****	29/05/2017	IRR	Continued development
+#****	27/11/2017	IRR	Initial Revision for Monthly Actuals in Monthly Estimates
+#****	08/12/2017	IRR	Customisation for DVA file locations  Also I think 0000B makes more sense
+#****	15/12/2017	IRR	Amended the load part slightly for cash flow accounts.  Need to ignore loaded cash flow and accumulate the cash flow the rest of the accounts are put.
+#****
+#****  STANDARDS REVIEW
+#****	Better Practices				Compliance?	Reviewer	Comments
+#****	=======					=====		=======	=============
+#****	Dimensions expressed as variable names
+#****	Avoid the use of Public dynamic Subsets	Complies
+#****	Subset\View Creation vs DeleteallElements	Complies
+#****	TM1user but Suitable for CAM environment	Complies		
+#****	
+#***********************************************************************************************************************
+
+#****	08/12/2017  --- 25/08/2016	IRR	Adding a parameter hack to convert the DVA server alias to its principal name.
+IF(SCAN('\\tm1web',LOWER(psFileName))<>0);
+	psFileName = '\\dcvsas663' |SUBST(psFileName, 9 , Long(psFileName)-8);
+ENDIF;
+
+IF(SCAN('\\tm1test',LOWER(psFileName))<>0);
+	psFileName = '\\dcvsas664' |SUBST(psFileName, 10 , Long(psFileName)-9);
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT GROUPS CUBE
+#******************************************************************************************************************
+cbGroups = '}ClientGroups';
+
+#******************************************************************************************************************
+#*** DECLARE ELEMENT SECURITY AGENCY CUBE
+#******************************************************************************************************************
+cbAgySec = '}ElementSecurity_agency';
+
+#******************************************************************************************************************
+#*** GET CLIENT SECURITY GROUPS (NON CAM)
+#******************************************************************************************************************
+sAdmGrp = 'ADMIN';
+sAgyDataEntryGrp = 'AE Agency Data Entry';
+sAgyAppGrp = 'AE Agency Approver';
+sTreasRevGrp = 'AE Treasury Reviewer';
+sTreasCWGrp = 'AE Treasury Grant Approver';
+sTreasAppGrp = 'AE Treasury Approver';
+
+#******************************************************************************************************************
+#*** NEW SECURITY GROUP FOR CAM - 20160623
+#******************************************************************************************************************
+sCAMAdmGrp = 'CAMID(":Admin)';
+sCAMAgyDataEntryGrp = 'CAMID(":AE Agency Data Entry")';
+sCAMAgyAppGrp = 'CAMID(":AE Agency Approver")';
+sCAMTreasRevGrp = 'CAMID(":AE Treasury Reviewer")';
+sCAMTreasCWGrp = 'CAMID(":AE Treasury Grant Approver")';
+sCAMTreasAppGrp = 'CAMID(":AE Treasury Approver")';
+
+
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#******************************************************************************************************************
+#*** DECLARE AE ADJUSTMENTS CUBE DIMENSIONS
+#******************************************************************************************************************
+cbAE = 'ME4_reporting';
+sCubeDest = cbAE;
+
+snProg = 'programme';
+
+sDIM1Y = 'headline year';
+sDIM2S = 'Scenario';
+sDIM3S = 'SPP';
+sDIM4R = 'Related Entity';
+#sDIM5F = 'Function';
+sDIM6MA = 'Movement Account';
+sDIM7AI = 'appropriation item';
+sDIM7P = 'programme';
+sDIM8A = 'Account';
+sDIM9ID = 'ID';
+sDIM10J = 'Jurisdiction';
+sDIM11P = 'Period';
+sDIM12MEA = 'ME4_reporting_measure';
+
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+#dmStatus = 'status';
+#dmOC = 'outcome';
+dmRE = 'related entity';
+#dmFunc = 'function';
+#dmReason = 'reason';
+#dmSPP = 'spp';
+#dmMeasCode = 'measure code';
+#dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+#dmAASch = 'AA schedule';
+
+seMeasure = 'Value';
+
+CubeSetLogChanges(cbAE, 0);
+
+## Check the file exists before we go too far
+IF(FileExists(psFileName) = 0);
+
+# 	Write this in the eplilog then
+
+#	ItemReject('The following file '|psFileName|' could not be located. No CBMS AA Workitem information was loaded');	
+
+	ProcessBreak;
+
+ELSE;
+
+	DatasourceNameForServer=psFileName;
+#	DatasourceNameForClient='Name';	
+
+ENDIF;
+
+
+dmVar = 'variables';
+
+### Obtain Period elements
+sHLYear = ATTRS('variables', 'headline year', 'value');
+sMEHLYear = 'HL' | ATTRS('variables', 'ME year', 'value');
+#sAAPeriod = ATTRS('variables', 'AA period', 'value');
+
+#sYear = ATTRS( dmVar , 'AA headline year', 'value');
+#sPeriod = ATTRS( dmVar , 'AA period', 'value');
+
+sELScn = 'MA CBMS';
+sELID = '0000B';
+
+
+sAgency = ATTRS('variables','agency code','value');
+
+
+#******************************************************************************************************************
+#*** CAM STUFF GOES HERE!!!!
+#******************************************************************************************************************
+
+#*** DECLARE SUBSETS AND VIEWS ***#
+# *** IDENTIFY CURRENT USER ***#
+
+
+# Standard code but I am not using Parameter user yet.
+#IF (psUser @= '');
+
+
+
+     sUser = TM1User();
+
+
+
+#ELSE;
+#     sUser = psUser;
+#ENDIF;
+
+
+
+#*** IF USER IS ADMIN, LEAVE AS IS ***#
+IF (sUser @= 'Admin');
+     sUser = sUser;
+ELSE;
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     IF (sUser @<> '');
+          lScan = SCAN('\',sUser) + 1;
+#IF test for moving from version 10.1.1 to TM1 version 10.2.2.  The }TM1_DefaultDisplayValue' with CAM changed from CAM_AD\.... to CAM_AD/....
+	IF(lScan=1);
+		lScan = SCAN('/',sUser) + 1;
+	ENDIF;
+          sUser = SUBST(sUser, lScan, 9);
+     ELSE;
+          sUser = TM1User();
+     ENDIF;
+ENDIF;
+
+
+
+
+
+
+
+
+#*** STEP 1 : CLEAR OUT ADJUSTMENTS CUBE DATA OF SELECTED YEAR AND SCENARIO
+#*** ### CLEAR THE DATA ALREADY IN THE CUBE ###
+
+### DEST VIEW FOR CLEAR
+
+
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED FOR VIEWS
+#******************************************************************************************************************
+sView = sUser | ' $cbms_AA4_clear';
+sSubset = sView;
+
+
+
+##### SOURCE VIEW
+
+IF(VIEWEXISTS(sCubeDest , sView)=0);
+
+	VIEWCREATE(sCubeDest , sView);
+
+ENDIF;
+
+
+## Headline Year
+IF(SUBSETEXISTS(dmHLYear   , sSubset)=0);
+	SubsetCreate(dmHLYear  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmHLYear  , sSubset);
+ENDIF;
+
+# Put in metadata
+SubsetElementInsert(dmHLYear   , sSubset, sMEHLYear   , 1);
+
+
+
+
+##  Scenario
+IF(SUBSETEXISTS(dmScenario   , sSubset)=0);
+	SubsetCreate(dmScenario  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmScenario  , sSubset);
+ENDIF;
+SubsetElementInsert(dmScenario   , sSubset, sELScn   , 1);
+
+
+## Related Entity
+IF(SUBSETEXISTS(dmRE   , sSubset)=0);
+	SubsetCreate(dmRE  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmRE  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( ['|dmRE|'] )}, 0)}';
+SUBSETMDXSET(dmRE   , sSubset , MDX);
+SUBSETMDXSET(dmRE  , sSubset , '');
+
+
+
+## SPP
+IF(SUBSETEXISTS(sDIM3S   , sSubset)=0);
+	SubsetCreate(sDIM3S  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(sDIM3S  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( ['|sDIM3S|'] )}, 0)}';
+SUBSETMDXSET(sDIM3S   , sSubset , MDX);
+SUBSETMDXSET(sDIM3S  , sSubset , '');
+
+
+
+
+
+## Movement Account
+IF(SUBSETEXISTS(dmMA   , sSubset)=0);
+	SubsetCreate(dmMA  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmMA  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( ['|dmMA|'] )}, 0)}';
+SUBSETMDXSET(dmMA   , sSubset , MDX);
+SUBSETMDXSET(dmMA  , sSubset , '');
+
+
+
+
+
+
+## Programme
+IF(SUBSETEXISTS(dmProg   , sSubset)=0);
+	SubsetCreate(dmProg  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmProg  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' |dmProg| '] )}, 0)}';
+SUBSETMDXSET(dmProg   , sSubset , MDX);
+SUBSETMDXSET(dmProg  , sSubset , '');
+
+
+
+## Appropriation Item
+IF(SUBSETEXISTS(dmItem   , sSubset)=0);
+	SubsetCreate(dmItem  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmItem  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem |'] )}, 0)}';
+SUBSETMDXSET(dmItem   , sSubset , MDX);
+SUBSETMDXSET(dmItem  , sSubset , '');
+
+
+## Account
+IF(SUBSETEXISTS(dmAcc   , sSubset)=0);
+	SubsetCreate(dmAcc  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmAcc  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' |dmAcc| '] )}, 0)}';
+SUBSETMDXSET(dmAcc   , sSubset , MDX);
+SUBSETMDXSET(dmAcc  , sSubset , '');
+
+
+
+
+## ID
+IF(SUBSETEXISTS(dmID   , sSubset)=0);
+	SubsetCreate(dmID  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmID  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' |dmID| '] )}, 0)}';
+SUBSETMDXSET(dmID   , sSubset , MDX);
+SUBSETMDXSET(dmID   , sSubset , '');
+
+
+
+
+
+## Jurisdiction
+IF(SUBSETEXISTS(dmJur   , sSubset)=0);
+	SubsetCreate(dmJur  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmJur  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' |dmJur| '] )}, 0)}';
+SUBSETMDXSET(dmJur   , sSubset , MDX);
+SUBSETMDXSET(dmJur   , sSubset , '');
+
+
+
+
+
+## Period
+IF(SUBSETEXISTS(dmPer   , sSubset)=0);
+	SubsetCreate(dmPer  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(dmPer  , sSubset);
+ENDIF;
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' |dmPer| '] )}, 0)}';
+SUBSETMDXSET(dmPer   , sSubset , MDX);
+SUBSETMDXSET(dmPer   , sSubset , '');
+
+
+## AA4_reporting_measure
+IF(SUBSETEXISTS(sDIM12MEA   , sSubset)=0);
+	SubsetCreate(sDIM12MEA  , sSubset);
+ELSE;
+	SubsetDeleteAllElements(sDIM12MEA  , sSubset);
+ENDIF;
+
+SubsetElementInsert(sDIM12MEA   , sSubset, seMeasure   , 1);
+
+
+ViewSubsetAssign(sCubeDest , sView ,dmHLYear , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,dmScenario , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,dmRE , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,sDIM3S , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,dmMA , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,dmProg , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,dmItem , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,dmAcc , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,dmID , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,dmJur , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,dmPer , sSubset);
+ViewSubsetAssign(sCubeDest , sView ,sDIM12MEA , sSubset);
+
+
+
+
+
+nProgValid = 0;
+nItemValid = 0;
+nREValid = 0;
+nFuncValid = 0;
+nMAValid = 0;
+
+nMetaRunOnce = 1;
+nDataRunOnce = 1;
+
+
+	ViewZeroOut(sCubeDest , sView);
+
+	SubsetDeleteAllElements(dmHLYear  , sSubset);
+	SubsetDeleteAllElements(dmScenario  , sSubset);
+	SubsetDeleteAllElements(dmRE  , sSubset);
+	SubsetDeleteAllElements(sDIM3S  , sSubset);
+	SubsetDeleteAllElements(dmMA  , sSubset);
+	SubsetDeleteAllElements(dmProg  , sSubset);
+	SubsetDeleteAllElements(dmItem  , sSubset);
+	SubsetDeleteAllElements(dmAcc  , sSubset);
+	SubsetDeleteAllElements(dmID  , sSubset);
+	SubsetDeleteAllElements(dmJur  , sSubset);
+	SubsetDeleteAllElements(dmPer  , sSubset);
+	SubsetDeleteAllElements(sDIM12MEA  , sSubset);
+
+
+
+
+
+IF(1=0);
+dmStatus = 'status';
+dmEntSeg = 'entity_seg';
+dmInTrade = 'intrade_seg';
+dmCWGrant = 'commonwealth grant';
+dmReason = 'reason_code';
+dmMA = 'movement account';
+dmOC = 'output class';
+dmAcc = 'account';
+dmInitCode = 'initiative code';
+dmPer = 'period';
+dmAEMeas = 'AE adjustment measure';
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS CUBE DIMENSIONS
+#******************************************************************************************************************
+cbID = 'AE id detail';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmID = 'id';
+dmIDMeas = 'AE id measure';
+
+#******************************************************************************************************************
+#*** DECLARE BULK PROCESS CUBE
+#******************************************************************************************************************
+cbBulk = 'AE bulk processing';
+
+#******************************************************************************************************************
+#*** DECLARE OUTPUT CLASS CUBES
+#******************************************************************************************************************
+cbOC = 'output class detail';
+dmOCMeas = 'output class detail measure';
+
+
+#******************************************************************************************************************
+#*** DECLARE ENTITY SEGMENT CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbEntSegMap = 'sys_entity segment mapping';
+dmEntSeg = 'entity_seg';
+dmAgency = 'agency';
+dmEntSegMapMeas = 'sys_entity segment mapping measure';
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+cbVar = 'sys_variable';
+dmVar = 'sys_variable';
+dmVarMeas = 'sys_variable measure';
+
+#******************************************************************************************************************
+#*** DECLARE OTHER DIMENSIONS USED
+#******************************************************************************************************************
+dmAgency = 'agency';
+dmEntSeg = 'entity_seg';
+
+#******************************************************************************************************************
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#******************************************************************************************************************
+curHLYear = CELLGETS (cbVar, 'headline year','value');
+curScenario = CELLGETS(cbVar, 'headline scenario', 'value');
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+
+
+#******************************************************************************************************************
+#*** GET USER SELECTED AGENCY
+#******************************************************************************************************************
+# Agency 
+#sAgency = CELLGETS (cbOC, curHLYear, curScenario, psAgency, 'agency');
+sAgency = 'Goto the code review line 135.  You need a better version of sAgency';
+sIDAgy = sAgency;
+
+
+# Get the CAM or Non-CAM version of the user
+sUser = TM1User();
+
+# TEST A are we using CAM or Non-CAM to access TM1?  CAM is in use; or the user is not a CAM user, such as admin or a chore
+IF (SUBST(sUser,1,3) @= 'CAM');
+
+
+# An alternative CAM process included here just in case.  Ok to delete this if it is not need from the cloned process
+# This is the code in place at DSS
+#             sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+#             lScan = SCAN('\',sUser) + 1;
+#             IF (lScan = 1);
+#                             lScan = SCAN('/',sUser) + 1;
+#             ENDIF;
+#             sUser = SUBST(sUser, lScan, 9);
+
+
+# TEST A - TRUE - CAM is in use; or the user is not a CAM user, such as admin or a chore
+
+                #******************************************************************************************************************
+                #*** NEW PROCESS TO USE ATTRIBUTE GBMS USER NAME
+                #***
+                #******************************************************************************************************************
+	#  Find the user alias put in place for the GBMS
+
+                sUser = ATTRS(dmClient, sUser, 'GBMS User Name');
+
+
+                IF (sUser @= '');
+                                PROCESSQUIT;
+                ENDIF;
+
+	# This part is a customisation for GBMS but is shows a good way of checking if users can access functions or no access to functions.  Data entry open or Closed for Data entry
+	#******************************************************************************************************************
+	#*** GET CLIENT SECURITY GROUPS (CAM)
+	#****************************************************************************************************************
+
+	#sCAMAdmGrpCheck = CELLGETS (cbGroups, sUser, sCAMAdmGrp);
+	sCAMAgyDataEntryGrpCheck = CELLGETS (cbGroups, sUser, sCAMAgyDataEntryGrp);
+	sCAMAgyAppGrpCheck = CELLGETS (cbGroups, sUser, sCAMAgyAppGrp);
+	sCAMTreasRevGrpCheck = CELLGETS (cbGroups, sUser, sCAMTreasRevGrp);
+	sCAMTreasCWGrpCheck = CELLGETS (cbGroups, sUser, sCAMTreasCWGrp);
+	sCAMTreasAppGrpCheck = CELLGETS (cbGroups, sUser, sCAMTreasAppGrp);
+
+	#******************************************************************************************************************
+	#*** GET AGENCY SECURITY (CAM)
+	#*** FIRST GET AGENCY FROM ID LISTING (USE ABOVE sAgency)
+	#*** THEN USE THIS AGENCY CODE TO FIND IF AGENCY HAS SECURITY
+	#******************************************************************************************************************
+	sCAMIDAgy = 'CAMID(":' | sIDAgy | '")';
+	sCAMAgySecCheck = CELLGETS (cbAgySec, sIDAgy, sCAMIDAgy);
+
+
+ELSE;
+#  TEST A - FALSE Based on the user, CAM is NOT in use; or the user is NOT a CAM user, such as admin or a chore
+
+	# find the user name
+                sUser = TM1User();
+
+
+	# TEST B - Is the user really a scheduled chore?
+	# If the user come back with *R then the process is being called from a chore.  Any subsets from R* will not be valid.
+
+	IF(SCAN ('R*',sUser)<>0);
+
+		# TEST B TRUE - The user is really the scheduled chore.  Therefor Make the user admin
+
+		sUser = 'Admin';
+
+	ENDIF;
+	#<End TEST B>
+
+ENDIF;
+#<End TEST A>	
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED FOR VIEWS
+#******************************************************************************************************************
+sView = sUser | ' $CopyAdj';
+
+
+#******************************************************************************************************************
+#*** DEFAULT POSTING DATA
+#******************************************************************************************************************
+sStatus = 'data';
+sPostStatus = 'unauthorised';
+sCheckID='';
+sManualCF = '';
+sAdjType = 'Uploaded';
+sMeas = 'value';
+
+
+
+#******************************************************************************************************************
+#*** OUTPUT FILES
+#******************************************************************************************************************
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+sHNow = TimST (Now, '\h');
+sMinNow = TimST (Now, '\i');
+sSNow = TimST (Now, '\s');
+ 
+sDay = TRIM(SUBST(sDNow, 1,2));
+ 
+IF (LONG (sDay) = 1);
+     sDay = '0' | sDay;
+ELSE;
+     sDay = sDay;
+ENDIF;
+ 
+sMonth = TRIM(SUBST(sMNow, 1,2));
+ 
+IF (LONG (sMonth) = 1);
+     sMonth = '0' | sMonth;
+ELSE;
+     sMonth = sMonth;
+ENDIF;
+ 
+sYear = TRIM(SUBST(sYNow, 1,4));
+ 
+sNow = sYear | sMonth | sDay | sHNow | sMinNow | sSNow ;
+sOutputFile = 'geus upload file failed' | sUser | ' ' | sNow | '.csv';
+sFilePath = CELLGETS (cbVar, 'sys_ImpFileExceptionLogs','value');
+
+
+
+#******************************************************************************************************************
+#***** DATASOURCE VARIABLES
+#******************************************************************************************************************
+#DATASOURCENAMEFORSERVER = psFile;
+
+
+# Further custom GBMS code to check if the whole system is open or closed.
+#******************************************************************************************************************
+#*** GET AGENCY SECURITY
+#*** FIRST GET AGENCY FROM ID LISTING
+#*** THEN USE THIS AGENCY CODE TO FIND IF AGENCY HAS SECURITY
+#******************************************************************************************************************
+sAgySecCheck = CELLGETS (cbAgySec, sIDAgy, sIDAgy);
+
+#******************************************************************************************************************
+#*** DECLARE CONSTANTS
+#******************************************************************************************************************
+sProcess1 = 'AE_Internal_Trading_Balancing_01_-_Clear_Temp_Dim';
+sProcess2 = 'AE_Internal_Trading_Balancing_02_-_Review_Populate_ID_List';
+sProcess3 = 'AE_Internal_Trading_Balancing_03_-_Update_IntTra_RptCube';
+sProcess4 = 'AE_Internal_Trading_Balancing_04_-_Update_AgencyID_DetailsCube';
+
+sITLabel = 'pseintrade_seg';
+sITLabelAgy = 'psAgency';
+
+
+#******************************************************************************************************************
+#*** IF SECURITY FOR AGENCY IS ONLY READ, NOT ALLOWED TO DO ANYTHING, EXCEPT FOR ADMIN
+#******************************************************************************************************************
+#  TEST C - Test if this process is open for an agency
+
+IF (sAgySecCheck @= 'READ' % sCAMAgySecCheck @= 'READ');
+
+	#  TEST C - TRUE - The process is currently closed to users
+
+	PROCESSERROR;
+ELSE;
+
+	# TEST C - FALSE - The process is currently open to users so continue
+
+	#******************************************************************************************************************
+	#*** GBMS IS OPEN. SECURITY FOR AGENCY IS WRITE
+	#*** PERFORM PROCESS
+	#******************************************************************************************************************
+
+	ExecuteProcess(sProcess1);
+
+	#ExecuteProcess( sProcess2 , sITLabel , pseintrade_seg,  sITLabelAgy , psAgency );
+
+	ExecuteProcess(sProcess3);
+
+	ExecuteProcess(sProcess4);
+
+ENDIF;
+
+ENDIF;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+## First Row?
+
+## Clear data
+IF(nMetaRunOnce = 1);
+
+#Debuggging copy and paste
+#ASCIIOUTPUT('ian20140212.txt',sPeriod,V1,vsAgency,vsProg,vsControlType,vsOC,vsFunc,vsMA,vsAppropType,vsAppropItem,vsAcc,vsRE,vsSPP,vsJur,vsPeriod,sEntryPeriod,sDRCR,sMyValue);
+
+seYear = SUBST(vsBudgetYear,1,4) | '-'  | SUBST(vsBudgetYear,1,2) | SUBST(vsBudgetYear,6,2);
+
+#	SubsetElementInsert (sDIM11P, sView, seYear, 1);
+
+#	sePeriodPYperFile  = DIMNM( sDIM11P , DIMIX( sDIM11P , seYear)-1 );
+
+#	SubsetElementInsert (sDIM11P, sView, sePeriodPYperFile, 1);	
+
+#	SubsetElementInsert (sDIM1Y, sView, 'HL'|seYear, 1);
+
+
+
+#	ViewSubsetAssign (sCubeDest, sView, dmPeriod, sView);
+
+
+#	ViewZeroOut(sCubeDest , sView);
+
+#	SubsetDeleteAllElements(dmHLYear  , sSubset);
+#	SubsetDeleteAllElements(dmScenario  , sSubset);
+#	SubsetDeleteAllElements(dmRE  , sSubset);
+#	SubsetDeleteAllElements(sDIM3S  , sSubset);
+#	SubsetDeleteAllElements(dmMA  , sSubset);
+#	SubsetDeleteAllElements(dmProg  , sSubset);
+#	SubsetDeleteAllElements(dmItem  , sSubset);
+#	SubsetDeleteAllElements(dmAcc  , sSubset);
+#	SubsetDeleteAllElements(dmID  , sSubset);
+#	SubsetDeleteAllElements(dmJur  , sSubset);
+#	SubsetDeleteAllElements(dmPer  , sSubset);
+#	SubsetDeleteAllElements(sDIM12MEA  , sSubset);
+
+
+
+
+
+
+## Evaluate the HeadlineYear and Period if they are different File versus variables then write to error log.
+# I am doing this here before I forget.
+nMetaRunOnce = nMetaRunOnce + 1;
+
+
+
+
+ELSE;
+
+
+
+
+
+
+
+
+
+
+## Every other row
+
+
+
+
+ENDIF;
+
+nMetaRunOnce = nMetaRunOnce + 1;
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#### 15/12/2017 - Skip the cash flows which are duplicated.
+IF(vsBudgetingValueType @='');
+
+	ItemSkip;
+
+ENDIF;
+
+
+
+### 20171127 - vseAccountKey  is blank then skip
+IF(vseAccountKey @='');
+	Itemskip;
+ENDIF;
+
+IF(SCAN('/', vsAgencyKey)<>0);
+
+	vsAgencyKey = SUBST(vsAgencyKey , SCAN('/', vsAgencyKey) + 1 , 5);
+
+
+	IF( sAgency @<>vsAgencyKey);
+
+		ITEMSkip;
+
+	ENDIF;
+
+ENDIF;
+
+IF(SCAN('/', vsProgramKey)<>0);
+
+	vsProgramKey = SUBST(vsProgramKey , SCAN('/', vsProgramKey) + 1 , 4);
+
+		IF(DIMIX(dmProg, vsProgramKey) <>0);
+
+# 	Get programme element (deliberately at this position rather than at the beginning with the other elements)
+			sElType = DTYPE(dmProg, vsProgramKey);
+			sStartProg = vsProgramKey;
+			WHILE (sElType @= 'C');
+     				vsProgramKey = ELCOMP(dmProg, vsProgramKey, 1);
+     				sElType = DTYPE(dmProg, vsProgramKey);
+#				ASCIIOUTPUT('ian.txt',
+			END;
+
+		ENDIF;
+
+ENDIF;
+
+
+
+IF(SCAN('/', vsRelatedAgencyKey)<>0);
+
+	vsRelatedAgencyKey = SUBST(vsRelatedAgencyKey , SCAN('/', vsRelatedAgencyKey) + 1 , 5);
+
+	IF(vsRelatedAgencyKey @= '#');
+
+		vsRelatedAgencyKey = '-';
+
+	ENDIF;
+
+ENDIF;
+
+IF(vsSpecificPurposePay @=  'Not assigned');
+
+	vsSpecificPurposePay = '-';
+
+ENDIF;
+
+IF(vsMovementAccountKey @= '#');
+
+	vsMovementAccountKey = '-';
+
+ENDIF; 
+
+IF(SCAN('/', vseAccountKey)<>0);
+
+	vseAccountKey = SUBST(vseAccountKey , SCAN('/', vseAccountKey) + 1 , 7);
+
+
+
+ENDIF;
+
+IF(vsJurisdiction @= '#');
+
+	vsJurisdiction = '-';
+
+ENDIF; 
+
+IF(vsJurisdiction @= 'Not assigned');
+
+	vsJurisdiction = '-';
+
+ENDIF; 
+
+IF(vsAppropriationKey @= '#');
+
+	vsAppropriationKey = '-';
+
+ENDIF; 
+
+IF(vsAppropriationKey @= 'Not assigned');
+
+	vsAppropriationKey = '-';
+
+ENDIF; 
+
+# Convert signage on flat file value
+IF (vsMovementAccountKey @= '-');
+     X = ATTRS('account', vseAccountKey, 'DR/CR');
+ELSE;
+     X = ATTRS('movement account', vsMovementAccountKey, 'DR/CR');
+ENDIF;
+
+IF (X @= 'CR');
+     iConversion = -1;
+ELSE;
+     iConversion = 1;
+ENDIF;
+
+seYear = SUBST(vsBudgetYear,1,4) | '-'  | SUBST(vsBudgetYear,1,2) | SUBST(vsBudgetYear,6,2);
+seHLYear = 'HL' | SUBST(vsBudgetYear,1,4) | '-'  | SUBST(vsBudgetYear,1,2) | SUBST(vsBudgetYear,6,2);
+
+nJul = vnJulYTD *  iConversion;
+nAug = (vnAugYTD - vnJulYTD) *  iConversion;
+nSep = (vnSepYTD - vnAugYTD) *  iConversion;
+nOct = (vnOctYTD - vnSepYTD) *  iConversion;
+nNov = (vnNovYTD - vnOctYTD) *  iConversion;
+nDec = (vnDecYTD - vnNovYTD) *  iConversion;
+nJan = (vnJanYTD - vnDecYTD) *  iConversion;
+nFeb = (vnFebYTD - vnJanYTD) *  iConversion;
+nMar = (vnMarYTD - vnFebYTD) *  iConversion;
+nApr = (vnAprYTD - vnMarYTD) *  iConversion;
+nMay = (vnMayYTD - vnAprYTD) *  iConversion;
+nJun = (vnJunYTD - vnMayYTD) *  iConversion;
+
+
+#CellPutN(vnMyCFSAmount,'AA4_reporting',vsBudgetYear,vsSector,vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,vsFormInstanceIDKey,vsJurisdiction,vsBudgetYearKeyNotComp,vsFormInstanceID);
+
+IF(SUBST(vseAccountKey, 1,1) @<> '6');
+
+#	ASCIIOUTPUT('ian20171127.txt', vsFormInstanceID ,sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Jul',seMeasure);
+	CELLPUTN(nJul, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Jul',seMeasure);
+	CELLPUTN(nAug, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Aug',seMeasure);
+	CELLPUTN(nSep, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Sep',seMeasure);
+	CELLPUTN(nOct, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Oct',seMeasure);
+	CELLPUTN(nNov, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Nov',seMeasure);
+	CELLPUTN(nDec, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Dec',seMeasure);
+	CELLPUTN(nJan, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Jan',seMeasure);
+	CELLPUTN(nFeb, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Feb',seMeasure);
+	CELLPUTN(nMar, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Mar',seMeasure);
+	CELLPUTN(nApr, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Apr',seMeasure);
+	CELLPUTN(nMay, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'May',seMeasure);
+	CELLPUTN(nJun, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Jun',seMeasure);
+
+ELSE;
+
+	#ASCIIOUTPUT('ian20171127.txt', vsFormInstanceID ,sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Jul',seMeasure);
+	CELLINCREMENTN(nJul, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Jul',seMeasure);
+	CELLINCREMENTN(nAug, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Aug',seMeasure);
+	CELLINCREMENTN(nSep, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Sep',seMeasure);
+	CELLINCREMENTN(nOct, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Oct',seMeasure);
+	CELLINCREMENTN(nNov, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Nov',seMeasure);
+	CELLINCREMENTN(nDec, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Dec',seMeasure);
+	CELLINCREMENTN(nJan, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Jan',seMeasure);
+	CELLINCREMENTN(nFeb, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Feb',seMeasure);
+	CELLINCREMENTN(nMar, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Mar',seMeasure);
+	CELLINCREMENTN(nApr, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Apr',seMeasure);
+	CELLINCREMENTN(nMay, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'May',seMeasure);
+	CELLINCREMENTN(nJun, sCubeDest, seHLYear, sELScn, vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,'Jun',seMeasure);
+
+ENDIF;
+
+#ASCIIOUTPUT('ian.txt',numbertostring(vnMyCFSAmount),sCubeDest,vsBudgetYearKeyNotComp,sELScn,vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,seYear,seMeasure);
+#CellPutN(vnMyCFSAmount,sCubeDest,vsBudgetYearKeyNotComp,sELScn,vsRelatedAgencyKey,vsSpecificPurposePay,vsMovementAccountKey,vsProgramKey,vsAppropriationKey,vseAccountKey,sELID,vsJurisdiction,seYear,seMeasure)
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#	IF(seYear @<> 	sPeriod);
+#		ItemReject('Warning - The file supplied had the following headline year:' | seYear | '.  The variables currently have ' | sPeriod | ' recorded as the Period.  Note that the CBMS file was loaded to HL' | seYear |' while the data is in HL'| sPeriod |'.');
+#	ENDIF;
+
+
+# Destroy the existing view and subsets
+#	ViewDestroy (cbCube, sObject);
+#	SubsetDestroy (dmHLYear, sObject);
+#	SubsetDestroy (dmScn, sObject);
+#	SubsetDestroy (dmProg, sObject);
+#	SubsetDestroy (dmPeriod, sObject);
+
+
+## Check the file exists before we go too far
+IF(FileExists(psFileName) = 0);
+
+#	ItemReject('The following file '|psFileName|'  could not be located.  No CBMS AA Workitem information was loaded.');	
+#	ProcessBreak;
+	ItemReject('The following file '|psFileName|'  could not be located.  No CBMS AA Workitem information was loaded.');	
+	ProcessQuit;
+
+ELSE;
+
+
+
+
+ENDIF;
+
+CubeSetLogChanges(cbAE, 1);
+#endregion

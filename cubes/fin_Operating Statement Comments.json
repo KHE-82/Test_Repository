@@ -1,0 +1,26 @@
+{
+	"@type":"Cube",
+	"Name":"fin_Operating Statement Comments",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('Year')"
+		},
+		{
+			"@id":"Dimensions('Scenario')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')"
+		},
+		{
+			"@id":"Dimensions('GL Code')"
+		},
+		{
+			"@id":"Dimensions('Month')"
+		},
+		{
+			"@id":"Dimensions('Text')"
+		}
+	],
+	"Views@Code.links":[]
+}

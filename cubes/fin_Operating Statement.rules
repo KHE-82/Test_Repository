@@ -1,0 +1,166 @@
+SKIPCHECK;
+# DB('fin_Operating Statement',!Year,!Scenario,!Cost Centre,!GL Code,!Month)
+# DB('HR_Salary', !Year, !Scenario, !Salary ID, !Salary Level, !Cost Centre, !Month, !Salary Measures)
+# DB('sys_Calendar',!Year,!Time Measures,!Month)
+# DB('fin_CapEx', !Year, !Scenario, !Asset Categories, !Asset Measures, !Cost Centre, !Month)
+
+# RULE 1
+# Prevent rules from working against certain areas of the cube
+['Scenario':'Actual'] = STET;
+['PY Actual'] = STET;
+['Revised Budget'] = STET;
+
+# RULE 2
+# Calculate the value of Allocated Actual and Allocated Budget
+['Allocated Actual'] = N:
+DB('CA_Result', !Year, 'Actual', !GL Code, !Cost Centre, !Month, 'All CA Sequence');
+
+['Allocated Budget'] = N:
+DB('CA_Result', !Year, 'Budget', !GL Code, !Cost Centre, !Month, 'All CA Sequence');
+
+# RULE 3
+# Calculate the value of the Forecast Scenario
+['Forecast'] = N:
+# Check if the period has been closed
+IF(DB('sys_Calendar', !Year, 'Period Closed', !Month,'vale') =1,
+# Use Actual Data
+['Actual'],
+# Else use Budget data
+['Budget']);
+
+# RULE 4
+# Import values from the Salary model
+# Base Salary
+['40500'] = N:
+DB('HR_Salary', !Year, !Scenario, 'Total Salary IDs', 'All Salary Levels', !Cost Centre, !Month, 'Salary Amount');
+# Superannuation
+['40531'] = N:
+DB('HR_Salary', !Year, !Scenario, 'Total Salary IDs', 'All Salary Levels', !Cost Centre, !Month, 'Superannuation');
+# Long Service Leave
+['40596'] = N:
+DB('HR_Salary', !Year, !Scenario, 'Total Salary IDs', 'All Salary Levels', !Cost Centre, !Month, 'Long Service Leave');
+# Annual Leave
+['40595'] = N:
+DB('HR_Salary', !Year, !Scenario, 'Total Salary IDs', 'All Salary Levels', !Cost Centre, !Month, 'Annual Leave');
+# Performance Pay
+['40511'] = N:
+DB('HR_Salary', !Year, !Scenario, 'Total Salary IDs', 'All Salary Levels', !Cost Centre, !Month, 'Performance Pay');
+# Other
+['40503'] = N:
+DB('HR_Salary', !Year, !Scenario, 'Total Salary IDs', 'All Salary Levels', !Cost Centre, !Month, 'Other');
+# ComCare
+['40565'] = N:
+DB('HR_Salary', !Year, !Scenario, 'Total Salary IDs', 'All Salary Levels', !Cost Centre, !Month, 'ComCare');
+# Accommodation
+['40570'] = N:
+DB('HR_Salary', !Year, !Scenario, 'Total Salary IDs', 'All Salary Levels', !Cost Centre, !Month, 'Accommodation');
+# Telecommunications / Information Technology
+['40555'] = N:
+DB('HR_Salary', !Year, !Scenario, 'Total Salary IDs', 'All Salary Levels', !Cost Centre, !Month, 'Telecommunications') +
+DB('HR_Salary', !Year, !Scenario, 'Total Salary IDs', 'All Salary Levels', !Cost Centre, !Month, 'Information Technology');
+# Training and Development
+['42615'] = N:
+DB('HR_Salary', !Year, !Scenario, 'Total Salary IDs', 'All Salary Levels', !Cost Centre, !Month, 'Training and Development');
+# SES Vehicle
+['40591'] = N:
+DB('HR_Salary', !Year, !Scenario, 'Total Salary IDs', 'All Salary Levels', !Cost Centre, !Month, 'SES Vehicle');
+
+# RULE 5
+# Import depreciation from the CapEx cube
+# Computer Equipment
+['43503'] = N:
+ROUNDP(DB('fin_CapEx', !Year, !Scenario, 'Computer Equipment', 'Depreciation', !Cost Centre, !Month,'value'), 2);
+
+# Office Equipment
+['43506'] = N:
+ROUNDP(DB('fin_CapEx', !Year, !Scenario, 'Office Equipment', 'Depreciation', !Cost Centre, !Month,'value'), 2);
+
+# Vehicles
+['43513'] = N:
+ROUNDP(DB('fin_CapEx', !Year, !Scenario, 'Vehicles', 'Depreciation', !Cost Centre, !Month,'value'), 2);
+
+# Software
+['43505'] = N:
+ROUNDP(DB('fin_CapEx', !Year, !Scenario, 'In House Developed Software', 'Depreciation', !Cost Centre, !Month,'value') +
+DB('fin_CapEx', !Year, !Scenario, 'Purchased Software', 'Depreciation', !Cost Centre, !Month,'value'), 2);
+
+# Land and Buildings
+['43510'] = N:
+ROUNDP(DB('fin_CapEx', !Year, !Scenario, 'Land and Buildings', 'Depreciation', !Cost Centre, !Month,'value'), 2);
+
+# Intangibles
+['43501'] = N:
+ROUNDP(DB('fin_CapEx', !Year, !Scenario, 'Intangibles', 'Depreciation', !Cost Centre, !Month,'value'), 2);
+
+
+FEEDERS;
+# RULE 1
+# No feeder required for this rule
+
+# RULE 2
+# Feed Allocated Actual into Actual
+['Actual'] => ['Allocated Actual'];
+
+# RULE 3
+# Feed Actual and Budget into the forecast scenario
+['Actual'] =>
+DB(IF(ISUND(DB('sys_Calendar',!Year,'Period Closed',!Month,'value'))=0, 'fin_Operating Statement', ''), !Year, 'Forecast', !Cost Centre, !GL Code, !Month,'value');
+
+['Budget'] =>
+DB(IF(ISUND(DB('sys_Calendar',!Year,'Period Closed',!Month,'value'))=1, 'fin_Operating Statement', ''), !Year, 'Forecast', !Cost Centre, !GL Code, !Month,'value');
+
+# RULE 4
+# These rules are fed from the Salary cube
+
+# RULE 5
+# Fed from CapEx cube
+
+# EXTERNAL FEEDERS
+# CA_Pools Cube
+['Expenses'] =>
+DB('CA_Pools', !Year, !Scenario, !Cost Centre, 'Direct Expenditure');
+
+# Balance Sheet Cube
+# Computer Equipment
+['43503'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, 'O0000', '14103', !Month,'value');
+
+# Office Equipment
+['43506'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, 'O0000', '14106', !Month,'value');
+
+# Vehicles
+['43513'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, 'O0000', '14113', !Month,'value');
+
+# Software
+['43505'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, 'O0000', '14104', !Month,'value');
+
+# Land and Buildings
+['43510'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, 'O0000', '14112', !Month,'value');
+
+# Intangibles
+['43501'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, 'O0000', '14111', !Month,'value');
+
+# Net Result
+['Net Result'] =>
+DB('fin_Balance Sheet', !Year, !Scenario, 'O0000', 'Retained Earnings', !Month,'value');
+
+# Balance Sheet Assumption Cube
+['All Cost Centres'] =>
+DB('fin_Balance Sheet Assumptions', !Year, !Scenario, 'Balance Sheet', !Month, 'Source Value','value');
+
+# Cash Flow Cube
+# Feed Jun into Jul next year
+['Jun'] =>
+DB('fin_Cash Flow', ATTRS('Year', !Year, 'Next'), !Scenario, !Cost Centre, !GL Code, 'Jul','value');
+# Feed P13 into Jul next year
+['P13'] =>
+DB('fin_Cash Flow', ATTRS('Year', !Year, 'Next'), !Scenario, !Cost Centre, !GL Code, 'Jul','value');
+# Feed all other months into the next month
+['Actual'] =>
+DB('fin_Cash Flow', !Year, !Scenario, !Cost Centre, !GL Code, ATTRS('Month', !Month, 'Next_Mth'),'value'),
+DB('fin_Cash Flow', !Year, !Scenario, !Cost Centre, !GL Code, !Month,'value');

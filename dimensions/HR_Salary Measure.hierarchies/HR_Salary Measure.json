@@ -1,0 +1,15 @@
+{
+	"@type":"Hierarchy",
+	"Name":"HR_Salary Measure",
+	"Elements":
+	[
+		{
+			"Name":"value",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"HR_Salary Measure.subsets/Default.json"
+	]
+}

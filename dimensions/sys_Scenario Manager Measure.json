@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_Scenario Manager Measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_Scenario Manager Measure.hierarchies/sys_Scenario Manager Measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_Scenario Manager Measure')/Hierarchies('sys_Scenario Manager Measure')"
+	}
+}

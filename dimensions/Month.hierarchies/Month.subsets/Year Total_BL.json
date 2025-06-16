@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"Year Total_BL",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('Month')/Hierarchies('Month')/Elements('Year')"
+		}
+	]
+}

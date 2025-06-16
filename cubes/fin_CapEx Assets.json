@@ -1,0 +1,27 @@
+{
+	"@type":"Cube",
+	"Name":"fin_CapEx Assets",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('Year')"
+		},
+		{
+			"@id":"Dimensions('Asset Categories')"
+		},
+		{
+			"@id":"Dimensions('Asset Measures')"
+		},
+		{
+			"@id":"Dimensions('Cost Centre')"
+		},
+		{
+			"@id":"Dimensions('Asset Numbers')"
+		},
+		{
+			"@id":"Dimensions('fin_CapEX Assets Measure')"
+		}
+	],
+	"Rules@Code.link":"fin_CapEx Assets.rules",
+	"Views@Code.links":[]
+}

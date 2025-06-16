@@ -1,0 +1,124 @@
+{
+	"@type":"Process",
+	"Name":"ME4_FixMAVariances",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"ME4_FixMAVariances.ti",
+	"UIData":"CubeAction=1500€DataAction=1504€CubeName=MA adjustments€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"VarType=32€ColType=825€VarDimension=headline year€VarDimAction=As Is€VarElemType=Numeric€VarDimElemSortType=BYINPUT€VarDimElemSortSense=ASCENDING€",
+		"VarType=32€ColType=825€VarDimension=scenario€VarDimAction=As Is€VarElemType=Numeric€VarDimElemSortType=BYINPUT€VarDimElemSortSense=ASCENDING€",
+		"VarType=32€ColType=825€VarDimension=programme€VarDimAction=As Is€VarElemType=Numeric€VarDimElemSortType=BYINPUT€VarDimElemSortSense=ASCENDING€",
+		"VarType=32€ColType=825€VarDimension=id€VarDimAction=As Is€VarElemType=Numeric€VarDimElemSortType=BYINPUT€VarDimElemSortSense=ASCENDING€",
+		"VarType=32€ColType=825€VarDimension=period€VarDimAction=As Is€VarElemType=Numeric€VarDimElemSortType=BYINPUT€VarDimElemSortSense=ASCENDING€",
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=825€VarDimension=account€VarDimAction=As Is€VarElemType=Numeric€VarDimElemSortType=BYINPUT€VarDimElemSortSense=ASCENDING€",
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=825€VarDimension=movement account€VarDimAction=As Is€VarElemType=Numeric€VarDimElemSortType=BYINPUT€VarDimElemSortSense=ASCENDING€",
+		"VarType=32€ColType=825€VarDimension=related entity€VarDimAction=As Is€VarElemType=Numeric€VarDimElemSortType=BYINPUT€VarDimElemSortSense=ASCENDING€",
+		"VarType=32€ColType=825€VarDimension=jurisdiction€VarDimAction=As Is€VarElemType=Numeric€VarDimElemSortType=BYINPUT€VarDimElemSortSense=ASCENDING€",
+		"VarType=33€ColType=826€",
+		"VarName=seStatus€VarType=32€ColType=825€VarFormula=seStatus='Data';:€VarFormulaDestination=BOTH€VarDimension=status€VarDimAction=As Is€VarElemType=Numeric€VarDimElemSortType=BYINPUT€VarDimElemSortSense=ASCENDING€",
+		"VarName=seFunc€VarType=32€ColType=825€VarFormula=seFunc='';:€VarFormulaDestination=BOTH€VarDimension=function€VarDimAction=As Is€VarElemType=Numeric€VarDimElemSortType=BYINPUT€VarDimElemSortSense=ASCENDING€"
+	],
+	"DataSource":
+	{
+		"Type":"ASCII",
+		"asciiDecimalSeparator":".",
+		"asciiDelimiterChar":",",
+		"asciiDelimiterType":"Character",
+		"asciiHeaderRecords":4,
+		"asciiQuoteCharacter":"\"",
+		"asciiThousandSeparator":",",
+		"dataSourceNameForClient":"\\\\dcvsas663\\tm1_common\\Export Extracts\\FixVariances_4.csv",
+		"dataSourceNameForServer":"\\\\dcvsas663\\tm1_common\\Export Extracts\\FixVariances_4.csv"
+	},
+	"Parameters":[],
+	"Variables":
+	[
+		{
+			"Name":"vseHLYear",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"sScn",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vseProg",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"sID",
+			"Type":"String",
+			"Position":4,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"sPeriod",
+			"Type":"String",
+			"Position":5,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"sAPPn",
+			"Type":"String",
+			"Position":6,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"sAccount",
+			"Type":"String",
+			"Position":7,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"sSPP",
+			"Type":"String",
+			"Position":8,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"seMa",
+			"Type":"String",
+			"Position":9,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"seRE",
+			"Type":"String",
+			"Position":10,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"seJur",
+			"Type":"String",
+			"Position":11,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"VNMyvalue",
+			"Type":"Numeric",
+			"Position":12,
+			"StartByte":0,
+			"EndByte":0
+		}
+	]
+}

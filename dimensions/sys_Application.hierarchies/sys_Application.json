@@ -1,0 +1,33 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_Application",
+	"Elements":
+	[
+		{
+			"Name":"BMS",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"BMS - Menus",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"BMS - Main Menu",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"BMS",
+			"ComponentName":"BMS - Menus",
+			"Weight":1
+		},
+		{
+			"ParentName":"BMS - Menus",
+			"ComponentName":"BMS - Main Menu",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":[]
+}

@@ -1,0 +1,284 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+# This process loads data from the $ME P0_jun view in the adjustments cube to the ME adjustments cube.
+# NOTE:  HL Year is the same as the year to be profiled, regardless of the budget round (ie profiles for 2008-2009 are stored against HL2008-2009)
+# NOTE:  view and subset commands are commented out because there is a bug with the ViewZeroOut command in V9.1.  Data is cleared via another process
+
+#**** CLEAR DESTINATION CELLS
+sCube = 'ME4_reporting';
+#sView = '$clear';
+#sSubset = sView;
+sHLYear = 'HL' | ATTRS('variables', 'ME year', 'value');
+sScenario = 'current';
+seRptMeas = 'value';
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+#ViewDestroy(sCube, sView);
+#SubsetDestroy('headline year', sSubset);
+#SubsetDestroy('scenario', sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+#SubsetCreate('headline year', sSubset);
+#SubsetElementInsert('headline year', sSubset, sHLYear, 1);
+
+# scenario
+#SubsetCreate('scenario', sSubset);
+#SubsetElementInsert('scenario', sSubset, sScenario, 1);
+
+#****BUILD VIEW****#
+#ViewCreate(sCube, sView);
+#ViewSubsetAssign(sCube, sView, 'headline year', sSubset);
+#ViewSubsetAssign(sCube, sView, 'scenario', sSubset);
+
+#ViewSetSkipZeroes(sCube, sView, 1);
+#ViewSetSkipCalcs(sCube, sView, 1);
+#ViewExtractSkipRuleValuesSet (sCube, sView, 1);
+#ViewZeroOut(sCube, sView);
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+#ViewDestroy(sCube, sView);
+#SubsetDestroy('headline year', sHLYear);
+#SubsetDestroy('scenario', sScenario);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#ASCIIOUTPUT('ian.txt',sCube, sHLYear, sScenario,'RE', sRE,'spp',spp,'MA', sMA,'Prog', sProg,'AI' , sApprnItem,'Account', sAcc,sID,sJur,'Jun YTD',seRptMeas,'status', status);
+
+#ASCIIOUTPUT('ian.txt',sCube, sHLYear, sScenario,'RE', sRE,'spp',spp,'MA', sMA,'Prog', 'sProg','AI' , 'sApprnItem','Account', sAcc,sID,sJur,'Jun YTD',seRptMeas,'status', status);
+
+sAcctAppnReqQM = '';
+sMvtAcctAppnReqQM = '';
+
+sAcctAppnReqQM = ATTRS('account' , sAcc , 'Appropriation Type Required');
+sMvtAcctAppnReqQM = ATTRS('movement account' , sMA , 'Appropriation Type Required');
+
+IF((sAcctAppnReqQM @<>'Y') & (sMvtAcctAppnReqQM @<>'Y'));
+
+	sApprnItem = '-';
+
+ENDIF;
+
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+## Need to skip any of the move account codes on provisions is they came in they have a tendence to turnup in the flat file but will not load.
+IF ((ELISANC('account', '3345100', sAcc) = 1) % (ELISANC('account', '3365100', sAcc) = 1) % (ELISANC('account', '3380100', sAcc) = 1));
+      ITEMSKIP;
+ENDIF;
+
+
+sStatus = 'data';
+sID = '0000A';
+sYear2 = SUBST(sHLYear, 3, 9);
+sYear1 = DIMNM('period', DIMIX('period', sYear2) - 1);
+
+# IF element is a PL account, or a BS account that requires a movement account but movement account is not equal to 7131, 7161 or 7211,
+# or account is 5234201 or 5234301 or 5234501
+
+#  CBMS-R - 
+#  ELISANC
+#5232300 - Gross student loans
+#5232100 - Gross other loans and advances
+#5232500 - Gross loans to other government agencies
+#5232200 - Loans to state and territory governments
+
+IF ((ELISANC('account', '9000130', sAcc) = 1) % (ELISANC('account', '2332000', sAcc) = 1) % (ELISANC('account', '9000003', sAcc) = 1) %
+    ((ATTRS('account', sAcc, 'movement account required') @= 'Y') & ((sMA @<> '7131' ) & (sMA @<> '7161') & (sMA @<> '7211'))) %
+    (sAcc @= '5234201' % sAcc @= '5234301' % sAcc @= '5234501'
+## New code from generic 20150824
+% sAcc @= '6100001'));
+
+     # THEN P00 = 0 and JUN = profile year
+     IF (sPeriod @= sYear1);
+          ItemSkip;
+     ENDIF;
+
+     IF (sPeriod @= sYear2);
+#          OldValue = CellGetN(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun YTD',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun YTD',seRptMeas);
+
+          MayYTDValue = CellGetN(sCube, sHLYear, sScenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'May YTD',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'May YTD',seRptMeas);
+
+          IF (CellisUpdateable(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun',seRptMeas) = 1);
+               CellPutN(value - MayYTDValue, sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun YTD',seRptMeas);
+          ENDIF;
+
+
+
+
+### Extra
+
+          IF (CellisUpdateable(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jul YTD',seRptMeas) = 1);
+               CellPutN(value - MayYTDValue, sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jul YTD',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun YTD',seRptMeas);
+          ENDIF;
+
+          IF (CellisUpdateable(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Aug YTD',seRptMeas) = 1);
+               CellPutN(value - MayYTDValue, sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Aug YTD',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun YTD',seRptMeas);
+          ENDIF;
+
+          IF (CellisUpdateable(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Sep YTD',seRptMeas) = 1);
+               CellPutN(value - MayYTDValue, sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Sep YTD',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun YTD',seRptMeas);
+          ENDIF;
+
+          IF (CellisUpdateable(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Oct YTD',seRptMeas) = 1);
+               CellPutN(value - MayYTDValue, sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Oct YTD',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun YTD',seRptMeas);
+          ENDIF;
+
+          IF (CellisUpdateable(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Nov YTD',seRptMeas) = 1);
+               CellPutN(value - MayYTDValue, sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Nov YTD',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun YTD',seRptMeas);
+          ENDIF;
+
+          IF (CellisUpdateable(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Dec YTD',seRptMeas) = 1);
+               CellPutN(value - MayYTDValue, sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Dec YTD',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun YTD',seRptMeas);
+          ENDIF;
+
+          IF (CellisUpdateable(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jan YTD',seRptMeas) = 1);
+               CellPutN(value - MayYTDValue, sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jan YTD',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun YTD',seRptMeas);
+          ENDIF;
+
+          IF (CellisUpdateable(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Feb YTD',seRptMeas) = 1);
+               CellPutN(value - MayYTDValue, sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Feb YTD',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun YTD',seRptMeas);
+          ENDIF;
+
+          IF (CellisUpdateable(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Mar YTD',seRptMeas) = 1);
+               CellPutN(value - MayYTDValue, sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Mar YTD',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Mar YTD',seRptMeas);
+          ENDIF;
+
+          IF (CellisUpdateable(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Apr YTD',seRptMeas) = 1);
+               CellPutN(value - MayYTDValue, sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Apr YTD',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Apr YTD',seRptMeas);
+          ENDIF;
+
+          IF (CellisUpdateable(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'May YTD',seRptMeas) = 1);
+               CellPutN(value - MayYTDValue, sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'May YTD',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'May YTD',seRptMeas);
+          ENDIF;
+
+     ENDIF;
+
+ENDIF;
+
+
+# IF movement account is 7131 or 7161 or 7211 or account is 5234101
+IF ((sMA @= '7131') % (sMA @= '7161') % (sMA @= '7211') % (sAcc @= '5234101'));
+
+     # THEN P00 =  profile year and Jun = 0
+     IF (sPeriod @= sYear1);
+          ItemSkip;
+     ENDIF;
+
+     IF (sPeriod @= sYear2);
+          OldValue = CellGetN(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'P00',seRptMeas);
+
+          IF (CellisUpdateable(sCube, sHLYear, sScenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'P00',seRptMeas) = 1);
+               CellPutN(value + OldValue, sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'P00',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'P0',seRptMeas);
+          ENDIF;
+
+     ENDIF;
+
+ENDIF;
+
+
+# IF account is a BS account that doesn't require a movement account (ie all remaining BS accounts)
+IF ((ELISANC('account', '3800001', sAcc) = 1) & (ATTRS('account', sAcc, 'movement account required') @<> 'Y') & (sAcc @<> '5234101' & sAcc @<> '523420
+1' & sAcc @<> '5234301' & sAcc @<> '5234501'));
+
+     #THEN P00 = profile year minus 1 and Jun = profile year less previous year
+     IF (sPeriod @= sYear1);
+          # P00
+          OldValue = CellGetN(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'P00',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'P0',seRptMeas);
+
+          IF (CellisUpdateable(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'P00',seRptMeas) = 1);
+               CellPutN(value + OldValue, sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'P00',seRptMeas);
+          ENDIF;
+
+          # Jun
+          OldValue = CellGetN(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun',seRptMeas);
+
+          IF (CellisUpdateable(sCube, sHLYear, sScenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun',seRptMeas) = 1);
+               CellPutN(OldValue - value, sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun',seRptMeas);
+          ENDIF;
+
+     ENDIF;
+
+     IF (sPeriod @= sYear2);
+          OldValue = CellGetN(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun YTD',seRptMeas);
+
+        #  IF (CellisUpdateable(sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun',seRptMeas) = 1);
+               CellPutN(value + OldValue, sCube, sHLYear, sScenario, sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun',seRptMeas);
+         # ENDIF;
+
+     ENDIF;
+
+ENDIF;
+
+
+
+
+
+
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'May YTD',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'P0',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'Jun YTD',seRptMeas);
+#CellPutN(NVALUE, sCube, V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,'P0',seRptMeas);
+#CellPutN(NVALUE, 'ME4_reporting', V1,scenario,sRE,spp,sMA,sProg,sApprnItem,sAcc,sID,sJur,sPeriod,seRptMeas);
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+sCube = 'AE adjustments';
+sView = '$ME P0_jun';
+sSubset = sView;
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+IF(9=0);
+	ViewDestroy(sCube, sView);
+	SubsetDestroy('headline year', sSubset);
+	SubsetDestroy('scenario', sSubset);
+	SubsetDestroy('status', sSubset);
+	SubsetDestroy('outcome', sSubset);
+	SubsetDestroy('related entity', sSubset);
+	SubsetDestroy('function', sSubset);
+	SubsetDestroy('reason', sSubset);
+	SubsetDestroy('spp', sSubset);
+	SubsetDestroy('appropriation type', sSubset);
+	SubsetDestroy('movement account', sSubset);
+	SubsetDestroy('appropriation item', sSubset);
+	SubsetDestroy('programme', sSubset);
+	SubsetDestroy('account', sSubset);
+	SubsetDestroy('id', sSubset);
+	SubsetDestroy('jurisdiction', sSubset);
+	SubsetDestroy('period', sSubset);
+ENDIF;
+#endregion
