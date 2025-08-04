@@ -1,0 +1,58 @@
+{
+	"@type":"NativeView",
+	"Name":"Kate Hambly_$sysMeasBulkProcess",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('measure details')/Hierarchies('measure details')/Subsets('Kate Hambly_$sysMeasBulkProcess')"
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('measure code')/Hierarchies('measure code')/Subsets('Kate Hambly_$sysMeasBulkProcess')"
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('}Clients')/Hierarchies('}Clients')/Subsets('Kate Hambly_$sysMeasBulkProcess')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('}Clients')/Hierarchies('}Clients')/Elements('CAMID(\"pans:u:kate.hambly@dcceew.gov.au\")')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('headline year')/Hierarchies('headline year')/Subsets('Kate Hambly_$sysMeasBulkProcess')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('headline year')/Hierarchies('headline year')/Elements('HL2024-2025')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('scenario')/Hierarchies('scenario')/Subsets('Kate Hambly_$sysMeasBulkProcess')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('current')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":true,
+	"SuppressEmptyRows":true,
+	"FormatString":"0.00"
+}

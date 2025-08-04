@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"$CreateReportFlag",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('programme measure')/Hierarchies('programme measure')/Elements('Generate parameter pack')"
+		}
+	]
+}

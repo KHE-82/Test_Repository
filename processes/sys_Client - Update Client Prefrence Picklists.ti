@@ -1,0 +1,476 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_Client - Update Client Prefrence Picklists
+#**** DESCRIPTION:       This process updates the client preference picklists
+#****
+#****		          This process gets triggered in AE_Adj Create New 04 (PROLOG)
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    	KG             Initial Revision
+#**** 2019    	KG	Added Bulk Processes for Measure	     
+#**** 2020	KG	 Added Approved Non-FlatFile - unbalanced  
+#*********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS
+#******************************************************************************************************************
+cbID = 'AE id details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmID = 'id';
+dmIDMeas = 'id measure';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT GROUPS CUBE
+#******************************************************************************************************************
+cbGroups = '}ClientGroups';
+dmGroups = '}Groups';
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+
+#******************************************************************************************************************
+#*** GET CLIENT SECURITY GROUPS (NON CAM)
+#******************************************************************************************************************
+sAdmGrp = 'ADMIN';
+sReportGrp = 'AE Reports';
+sDataEntryGrp = 'AE Data Entry';
+sAppGrp = 'AE Approvers';
+
+#******************************************************************************************************************
+#*** NEW SECURITY GROUP FOR CAM 
+#******************************************************************************************************************
+#sCAMAdmGrp = 'CAMID(":Admin)';
+#sCAMReportGrp = 'CAMID(":AE Reports")';
+#sCAMDataEntryGrp = 'CAMID(":AE Data Entry")';
+#sCAMAppGrp = 'CAMID(":AE Approvers")';
+
+#******************************************************************************************************************
+#*** NEW SECURITY GROUP FOR CAM - UPDATE 2021
+#******************************************************************************************************************
+sCAMAdmGrp = sAdmGrp;
+sCAMReportGrp = sReportGrp;
+sCAMDataEntryGrp = sDataEntryGrp;
+sCAMAppGrp = sAppGrp;
+
+
+
+
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+	sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+	lScan = SCAN('\',sUser) + 1;
+	sUser = TRIM(SUBST(sUser, lScan, 100));
+
+	sAdmGrpCheck = CELLGETS (cbGroups, sUser, sAdmGrp);
+	sCAMReportGrpCheck = CELLGETS (cbGroups, sUser, sCAMReportGrp);
+	sCAMDataEntryGrpCheck = CELLGETS (cbGroups, sUser, sCAMDataEntryGrp);
+	sCAMAppGrpCheck = CELLGETS (cbGroups, sUser, sCAMAppGrp);
+ELSE;
+	sUser = TM1User();
+
+	#******************************************************************************************************************
+	#*** GET CLIENT SECURITY GROUPS
+	#*** SOME AGENCY DO NOT HAVE SECURITY GROUP. MAY NEED TO UPDATE AND CHANGE
+	#******************************************************************************************************************
+	#sAdmGrpCheck = CELLGETS (cbGroups, sUser, sAdmGrp);
+	#sReportGrpCheck = CELLGETS (cbGroups, sUser, sReportGrp);
+	#sDataEntryGrpCheck = CELLGETS (cbGroups, sUser, sDataEntryGrp);
+	#sAppGrpCheck = CELLGETS (cbGroups, sUser, sAppGrp);
+
+	sAdmGrpCheck = '';
+	sReportGrpCheck = '';
+	sDataEntryGrpCheck = '';
+	sAppGrpCheck = '';
+
+	sAdmGrpCheck = CELLGETS (cbGroups, sUser, sAdmGrp);
+	sCAMReportGrpCheck = CELLGETS (cbGroups, sUser, sCAMReportGrp);
+	sCAMDataEntryGrpCheck = CELLGETS (cbGroups, sUser, sCAMDataEntryGrp);
+	sCAMAppGrpCheck = CELLGETS (cbGroups, sUser, sCAMAppGrp);
+
+
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** GET CLIENT DETAILS & ID DETAILS
+#******************************************************************************************************************
+sHLYear = CELLGETS (cbClient, sUser, 'geus hlyear', 'value');
+sScenario = CELLGETS (cbClient, sUser, 'geus scenario', 'value');
+sID = CELLGETS (cbClient, sUser, 'geus adj', 'value');
+
+
+IF (DIMIX (dmID, sID) <> 0);
+	sProg = CELLGETS(cbID, sHLYear, sScenario, sID, snProg | ' code');
+	sProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, sProg);
+
+	sIDStatus = CELLGETS(cbID, sHLYear, sScenario, sID, 'status');
+
+ELSE;
+
+ENDIF;
+
+
+
+
+
+#***********************************************************************************************************************************************
+#******************************************************************************************************************
+#*** BULK PROCESS PICKLIST
+#*** THIS PICKLIST IS USED FOR WHEN USER NEEDS TO SELECT WHICH BULK PROCESS TO USE
+#******************************************************************************************************************
+#***********************************************************************************************************************************************
+
+#******************************************************************************************************************
+#*** CLEAR CURRENT PICKLISTS
+#******************************************************************************************************************
+
+sClientMeas = 'sys_bulk process picklist';
+CELLPUTS ('',cbClient, sUser, sClientMeas, 'value');
+
+
+
+#******************************************************************************************************************
+#*** IF CURRENT HLYEAR AND SCENARIO SHOW ALL PROCESSES
+#--- Unauthorised to draft
+#--- draft to submitted
+#--- draft to approved
+#--- draft to approved non-flat file
+#--- draft to CBMS
+#--- submitted to approved
+#--- submitted to approved non-flat file
+#--- submitted to CBMS
+#--- approved to CBMS
+#--- Reject - submitted
+#--- Reject - approved
+#--- Reject - approved non-flat file
+#--- Reject - CBMS
+#--- Copy
+#--- Reverse
+#--- Copy and Reverse
+#--- Print
+#--- Flat File Creation
+#--- Delete - unauthorised
+#--- Delete - draft
+#--- Unbalanced to unauthorised
+#--- Unbalanced to approved
+#--- Demote draft to unauthorised
+
+#******************************************************************************************************************
+IF (psHLYear @= curHLYear & psScenario @= curScenario);
+	sPickListReport = '';
+	sPickListDE = 'static:Unauthorised to draft:draft to submitted:Copy:Reverse:Copy and Reverse:Print:Delete - draft:Delete - unauthorised:Unbalanced to unauthorised:Demote draft to unauthorised';
+     	sPickListApp = 'static:Unauthorised to draft:draft to submitted:draft to approved:draft to approved non-flat file:draft to CBMS:submitted to approved:submitted to approved non-flat file:submitted to CBMS:approved to CBMS:Reject - submitted:Reject - approved:Reject - approved non-flat file:Reject - CBMS:Copy:Reverse:Copy and Reverse:Print:Flat File Creation:Delete - unauthorised:Delete - draft:Unbalanced to unauthorised:Unbalanced to approved:Demote draft to unauthorised';
+	sPickListAdm = 'static:Unauthorised to draft:draft to submitted:draft to approved:draft to approved non-flat file:draft to CBMS:submitted to approved:submitted to approved non-flat file:submitted to CBMS:approved to CBMS:Reject - submitted:Reject - approved:Reject - approved non-flat file:Reject - CBMS:Copy:Reverse:Copy and Reverse:Print:Flat File Creation:Delete - unauthorised:Delete - draft:Unbalanced to unauthorised:Unbalanced to approved:Demote draft to unauthorised';
+#	sPickListAdm = 'static:Unauthorised to draft:draft to approved:draft to approved non-flat file:draft to CBMS:approved to CBMS:Reject - approved:Reject - approved non-flat file:Reject - CBMS:Copy:Reverse:Copy and Reverse:Print:Flat File Creation:Delete - unauthorised:Delete - draft:Unbalanced to unauthorised:Demote draft to unauthorised';
+ELSE;
+	#******************************************************************************************************************
+	#*** SHOW ONLY A FEW PROCESSES IN PREVIOUS HL YEAR AND SCENARIO
+	#******************************************************************************************************************
+	sPickListReport  = '';
+	sPickListDE = 'static:Copy:Reverse:Copy and Reverse:Print';
+	sPickListApp = 'static:Copy:Reverse:Copy and Reverse:Print';
+	sPickListAdm ='static:Copy:Reverse:Copy and Reverse:Print';
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** ADD TO PICKLIST
+#******************************************************************************************************************
+
+#*** REPORTS ONLY PICKLIST
+IF (sReportGrpCheck @<> '' % sCAMReportGrpCheck @<> '');
+	CELLPUTS (sPickListReport, cbClient, sUser, sClientMeas, 'value');
+ENDIF;
+
+
+#*** DATA ENTRY ONLY PICKLIST
+IF (sDataEntryGrpCheck @<> '' % sCAMDataEntryGrpCheck @<> '');
+	CELLPUTS (sPickListDE, cbClient, sUser, sClientMeas, 'value');
+ENDIF;
+
+#*** APPROVER PICKLIST
+IF (sAppGrpCheck @<> '' % sCAMAppGrpCheck @<> '');
+	CELLPUTS (sPickListApp, cbClient, sUser, sClientMeas, 'value');
+ENDIF;
+
+#*** ADMINISTRATORS PICKLIST
+IF (sAdmGrpCheck @<> '');
+	CELLPUTS (sPickListAdm, cbClient, sUser, sClientMeas, 'value');
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** CLEAR OUT SYS_BULK PROCESS VALUE
+#******************************************************************************************************************
+sClientMeas = 'sys_bulk process';
+CELLPUTS ('', cbClient, sUser, sClientMeas, 'value');
+
+
+
+#***********************************************************************************************************************************************
+#******************************************************************************************************************
+#*** MEASURE BULK PROCESS PICKLIST
+#*** THIS PICKLIST IS USED FOR WHEN USER NEEDS TO SELECT WHICH BULK PROCESS TO USE
+#******************************************************************************************************************
+#***********************************************************************************************************************************************
+#******************************************************************************************************************
+#*** CLEAR CURRENT PICKLISTS
+#******************************************************************************************************************
+
+sClientMeas = 'sys_meas bulk process picklist';
+CELLPUTS ('',cbClient, sUser, sClientMeas, 'value');
+
+#******************************************************************************************************************
+#--- Approve
+#--- Copy
+#--- Reject
+#--- Delete
+
+#******************************************************************************************************************
+
+#******************************************************************************************************************
+#*** IF CURRENT HLYEAR AND SCENARIO SHOW ALL PROCESSES
+#******************************************************************************************************************
+IF (psHLYear @= curHLYear & psScenario @= curScenario);
+	sPickListReport = '';
+	sPickListDE = 'static:Approve:Copy';
+	sPickListApp = 'static:Approve:Copy:Reject:Delete';
+	sPickListAdm = 'static:Approve:Copy:Reject:Delete';
+ELSE;
+	#******************************************************************************************************************
+	#*** NOT ALLOWED TO DELETE ON PREVIOUS HEADLINE YEAR
+	#******************************************************************************************************************
+	sPickListReport = '';
+	sPickListDE = 'static:Approve:Copy';
+	sPickListApp = 'static:Approve:Copy:Reject';
+	sPickListAdm = 'static:Approve:Copy:Reject';
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** ADD TO PICKLIST
+#******************************************************************************************************************
+
+#*** REPORTS ONLY PICKLIST
+IF (sReportGrpCheck @<> '' % sCAMReportGrpCheck @<> '');
+	CELLPUTS (sPickListReport, cbClient, sUser, sClientMeas, 'value');
+ENDIF;
+
+
+#*** DATA ENTRY ONLY PICKLIST
+IF (sDataEntryGrpCheck @<> '' % sCAMDataEntryGrpCheck @<> '');
+	CELLPUTS (sPickListDE, cbClient, sUser, sClientMeas, 'value');
+ENDIF;
+
+#*** APPROVER PICKLIST
+IF (sAppGrpCheck @<> '' % sCAMAppGrpCheck @<> '');
+	CELLPUTS (sPickListApp, cbClient, sUser, sClientMeas, 'value');
+ENDIF;
+
+#*** ADMINISTRATORS PICKLIST
+IF (sAdmGrpCheck @<> '');
+	CELLPUTS (sPickListAdm, cbClient, sUser, sClientMeas, 'value');
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** CLEAR OUT SYS_BULK PROCESS VALUE
+#******************************************************************************************************************
+sClientMeas = 'sys_meas bulk process';
+CELLPUTS ('', cbClient, sUser, sClientMeas, 'value');
+
+
+#***********************************************************************************************************************************************
+#***********************************************************************************************************************************************
+#*** AUTHORISE PICKLIST
+#*** THIS PICKLIST IS USED FOR WHEN USER NEEDS TO AUTHORISE
+#***********************************************************************************************************************************************
+#***********************************************************************************************************************************************
+
+
+#******************************************************************************************************************
+#*** CLEAR CURRENT PICKLISTS
+#******************************************************************************************************************
+
+sClientMeas = 'sys_approval process picklist';
+CELLPUTS ('',cbClient, sUser, sClientMeas, 'value');
+
+
+#******************************************************************************************************************
+#*** IF CURRENT HLYEAR AND SCENARIO SHOW ALL PROCESSES
+#******************************************************************************************************************
+IF (psHLYear @<> curHLYear & psScenario @<> curScenario);
+	#******************************************************************************************************************
+	#*** NOT ALLOWED TO APPROVE ON PREVIOUS HL YEAR AND SCENARIO
+	#******************************************************************************************************************
+	sPickListReport = '';
+	sPickListDE = '';
+	sPickListApp = '';
+	sPickListAdm = '';
+ELSE;
+
+
+	#******************************************************************************************************************
+	#*** PROCESS RELATING ADJUSTMENTS WITH COMMONWEALTH GRANT
+	#******************************************************************************************************************
+	IF (psHLYear @= curHLYear & psScenario @= curScenario);
+
+		#******************************************************************************************************************
+		#*** DEPENDING ON STATUS, SOME STATUS CAN NOT BE AMENDED AFTER APPROVAL
+		#*** ADDED unauthorised in picklist : JULY 2018 Update
+		#******************************************************************************************************************
+		IF (sIDStatus @= 'unbalanced' % sIDStatus @= 'unauthorised' % sIDStatus @= 'draft');
+			sPickListReport = 'static:unauthorised:unbalanced';
+			sPickListDE = 'static:unauthorised:unbalanced:draft';
+			sPickListApp = 'static:unauthorised:unbalanced:draft:submitted:approved:approved non-flat file:CBMS:approved - unbalanced:approved non-flat file - unbalanced';
+			sPickListAdm = 'static:unauthorised:unbalanced:draft:submitted:approved:approved non-flat file:CBMS:approved - unbalanced:approved non-flat file - unbalanced';
+		ELSEIF (sIDStatus @= 'submitted');
+			sPickListReport = '';
+			sPickListDE = 'static:unauthorised:unbalanced:draft';
+			sPickListApp = 'static:unauthorised:unbalanced:draft:submitted:approved:approved non-flat file:CBMS:approved - unbalanced:approved non-flat file - unbalanced';
+			sPickListAdm =  'static:unauthorised:unbalanced:draft:submitted:approved:approved non-flat file:CBMS:approved - unbalanced:approved non-flat file - unbalanced';
+		ELSEIF (sIDStatus @= 'approved');
+			sPickListReport = '';
+			sPickListDE = '';
+			sPickListApp =  'static:unauthorised:unbalanced:draft:submitted:approved:approved non-flat file:CBMS:approved - unbalanced:approved non-flat file - unbalanced';
+			sPickListAdm =  'static:unauthorised:unbalanced:draft:submitted:approved:approved non-flat file:CBMS:approved - unbalanced:approved non-flat file - unbalanced';
+		ELSEIF (sIDStatus @= 'approved non-flat file');
+			sPickListReport = '';
+			sPickListDE = '';
+			sPickListApp =  'static:unauthorised:unbalanced:draft:submitted:approved:approved non-flat file:CBMS:approved - unbalanced:approved non-flat file - unbalanced';
+			sPickListAdm =  'static:unauthorised:unbalanced:draft:submitted:approved:approved non-flat file:CBMS:approved - unbalanced:approved non-flat file - unbalanced';
+		ELSEIF (sIDStatus @= 'CBMS');
+			sPickListReport = '';
+			sPickListDE = '';
+			sPickListApp =  'static:unauthorised:unbalanced:draft:submitted:approved:approved non-flat file:CBMS:approved - unbalanced:approved non-flat file - unbalanced';
+			sPickListAdm =  'static:unauthorised:unbalanced:draft:submitted:approved:approved non-flat file:CBMS:approved - unbalanced:approved non-flat file - unbalanced';
+		ELSEIF (sIDStatus @= 'approved - unbalanced');
+			sPickListReport = '';
+			sPickListDE = '';
+			#sPickListApp = 'static:unauthorised:unbalanced:draft:approved:approved non-flat file:CBMS:approved - unbalanced:approved non-flat file - unbalanced';
+			#sPickListAdm = 'static:unauthorised:unbalanced:draft:approved:approved non-flat file:CBMS:approved - unbalanced:approved non-flat file - unbalanced';
+			sPickListApp =  'static:unauthorised:unbalanced:draft:submitted:approved:approved non-flat file:CBMS:approved - unbalanced:approved non-flat file - unbalanced';
+			sPickListAdm =  'static:unauthorised:unbalanced:draft:submitted:approved:approved non-flat file:CBMS:approved - unbalanced:approved non-flat file - unbalanced';
+		ELSEIF (sIDStatus @= '');
+			sPickListReport = '';
+			sPickListDE = '';
+			sPickListApp = '';
+			sPickListAdm = '';
+			sPickListAdm = '';
+		ENDIF;
+	ENDIF;
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** ADD TO PICKLIST
+#******************************************************************************************************************
+
+#*** REPORTS ONLY PICKLIST
+IF (sReportGrpCheck @<> '' % sCAMReportGrpCheck @<> '');
+	CELLPUTS (sPickListReport, cbClient, sUser, sClientMeas, 'value');
+ENDIF;
+
+
+#*** DATA ENTRY ONLY PICKLIST
+IF (sDataEntryGrpCheck @<> '' % sCAMDataEntryGrpCheck @<> '');
+	CELLPUTS (sPickListDE, cbClient, sUser, sClientMeas, 'value');
+ENDIF;
+
+#*** APPROVER PICKLIST
+IF (sAppGrpCheck @<> '' % sCAMAppGrpCheck @<> '');
+	CELLPUTS (sPickListApp, cbClient, sUser, sClientMeas, 'value');
+ENDIF;
+
+#*** ADMINISTRATORS PICKLIST
+IF (sAdmGrpCheck @<> '');
+	CELLPUTS (sPickListAdm, cbClient, sUser, sClientMeas, 'value');
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** CLEAR OUT SYS_APPROVAL PROCESS
+#******************************************************************************************************************
+sClientMeas = 'sys_approval process';
+CELLPUTS ('', cbClient, sUser, sClientMeas, 'value');
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

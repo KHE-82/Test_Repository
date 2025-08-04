@@ -1,0 +1,634 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              z_MIgration - OBAL 01 - AE Adj Convert Opening Baseline
+#**** DESCRIPTION:       This process creates a view of the newly archived scenario in the adjustments cube and post to the CBMS-R OBAL Scenario
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 07/08/2017    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+#  
+
+#*** DECLARE CUBES AND DIMENSIONS ***#
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+cbID = 'ae id details';
+
+sCube = cbAE;
+sView = '$CBMSRNewBaseline';
+sSubset = sView;
+
+#sHLYear = ATTRS('variables', 'archive year', 'value');
+#sScenario = ATTRS('variables', 'archive scenario', 'value');
+sSourceStatus = 'Total approved';
+sSourceID = 'Total IDs';
+sSourceReason = 'Total reason';
+
+sTargetStatus = 'data';
+sTargetID = '0000A';
+sTargetReason = 'Other variations not elsewhere defined';
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 00A : CLEAR OUT AE ID DETAILS
+#------------------------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbID, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, psTargetHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, psTargetScenario, 1);
+
+#****BUILD VIEW****#
+ViewCreate(cbID, sView);
+
+ViewSubsetAssign(cbID, sView, dmHLYear, sSubset);
+ViewSubsetAssign(cbID, sView, dmScenario, sSubset);
+
+VIEWZEROOUT (cbID, sView);
+
+VIEWDESTROY (cbID, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 00B : REINSTATE OUT AE ID DETAILS
+#------------------------------------------------------------------------------------------------------------------------------------------
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '0000A', snProg | ' code');
+CellPutS('opening baseline', cbID, psTargetHLYear, psTargetScenario, '0000A', 'title');
+CellPutS('opening baseline', cbID, psTargetHLYear, psTargetScenario, '0000A', 'description');
+CellPutS('Finance validated', cbID, psTargetHLYear, psTargetScenario, '0000A', 'status');
+CellPutS(sTargetReason, cbID, psTargetHLYear, psTargetScenario, '0000A', 'reason');
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '0000A', 'outcome');
+CellPutS('', cbID, psTargetHLYear, psTargetScenario, '0000A', 'measure');
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '0000A', 'function');
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '0000A', 'spp');
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '0000A', 'appropriation item');
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '0000A', 'appropriation type');
+CellPutS('Y', cbID, psTargetHLYear, psTargetScenario, '0000A', 'apply parameters');
+
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '0000B', snProg | ' code');
+CellPutS('balance sheet accumulation', cbID, psTargetHLYear, psTargetScenario, '0000B', 'title');
+CellPutS('balance sheet accumulation', cbID, psTargetHLYear, psTargetScenario, '0000B', 'description');
+CellPutS('Finance validated', cbID, psTargetHLYear, psTargetScenario, '0000B', 'status');
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '0000B', 'reason');
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '0000B', 'outcome');
+CellPutS('', cbID, psTargetHLYear, psTargetScenario, '0000B', 'measure');
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '0000B', 'function');
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '0000B', 'spp');
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '0000B', 'appropriation item');
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '0000B', 'appropriation type');
+CellPutS('Y', cbID, psTargetHLYear, psTargetScenario, '0000B', 'apply parameters');
+
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '00FBO', snProg | ' code');
+CellPutS('FBO adjustments', cbID, psTargetHLYear, psTargetScenario, '00FBO', 'title');
+CellPutS('FBO adjustments', cbID, psTargetHLYear, psTargetScenario, '00FBO', 'description');
+CellPutS('Finance validated', cbID, psTargetHLYear, psTargetScenario, '00FBO', 'status');
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '00FBO', 'reason');
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '00FBO', 'outcome');
+CellPutS('', cbID, psTargetHLYear, psTargetScenario, '00FBO', 'measure');
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '00FBO', 'function');
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '00FBO', 'spp');
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '00FBO', 'appropriation item');
+CellPutS('multiple', cbID, psTargetHLYear, psTargetScenario, '00FBO', 'appropriation type');
+CellPutS('Y', cbID, psTargetHLYear, psTargetScenario, '00FBO', 'apply parameters');
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 01 : CLEAR OUT TARGET SCENARIO
+#------------------------------------------------------------------------------------------------------------------------------------------
+
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbAE, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmStatus, sSubset);
+SUBSETDESTROY (dmOC, sSubset);
+SUBSETDESTROY (dmRE, sSubset);
+SUBSETDESTROY (dmFunc, sSubset);
+SUBSETDESTROY (dmReason, sSubset);
+SUBSETDESTROY (dmSPP, sSubset);
+SUBSETDESTROY (dmMeasCode, sSubset);
+SUBSETDESTROY (dmType, sSubset);
+SUBSETDESTROY (dmMA, sSubset);
+SUBSETDESTROY (dmItem, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmAcc, sSubset);
+SUBSETDESTROY (dmID, sSubset);
+SUBSETDESTROY (dmJur, sSubset);
+SUBSETDESTROY (dmPer, sSubset);
+
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, psTargetHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, psTargetScenario, 1);
+
+# Status
+SubsetCreate(dmStatus, sSubset);
+SubsetElementInsert(dmStatus, sSubset, sTargetStatus, 1);
+
+# Outcome
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmOC | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Function
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmFunc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Reason
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmReason | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Measure Code
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Appropriation Type
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmType | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Movement account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Appropriation item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Programme
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# ID
+SubsetCreate(dmID, sSubset);
+SubsetElementInsert(dmID, sSubset, sTargetID, 1);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+
+# Period
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+
+#****BUILD VIEW****#
+ViewCreate(sCube, sView);
+
+ViewSubsetAssign(sCube, sView, dmHLYear, sSubset);
+ViewSubsetAssign(sCube, sView, dmScenario, sSubset);
+ViewSubsetAssign(sCube, sView, dmStatus, sSubset);
+ViewSubsetAssign(sCube, sView, dmOC, sSubset);
+ViewSubsetAssign(sCube, sView, dmRE, sSubset);
+ViewSubsetAssign(sCube, sView, dmFunc, sSubset);
+ViewSubsetAssign(sCube, sView, dmReason, sSubset);
+ViewSubsetAssign(sCube, sView, dmSPP, sSubset);
+ViewSubsetAssign(sCube, sView, dmMeasCode, sSubset);
+ViewSubsetAssign(sCube, sView, dmType, sSubset);
+ViewSubsetAssign(sCube, sView, dmMA, sSubset);
+ViewSubsetAssign(sCube, sView, dmItem, sSubset);
+ViewSubsetAssign(sCube, sView, dmProg, sSubset);
+ViewSubsetAssign(sCube, sView, dmAcc, sSubset);
+ViewSubsetAssign(sCube, sView, dmID, sSubset);
+ViewSubsetAssign(sCube, sView, dmJur, sSubset);
+ViewSubsetAssign(sCube, sView, dmPer, sSubset);
+
+ViewExtractSkipZeroesSet (sCube, sView, 1);
+ViewExtractSkipCalcsSet (sCube, sView, 0);
+ViewExtractSkipRuleValuesSet (sCube, sView, 0);
+
+VIEWZEROOUT (sCube, sView);
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbAE, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmStatus, sSubset);
+SUBSETDESTROY (dmOC, sSubset);
+SUBSETDESTROY (dmRE, sSubset);
+SUBSETDESTROY (dmFunc, sSubset);
+SUBSETDESTROY (dmReason, sSubset);
+SUBSETDESTROY (dmSPP, sSubset);
+SUBSETDESTROY (dmMeasCode, sSubset);
+SUBSETDESTROY (dmType, sSubset);
+SUBSETDESTROY (dmMA, sSubset);
+SUBSETDESTROY (dmItem, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmAcc, sSubset);
+SUBSETDESTROY (dmID, sSubset);
+SUBSETDESTROY (dmJur, sSubset);
+SUBSETDESTROY (dmPer, sSubset);
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 02 : CREATE SOURCE VIEW
+#------------------------------------------------------------------------------------------------------------------------------------------
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbAE, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmStatus, sSubset);
+SUBSETDESTROY (dmOC, sSubset);
+SUBSETDESTROY (dmRE, sSubset);
+SUBSETDESTROY (dmFunc, sSubset);
+SUBSETDESTROY (dmReason, sSubset);
+SUBSETDESTROY (dmSPP, sSubset);
+SUBSETDESTROY (dmMeasCode, sSubset);
+SUBSETDESTROY (dmType, sSubset);
+SUBSETDESTROY (dmMA, sSubset);
+SUBSETDESTROY (dmItem, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmAcc, sSubset);
+SUBSETDESTROY (dmID, sSubset);
+SUBSETDESTROY (dmJur, sSubset);
+SUBSETDESTROY (dmPer, sSubset);
+
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, psSourceHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, psSourceScenario, 1);
+
+# Status
+SubsetCreate(dmStatus, sSubset);
+SubsetElementInsert(dmStatus, sSubset, sSourceStatus, 1);
+
+# Outcome
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmOC | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Function
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmFunc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Reason
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmReason | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Measure Code
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Appropriation Type
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmType | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Movement account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Appropriation item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Programme
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# ID
+SubsetCreate(dmID, sSubset);
+SubsetElementInsert(dmID, sSubset, sSourceID, 1);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+
+# Period
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+
+#****BUILD VIEW****#
+ViewCreate(sCube, sView);
+
+ViewSubsetAssign(sCube, sView, dmHLYear, sSubset);
+ViewSubsetAssign(sCube, sView, dmScenario, sSubset);
+ViewSubsetAssign(sCube, sView, dmStatus, sSubset);
+ViewSubsetAssign(sCube, sView, dmOC, sSubset);
+ViewSubsetAssign(sCube, sView, dmRE, sSubset);
+ViewSubsetAssign(sCube, sView, dmFunc, sSubset);
+ViewSubsetAssign(sCube, sView, dmReason, sSubset);
+ViewSubsetAssign(sCube, sView, dmSPP, sSubset);
+ViewSubsetAssign(sCube, sView, dmMeasCode, sSubset);
+ViewSubsetAssign(sCube, sView, dmType, sSubset);
+ViewSubsetAssign(sCube, sView, dmMA, sSubset);
+ViewSubsetAssign(sCube, sView, dmItem, sSubset);
+ViewSubsetAssign(sCube, sView, dmProg, sSubset);
+ViewSubsetAssign(sCube, sView, dmAcc, sSubset);
+ViewSubsetAssign(sCube, sView, dmID, sSubset);
+ViewSubsetAssign(sCube, sView, dmJur, sSubset);
+ViewSubsetAssign(sCube, sView, dmPer, sSubset);
+
+ViewExtractSkipZeroesSet (sCube, sView, 1);
+ViewExtractSkipCalcsSet (sCube, sView, 0);
+ViewExtractSkipRuleValuesSet (sCube, sView, 0);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+#-----------------------------------------------------------------------------
+#--- VALIDATION
+#-----------------------------------------------------------------------------
+nValidAcc = 0;
+nValidType = 0;
+nValidItem = 0;
+
+nLine = 1;
+nValid = 0;
+nTotalValid = 0;
+sFileName = 'convert opening balance error.csv';
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*** PERFORM A VALIDATION TEST ***#
+nProgValid = 0;
+nOCValid = 0;
+nMeasValid = 0;
+nReasValid = 0;
+nFuncValid = 0;
+nMAValid = 0;
+nAccValid = 0;
+nItemValid = 0;
+nTypeValid = 0;
+nREValid  = 0;
+nSPPValid = 0;
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- Get new account mapping
+#------------------------------------------------------------------------------------------------------------------------------------------
+sNewAcc = ATTRS (dmAcc, vsAcc, 'cbmsr migration mapping');
+IF (sNewAcc @<> '');
+	sNewAcc = sNewAcc;
+ELSE;
+	sNewAcc = vsAcc;
+ENDIF;
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- Get new appropriation mapping
+#------------------------------------------------------------------------------------------------------------------------------------------
+sReqItem = ATTRS (dmType, vsType, 'approp item code required');
+IF (sReqItem @= '');
+	#---------------------------------------------------------------------------
+	#---- Approp Type does not need item so get values from approp type dimension
+	#---------------------------------------------------------------------------
+	sNewType = ATTRS (dmType, vsType, 'CBMS-R Approp Type Mapping');
+	sNewItem = ATTRS (dmType, vsType, 'CBMS-R Approp Item Mapping');
+ELSE;
+	#---------------------------------------------------------------------------
+	#---- Approp Type needs item so get values from approp item dimension
+	#---------------------------------------------------------------------------
+	sNewType = ATTRS (dmItem, vsItem, 'CBMS-R Approp Type Mapping');
+	sNewItem = ATTRS (dmItem, vsItem, 'CBMS-R Approp Item Mapping');
+ENDIF;
+
+IF (sNewType @<> '');
+	sNewType = sNewType;
+ELSE;
+	sNewType = vsType;
+ENDIF;
+
+IF (sNewItem @<> '');
+	sNewItem = sNewItem;
+ELSE;
+	sNewItem = vsItem;
+ENDIF;
+
+#*************************************************************************************************************************************#
+#**** VALIDATION CHECKS ****#
+#*************************************************************************************************************************************#
+
+
+#*** Check Account
+IF (DIMIX (dmAcc, sNewAcc) = 0);
+     nAccValid = nAccValid + 1;
+ENDIF;
+
+#*** Check Appropriation Item
+IF (DIMIX (dmItem, sNewItem) = 0);
+     nItemValid = nItemValid + 1;
+ENDIF;
+
+#*** Check Appropriation Type
+IF (DIMIX (dmType, sNewType) = 0);
+     nTypeValid = nTypeValid + 1;
+ENDIF;
+
+#*************************************************************************************************************************************#
+#**** VALIDATION CHECKS ****#
+
+nValid = nProgValid + nOCValid + nMeasValid + nReasValid + nFuncValid +  nMAValid + nAccValid +  nTypeValid + nItemValid + nREValid + nSPPValid;
+nTotalValid = nTotalValid + nValid;
+IF (nValid > 0);
+     IF (nProgValid > 0);
+          ASCIIOUTPUT (sFileName, 'Programme Code error on line ', NUMBERTOSTRING(nLine), vsProg);
+     ENDIF;
+
+     IF (nMeasValid > 0);
+          ASCIIOUTPUT (sFileName, 'Measure Code error on line ', NUMBERTOSTRING(nLine), vsMeasCode);
+     ENDIF;
+
+     IF (nReasValid > 0);
+          ASCIIOUTPUT (sFileName, 'Reason Code error on line ', NUMBERTOSTRING(nLine), vsReason);
+     ENDIF;
+
+     IF (nOCValid > 0);
+          ASCIIOUTPUT (sFileName, 'Outcome Code error on line ', NUMBERTOSTRING(nLine), vsOC);
+     ENDIF;
+
+     IF (nFuncValid > 0);
+          ASCIIOUTPUT (sFileName, 'Function Code error on line ', NUMBERTOSTRING(nLine), vsFunc);
+     ENDIF;
+
+     IF (nMAValid > 0);
+          ASCIIOUTPUT (sFileName, 'Movement Account Code error on line ', NUMBERTOSTRING(nLine), vsMA);
+     ENDIF;
+
+     IF (nAccValid > 0);
+          ASCIIOUTPUT (sFileName, 'Account Code error on line ', NUMBERTOSTRING(nLine), vsAcc, sNewAcc);
+     ENDIF;
+
+     IF (nTypeValid > 0);
+          ASCIIOUTPUT (sFileName, 'Appropriation Type error on line ', NUMBERTOSTRING(nLine), vsType, sNewType);
+     ENDIF;
+
+     IF (nItemValid > 0);
+          ASCIIOUTPUT (sFileName, 'Appropriation Item error on line ', NUMBERTOSTRING(nLine), vsItem, sNewItem);
+     ENDIF;
+
+     IF (nREValid > 0);
+          ASCIIOUTPUT (sFileName, 'Related Entity error on line ', NUMBERTOSTRING(nLine), vsRE);
+     ENDIF;
+
+     IF (nSPPValid > 0);
+          ASCIIOUTPUT (sFileName, 'SPP error on line ', NUMBERTOSTRING(nLine), vsSPP);
+     ENDIF;
+
+ENDIF;
+
+
+     nLine = nLine + 1;
+
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#**** SKIP LINE IF DIMENSIONS ARENT VALID ***#
+IF (nTotalValid > 0);
+     ITEMSKIP;
+#     PROCESSQUIT;
+ENDIF;
+
+IF (vsAcc  @= '2330008' % vsAcc @= '2330009');
+	ITEMSKIP;
+ENDIF;
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- Get new account mapping
+#------------------------------------------------------------------------------------------------------------------------------------------
+sNewAcc = ATTRS (dmAcc, vsAcc, 'cbmsr migration mapping');
+IF (sNewAcc @<> '');
+	sNewAcc = sNewAcc;
+ELSE;
+	sNewAcc = vsAcc;
+ENDIF;
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- Get new appropriation mapping
+#------------------------------------------------------------------------------------------------------------------------------------------
+sReqItem = ATTRS (dmType, vsType, 'approp item code required');
+IF (sReqItem @= '');
+	#---------------------------------------------------------------------------
+	#---- Approp Type does not need item so get values from approp type dimension
+	#---------------------------------------------------------------------------
+	sNewType = ATTRS (dmType, vsType, 'CBMS-R Approp Type Mapping');
+	sNewItem = ATTRS (dmType, vsType, 'CBMS-R Approp Item Mapping');
+ELSE;
+	#---------------------------------------------------------------------------
+	#---- Approp Type needs item so get values from approp item dimension
+	#---------------------------------------------------------------------------
+	sNewType = ATTRS (dmItem, vsItem, 'CBMS-R Approp Type Mapping');
+	sNewItem = ATTRS (dmItem, vsItem, 'CBMS-R Approp Item Mapping');
+ENDIF;
+
+IF (sNewType @<> '');
+	sNewType = sNewType;
+ELSE;
+	sNewType = vsType;
+ENDIF;
+
+IF (sNewItem @<> '');
+	sNewItem = sNewItem;
+ELSE;
+	sNewItem = vsItem;
+ENDIF;
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- POST DATA 
+#------------------------------------------------------------------------------------------------------------------------------------------
+IF (CELLISUPDATEABLE (sCube, psTargetHLYear, psTargetScenario, sTargetStatus, vsOC, vsRE, vsFunc, sTargetReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, vsProg, sNewAcc, sTargetID, vsJur, vsPeriod) = 1);
+     OldValue = CELLGETN (sCube, psTargetHLYear, psTargetScenario, sTargetStatus, vsOC, vsRE, vsFunc, sTargetReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, vsProg, sNewAcc, sTargetID, vsJur, vsPeriod);
+     CELLPUTN (OldValue + vnValue, sCube, psTargetHLYear, psTargetScenario, sTargetStatus, vsOC, vsRE, vsFunc, sTargetReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, vsProg, sNewAcc, sTargetID, vsJur, vsPeriod);
+ENDIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbAE, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmStatus, sSubset);
+SUBSETDESTROY (dmOC, sSubset);
+SUBSETDESTROY (dmRE, sSubset);
+SUBSETDESTROY (dmFunc, sSubset);
+SUBSETDESTROY (dmReason, sSubset);
+SUBSETDESTROY (dmSPP, sSubset);
+SUBSETDESTROY (dmMeasCode, sSubset);
+SUBSETDESTROY (dmType, sSubset);
+SUBSETDESTROY (dmMA, sSubset);
+SUBSETDESTROY (dmItem, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmAcc, sSubset);
+SUBSETDESTROY (dmID, sSubset);
+SUBSETDESTROY (dmJur, sSubset);
+SUBSETDESTROY (dmPer, sSubset);
+#endregion

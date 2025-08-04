@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_report extract type",
+	"Hierarchies@Code.links":
+	[
+		"sys_report extract type.hierarchies/sys_report extract type.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_report extract type')/Hierarchies('sys_report extract type')"
+	}
+}

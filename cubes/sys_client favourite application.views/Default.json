@@ -1,0 +1,149 @@
+{
+	"@type":"NativeView",
+	"Name":"Default",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_client favourite application measure')/Hierarchies('sys_client favourite application measure')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_client favourite application measure')/Hierarchies('sys_client favourite application measure')/Elements('flag')"
+					},
+					{
+						"@id":"Dimensions('sys_client favourite application measure')/Hierarchies('sys_client favourite application measure')/Elements('Caption Name')"
+					},
+					{
+						"@id":"Dimensions('sys_client favourite application measure')/Hierarchies('sys_client favourite application measure')/Elements('Worksheet description')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_application')/Hierarchies('sys_application')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Homepage')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Homepage - Home')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Homepage - Administration')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Homepage - Under Construction')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Adjustment')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Adjustment - Bulk Process')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Adjustment - Bulk Process Extract')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Adjustment - Generate FE3')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Adjustment - Generate FE3 Reconciliation')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Adjustment - Generate Indexation')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Adjustment - Indexation Detail')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Adjustment - Indexation Reconciliation')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Adjustment - Indexation Rates')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Adjustment - ID List')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - Edit Adj 01 - Header Details')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - New Adj 01 - Header Details')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - New Adj 02 - Program Favourite')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - New Adj 96 - Extract')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - New Adj 97 - Upload')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - New Adj 98 - Attachments')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - New Adj 99 - Validations')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - View Adj 01 - Header Details')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - Upload Template')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Reports')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Reports - AE Report')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Reports - Primary Financial Statements')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('}Clients')/Hierarchies('}Clients')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('}Clients')/Hierarchies('}Clients')/Elements('Admin')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('}Clients')/Hierarchies('}Clients')/Elements('Admin')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":true,
+	"SuppressEmptyRows":true,
+	"FormatString":"0.#########"
+}

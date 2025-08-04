@@ -1,0 +1,182 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Adj - Process Journals
+#**** DESCRIPTION:       This process will run the process of copy, delete or reverse journals
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 02/02/2016    KG             Initial Revision
+#**** 2020	KG	  Updated for Group Adjustments
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS CUBE DIMENSIONS
+#******************************************************************************************************************
+cbID = 'AE id details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmID = 'id';
+dmIDMeas = 'id measure';
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+dmCtrlType = 'control type';
+dmFavID = 'favourites_id';
+
+#******************************************************************************************************************
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#******************************************************************************************************************
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sNoMeasCode = ATTRS(dmVar, 'No Measure Code', 'value');
+sDefFavID = ATTRS(dmVar, 'Default favourite id template', 'value');
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** STEP 1 - IDENTIFY WHICH PROCESS TO USE FOR THE ADJUSTMENT
+#*** FIND OUT WHAT PROCESS THE USER SELECTED
+#******************************************************************************************************************
+# Copy
+# Reverse
+# Copy and Reverse
+# Delete
+#******************************************************************************************************************
+
+#******************************************************************************************************************
+#*** GET SELECTED PROCESS
+#******************************************************************************************************************
+sSelProcess = CELLGETS (cbClient, sUser,  'sys_adj process', 'value');
+sSelProcess = psProcess;
+
+#******************************************************************************************************************
+#*** LIST OF AVAILABLE PROCESSES
+#****************************************************************************************************************** 
+sPrcCopy = 'AE_Adj - Copy Adjustment';
+sPrcDel = 'AE_Adj - Delete Adjustment';
+sPrcRev = 'AE_Adj - Reverse Adjustment';
+
+
+#******************************************************************************************************************
+#*** LIST OF AVAILABLE PROCESSES : Group Adjustments
+#****************************************************************************************************************** 
+sPrcGroupCopy = 'AE_GrpAdj_CopyAdjustment';
+sPrcGroupDel = 'AE_GrpAdj_DeleteAdjustment';
+sPrcGroupRev = 'AE_GrpAdj_ReverseAdjustment';
+
+#******************************************************************************************************************
+#*** Identify what the adjustment type is
+#****************************************************************************************************************** 
+sAdjType = CELLGETS (cbID, psHLYear, psScenario, psID, 'Adjustment Type');
+
+#******************************************************************************************************************
+#*** STEP 1 - RUN PROCESSES
+#******************************************************************************************************************
+#******************************************************************************************************************
+#*** COPY
+#******************************************************************************************************************
+IF (sSelProcess @= 'Copy');
+	IF (sAdjType @= 'Group');
+		sProcess = sPrcGroupCopy;
+	ELSE;
+		sProcess = sPrcCopy;
+	ENDIF;
+
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psHLYear', psHLYear, 'psScenario', psScenario, 'psID', psID);
+ENDIF;
+
+#******************************************************************************************************************
+#*** REVERSE
+#******************************************************************************************************************
+IF (sSelProcess @= 'Reverse');
+	IF (sAdjType @= 'Group');
+		sProcess = sPrcGroupRev;
+	ELSE;
+		sProcess = sPrcRev;
+	ENDIF;
+
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psHLYear', psHLYear, 'psScenario', psScenario, 'psID', psID);
+ENDIF;
+
+#******************************************************************************************************************
+#*** COPY & REVERSE
+#******************************************************************************************************************
+IF (sSelProcess @= 'Copy and Reverse');
+	IF (sAdjType @= 'Group');
+		sProcess = sPrcGroupCopy;
+		sProcess1 = sPrcGroupRev;
+	ELSE;
+		sProcess = sPrcCopy;
+		sProcess1 = sPrcRev;
+	ENDIF;
+
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psHLYear', psHLYear, 'psScenario', psScenario, 'psID', psID);
+	EXECUTEPROCESS(sProcess1, 'psUser', psUser, 'psHLYear', psHLYear, 'psScenario', psScenario, 'psID', psID);
+ENDIF;
+
+#******************************************************************************************************************
+#*** DELETE UNAUTHORISED JOURNALS
+#******************************************************************************************************************
+IF (sSelProcess @= 'Delete');	
+	IF (sAdjType @= 'Group');
+		sProcess = sPrcGroupDel;
+	ELSE;
+		sProcess = sPrcDel;
+	ENDIF;
+
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psHLYear', psHLYear, 'psScenario', psScenario, 'psID', psID);
+ENDIF;
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

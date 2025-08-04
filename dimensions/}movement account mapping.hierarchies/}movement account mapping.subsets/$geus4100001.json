@@ -1,0 +1,76 @@
+{
+	"@type":"Subset",
+	"Name":"$geus4100001",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7205')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7207')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7208')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7212')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7216')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7217')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7218')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7219')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7221')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7225')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7240')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7255')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7586')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7587')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7588')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7589')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7592')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7593')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7594')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7596')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7597')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7598')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7599')"
+		}
+	]
+}

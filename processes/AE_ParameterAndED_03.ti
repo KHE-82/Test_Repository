@@ -1,0 +1,155 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_ParameterAndED_03
+#**** DESCRIPTION:        this process replaces the temp value against the IDMeasure element with a Y to indicate that parameter or efficiency dividend 
+#****                                  adjustments have already been generated for the ID - just in case the parameter adjustment process is executed a second time.
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 28/04/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#**** DECLARE AE CUBES & DIMENSIONS ****#
+snProg = 'programme';
+dmProg = snProg;
+cbAE = 'AE adjustments';
+cbProg = snProg | ' details';
+cbID = 'AE id details';
+sScenario = 'current';
+dmTmpID = 'tmp_ID_tmp';
+sCheckID='';
+
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+cpAdjType = 'Generated';
+
+
+#**** Set the next few variables based on the Adjustment Type parameter ("Parameter" or "Efficiency")
+IF (psAdjType @= 'parameter');
+      sIDMeasure = 'parameter adjustment generated';
+ELSE;
+      sIDMeasure = 'efficiency dividend adjustment generated';
+ENDIF;
+
+DatasourceASCIIDecimalSeparator='.';
+DatasourceASCIIThousandSeparator='';
+
+#**** Build a dimension to store IDs so we don't keep getting new ones
+DimensionCreate (dmTmpID);
+AttrInsert (dmTmpID, '', 'ID', 'S');
+
+#*** DECLARE SUBSETS AND VIEWS ***#
+IF (psUser @= '');
+     sUser = TM1User();
+ELSE;
+     sUser = psUser;
+ENDIF;
+
+sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+lScan = SCAN('\',sUser) + 1;
+sUser = TRIM(SUBST(sUser, lScan, 100));
+
+#sAEView = sUser | '_$parameters';
+sAEView = '$parameters';
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sAEView;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#**** REPLACE 'TEMP' WITH 'Y' IN ID DETAILS CUBE
+IF (CellGetS (cbID, curHLYear, curScenario, vsID, sIDMeasure) @= 'temp');
+      CellPutS ('Y', cbID, curHLYear, curScenario, vsID, sIDMeasure);
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#**** DECLARE AE CUBES & DIMENSIONS ****#
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#*** DECLARE SUBSETS AND VIEWS ***#
+IF (psUser @= '');
+     sUser = TM1User();
+ELSE;
+     sUser = psUser;
+ENDIF;
+
+#sAEView = sUser | '_$parameters';
+
+sAEView = '$parameters';
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbAE, sAEView);
+#SUBSETDESTROY (dmHLYear, sAEView);
+#SUBSETDESTROY (dmScenario, sAEView);
+#SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmOC, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmFunc, sAEView);
+SUBSETDESTROY (dmReason, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+#SUBSETDESTROY (dmType, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+#SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+
+SUBSETDELETEALLELEMENTS (dmHLYear, sAEView);
+SUBSETDELETEALLELEMENTS (dmScenario, sAEView);
+SUBSETDELETEALLELEMENTS (dmStatus, sAEView);
+SUBSETDELETEALLELEMENTS (dmType, sAEView);
+SUBSETDELETEALLELEMENTS (dmProg, sAEView);
+
+#endregion

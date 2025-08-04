@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_FBO process mapping measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_FBO process mapping measure.hierarchies/sys_FBO process mapping measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_FBO process mapping measure')/Hierarchies('sys_FBO process mapping measure')"
+	}
+}

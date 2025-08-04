@@ -1,0 +1,27 @@
+{
+	"@type":"Process",
+	"Name":"sys_application favourite - add new",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_application favourite - add new.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psApp",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

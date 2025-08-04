@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_period display",
+	"Hierarchies@Code.links":
+	[
+		"sys_period display.hierarchies/sys_period display.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_period display')/Hierarchies('sys_period display')"
+	}
+}

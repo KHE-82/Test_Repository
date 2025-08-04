@@ -1,0 +1,17 @@
+{
+	"@type":"Cube",
+	"Name":"}Beachware_Reporting",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('}Clients')"
+		},
+		{
+			"@id":"Dimensions('}Beachware_Batch_Report_Items')"
+		},
+		{
+			"@id":"Dimensions('}Beachware_Batch_Reports')"
+		}
+	],
+	"Views@Code.links":[]
+}

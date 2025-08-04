@@ -1,0 +1,48 @@
+{
+	"@type":"NativeView",
+	"Name":"$Split",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('id measure')/Hierarchies('id measure')/Subsets('$Split')"
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('id')/Hierarchies('id')/Subsets('$Split')"
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('headline year')/Hierarchies('headline year')/Subsets('$Split')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('headline year')/Hierarchies('headline year')/Elements('HL2019-2020')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('scenario')/Hierarchies('scenario')/Subsets('$Split')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('current')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":true,
+	"SuppressEmptyRows":true,
+	"FormatString":"0.00"
+}

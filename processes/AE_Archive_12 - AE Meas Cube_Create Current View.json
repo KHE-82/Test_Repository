@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"AE_Archive_12 - AE Meas Cube_Create Current View",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_Archive_12 - AE Meas Cube_Create Current View.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[]
+}

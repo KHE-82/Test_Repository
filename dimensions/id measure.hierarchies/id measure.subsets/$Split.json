@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"$Split",
+	"Expression":"{[id measure].[programme]}"
+}

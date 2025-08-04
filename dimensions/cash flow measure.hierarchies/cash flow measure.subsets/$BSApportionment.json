@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"$BSApportionment",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('cash flow measure')/Hierarchies('cash flow measure')/Elements('PL and BS data')"
+		}
+	]
+}

@@ -1,0 +1,81 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+###############################################################################
+# Title : Create a backup of the database
+# Description: 
+#	1- Use 7-Zip to zip and copy the data file - downloaded and installed into s: directory on cloud
+#
+# More info:
+#	Download 7-zip for free : https://www.7-zip.org/
+#
+#--- Modification History
+#--- ===============
+#---       Date   Initials  Details
+#---       ====   ========  =======
+#---  2024/06/26     PJA    Initial release
+#    
+#
+###############################################################################
+#==============================================================================
+# Parameter validation
+#==============================================================================
+#p0 = don't wait - p1 = wait until success
+IF( pWait <> 0 & pWait <> 1 );
+	ProcessQuit;
+ENDIF;
+
+#==============================================================================
+# Save Data All
+#==============================================================================
+
+SaveDataAll;
+
+#==============================================================================
+# Variable Declaration                                                                                                                  
+#==============================================================================
+#------------------------------------------------------------------------------
+#  Specify the location of the 7z.exe file
+#------------------------------------------------------------------------------
+
+sExec = 'S:\prod\7-Zip\7z.exe';
+
+#------------------------------------------------------------------------------
+# Specify Backup and Data directory (Directory needs to end with ' \ ' )
+#------------------------------------------------------------------------------
+
+sBackupDirectory = 'S:\prod\DCCEEW_GEUS\Backups\';
+sDataDirectory = 'S:\prod\DCCEEW_GEUS\data';
+
+#==============================================================================
+# Creation of the command to create Backup.zip
+#==============================================================================
+
+sFileName = 'Data_' | TIMST( NOW(), '\Y\m\d_\h\i', 1) | '.zip';
+sArgs = ' a -tzip ';
+sCommand = sExec | sArgs | '"' | sBackupDirectory | sFileName | '" "' | sDataDirectory |  '"';
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#==================================================
+# Execute Command
+#==================================================
+
+EXECUTECOMMAND( sCommand, pWait );
+#endregion

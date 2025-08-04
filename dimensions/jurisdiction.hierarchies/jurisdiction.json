@@ -1,0 +1,112 @@
+{
+	"@type":"Hierarchy",
+	"Name":"jurisdiction",
+	"Elements":
+	[
+		{
+			"Name":"Total jurisdictions",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"-",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ACT",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"NSW",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"QLD",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"NT",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"WA",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SA",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"VIC",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"TAS",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Total jurisdictions",
+			"ComponentName":"-",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total jurisdictions",
+			"ComponentName":"NSW",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total jurisdictions",
+			"ComponentName":"VIC",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total jurisdictions",
+			"ComponentName":"QLD",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total jurisdictions",
+			"ComponentName":"WA",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total jurisdictions",
+			"ComponentName":"SA",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total jurisdictions",
+			"ComponentName":"TAS",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total jurisdictions",
+			"ComponentName":"ACT",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total jurisdictions",
+			"ComponentName":"NT",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"jurisdiction.subsets/$ME_FlatFile.json",
+		"jurisdiction.subsets/$ME_Profiles.json",
+		"jurisdiction.subsets/$MEDept.json",
+		"jurisdiction.subsets/$td_FlatFile.json",
+		"jurisdiction.subsets/Admin_$FE3Step03.json",
+		"jurisdiction.subsets/Amy Vu_$MEGenProf02.json",
+		"jurisdiction.subsets/Michael Longley_$MEGenProf02.json",
+		"jurisdiction.subsets/N Level.json",
+		"jurisdiction.subsets/sys_adj No Jur.json",
+		"jurisdiction.subsets/sys_all-n.json",
+		"jurisdiction.subsets/sys_No Jur.json",
+		"jurisdiction.subsets/sys_print.json",
+		"jurisdiction.subsets/}MA_Validation.json",
+		"jurisdiction.subsets/}ME_Validation.json"
+	]
+}

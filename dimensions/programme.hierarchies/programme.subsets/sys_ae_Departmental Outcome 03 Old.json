@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"sys_ae_Departmental Outcome 03 Old",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[programme].[8150]}, ALL, RECURSIVE )}, 0)}"
+}

@@ -1,0 +1,445 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              sys_AE Initial Load Baseline - 03
+#**** DESCRIPTION:       This process will load a CBMS Upload file into GEUS for reconciliation purposes
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 13/06/2014    KG             Initial Revision
+#**** 08/08/2017	KG	Converting this process from AE_CBMS Reconciliations to AE_Reco - CBMSR Reconciliatio Upload
+#**** 2020 	KG	 Updated for New GEUS
+#*** 16/11/2020	KG	  Updated validations
+#****
+#***********************************************************************************************************************
+
+snProg = 'programme';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#*****************************************************************************
+#*** DECLARE CUBES AND DIMENSIONS***#
+#*****************************************************************************
+sCube = 'AE adjustments';
+sView = '$RECO';
+sSubset = sView;
+
+cbProg = snProg | ' details';
+dmProg = snProg;
+
+cbID = 'AE id details';
+
+#*****************************************************************************
+#*** DECLARE AE ADJUSTMENTS DIMENSIONS ***#
+#*****************************************************************************
+dmID = 'id';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmReason = 'reason';
+dmType = 'appropriation type';
+dmItem = 'appropriation item';
+dmFunc = 'function';
+dmMeas = 'measure code';
+dmAcc = 'account';
+dmMA = 'movement account';
+dmSPP = 'spp';
+dmJur = 'jurisdiction';
+
+#*****************************************************************************
+#*** DECLARE SYSTEM VARIABLES
+#*****************************************************************************
+dmVar = 'variables';
+dmVar = 'variables'; 
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+#sImpFilePath = ATTRS(dmVar, 'sys_ImpFileExceptionLogs', ' value');
+sImpFilePath = 'upload error.csv';
+sDefOC = ATTRS(dmVar, 'AE Default Outcome', 'value');
+
+
+sScenario = 'CBMS';
+sStatus = 'data';
+sReason = 'Other variations not elsewhere defined';
+sID = '0000A';
+sDerivedID = '00FBO';
+sRevAcc = '1270030';
+sExpAcc = '2000000';
+sEquAcc = '4100001';
+sCFAcc = '6210000 - Net Cash (from)/to Operating Activities';
+sMA = '9593';
+
+
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy (sCube, sView);
+SubsetDestroy ('headline year', sSubset);
+SubsetDestroy ('scenario', sSubset);
+SubsetDestroy ('status', sSubset);
+SubsetDestroy ('outcome', sSubset);
+SubsetDestroy ('related entity', sSubset);
+SubsetDestroy ('function', sSubset);
+SubsetDestroy ('reason', sSubset);
+SubsetDestroy ('SPP', sSubset);
+SubsetDestroy ('measure code', sSubset);
+SubsetDestroy ('appropriation type', sSubset);
+SubsetDestroy ('movement account', sSubset);
+SubsetDestroy ('appropriation item', sSubset);
+SubsetDestroy (snProg, sSubset);
+SubsetDestroy ('account', sSubset);
+SubsetDestroy ('ID', sSubset);
+SubsetDestroy ('jurisdiction', sSubset);
+SubsetDestroy ('period', sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate('headline year', sSubset);
+SubsetElementInsert('headline year', sSubset, psHLYear, 1);
+
+# Scenario
+SubsetCreate('scenario', sSubset);
+SubsetElementInsert('scenario', sSubset, psScenario, 1);
+
+# ID
+sDim = 'id';
+SubsetCreate(sDim, sSubset);
+SubsetElementInsert(sDim, sSubset, sDerivedID, 1);
+
+
+# Programme
+sDim = snProg;
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER({FILTER( {TM1SUBSETALL( ['| dmProg|'] )}, ['| dmProg|'].[baseline derived] = "Y")}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+ViewCreate (sCube, sView);
+
+ViewSubsetAssign (sCube, sView, 'headline year', sSubset);
+ViewSubsetAssign (sCube, sView, 'scenario', sSubset);
+ViewSubsetAssign (sCube, sView, 'ID', sSubset);
+ViewSubsetAssign (sCube, sView, snProg, sSubSet);
+
+ViewSuppressZeroesSet (sCube, sView,1);
+ViewExtractSkipZeroesSet (sCube, sView, 1);
+ViewExtractSkipCalcsSet (sCube, sView, 1);
+
+ViewZeroOut(sCube,sView);
+
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy (sCube, sView);
+SubsetDestroy ('headline year', sSubset);
+SubsetDestroy ('scenario', sSubset);
+SubsetDestroy ('status', sSubset);
+SubsetDestroy ('outcome', sSubset);
+SubsetDestroy ('related entity', sSubset);
+SubsetDestroy ('function', sSubset);
+SubsetDestroy ('reason', sSubset);
+SubsetDestroy ('SPP', sSubset);
+SubsetDestroy ('measure code', sSubset);
+SubsetDestroy ('appropriation type', sSubset);
+SubsetDestroy ('movement account', sSubset);
+SubsetDestroy ('appropriation item', sSubset);
+SubsetDestroy (snProg, sSubset);
+SubsetDestroy ('account', sSubset);
+SubsetDestroy ('ID', sSubset);
+SubsetDestroy ('jurisdiction', sSubset);
+SubsetDestroy ('period', sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate('headline year', sSubset);
+SubsetElementInsert('headline year', sSubset, psHLYear, 1);
+
+# Scenario
+SubsetCreate('scenario', sSubset);
+SubsetElementInsert('scenario', sSubset, psScenario, 1);
+
+# Status
+SubsetCreate('status', sSubset);
+SubsetElementInsert('status', sSubset, sStatus, 1);
+
+# Outcome
+sDim = 'outcome';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+#SubsetCreate(sDim, sSubset);
+#SubsetElementInsert(sDim, sSubset, sTotalOC, 1);
+
+
+# Related entity
+sDim = 'related entity';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+
+# Function
+sDim = 'function';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Reason
+sDim = 'reason';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+#SubsetCreate('reason', sSubset);
+#SubsetElementInsert('reason', sSubset, sSourceReason, 1);
+
+# SPP
+sDim = 'spp';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Measure Code
+sDim = 'measure code';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+
+# Appropriation Type
+sDim = 'appropriation type';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Movement Account
+sDim = 'movement account';
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | sDim | '] )}, 0)}, [' | sDim | '].[flat file] <> "N")}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Appropriation Item
+sDim = 'appropriation item';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Programme
+sDim = snProg;
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER({FILTER( {TM1SUBSETALL( ['| dmProg|'] )}, ['| dmProg|'].[baseline derived] = "Y")}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Account
+sDim = 'account';
+MDX= '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {['| dmAcc |'].['| sExpAcc|']}, ALL, RECURSIVE )}, 0)}';
+#MDX= '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {['| dmAcc |'].['| sExpAcc|'],['| dmAcc |'].['| sRevAcc|']}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# ID
+sDim = 'id';
+SubsetCreate(sDim, sSubset);
+SubsetElementInsert(sDim, sSubset, sID, 1);
+
+# Jurisdiction
+sDim = 'jurisdiction';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Period
+sDim = 'period';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+
+#****BUILD VIEW****#
+ViewCreate (sCube, sView);
+
+ViewSubsetAssign (sCube, sView, 'headline year', sSubset);
+ViewSubsetAssign (sCube, sView, 'scenario', sSubset);
+ViewSubsetAssign (sCube, sView, 'status', sSubset);
+ViewSubsetAssign (sCube, sView, 'outcome', sSubset);
+ViewSubsetAssign (sCube, sView, 'related entity', sSubset);
+ViewSubsetAssign (sCube, sView, 'function', sSubset);
+ViewSubsetAssign (sCube, sView, 'reason', sSubset);
+ViewSubsetAssign (sCube, sView, 'SPP', sSubset);
+ViewSubsetAssign (sCube, sView, 'measure code', sSubset);
+ViewSubsetAssign (sCube, sView, 'appropriation type', sSubset);
+ViewSubsetAssign (sCube, sView, 'movement account', sSubset);
+ViewSubsetAssign (sCube, sView, 'appropriation item', sSubset);
+ViewSubsetAssign (sCube, sView, snProg, sSubSet);
+ViewSubsetAssign (sCube, sView, 'account', sSubset);
+ViewSubsetAssign (sCube, sView, 'ID', sSubset);
+ViewSubsetAssign (sCube, sView, 'jurisdiction', sSubset);
+ViewSubsetAssign (sCube, sView, 'period', sSubset);
+
+
+ViewSuppressZeroesSet (sCube, sView,1);
+ViewExtractSkipZeroesSet (sCube, sView, 1);
+ViewExtractSkipCalcsSet (sCube, sView, 1);
+
+
+
+
+
+
+
+
+DATASOURCETYPE = 'VIEW';
+DatasourceCubeview=sView;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#asciioutput('source.csv', vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,vsMA,vsItem,vsProg,vsAcc,vsID,vsJur,vsPeriod, numbertoString(vnValue));
+
+IF( scan('.01.01' ,vsProg) <> 0 );
+	#ITEMSKIP;
+ENDIF;
+
+
+sDerivedAcc01 = '4100001';
+sDerivedAcc02 =  ATTRS(dmAcc, vsAcc,'cash flow map');
+sDerivedAcc03 = '6211006';
+
+IF( vsPeriod @='2019-2020');
+	sDerivedAcc04 = '9000863';
+ELSE;
+	sDerivedAcc04 = '9000864';
+ENDIF;
+
+sDerivedAcc05 = '9000865';
+sDerivedMA = '7593';
+sDerivedMA02 = '7201';
+
+sSrcProg = SUBST(vsProg,1,5) | '.01.01';
+
+
+sItem = CELLGETS(cbProg,vsHLYear, vsScenario,sSrcProg,'appropriation item');
+sType = CELLGETS(cbProg,vsHLYear, vsScenario,sSrcProg,'appropriation type');
+
+sItemSA = CELLGETS(cbProg,vsHLYear, vsScenario,sSrcProg,'special account');
+sTypeSA = SUBST(sItemSA,1,4);
+
+IF( DIMIX(dmItem, sItemSA) =0);
+	sTypeSA = 'A010';
+	sItemSA = 'A010-00014-01436';
+ENDIF;	
+
+
+IF( DIMIX(dmSPP,sSrcProg) <>0);
+	sSpp = ATTRS(dmProg, sSrcProg, 'spp mapping');
+ELSE;
+	sSPP = '-';
+ENDIF;
+
+
+IF(CELLISUPDATEABLE(sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,sDerivedMA,vsItem,vsProg,sDerivedAcc01,sDerivedID,vsJur,vsPeriod)=1);
+	#asciioutput('data.csv',sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,sDerivedMA,vsItem,vsProg,sDerivedAcc01,sDerivedID,vsJur,vsPeriod, numbertostring(vnValue));
+	CELLINCREMENTN(vnValue,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,sDerivedMA,vsItem,vsProg,sDerivedAcc01,sDerivedID,vsJur,vsPeriod);
+	CELLINCREMENTN(vnValue*-1,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,sSPP,vsMeas,sType,sDerivedMA,sItem,sSrcProg,sDerivedAcc01,sDerivedID,vsJur,vsPeriod);
+	CELLINCREMENTN(vnValue*-1,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,sDerivedMA02,vsItem,vsProg,sDerivedAcc01,sDerivedID,vsJur,vsPeriod);
+	CELLINCREMENTN(vnValue,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,sSPP,vsMeas,sType,sDerivedMA02,sItem,sSrcProg,sDerivedAcc01,sDerivedID,vsJur,vsPeriod);
+
+
+ENDIF;
+
+IF(CELLISUPDATEABLE(sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,vsMA,vsItem,vsProg,sDerivedAcc02,sDerivedID,vsJur,vsPeriod)=1);
+	#asciioutput('data.csv',sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,vsMA,vsItem,vsProg,sDerivedAcc02,sDerivedID,vsJur,vsPeriod, numbertostring(vnValue));
+	CELLINCREMENTN(vnValue,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,vsMA,vsItem,vsProg,sDerivedAcc02,sDerivedID,vsJur,vsPeriod);
+	CELLINCREMENTN(vnValue*-1,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,sSPP,vsMeas,sType,vsMA,sItem,sSrcProg,sDerivedAcc02,sDerivedID,vsJur,vsPeriod);
+ENDIF;
+
+
+IF(CELLISUPDATEABLE(sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,vsMA,vsItem,vsProg,sDerivedAcc03,sDerivedID,vsJur,vsPeriod)=1);
+	#asciioutput('data.csv',sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,vsMA,vsItem,vsProg,sDerivedAcc03,sDerivedID,vsJur,vsPeriod, numbertostring(vnValue));
+	CELLINCREMENTN(vnValue,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,vsMA,vsItem,vsProg,sDerivedAcc03,sDerivedID,vsJur,vsPeriod);
+	CELLINCREMENTN(vnValue*-1,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,sSPP,vsMeas,sType,vsMA,sItem,sSrcProg,sDerivedAcc03,sDerivedID,vsJur,vsPeriod);
+ENDIF;
+
+IF(CELLISUPDATEABLE(sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,sTypeSA,vsMA,sItemSA,vsProg,sDerivedAcc04,sDerivedID,vsJur,vsPeriod)=1);
+	#asciioutput('data.csv',sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,sTypeSA,vsMA,sItemSA,vsProg,sDerivedAcc04,sDerivedID,vsJur,vsPeriod, numbertostring(vnValue));
+	CELLINCREMENTN(vnValue,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,sTypeSA,vsMA,sItemSA,vsProg,sDerivedAcc04,sDerivedID,vsJur,vsPeriod);
+	CELLINCREMENTN(vnValue*-1,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,sSPP,vsMeas,sTypeSA,vsMA,sItemSA,sSrcProg,sDerivedAcc04,sDerivedID,vsJur,vsPeriod);
+ENDIF;
+
+
+IF(CELLISUPDATEABLE(sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,sTypeSA,vsMA,sItemSA,vsProg,sDerivedAcc05,sDerivedID,vsJur,vsPeriod)=1);
+	#asciioutput('data.csv',sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,sTypeSA,vsMA,sItemSA,vsProg,sDerivedAcc05,sDerivedID,vsJur,vsPeriod, numbertostring(vnValue));
+	CELLINCREMENTN(vnValue,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,sTypeSA,vsMA,sItemSA,vsProg,sDerivedAcc05,sDerivedID,vsJur,vsPeriod);
+	CELLINCREMENTN(vnValue*-1,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,sSPP,vsMeas,sTypeSA,vsMA,sItemSA,sSrcProg,sDerivedAcc05,sDerivedID,vsJur,vsPeriod);
+ENDIF;
+
+
+IF( scan( '40025',vsProg ) <>0 % scan( '40047',vsProg ) <>0 % scan( '40015.01.02',vsProg ) <>0 % scan( '40022.01.14',vsProg ) <>0); 
+
+
+sDerivedAcc06 = '1270030';
+sDerivedAcc07 = '6211013';
+sDerivedAcc08 = '6212008';
+sDerivedMA03 = '7592';
+
+IF(CELLISUPDATEABLE(sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,vsMA,vsItem,vsProg,sDerivedAcc06,sDerivedID,vsJur,vsPeriod)=1);
+	#asciioutput('data.csv',sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,vsMA,vsItem,vsProg,sDerivedAcc06,sDerivedID,vsJur,vsPeriod, numbertostring(vnValue));
+	CELLINCREMENTN(vnValue,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,vsMA,vsItem,vsProg,sDerivedAcc06,sDerivedID,vsJur,vsPeriod);
+	CELLINCREMENTN(vnValue*-1,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,sSPP,vsMeas,sType,vsMA,sItem,sSrcProg,sDerivedAcc06,sDerivedID,vsJur,vsPeriod);
+ENDIF;
+
+
+IF(CELLISUPDATEABLE(sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,vsMA,vsItem,vsProg,sDerivedAcc07,sDerivedID,vsJur,vsPeriod)=1);
+	#asciioutput('data.csv',sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,vsMA,vsItem,vsProg,sDerivedAcc07,sDerivedID,vsJur,vsPeriod, numbertostring(vnValue));
+	CELLINCREMENTN(vnValue,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,vsMA,vsItem,vsProg,sDerivedAcc07,sDerivedID,vsJur,vsPeriod);
+	CELLINCREMENTN(vnValue*-1,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,sSPP,vsMeas,sType,vsMA,sItem,sSrcProg,sDerivedAcc07,sDerivedID,vsJur,vsPeriod);
+ENDIF;
+
+
+IF(CELLISUPDATEABLE(sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,vsMA,vsItem,vsProg,sDerivedAcc08,sDerivedID,vsJur,vsPeriod)=1);
+	#asciioutput('data.csv',sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,vsMA,vsItem,vsProg,sDerivedAcc08,sDerivedID,vsJur,vsPeriod, numbertostring(vnValue));
+	CELLINCREMENTN(vnValue,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,vsMA,vsItem,vsProg,sDerivedAcc08,sDerivedID,vsJur,vsPeriod);
+	CELLINCREMENTN(vnValue*-1,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,sSPP,vsMeas,sType,vsMA,sItem,sSrcProg,sDerivedAcc08,sDerivedID,vsJur,vsPeriod);
+ENDIF;
+
+IF(CELLISUPDATEABLE(sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,sDerivedMA,vsItem,vsProg,sDerivedAcc01,sDerivedID,vsJur,vsPeriod)=1);
+	#asciioutput('data.csv',sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,sDerivedMA,vsItem,vsProg,sDerivedAcc01,sDerivedID,vsJur,vsPeriod, numbertostring(vnValue));
+	CELLINCREMENTN(vnValue*-1,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,sDerivedMA03,vsItem,vsProg,sDerivedAcc01,sDerivedID,vsJur,vsPeriod);
+	CELLINCREMENTN(vnValue,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,sSPP,vsMeas,sType,sDerivedMA03,sItem,sSrcProg,sDerivedAcc01,sDerivedID,vsJur,vsPeriod);
+	CELLINCREMENTN(vnValue,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,vsSPP,vsMeas,vsType,sDerivedMA02,vsItem,vsProg,sDerivedAcc01,sDerivedID,vsJur,vsPeriod);
+	CELLINCREMENTN(vnValue*-1,sCube,vsHLyear, vsScenario,vsStatus,vsOC,vsRE,vsFunc,vsReason,sSPP,vsMeas,sType,sDerivedMA02,sItem,sSrcProg,sDerivedAcc01,sDerivedID,vsJur,vsPeriod);
+
+
+ENDIF;
+
+ENDIF;
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+ViewDestroy (sCube, sView);
+SubsetDestroy ('headline year', sSubset);
+SubsetDestroy ('scenario', sSubset);
+SubsetDestroy ('status', sSubset);
+SubsetDestroy ('outcome', sSubset);
+SubsetDestroy ('related entity', sSubset);
+SubsetDestroy ('function', sSubset);
+SubsetDestroy ('reason', sSubset);
+SubsetDestroy ('SPP', sSubset);
+SubsetDestroy ('measure code', sSubset);
+SubsetDestroy ('appropriation type', sSubset);
+SubsetDestroy ('movement account', sSubset);
+SubsetDestroy ('appropriation item', sSubset);
+SubsetDestroy (snProg, sSubset);
+SubsetDestroy ('account', sSubset);
+SubsetDestroy ('ID', sSubset);
+SubsetDestroy ('jurisdiction', sSubset);
+SubsetDestroy ('period', sSubset);
+#endregion

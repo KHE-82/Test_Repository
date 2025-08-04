@@ -1,0 +1,16 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}tmp_ID_tmp Admin",
+	"Elements":
+	[
+		{
+			"Name":"5209.01.02",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"5209.01.03",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

@@ -1,0 +1,17 @@
+{
+	"@type":"Subset",
+	"Name":"d$geus5311002",
+	"Alias":"code and description",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7121')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7122')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7123')"
+		}
+	]
+}

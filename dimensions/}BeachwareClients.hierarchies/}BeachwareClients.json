@@ -1,0 +1,176 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}BeachwareClients",
+	"Elements":
+	[
+		{
+			"Name":"ODBCPublisher",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"RA Admin",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"IP Admin",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"PF Admin",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"WF Admin",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Dev Tools",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Subset Wizard",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Publish Menu",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Publisher",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Workflow",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Top Down",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Bottom Up",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"InSheet Spreader",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Nr Reports",
+			"Type":"String"
+		},
+		{
+			"Name":"Admin",
+			"Type":"String"
+		},
+		{
+			"Name":"Subset Scroller",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Slice Formatter",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Hierarchy",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Document",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Trace",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Clear",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Round Error",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Round",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Batch Run",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Batch Setup",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Report Run",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Report Setup",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Drill Run",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Drill Setup",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"XLIt",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Formula",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Copy",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Pick Items",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Connect",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Browse",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Subset All",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"EmailSuffix",
+			"Type":"String"
+		},
+		{
+			"Name":"Company",
+			"Type":"String"
+		},
+		{
+			"Name":"Email Address",
+			"Type":"String"
+		},
+		{
+			"Name":"SAVE_RULES",
+			"Type":"String"
+		},
+		{
+			"Name":"MESSAGE_CUBE",
+			"Type":"String"
+		},
+		{
+			"Name":"Control Objects",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

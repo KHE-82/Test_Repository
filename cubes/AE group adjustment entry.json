@@ -1,0 +1,48 @@
+{
+	"@type":"Cube",
+	"Name":"AE group adjustment entry",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('headline year')"
+		},
+		{
+			"@id":"Dimensions('scenario')"
+		},
+		{
+			"@id":"Dimensions('status')"
+		},
+		{
+			"@id":"Dimensions('related entity')"
+		},
+		{
+			"@id":"Dimensions('measure code')"
+		},
+		{
+			"@id":"Dimensions('programme')"
+		},
+		{
+			"@id":"Dimensions('account type')"
+		},
+		{
+			"@id":"Dimensions('account template')"
+		},
+		{
+			"@id":"Dimensions('id')"
+		},
+		{
+			"@id":"Dimensions('jurisdiction')"
+		},
+		{
+			"@id":"Dimensions('period')"
+		},
+		{
+			"@id":"Dimensions('group adjustment measure')"
+		}
+	],
+	"Rules@Code.link":"AE group adjustment entry.rules",
+	"Views@Code.links":
+	[
+		"AE group adjustment entry.views/Default.json"
+	]
+}

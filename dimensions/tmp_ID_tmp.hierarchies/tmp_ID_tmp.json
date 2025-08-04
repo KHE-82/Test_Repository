@@ -1,0 +1,28 @@
+{
+	"@type":"Hierarchy",
+	"Name":"tmp_ID_tmp",
+	"Elements":
+	[
+		{
+			"Name":"8306.0112389A001A001-00001-050001812-",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"8306.0112389A001A001-00001-050011812-",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"8306.0112389A002A002-00005-050041812-",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"8306.0112389A010A010-00014-014361812-",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"8306.0112389Receipts/Payments from/to Independent Sources - FMA Act s31, FMA Reg 15 - F2008C00384 (FMA only)-1812-",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

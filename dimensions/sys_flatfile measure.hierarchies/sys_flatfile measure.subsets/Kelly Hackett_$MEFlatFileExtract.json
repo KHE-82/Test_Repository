@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"Kelly Hackett_$MEFlatFileExtract",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('sys_flatfile measure')/Hierarchies('sys_flatfile measure')/Elements('used')"
+		}
+	]
+}

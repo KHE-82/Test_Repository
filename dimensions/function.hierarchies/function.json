@@ -1,0 +1,64 @@
+{
+	"@type":"Hierarchy",
+	"Name":"function",
+	"Elements":
+	[
+		{
+			"Name":"Total functions",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"2107",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2204",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2408",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"2301",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Total functions",
+			"ComponentName":"2107",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total functions",
+			"ComponentName":"2204",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total functions",
+			"ComponentName":"2408",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total functions",
+			"ComponentName":"2301",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"function.subsets/$ChangeCode.json",
+		"function.subsets/$ME_FlatFile.json",
+		"function.subsets/$ME_Profiles.json",
+		"function.subsets/$MEDept.json",
+		"function.subsets/$td_FlatFile.json",
+		"function.subsets/all-n.json",
+		"function.subsets/Kate Hambly $ChangeCode03.json",
+		"function.subsets/sys_all-n.json",
+		"function.subsets/sys_health_functions.json",
+		"function.subsets/sys_print.json",
+		"function.subsets/}ME_Validation.json"
+	]
+}

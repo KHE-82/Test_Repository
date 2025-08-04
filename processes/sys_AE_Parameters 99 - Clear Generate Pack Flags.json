@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"sys_AE_Parameters 99 - Clear Generate Pack Flags",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_AE_Parameters 99 - Clear Generate Pack Flags.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psProg",
+			"Prompt":"",
+			"Value":"Administered Programmes",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

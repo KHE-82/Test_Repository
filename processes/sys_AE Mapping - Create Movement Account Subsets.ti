@@ -1,0 +1,273 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_AE Mapping - Create Movement Account Subsets
+#**** DESCRIPTION:       This process creates Movement Account Mapping subsets used for creating a new adjustment
+#****
+#****                                  This should be run by the administrator
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    KG             Initial Revision
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+
+#******************************************************************************************************************
+#*** DECLARE ENTITY SEGMENT CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbMAMap = 'sys_movement account mapping';
+dmAcc = 'account';
+dmMA = 'movement account';
+
+dmMAMap = '}movement account mapping';
+dmMapMeas = 'sys_mapping measure';
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED FOR VIEWS
+#******************************************************************************************************************
+sView = sUser | ' $sys_MAMap';
+
+#*****************************************************************************************************************************************************
+#**** STEP 1 - DELETE EXISTING SUBSETS
+#*****************************************************************************************************************************************************
+lDimSiz = DIMSIZ (dmMAMap);
+lCounter = 1;
+WHILE (lCounter < lDimSiz);
+
+	sElement = DIMNM(dmMAMap, lCounter);
+	sType = DTYPE (dmMAMap, sElement);
+
+	#*********************************************************************************************
+	# *** ONLY GET C LEVELS (WHICH IS THE ACCOUNT)
+	#*********************************************************************************************
+	IF (sType @= 'C');
+		sSubset = 'sys_' | sElement;
+		IF (SUBSETEXISTS (dmMAMap, sSubset) = 1);
+			SUBSETDESTROY (dmMAMap, sSubset);
+		ENDIF;
+	ENDIF;
+	lCounter = lCounter + 1;
+END;
+
+
+#*****************************************************************************************************************************************************
+#**** STEP 2 - DELETE ALL CONSOLIDATIONS (UNWIND DIMENSION)
+#*****************************************************************************************************************************************************
+lDimSiz = DIMSIZ (dmMAMap);
+lCounter = lDimSiz;
+
+WHILE (lCounter > 0);
+
+	sElement = DIMNM(dmMAMap, lCounter);
+	sType = DTYPE (dmMAMap, sElement);
+
+	#*********************************************************************************************
+	# *** ONLY GET C LEVELS (WHICH IS THE ACCOUNT)
+	#*********************************************************************************************
+	IF (sType @= 'C');
+
+#		DIMENSIONELEMENTDELETE (dmMAMap, sElement);
+
+	ENDIF;
+	lCounter = lCounter - 1;
+END;
+
+#*****************************************************************************************************************************************************
+#**** STEP 3 - CREATE VIEW
+#*****************************************************************************************************************************************************
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbMAMap, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmMapMeas, sView);
+
+
+#******************************************************************************************************************
+#*** CREATE SUBSETS
+#******************************************************************************************************************
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Movement Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Measure
+SUBSETCREATE (dmMapMeas, sView);
+SUBSETELEMENTINSERT (dmMapMeas, sView, 'flag', 1);
+
+#******************************************************************************************************************
+#*** BUILD VIEW
+#******************************************************************************************************************
+VIEWCREATE (cbMAMap, sView);
+VIEWSUBSETASSIGN (cbMAMap, sView, dmAcc, sView);
+VIEWSUBSETASSIGN (cbMAMap, sView, dmMA, sView);
+VIEWSUBSETASSIGN (cbMAMap, sView, dmMapMeas, sView);
+
+VIEWEXTRACTSKIPZEROESSET(cbMAMap, sView, 1);
+VIEWSUPPRESSZEROESSET (cbMAMap, sView, 1);
+VIEWEXTRACTSKIPCALCSSET (cbMAMap, sView, 1);
+
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+
+
+
+
+
+
+
+
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#******************************************************************************************************************
+#*** STEP 1 - CREATE CONSOLIDATIONS AND ELEMENTS
+#*** CHECK IF ACCOUNT EXISTS, IF NOT, CREATE ACCOUNT CONSOLIDATION
+#******************************************************************************************************************
+
+IF (DIMIX (dmMAMap, vsAcc) = 0);
+	DIMENSIONELEMENTINSERT (dmMAMap, '', vsAcc, 'C');
+
+	#******************************************************************************************************************
+	#*** CHECK IF MOVEMENT ACCOUNT EXISTS, IF NOT, CREATE MA ELEMENT
+	#******************************************************************************************************************
+	IF (DIMIX (dmMAMap, vsMA) = 0);
+		DIMENSIONELEMENTINSERT (dmMAMap, '', vsMA, 'N');
+	ENDIF;
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** STEP 2 - ADD MOVEMENT ACCOUNT TO ACCOUNT CONSOLIDATION
+#******************************************************************************************************************
+DIMENSIONELEMENTCOMPONENTADD (dmMAMap, vsAcc, vsMA, 1);
+
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#******************************************************************************************************************
+#*** UPDATE ATTRIBUTES
+#******************************************************************************************************************
+
+#************************************************************************************************
+#*** ACCOUNT 
+#************************************************************************************************
+sAccDesc = ATTRS (dmAcc, vsAcc, 'description');
+sAccNumDesc = ATTRS (dmAcc, vsAcc, 'code and description');
+
+#ATTRPUTS (sAccDesc, dmMAMap, vsAcc, 'description');
+#ATTRPUTS (sAccNumDesc, dmMAMap, vsAcc, 'code and description');
+
+#************************************************************************************************
+#*** MOVEMENT ACCOUNT 
+#************************************************************************************************
+sMADesc = ATTRS (dmMA, vsMA, 'description');
+sMANumDesc = ATTRS (dmMA, vsMA, 'code and description');
+
+#ATTRPUTS (sMADesc, dmMAMap, vsMA, 'description');
+#ATTRPUTS (sMANumDesc, dmMAMap, vsMA, 'code and description');
+
+#******************************************************************************************************************
+#*** STEP 1 - CREATE SYSTEM SUBSETS FOR EACH ACCOUNT
+#*** FIRST IDENTIFY DEFAULT MOVEMENT ACCOUNT FOR ACCOUNT
+#******************************************************************************************************************
+
+sSubset = 'sys_' | vsAcc;
+sDefaultMA = ATTRS (dmAcc, vsAcc, 'default movement account');
+
+
+IF (SUBSETEXISTS (dmMAMap, sSubset) = 0);
+	SUBSETCREATE (dmMAMap, sSubset);
+ENDIF;
+
+lSubSize = SUBSETGETSIZE (dmMAMap, sSubset);
+lSubSize = lSubSize + 1;
+
+IF (vnValue = 1);
+	IF (vsMA @= sDefaultMA);
+
+		#************************************************************************************************	
+		#*** IF MOVEMENT ACCOUNT IS SAME AS DEFAULT MOVEMENT ACCOUNT, PUT TO THE TOP OF SUBSET
+		#************************************************************************************************
+		SUBSETELEMENTINSERT (dmMAMap, sSubset, vsMA, 1);
+
+	ELSE;
+		SUBSETELEMENTINSERT (dmMAMap, sSubset, vsMA, lSubSize);
+
+	ENDIF;
+
+	SUBSETALIASSET (dmMAMap, sSubset, 'code and description');
+
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#******************************************************************************************************************
+#*** SORT MOVEMENT ACCOUNT MAPPING BY HIERARCHY
+#******************************************************************************************************************
+DIMENSIONSORTORDER (dmMAMap, 'ByName', 'Ascending','ByHierarchy', 'Ascending'); 
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbMAMap, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmMapMeas, sView);
+
+
+
+
+#endregion

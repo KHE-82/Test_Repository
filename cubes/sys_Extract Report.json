@@ -1,0 +1,26 @@
+{
+	"@type":"Cube",
+	"Name":"sys_Extract Report",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('}Clients')"
+		},
+		{
+			"@id":"Dimensions('headline year')"
+		},
+		{
+			"@id":"Dimensions('scenario')"
+		},
+		{
+			"@id":"Dimensions('row id')"
+		},
+		{
+			"@id":"Dimensions('period')"
+		},
+		{
+			"@id":"Dimensions('sys_report extract measure')"
+		}
+	],
+	"Views@Code.links":[]
+}

@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"group adjustment measure",
+	"Hierarchies@Code.links":
+	[
+		"group adjustment measure.hierarchies/group adjustment measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('group adjustment measure')/Hierarchies('group adjustment measure')"
+	}
+}

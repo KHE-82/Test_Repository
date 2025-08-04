@@ -1,0 +1,208 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              z_MIgration - Transfer To Current 03 - CF Derivations
+#**** DESCRIPTION:       This process creates a view 
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 07/08/2017    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+snProg = 'programme';
+cbCube = 'AE cash flow';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmMA = 'movement account';
+dmID = 'id';
+dmAccCF = 'account_cf';
+dmProg = snProg;
+dmAccOth = 'account_other';
+dmRE = 'related entity';
+dmMeas = 'cash flow measure';
+dmPer = 'period';
+
+dmStatus = 'status';
+dmOC = 'outcome';
+
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmItem = 'appropriation item';
+dmAcc = 'account';
+dmJur = 'jurisdiction';
+
+
+sView = '$CBMSRTransferToCurrent';
+sSubset = sView;
+sCube = cbCube;
+sCFMeas = 'derivation weightings';
+sID = 'cash flow';
+sProg = 'cash flow';
+sPer = 'cash flow';
+sRE = 'cash flow';
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 01 : CLEAR OUT TARGET SCENARIO
+#------------------------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbCube, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmID, sSubset);
+SUBSETDESTROY (dmMA, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmAccCF, sSubset);
+SUBSETDESTROY (dmAccOth, sSubset);
+SUBSETDESTROY (dmRE, sSubset);
+SUBSETDESTROY (dmPer, sSubset);
+SUBSETDESTROY (dmMeas, sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, psTargetHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, psTargetScenario, 1);
+
+# Prog
+SubsetCreate(dmProg, sSubset);
+SubsetElementInsert(dmProg, sSubset, sProg, 1);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAccCF | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# ID
+SubsetCreate(dmID, sSubset);
+SubsetElementInsert(dmID, sSubset, sID, 1);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAccOth | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# RE
+SubsetCreate(dmRE, sSubset);
+SubsetElementInsert(dmRE, sSubset, sRE, 1);
+
+# Movement account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Per
+SubsetCreate(dmPer, sSubset);
+SubsetElementInsert(dmPer, sSubset, sPer, 1);
+
+
+# Measure
+SubsetCreate(dmMeas, sSubset);
+SubsetElementInsert(dmMeas, sSubset, sCFMeas, 1);
+
+#****BUILD VIEW****#
+ViewCreate(cbCube, sView);
+ViewSubsetAssign(cbCube, sView, dmHLYear, sSubset);
+ViewSubsetAssign(cbCube, sView, dmScenario, sSubset);
+ViewSubsetAssign(cbCube, sView, dmID, sSubset);
+ViewSubsetAssign(cbCube, sView, dmMA, sSubset);
+ViewSubsetAssign(cbCube, sView, dmAccOth, sSubset);
+ViewSubsetAssign(cbCube, sView, dmAccCF, sSubset);
+ViewSubsetAssign(cbCube, sView, dmProg, sSubset);
+ViewSubsetAssign(cbCube, sView, dmRE, sSubset);
+ViewSubsetAssign(cbCube, sView, dmPer, sSubset);
+ViewSubsetAssign(cbCube, sView, dmMeas, sSubset);
+
+
+ViewExtractSkipZeroesSet (cbCube, sView, 1);
+ViewExtractSkipCalcsSet (cbCube, sView, 0);
+ViewExtractSkipRuleValuesSet (cbCube, sView, 0);
+
+VIEWZEROOUT (cbCube, sView);
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 01 : CLEAR OUT TARGET SCENARIO
+#------------------------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbCube, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 02 : CREATE SOURCE VIEW
+#------------------------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbCube, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, psSourceHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, psSourceScenario, 1);
+
+#****BUILD VIEW****#
+ViewCreate(cbCube, sView);
+ViewSubsetAssign(cbCube, sView, dmHLYear, sSubset);
+ViewSubsetAssign(cbCube, sView, dmScenario, sSubset);
+ViewSubsetAssign(cbCube, sView, dmID, sSubset);
+ViewSubsetAssign(cbCube, sView, dmProg, sSubset);
+ViewSubsetAssign(cbCube, sView, dmRE, sSubset);
+ViewSubsetAssign(cbCube, sView, dmPer, sSubset);
+ViewSubsetAssign(cbCube, sView, dmMeas, sSubset);
+
+ViewExtractSkipZeroesSet (cbCube, sView, 1);
+ViewExtractSkipCalcsSet (cbCube, sView, 0);
+ViewExtractSkipRuleValuesSet (cbCube, sView, 0);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF (CELLISUPDATEABLE (cbCube, psTargetHLYear, psTargetScenario, vsMA, sID, vsAccCF, sProg, vsAccOth, sRE, sCFMeas, sPer) = 1);
+	CELLPUTN (vnValue, cbCube, psTargetHLYear, psTargetScenario, vsMA, sID, vsAccCF, sProg, vsAccOth, sRE, sCFMeas, sPer);
+ENDIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbCube, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmID, sSubset);
+SUBSETDESTROY (dmMA, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmAccCF, sSubset);
+SUBSETDESTROY (dmAccOth, sSubset);
+SUBSETDESTROY (dmRE, sSubset);
+SUBSETDESTROY (dmPer, sSubset);
+SUBSETDESTROY (dmMeas, sSubset);
+#endregion

@@ -1,0 +1,19 @@
+{
+	"@type":"Subset",
+	"Name":"L. Jaiyawong_$geuspvt",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2300001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2300002')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('3340096')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		}
+	]
+}

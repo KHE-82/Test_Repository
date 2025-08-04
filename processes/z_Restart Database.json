@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"z_Restart Database",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"z_Restart Database.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[]
+}

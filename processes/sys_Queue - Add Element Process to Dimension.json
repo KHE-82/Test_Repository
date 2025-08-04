@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"sys_Queue - Add Element Process to Dimension",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Queue - Add Element Process to Dimension.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psQID",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

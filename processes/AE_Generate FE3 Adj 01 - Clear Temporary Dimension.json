@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"AE_Generate FE3 Adj 01 - Clear Temporary Dimension",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_Generate FE3 Adj 01 - Clear Temporary Dimension.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[]
+}

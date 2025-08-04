@@ -1,0 +1,38 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+cbCG = '}ClientGroups';
+dmVar = 'variables';
+dmCl = '}Clients';
+dmGrp = '}Groups';
+sView = '}segd_src';
+sFilename = AttrS (dmVar, 'sys_Configuration Directory', 'Value') | 'dss_geus_groups.txt';
+
+ViewDestroy (cbCG, sView);
+ViewCreate (cbCG, sView);
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+sClient = Trim (SubSt (AttrS (dmCl, vsClient, '}TM1_DefaultDisplayValue'), 8, 40));
+sGroup = Trim (SubSt (AttrS (dmGrp, vsGroup, '}TM1_DefaultDisplayValue'), 8, 40));
+
+AsciiOutput (sFilename, sClient, sGroup);
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

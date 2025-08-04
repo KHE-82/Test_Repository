@@ -1,0 +1,52 @@
+{
+	"@type":"Hierarchy",
+	"Name":"ME reporting measure",
+	"Elements":
+	[
+		{
+			"Name":"reviewed by",
+			"Type":"String"
+		},
+		{
+			"Name":"reviewed date",
+			"Type":"String"
+		},
+		{
+			"Name":"value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"finance actual value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"finance budget value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"finance forecast value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"finance value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Phasing Method",
+			"Type":"String"
+		},
+		{
+			"Name":"status",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"ME reporting measure.subsets/Amy Vu_$MEGenProf02.json",
+		"ME reporting measure.subsets/Michael Longley_$MEGenProf02.json"
+	]
+}

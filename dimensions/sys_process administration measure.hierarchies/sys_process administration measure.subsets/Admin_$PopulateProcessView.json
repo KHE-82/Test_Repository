@@ -1,0 +1,19 @@
+{
+	"@type":"Subset",
+	"Name":"Admin_$PopulateProcessView",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('sys_process administration measure')/Hierarchies('sys_process administration measure')/Elements('status flag')"
+		},
+		{
+			"@id":"Dimensions('sys_process administration measure')/Hierarchies('sys_process administration measure')/Elements('completed flag')"
+		},
+		{
+			"@id":"Dimensions('sys_process administration measure')/Hierarchies('sys_process administration measure')/Elements('error flag')"
+		},
+		{
+			"@id":"Dimensions('sys_process administration measure')/Hierarchies('sys_process administration measure')/Elements('error description')"
+		}
+	]
+}

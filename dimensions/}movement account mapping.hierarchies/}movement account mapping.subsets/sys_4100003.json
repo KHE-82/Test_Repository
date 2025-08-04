@@ -1,0 +1,26 @@
+{
+	"@type":"Subset",
+	"Name":"sys_4100003",
+	"Alias":"code and description",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7206')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7207')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7209')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7216')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7228')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7229')"
+		}
+	]
+}

@@ -1,0 +1,67 @@
+{
+	"@type":"Hierarchy",
+	"Name":"Test object type",
+	"Elements":
+	[
+		{
+			"Name":"Icon",
+			"Type":"String"
+		},
+		{
+			"Name":"Heading",
+			"Type":"String"
+		},
+		{
+			"Name":"Menu Nav Button",
+			"Type":"String"
+		},
+		{
+			"Name":"Hyperlink",
+			"Type":"String"
+		},
+		{
+			"Name":"Data Field",
+			"Type":"String"
+		},
+		{
+			"Name":"Refresh Button",
+			"Type":"String"
+		},
+		{
+			"Name":"Note",
+			"Type":"String"
+		},
+		{
+			"Name":"Favourite Item",
+			"Type":"String"
+		},
+		{
+			"Name":"TI Process Button",
+			"Type":"String"
+		},
+		{
+			"Name":"Header Area",
+			"Type":"String"
+		},
+		{
+			"Name":"Filter field",
+			"Type":"String"
+		},
+		{
+			"Name":"Parameter field",
+			"Type":"String"
+		},
+		{
+			"Name":"PickList Item",
+			"Type":"String"
+		},
+		{
+			"Name":"Workbook",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"Test object type.subsets/sys_all-n.json"
+	]
+}

@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_ae reporting stage measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_ae reporting stage measure.hierarchies/sys_ae reporting stage measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_ae reporting stage measure')/Hierarchies('sys_ae reporting stage measure')"
+	}
+}

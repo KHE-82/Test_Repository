@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"validation id",
+	"Hierarchies@Code.links":
+	[
+		"validation id.hierarchies/validation id.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('validation id')/Hierarchies('validation id')"
+	}
+}

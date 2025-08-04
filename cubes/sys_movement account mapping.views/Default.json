@@ -1,0 +1,238 @@
+{
+	"@type":"NativeView",
+	"Name":"Default",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('account')/Hierarchies('account')"
+				},
+				"Alias":"code and description",
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100011')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100012')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100013')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100015')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100016')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100003')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('5311001')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('5311002')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('5312001')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('5312002')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('5313001')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('5313002')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('5314000')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('5315000')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('5316000')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('5356010')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('movement account')/Hierarchies('movement account')"
+				},
+				"Alias":"code and description",
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7200')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7230')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7232')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7233')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7234')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7235')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7236')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7237')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7238')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7239')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7203')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7205')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7206')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7207')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7208')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7209')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7212')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7225')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7216')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7217')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7218')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7219')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7221')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7222')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7226')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7586')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7587')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7588')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7589')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7592')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7593')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7594')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7598')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7599')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7596')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7597')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7240')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7255')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7261')"
+					},
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7262')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_mapping measure')/Hierarchies('sys_mapping measure')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_mapping measure')/Hierarchies('sys_mapping measure')/Elements('flag')"
+					},
+					{
+						"@id":"Dimensions('sys_mapping measure')/Hierarchies('sys_mapping measure')/Elements('old flag')"
+					},
+					{
+						"@id":"Dimensions('sys_mapping measure')/Hierarchies('sys_mapping measure')/Elements('description')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('sys_mapping measure')/Hierarchies('sys_mapping measure')/Elements('flag')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":false,
+	"SuppressEmptyRows":false,
+	"FormatString":"0.#########"
+}

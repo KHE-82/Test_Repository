@@ -1,0 +1,319 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Generate FE3 Adj 04 - Copy Data from AE Adjustments Cube (Depn)
+#**** DESCRIPTION:       This process copies the data (Depn data) from FE2 and post into FE3.
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 14/05/2014    KG             Initial Revision
+#**** 13/08/2014    KG             Update to Include No Meas Code for Adjustments
+#****
+#***********************************************************************************************************************
+
+#**** DECLARE CUBES ****#
+snProg = 'programme';
+sCubeProgDet = snProg | ' details';
+sCube = 'AE adjustments';
+dmTmpID = 'tmp_ID_tmp';
+sIDCube = 'AE id details';
+sMeasureIDDet = 'Used';
+
+#**** DECLARE VARIABLES ****#
+sView = '$CreateFE3';
+sSubset = sView;
+sHLYear = ATTRS ('variables', 'headline year', 'value');
+sScenario = 'current';
+sStatus = 'Total approved';
+sID ='Total IDs';
+#sID = '0000A';
+
+
+#sPYPeriod = DIMNM('Period',DIMIX('Period',SUBST(sHLYear, 3, 9))+2);
+sPYPeriod = psFE2Year;
+
+sProgSubSet = 'ProgsforFE3';
+sNewReason = 'Creation of the New 3rd Forward Year Estimates''';
+#sNewReason = ATTRS ('variables', 'creation of fe3 reason code', 'value');
+sNewStatus = 'Data';
+sAdjType = 'Generated';
+
+#**** DECLARE USER ***#
+sUser = TM1User();
+dmClients = '}Clients';
+sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+
+# GET NEW ID CODE FOR DEPRECIATION
+sNewID = '00000' | TRIM(STR(CELLGETN (sIDCube, sHLYear, sScenario, 'Total IDs', sMeasureIDDet) + 1, 5, 0));
+sNewID = SUBST (sNewID, LONG (sNewID) - 4, 5);
+
+ViewSuppressZeroesSet (sCube, sView,1);
+ViewExtractSkipZeroesSet (sCube, sView, 1);
+ViewExtractSkipCalcsSet (sCube, sView, 0);
+
+
+DatasourceCubeview=sView;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+sIDStatus = 'unauthorised';
+
+#*** Balance ID Check ***#
+sBalID = 'Total IDs';
+
+#*** ADD DATA TO ADJUSTMENTS CUBE BASED ON SELECTED FE3 YEAR
+#sPeriod = DIMNM('Period',DIMIX('Period',SUBST(sHLYear, 3, 9))+3);
+sPeriod = psFE3Year;
+
+# *** USE NO MEASURE CODE ***#
+sNoMeasCode = 'M00000';
+
+IF(Dimix(dmTmpID,vsProg|vsAppropType|vsFunc)=0);
+     itemskip;
+Endif;
+
+sID = ATTRS (dmTmpID, vsProg|vsAppropType|vsFunc, 'ID');
+
+#*** DO A DEPRECIATION CHECK FOR PRIOR YEAR ***#
+     nCheckDepn = CELLGETN(sCube, sHLYear,sScenario,sStatus,vsOC,vsRE,vsFunc,vsReason,vsSpp,vsMeasCode, vsAppropType,'Total Movement',vsAppropItem,vsProg,'2240000', sBalID, vsJur, sPYPeriod);
+
+
+#*** IF THERE IS A DEPRECIATION FROM PRIOR YEAR, CREATE AN ADJUSTMENT
+IF (nCheckDepn <> 0);
+     sChkNewID = '00000' | TRIM(STR(CELLGETN (sIDCube, sHLYear, sScenario, 'Total IDs', sMeasureIDDet) + 1, 5, 0));
+     sChkNewID = SUBST (sChkNewID, LONG (sChkNewID) - 4, 5);
+
+     IF (SUBST(vsAcc, 1, 3) @= '224');
+     #*** DO THIS PROCESS IF ITS A DEPRECIATION EXP ACCOUNT ***#
+
+          IF (sNewID @= sChkNewID);
+               # LOCK IN THE ID
+               CellPutN (1, sIDCube, sHLYear, sScenario, sNewID, sMeasureIDDet);
+
+               # POPULATE ID DETAILS CUBE
+               sProgDesc = ATTRS(snProg, vsProg, 'code and description');
+               CellPutS (vsProg, sIDCube, sHLYear, sScenario, sNewID, snProg | ' code');
+               CellPutS (sProgDesc, sIDCube, sHLYear, sScenario, sNewID, snProg | ' description');
+
+#               sDescription = sProgDescription|' - Revision of Estimates Depreciation of Asset Accounts';
+               sDescription = sProgDesc |' - Creation of FE3 - Depreciation of Asset Accounts';
+
+               CellPutS (sDescription, sIDCube, sHLYear, sScenario, sNewID, 'title');
+               CellPutS ('(' | sNewID | ') ' | sDescription, sIDCube, sHLYear, sScenario, sNewID, 'description');
+               CellPutS (sIDStatus, sIDCube, sHLYear, sScenario, sNewID, 'status');
+               CellPutS (sNewReason, sIDCube, sHLYear, sScenario, sNewID, 'reason');
+#               CellPutS (vsMeasCode, sIDCube, sHLYear, sScenario, sNewID, 'measure');
+               CellPutS (sNoMeasCode, sIDCube, sHLYear, sScenario, sNewID, 'measure');
+               CellPutS (vsOC, sIDCube, sHLYear, sScenario, sNewID, 'outcome');
+               CellPutS (vsFunc, sIDCube, sHLYear, sScenario, sNewID, 'function');
+               CellPutS (vsSPP, sIDCube, sHLYear, sScenario, sNewID, 'spp');
+               CellPutS (vsAppropItem, sIDCube, sHLYear, sScenario, sNewID, 'appropriation item');
+               CellPutS (vsAppropType, sIDCube, sHLYear, sScenario, sNewID, 'appropriation type');
+               CellPutS ('ongoing', sIDCube, sHLYear, sScenario, sNewID, 'funding life');
+               CellPutS ('Y', sIDCube, sHLYear, sScenario, sNewID, 'apply parameters');
+
+               sControlType = CELLGETS (sCubeProgDet, sHLYear, sScenario, vsProg, 'control type');
+               CELLPUTS(sControlType, sIDCube, sHLYear, sScenario, sNewID, 'Control Type');
+               CELLPUTS(sAdjType, sIDCube, sHLYear, sScenario, sNewID, 'Adjustment Type');
+
+	#*** Current User ***#
+	sCurUser = TM1User();
+	IF (SUBST(sCurUser,1,3) @= 'CAM');
+		sCurUser = ATTRS(dmClients, sCurUser, '}TM1_DefaultDisplayValue');
+		lScan = SCAN('\',sCurUser) + 1;
+		sCurUser = SUBST(sCurUser, lScan, 9);
+	ELSE;
+		sCurUser = TM1User();
+	ENDIF;
+               CELLPUTS(sCurUser, sIDCube, sHLYear, sScenario, sNewID, 'Created by');
+
+	# **** GET DATE VALUES ***#
+	sDNow = TimST( Now, '\D'); 
+	sMNow = TimST( Now, '\m'); 
+	sYNow = TimST( Now, '\Y'); 
+
+	sDay = TRIM(SUBST(sDNow, 1,2));
+	IF (LONG (sDay) = 1);
+		sDay = '0' | sDay;
+	ELSE;
+		sDay = sDay;
+	ENDIF;
+
+	sMonth = TRIM(SUBST(sMNow, 1,2));
+	IF (LONG (sMonth) = 1);
+		sMonth = '0' | sMonth;
+	ELSE;
+		sMonth = sMonth;
+	ENDIF;
+
+	sYear = TRIM(SUBST(sYNow, 1,4));
+	sNow = sDay | '/' | sMonth | '/' | sYear;
+               CELLPUTS(sNow, sIDCube, sHLYear, sScenario, sNewID, 'created date');
+
+          ENDIF;
+
+#          nAddData = CELLGETN (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sNewID,vsJur, sPeriod);
+
+          nFE3Data = CELLGETN (sCube, sHLYear,sScenario, 'Total approved',vsOC,vsRE,vsFunc,'Total reason' ,vsSpp,vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sBalID,vsJur, sPeriod);
+          nAddData = CELLGETN (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sNewID,vsJur, sPeriod);
+          CELLPUTN( nAddData - nFE3Data + Value, sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sNewID,vsJur, sPeriod);
+
+         #*** BUILDING DEPRECIATION ***#
+         IF (vsAcc @= '2241002');
+#              nAddData = CELLGETN (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,vsMeasCode, vsAppropType,'7153',vsAppropItem,vsProg,'5311002',sNewID,vsJur, sPeriod);
+              nFE3Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc,'Total reason' ,vsSpp, vsMeasCode, vsAppropType,'7153',vsAppropItem,vsProg,'5311002', sBalID,vsJur, sPeriod);
+              nAddData = CELLGETN (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp, sNoMeasCode, vsAppropType,'7153',vsAppropItem,vsProg,'5311002',sNewID,vsJur, sPeriod);
+              CELLPUTN( nAddData - nFE3Data + Value, sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,'7153',vsAppropItem,vsProg,'5311002',sNewID,vsJur,sPeriod);
+         ENDIF;
+
+         #*** OTHER IP&E DEPRECIATION ***#
+         IF (vsAcc @= '2241003');
+#              nAddData = CELLGETN (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,vsMeasCode, vsAppropType,'7153',vsAppropItem,vsProg,'5312002',sNewID,vsJur, sPeriod);
+              nFE3Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc, 'Total reason' ,vsSpp, vsMeasCode, vsAppropType,'7153',vsAppropItem,vsProg,'5312002', sBalID,vsJur, sPeriod);
+              nAddData = CELLGETN (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,'7153',vsAppropItem,vsProg,'5312002',sNewID,vsJur, sPeriod);
+              CELLPUTN( nAddData - nFE3Data + Value, sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,'7153',vsAppropItem,vsProg,'5312002',sNewID,vsJur,sPeriod);
+         ENDIF;
+
+         #*** INTANGIBLES AMORTISATION ***#
+         IF (vsAcc @= '2242002');
+#              nAddData = CELLGETN (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,vsMeasCode, vsAppropType,'7153',vsAppropItem,vsProg,'5313001',sNewID,vsJur, sPeriod);
+              nFE3Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc, 'Total reason' ,vsSpp, vsMeasCode, vsAppropType,'7153',vsAppropItem,vsProg,'5313001', sBalID,vsJur, sPeriod);
+              nAddData = CELLGETN (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,'7153',vsAppropItem,vsProg,'5313001',sNewID,vsJur, sPeriod);
+              CELLPUTN( nAddData - nFE3Data + Value, sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,'7153',vsAppropItem,vsProg,'5313001',sNewID,vsJur,sPeriod);
+         ENDIF;
+
+     ELSE;
+     #*** DO THIS PROCESS IF ITS A GROSS NEW ADDITION (ASSET) ACCOUNT ***#
+          IF ((vsMA @= '7121') & (SUBST(vsAcc, 1, 1) @= '5'));
+
+               IF (sNewID @= sChkNewID);
+                    # LOCK IN THE ID
+                    CellPutN (1, sIDCube, sHLYear, sScenario, sNewID, sMeasureIDDet);
+
+                    # POPULATE ID DETAILS CUBE
+                    sProgDesc = ATTRS(snProg, vsProg, 'code and description');
+                    CellPutS (vsProg, sIDCube, sHLYear, sScenario, sNewID, snProg | ' code');
+                    CellPutS (sProgDesc, sIDCube, sHLYear, sScenario, sNewID, snProg | ' description');
+
+#               sDescription = sProgDescription|' - Revision of Estimates Depreciation of Asset Accounts';
+                    sDescription = sProgDesc |' - Creation of FE3 - Depreciation of Asset Accounts';
+
+                    CellPutS (sDescription, sIDCube, sHLYear, sScenario, sNewID, 'title');
+                    CellPutS ('(' | sNewID | ') ' | sDescription, sIDCube, sHLYear, sScenario, sNewID, 'description');
+                    CellPutS ('draft', sIDCube, sHLYear, sScenario, sNewID, 'status');
+                    CellPutS (sNewReason, sIDCube, sHLYear, sScenario, sNewID, 'reason');
+#                    CellPutS (vsMeasCode, sIDCube, sHLYear, sScenario, sNewID, 'measure');
+                    CellPutS (sNoMeasCode, sIDCube, sHLYear, sScenario, sNewID, 'measure');
+                    CellPutS (vsOC, sIDCube, sHLYear, sScenario, sNewID, 'outcome');
+                    CellPutS (vsFunc, sIDCube, sHLYear, sScenario, sNewID, 'function');
+                    CellPutS (vsSPP, sIDCube, sHLYear, sScenario, sNewID, 'spp');
+                    CellPutS (vsAppropItem, sIDCube, sHLYear, sScenario, sNewID, 'appropriation item');
+                    CellPutS (vsAppropType, sIDCube, sHLYear, sScenario, sNewID, 'appropriation type');
+                    CellPutS ('ongoing', sIDCube, sHLYear, sScenario, sNewID, 'funding life');
+	    CellPutS ('Y', sIDCube, sHLYear, sScenario, sNewID, 'apply parameters');
+
+                    sControlType = CELLGETS (sCubeProgDet, sHLYear, sScenario, vsProg, 'control type');
+                    CELLPUTS(sControlType, sIDCube, sHLYear, sScenario, sNewID, 'Control Type');
+                    CELLPUTS(sAdjType, sIDCube, sHLYear, sScenario, sNewID, 'Adjustment Type');
+
+
+	     #*** Current User ***#
+	     sCurUser = TM1User();
+	     IF (SUBST(sCurUser,1,3) @= 'CAM');
+		sCurUser = ATTRS(dmClients, sCurUser, '}TM1_DefaultDisplayValue');
+		lScan = SCAN('\',sCurUser) + 1;
+		sCurUser = SUBST(sCurUser, lScan, 9);
+	     ELSE;
+		sCurUser = TM1User();
+   	     ENDIF;
+
+                    CELLPUTS(sCurUser, sIDCube, sHLYear, sScenario, sNewID, 'Created by');
+
+	     # **** GET DATE VALUES ***#
+	     sDNow = TimST( Now, '\D'); 
+	     sMNow = TimST( Now, '\m'); 
+	     sYNow = TimST( Now, '\Y'); 
+
+	     sDay = TRIM(SUBST(sDNow, 1,2));
+
+	     IF (LONG (sDay) = 1);
+	          sDay = '0' | sDay;
+	     ELSE;
+	          sDay = sDay;
+	     ENDIF;
+
+	     sMonth = TRIM(SUBST(sMNow, 1,2));
+
+	     IF (LONG (sMonth) = 1);
+	          sMonth = '0' | sMonth;
+	     ELSE;
+	          sMonth = sMonth;
+	     ENDIF;
+
+	     sYear = TRIM(SUBST(sYNow, 1,4));
+
+	     sNow = sDay | '/' | sMonth | '/' | sYear;
+                    CELLPUTS(sNow, sIDCube, sHLYear, sScenario, sNewID, 'created date');
+
+               ENDIF;
+
+               #**** POPULATE ADJUSTMENT CUBE WITH MOVEMENT ACCOUNTS OF NEW ADDITIONS ***#
+#               nAddData = CELLGETN (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sNewID,vsJur, sPeriod);
+
+               nFE3Data = CELLGETN (sCube, sHLYear,sScenario, 'Total approved',vsOC,vsRE,vsFunc, 'Total reason',vsSpp, vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID,vsJur, sPeriod);
+               nAddData = CELLGETN (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sNewID,vsJur, sPeriod);
+               CELLPUTN( nAddData - nFE3Data + Value, sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sNewID,vsJur, sPeriod);
+
+               #*** ADD LINE FOR INJECTION FOR DEPARTMENTAL CAPITAL BUDGET ACCOUNTS 4100003 - 7209 ***#
+#               nAddData = CELLGETN (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,vsMeasCode, vsAppropType,'7209',vsAppropItem,vsProg,'4100003',sNewID,vsJur, sPeriod);
+
+               nFE3Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved', vsOC,vsRE,vsFunc,'Total reason', vsSpp,vsMeasCode, vsAppropType,'7209',vsAppropItem,vsProg,'4100003', sBalID,vsJur, sPeriod);
+               nAddData = CELLGETN (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,'7209',vsAppropItem,vsProg,'4100003',sNewID,vsJur, sPeriod);
+               CELLPUTN( nAddData - nFE3Data + Value, sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,'7209',vsAppropItem,vsProg,'4100003',sNewID,vsJur, sPeriod);
+          ENDIF;
+     ENDIF;
+ENDIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy (sCube, sView);
+SubsetDestroy ('headline year', sSubset);
+SubsetDestroy ('scenario', sSubset);
+SubsetDestroy ('status', sSubset);
+SubsetDestroy ('outcome', sSubset);
+SubsetDestroy ('related entity', sSubset);
+SubsetDestroy ('function', sSubset);
+SubsetDestroy ('reason', sSubset);
+SubsetDestroy ('SPP', sSubset);
+SubsetDestroy ('measure code', sSubset);
+SubsetDestroy ('appropriation type', sSubset);
+SubsetDestroy ('movement account', sSubset);
+SubsetDestroy ('appropriation item', sSubset);
+SubsetDestroy (snProg, sSubset);
+SubsetDestroy ('account', sSubset);
+SubsetDestroy ('ID', sSubset);
+SubsetDestroy ('jurisdiction', sSubset);
+SubsetDestroy ('period', sSubset);
+#endregion

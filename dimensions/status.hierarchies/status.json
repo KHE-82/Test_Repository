@@ -1,0 +1,245 @@
+{
+	"@type":"Hierarchy",
+	"Name":"status",
+	"Elements":
+	[
+		{
+			"Name":"Total approved",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"approved",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"approved non-flat file",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"CBMS",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"agency authorised",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"DOFA validated",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"approved balancing",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Total status",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"draft",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"submitted",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"business unit authorised",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"draft balancing",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"data",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"cash flow",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"unbalanced",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Draft & Approved",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Draft and Flat File",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"MA Flag",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_cash flow adjustment",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"sys_user entered cash flow",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_cash flow derived",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"balance sheet data",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Total approved",
+			"ComponentName":"approved",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approved",
+			"ComponentName":"approved non-flat file",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approved",
+			"ComponentName":"CBMS",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approved",
+			"ComponentName":"agency authorised",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approved",
+			"ComponentName":"DOFA validated",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total approved",
+			"ComponentName":"approved balancing",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total status",
+			"ComponentName":"draft",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total status",
+			"ComponentName":"submitted",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total status",
+			"ComponentName":"business unit authorised",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total status",
+			"ComponentName":"approved",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total status",
+			"ComponentName":"approved non-flat file",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total status",
+			"ComponentName":"CBMS",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total status",
+			"ComponentName":"agency authorised",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total status",
+			"ComponentName":"DOFA validated",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total status",
+			"ComponentName":"approved balancing",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total status",
+			"ComponentName":"draft balancing",
+			"Weight":1
+		},
+		{
+			"ParentName":"Draft & Approved",
+			"ComponentName":"draft",
+			"Weight":1
+		},
+		{
+			"ParentName":"Draft & Approved",
+			"ComponentName":"submitted",
+			"Weight":1
+		},
+		{
+			"ParentName":"Draft & Approved",
+			"ComponentName":"approved",
+			"Weight":1
+		},
+		{
+			"ParentName":"Draft & Approved",
+			"ComponentName":"CBMS",
+			"Weight":1
+		},
+		{
+			"ParentName":"Draft & Approved",
+			"ComponentName":"agency authorised",
+			"Weight":1
+		},
+		{
+			"ParentName":"Draft & Approved",
+			"ComponentName":"DOFA validated",
+			"Weight":1
+		},
+		{
+			"ParentName":"Draft & Approved",
+			"ComponentName":"draft balancing",
+			"Weight":1
+		},
+		{
+			"ParentName":"Draft and Flat File",
+			"ComponentName":"draft",
+			"Weight":1
+		},
+		{
+			"ParentName":"Draft and Flat File",
+			"ComponentName":"approved non-flat file",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_cash flow adjustment",
+			"ComponentName":"sys_user entered cash flow",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_cash flow adjustment",
+			"ComponentName":"sys_cash flow derived",
+			"Weight":-1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"status.subsets/$ME_FlatFile.json",
+		"status.subsets/$ME_Profiles.json",
+		"status.subsets/$MEDept.json",
+		"status.subsets/$parameters.json",
+		"status.subsets/$td_FlatFile.json",
+		"status.subsets/clear.json",
+		"status.subsets/Kate Hambly $ChangeCode03.json",
+		"status.subsets/sys_print.json",
+		"status.subsets/}ME_Validation.json"
+	]
+}

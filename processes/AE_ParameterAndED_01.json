@@ -1,0 +1,27 @@
+{
+	"@type":"Process",
+	"Name":"AE_ParameterAndED_01",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_ParameterAndED_01.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"Admin",
+			"Type":"String"
+		},
+		{
+			"Name":"psAdjType",
+			"Prompt":"",
+			"Value":"parameter",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

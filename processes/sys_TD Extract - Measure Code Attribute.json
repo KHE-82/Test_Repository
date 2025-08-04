@@ -1,0 +1,45 @@
+{
+	"@type":"Process",
+	"Name":"sys_TD Extract - Measure Code Attribute",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_TD Extract - Measure Code Attribute.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForClient":"}ElementAttributes_measure code",
+		"dataSourceNameForServer":"}ElementAttributes_measure code",
+		"view":"Admin$ExportAEMeasureCode"
+	},
+	"Parameters":[],
+	"Variables":
+	[
+		{
+			"Name":"vsMeasureCode",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsEAMeasureCode",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsValue",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		}
+	]
+}

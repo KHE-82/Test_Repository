@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_report display",
+	"Hierarchies@Code.links":
+	[
+		"sys_report display.hierarchies/sys_report display.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_report display')/Hierarchies('sys_report display')"
+	}
+}

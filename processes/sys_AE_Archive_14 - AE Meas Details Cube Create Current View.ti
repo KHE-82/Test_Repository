@@ -1,0 +1,147 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_AE_Archive_14 - AE Meas Details Cube Create Current View
+#**** DESCRIPTION:       This process copies data in the government measures details cube from the CURRENT scenario into the target scenario, after clearing the target scenario
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials      Comments
+#****  ====              ======    =========
+#**** 12/05/2014    KG           Initial Revision
+#**** 2019	KG	Updated for NEW GEUS
+#***********************************************************************************************************************
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE GOVERNMENT MEASURE CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbMeas = 'government measures';
+dmMeasDet = 'measure details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE GOVERNMENT MEASURE DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbMeasDet = 'government measures details';
+dmMeasDet = 'measure details';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+
+sHLYear = ATTRS(dmVar, 'archive year', 'old value');
+sScenario = ATTRS(dmVar, 'archive scenario', 'old value');
+#sTargetHLYear = ATTRS(dmVar, 'archive year', 'value');
+#sTargetScenario = ATTRS(dmVar, 'archive scenario', 'value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+sView = '$Archive';
+#sView = '$ArchiveClear';
+sSubset = sView;
+
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy(cbMeasDet, sView);
+SubsetDestroy(dmHLYear, sSubset);
+SubsetDestroy(dmScenario, sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, psSourceHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, psSourceScenario, 1);
+
+#****BUILD VIEW****#
+ViewCreate(cbMeasDet, sView);
+
+ViewSubsetAssign(cbMeasDet, sView, dmHLYear, sSubset);
+ViewSubsetAssign(cbMeasDet, sView, dmScenario, sSubset);
+
+ViewSetSkipZeroes(cbMeasDet, sView, 1);
+ViewSetSkipCalcs(cbMeasDet, sView, 1);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

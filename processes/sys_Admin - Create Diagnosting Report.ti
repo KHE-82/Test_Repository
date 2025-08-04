@@ -1,0 +1,118 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_Admin - Create Diagnosting Report
+#**** DESCRIPTION:       This process will create a diagnostic Report of GEUS
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials      Comments
+#****  ====              ======      =========
+#****  2019	KG	Initiative Version
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES
+#******************************************************************************************************************
+dmVar = 'variables';
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sImpFilePath = ATTRS(dmVar, 'sys_ImpFileExceptionLogs', ' value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- OUTPUT FILE DETAILS
+#---------------------------------------------------------------------------------------------------------------------------
+
+# **** GET DATE VALUES ***#
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+sHNow = TimST (Now, '\h');
+sMinNow = TimST (Now, '\i');
+sSNow = TimST (Now, '\s');
+ 
+sDay = TRIM(SUBST(sDNow, 1,2));
+ 
+IF (LONG (sDay) = 1);
+     sDay = '0' | sDay;
+ELSE;
+     sDay = sDay;
+ENDIF;
+ 
+sMonth = TRIM(SUBST(sMNow, 1,2));
+ 
+IF (LONG (sMonth) = 1);
+     sMonth = '0' | sMonth;
+ELSE;
+     sMonth = sMonth;
+ENDIF;
+ 
+sYear = TRIM(SUBST(sYNow, 1,4));
+ 
+sNow = sYear | sMonth | sDay | sHNow | sMinNow | sSNow ;
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- SAVE FILE IN DATA DIRECTORY
+#---------------------------------------------------------------------------------------------------------------------------
+sFile = 'GEUS_Diagnostic_Report_' | sNow | '.txt';
+CommandLine = 'cmd /c dir /s *.* >' | sFile;
+
+ExecuteCommand(CommandLine, 0);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#------------------------------------------------------------------------
+#--- Update System Process Administration Cube
+#------------------------------------------------------------------------
+cbProc = 'sys_process administration';
+sProcess = GETPROCESSNAME ();
+NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+
+IF (ProcessReturnCode = ProcessExitNormal() );
+	#-------------------------------------------------------------
+	#--- Process Completed Successfully
+	#-------------------------------------------------------------
+
+	CELLPUTN (1, cbProc, sProcess, 'completed flag');
+	CELLPUTS (sProcessReturnCode, cbProc, sProcess, 'error description');
+	CELLPUTS ('SUCCESS', cbProc, sProcess, 'status flag');
+ELSE;
+	#-------------------------------------------------------------
+	#--- Process Completed With Errors
+	#-------------------------------------------------------------
+	CELLPUTN (1, cbProc, sProcess, 'error flag');
+	CELLPUTS (sProcessReturnCode, cbProc, sProcess, 'error description');
+	CELLPUTS ('FAILED', cbProc, sProcess, 'status flag');
+
+ENDIF;
+#endregion

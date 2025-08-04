@@ -1,0 +1,27 @@
+{
+	"@type":"Cube",
+	"Name":"index",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('headline year')"
+		},
+		{
+			"@id":"Dimensions('scenario')"
+		},
+		{
+			"@id":"Dimensions('index')"
+		},
+		{
+			"@id":"Dimensions('index measure')"
+		},
+		{
+			"@id":"Dimensions('period')"
+		}
+	],
+	"Rules@Code.link":"index.rules",
+	"Views@Code.links":
+	[
+		"index.views/Default.json"
+	]
+}

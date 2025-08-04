@@ -1,0 +1,49 @@
+{
+	"@type":"NativeView",
+	"Name":"$CreateFE3II",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('programme measure')/Hierarchies('programme measure')/Subsets('$CreateFE3II')"
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('programme')/Hierarchies('programme')"
+				},
+				"Expression":"TM1SubsetAll([programme])"
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('headline year')/Hierarchies('headline year')/Subsets('$CreateFE3II')"
+			},
+			"Selected":null
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('scenario')/Hierarchies('scenario')/Subsets('$CreateFE3II')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('current')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":false,
+	"SuppressEmptyRows":false,
+	"FormatString":"0.00"
+}

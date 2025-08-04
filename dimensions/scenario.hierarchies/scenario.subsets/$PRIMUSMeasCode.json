@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"$PRIMUSMeasCode",
+	"Expression":"{ EXCEPT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[scenario].[sys_BudgetRound]}, ALL, RECURSIVE )}, 0)}, { [scenario].[current] }) }"
+}

@@ -1,0 +1,32 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_ME mapping measure",
+	"Elements":
+	[
+		{
+			"Name":"unmapped",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"programme",
+			"Type":"String"
+		},
+		{
+			"Name":"account",
+			"Type":"String"
+		},
+		{
+			"Name":"movement account",
+			"Type":"String"
+		},
+		{
+			"Name":"related entity",
+			"Type":"String"
+		},
+		{
+			"Name":"jurisdiction",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

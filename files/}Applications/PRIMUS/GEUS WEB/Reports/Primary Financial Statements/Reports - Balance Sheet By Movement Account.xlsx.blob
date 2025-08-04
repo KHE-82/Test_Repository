@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=Reports - Balance Sheet By Movement Account.xlsx
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\Reports - Balance Sheet By Movement Account.xlsx_20230214235759.xlsx
+REMOVEBLOBONDELETE=Yes

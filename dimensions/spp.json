@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"spp",
+	"Hierarchies@Code.links":
+	[
+		"spp.hierarchies/spp.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('spp')/Hierarchies('spp')"
+	}
+}

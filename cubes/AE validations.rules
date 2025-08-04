@@ -1,0 +1,166 @@
+
+# DB('AE adjustments',!headline year,!scenario,!status,!outcome,!related entity,!function,!reason,!spp,!appropriation type,!movement account,!appropriation item,!programme,!account,!id,!jurisdiction,!period)
+# RULE 0001
+# Total Assets balances with total Liabilities and Equity
+['001'] = N:
+# TEST A - check that Account 4000000 = Account 5000000 - Account 3000000
+IF(DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','balance check','Total approp item','Total Programmes','4000000',!id,'Total jurisdictions',!period) -
+DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','balance check','Total approp item','Total Programmes','5000000',!id,'Total jurisdictions',!period) +
+DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','balance check','Total approp item','Total Programmes','3000000',!id,'Total jurisdictions',!period)+
+DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','balance check','Total approp item','Total Programmes','sys_ae_opening balances',!id,'Total jurisdictions',!period)=0,
+# TRUEPART A - TESTB
+0,
+# FALSEPART A - populate with one
+1);
+
+# RULE 0002
+# Transfers to / from Reserves in Equity = 0
+['002'] = N:
+# TEST A - check that Account 4100000 (x movement acct 7221) = 0
+IF(DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','7221','Total approp item','Total programmes','4100000',!id,'Total jurisdictions',!period)=0,
+# TRUEPART A - populate with zero - OK. Account 4100000 equal to 0
+0,
+# FALSEPART B - Account 4100000 does not equal to 0
+1);
+
+# RULE 0005
+# Depreciation and amortisation expense (Operating stat.) = Depreciation (NFA)
+['005'] = N:
+# TEST A - Acct 2240000 = Acct 5310000 (x movement account 7153 + 7353 + 7166+ 7366)
+IF(DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','Total movement','Total approp item','Total programmes','2240000',!id,'Total jurisdictions',!period) =
+(DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','7153','Total approp item','Total programmes','5310000',!id,'Total jurisdictions',!period) +
+DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','7353','Total approp item','Total programmes','5310000',!id,'Total jurisdictions',!period) +
+DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','7166','Total approp item','Total programmes','5310000',!id,'Total jurisdictions',!period) +
+DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','7366','Total approp item','Total programmes','5310000',!id,'Total jurisdictions',!period)),
+# TRUEPART A - OK
+0,
+# FALSEPART A - populate with one - FAIL
+1);
+
+# RULE 0006
+# Asset Revaluations (Utilises 006a Consolidations in Account and Movement Account)
+['006'] = N:
+# TEST A -
+# Lhs = [(4100002x7232 + 4100002x7233 + 4100002x7234 + 4100002x7235 + 4100002x7236 + 4100002x7238) - (2254000 (excluding 2254004) - 1265000 (excluding 1265004) - 1240010 - 1240020)]
+# Rhs = 5310000x7122 - 5310000x7133 + 5310000x7137 - 5310000x7154 + 5310000x7159 - 5310000x7164
+IF(
+# Lhs PART 1 = [(4100002x7232 + 4100002x7233 + 4100002x7234 + 4100002x7235 + 4100002x7236 + 4100002x7238) -
+(DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','7231','Total approp item','Total programmes','4100002',!id,'Total jurisdictions',!period) -
+DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','7237','Total approp item','Total Programmes','4100002',!id,'Total jurisdictions',!period) -
+DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','7239','Total approp item','Total Programmes','4100002',!id,'Total jurisdictions',!period)) -
+# LHS Part 2  (2254000 (excluding 2254004) - 1265000 (excluding 1265004) - 1240010 - 1240020)]
+DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','Total movement','Total approp item','Total Programmes','006a',!id,'Total jurisdictions',!period) -
+# RHS PART 1 = 5310000x7122 - 5310000x7133 + 5310000x7137 - 5310000x7154 + 5310000x7159 - 5310000x7164
+DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','006a','Total approp item','Total Programmes','5310000',!id,'Total jurisdictions',!period)=0,
+# TRUEPART B - populate with zero - ok Balances
+0,
+# FALSEPART A - FAIL - Populate with 1
+1);
+
+# RULE 0007
+# Written down value non-financial assets sold (Op Stat)=WDV disposals(NFA sch)
+['007'] = N:
+# TEST A - check that Accounts 1252003 + 1252006 + 1252009 + 1222430 + 1222530 + 1222630+ 2272003 + 2272006 + 2272009 + 2272012 + 2272530 + 2272630  =
+# Account 5310000 by movement accounts 7124 + 7134 – 7151 – 7152
+IF(DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','Total movement','Total approp item','Total Programmes','007a',!id,'Total jurisdictions',!period) -
+DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','007a','Total approp item','Total Programmes','5310000',!id,'Total jurisdictions',!period)=0,
+# TRUEPART A - Ok for both
+0,
+# FALSEPART A - populate with one - FAIL
+1);
+
+# RULE 0008
+# Cash at end of year (Cash Flow Stat.) = Cash - Overdrafts (Balance Sheet)
+['011'] = N:
+# TEST A - check that Account 6000000 = Account 5220000 + Account 3260000
+IF((DB('AE adjustments',!headline year,!scenario,'cash flow','Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','Total movement','Total approp item','Total Programmes','6000000',!id,'Total jurisdictions',!period) +
+DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','Total movement','Total approp item','Total Programmes','6000000',!id,'Total jurisdictions',!period)) =
+(DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','Total movement','Total approp item','Total Programmes','5220000',!id,'Total jurisdictions',!period) +
+DB('AE adjustments',!headline year,!scenario,'balance sheet data','Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','Total movement','Total approp item','Total Programmes','5220000',!id,'Total jurisdictions',!period) +
+DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','Total movement','Total approp item','Total Programmes','3260000',!id,'Total jurisdictions',!period) +
+DB('AE adjustments',!headline year,!scenario, 'balance sheet data','Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','Total movement','Total approp item','Total Programmes','3260000',!id,'Total jurisdictions',!period)),
+# TRUEPART A - populate with zero
+0,
+# FALSEPART A - populate with one (FAIL)
+1);
+
+# RULE 0031
+# Total capital appropriations = total items
+['013'] = N:
+# TEST A - check that Account 9100000 = Account 9200000
+IF(DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','Total movement','Total approp item','Total Programmes','9100000',!id,'Total jurisdictions',!period) =
+DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','Total movement','Total approp item','Total Programmes','9200000',!id,'Total jurisdictions',!period),
+# TRUEPART A - populate with zero
+0,
+# FALSEPART A - populate with one
+1);
+
+# RULE 0041
+# Special Accounts - Closing Balance equals Closing Balance by Composition
+['015'] = N:
+# TEST A - check that Account 9000860 = Account 9000881
+IF(DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','Total movement','Total approp item','Total Programmes','9000860',!id,'Total jurisdictions',!period) =
+DB('AE adjustments',!headline year,!scenario,ATTRS('variables', 'Validation Status', 'value'),'Total outcomes','Total related entity','Total functions','Total reason',
+'Total SPP','Total Measures','Total approp types','Total movement','Total approp item','Total Programmes','9000881',!id,'Total jurisdictions',!period),
+# TRUEPART A - populate with zero
+0,
+# FALSEPART A - populate with one
+0);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Feeders;

@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"$CreateFE3Flag",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('programme measure')/Hierarchies('programme measure')/Elements('Generate FE3')"
+		}
+	]
+}

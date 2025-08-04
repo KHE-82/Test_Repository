@@ -1,0 +1,56 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              AE_Load Costings File 02 - Send data to AE Adj
+#**** DESCRIPTION:       This process will load the entered values to the AE adjustments cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 16/06/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** DECLARE VARIABLES ***#
+dmTmpID = 'tmpID';
+dmClients = '}Clients';
+
+sUser = TM1User();
+sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+
+curHLYear = ATTRS('variables','headline year','value');
+curScenario = ATTRS('variables', 'headline scenario', 'value');
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+	#*** CALL PROCESS TO SEND DATA TO AE ADJUSTMENTS CUBE ***#
+	EXECUTEPROCESS ('AE_GrpAdj_SendtoAdj', 'psUser', sUser, 'psHLYear', curHLYear, 'psScenario', curScenario, 'psID', vsID);
+
+	#*** CALL PROCESS TO SEND DATA FOR WORKERS COMPENSATION JOURNAL ***#
+	sWorkersCompCheck = ATTRS(dmTmpID, vsID, 'Workers Comp');
+	IF (sWorkersCompCheck @<> '');
+		EXECUTEPROCESS ('AE_GrpAdj_WorkersCompAdj', 'psUser', sUser, 'psHLYear', curHLYear, 'psScenario', curScenario, 'psID', vsID);
+	ENDIF;
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

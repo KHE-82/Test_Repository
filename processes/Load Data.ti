@@ -1,0 +1,59 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+sCube = 'adjustments';
+sHLYear = 'HL2013-2014';
+sScenario = 'current';
+sView = 'clear';
+sSubset = sView;
+
+
+ViewDestroy(sCube, sView);
+SubsetDestroy('headline year', sSubset);
+SubsetDestroy('scenario', sSubset);
+SubsetDestroy('status', sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate('headline year', sSubset);
+SubsetElementInsert('headline year', sSubset, sHLYear, 1);
+
+# Scenario
+SubsetCreate('scenario', sSubset);
+SubsetElementInsert('scenario', sSubset, sScenario, 1);
+
+# Status
+SubsetCreate('status', sSubset);
+SubsetElementInsert('status', sSubset, 'data', 1);
+
+#****BUILD VIEW****#
+ViewCreate(sCube, sView);
+ViewSubsetAssign(sCube, sView, 'headline year', sSubset);
+ViewSubsetAssign(sCube, sView, 'scenario', sSubset);
+ViewSubsetAssign(sCube, sView, 'status', sSubset);
+VIEWZEROOUT (sCube, sView);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF (CELLISUPDATEABLE (sCube, vsHLYear, vsScn, vsStatus, vsOC, vsRE, vsFunc, vsReas, vsSPP, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, vsPeriod) =1);
+     nOldValue = CELLGETN (sCube, vsHLYear, vsScn, vsStatus, vsOC, vsRE, vsFunc, vsReas, vsSPP, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, vsPeriod);
+     CELLPUTN (nOldValue + value, sCube, vsHLYear, vsScn, vsStatus, vsOC, vsRE, vsFunc, vsReas, vsSPP, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, vsPeriod);
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

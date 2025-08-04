@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"Kelly Hackett_$MEFlatFileExtract",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('sys_flatfile scenario')/Hierarchies('sys_flatfile scenario')/Elements('upload')"
+		}
+	]
+}

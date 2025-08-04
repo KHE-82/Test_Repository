@@ -1,0 +1,25 @@
+{
+	"@type":"Cube",
+	"Name":"AE note register",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('headline year')"
+		},
+		{
+			"@id":"Dimensions('register id')"
+		},
+		{
+			"@id":"Dimensions('AE note register measure')"
+		}
+	],
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('AE note register measure')"
+	},
+	"TimeDimension":
+	{
+		"@id":"Dimensions('headline year')"
+	},
+	"Views@Code.links":[]
+}

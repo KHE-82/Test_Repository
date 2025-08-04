@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"$ChangeCode",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('-')"
+		}
+	]
+}

@@ -1,0 +1,75 @@
+{
+	"@type":"Hierarchy",
+	"Name":"account template measure",
+	"Elements":
+	[
+		{
+			"Name":"flag",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"comment",
+			"Type":"String"
+		},
+		{
+			"Name":"selected",
+			"Type":"String"
+		},
+		{
+			"Name":"movement account mapping",
+			"Type":"String"
+		},
+		{
+			"Name":"related entity mapping",
+			"Type":"String"
+		},
+		{
+			"Name":"jurisdiction mapping",
+			"Type":"String"
+		},
+		{
+			"Name":"Expense",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Cash Payment",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Customer Numbers",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Recognition",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Write Offs",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Cash Recoveries",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Impact",
+			"Type":"String"
+		},
+		{
+			"Name":"factor",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"account mapping",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"account template measure.subsets/Admin_$AccTempSubset01.json"
+	]
+}

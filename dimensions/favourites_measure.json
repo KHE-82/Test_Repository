@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"favourites_measure",
+	"Hierarchies@Code.links":
+	[
+		"favourites_measure.hierarchies/favourites_measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('favourites_measure')/Hierarchies('favourites_measure')"
+	}
+}

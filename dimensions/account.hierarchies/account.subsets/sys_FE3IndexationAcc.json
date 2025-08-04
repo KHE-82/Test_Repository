@@ -1,0 +1,20 @@
+{
+	"@type":"Subset",
+	"Name":"sys_FE3IndexationAcc",
+	"Alias":"code and description",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('1280004')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2000000')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9170000')"
+		}
+	]
+}

@@ -1,0 +1,778 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Adj_CopyAdjustment
+#**** DESCRIPTION:       This process will create a copy of the selected adjustment
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 24/03/2014    KG             Initial Revision
+#**** 10/08/2017	KG	  Updated function for CBMS-R in case user copies from OLD (CBMS1 data)
+#***********************************************************************************************************************
+
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+cbProg = snProg | ' details';
+
+
+#*** DECLARE ID DETAILS CUBE DIMENSIONS
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sCurUser = TM1User();
+
+#--------------------------------------------------------------------------------------------------------
+#--- CHECK IF CBMS-R IS LIVE : New Code 08 August 2017 - KG
+#--------------------------------------------------------------------------------------------------------
+sCBMSRLive = ATTRS (dmVar, 'sys_CBMSR GoLive', 'value');
+sCBMSRLiveHLYear = ATTRS (dmVar, 'sys_CBMSR GoLive Headline Year', 'value');
+sCBMSRMigrationScenario = 'CBMS-R OBAL';
+
+#--------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#--------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sUser) + 1;
+     sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+     sUser = TM1User();
+ENDIF;
+
+sObject  = sUser | '_$EditView';
+sAEView = sUser | '_$EditView';
+
+
+#*** RETRIEVE ID DETAILS ***#
+sOutcome = CellGetS(cbID, psHLYear, psScenario, psID, 'outcome');
+sFunction = CellGetS(cbID, psHLYear, psScenario, psID, 'function');
+sReason = CellGetS(cbID, psHLYear, psScenario, psID, 'reason');
+sSPP = CellGetS(cbID, psHLYear, psScenario, psID, 'SPP');
+sAppropType = CellGetS(cbID, psHLYear, psScenario, psID, 'appropriation type');
+sAppropItem = CellGetS(cbID, psHLYear, psScenario, psID, 'appropriation item');
+sProg = CellGetS(cbID, psHLYear, psScenario, psID, snProg | ' code');
+sMeasureCode = CellGetS(cbID, psHLYear, psScenario, psID, 'measure');
+
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CREATE SOURCE VIEW ***#
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmOC, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmFunc, sAEView);
+SUBSETDESTROY (dmReason, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmType, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sAEView);
+SubsetElementInsert(dmHLYear, sAEView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sAEView);
+SubsetElementInsert(dmScenario, sAEView, psScenario, 1);
+
+# Status
+SubsetCreate(dmStatus, sAEView);
+SubsetElementInsert(dmStatus, sAEView, 'data', 1);
+SubsetElementInsert(dmStatus, sAEView, 'cash flow', 2);
+
+# Outcome
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmOC | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Function
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmFunc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Reason
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmReason | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Measure Code
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Appropriation Type
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmType | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Movement Account
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}, [' | dmMA |'].[editable] = "")}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Appropriation Item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Account
+#MDX = '{ EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}, { [' | dmAcc | '].[9000701], [' | dmAcc | '].[9000702], [' | dmAcc | '].[account template] }) }';
+MDX = '{ EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}, { [' | dmAcc | '].[9000701], [' | dmAcc | '].[9000702]}) }';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# ID
+SubsetCreate(dmID, sAEView);
+SubsetElementInsert(dmID, sAEView, psID, 1);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Period
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}, [' | dmPer | '].[type] = "annual")}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbAE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmHLYear, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmScenario, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmStatus, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmOC, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmRE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmFunc, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmReason, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmSPP, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMeasCode, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmType, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMA, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmItem, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmProg, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmAcc, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmID, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmJur, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmPer, sAEView);
+
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmHLYear);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmScenario);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmStatus);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmID);
+
+VIEWCOLUMNDIMENSIONSET (cbAE, sAEView, dmPer, 1);
+
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmStatus, 1);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmReason, 2);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmProg, 3);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmSPP, 4);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmOC, 5);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmFunc, 6);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmMeasCode, 7);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmType, 8);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmItem, 9);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmAcc, 10);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmMA, 11);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmRE, 12);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmJur, 13);
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbAE, sAEView, 1);
+ViewSuppressZeroesSet(cbAE, sAEView, 1);
+ViewExtractSkipCalcsSet(cbAE, sAEView, 1);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sAEView;
+#DATASOURCENAMEFORSERVER = sAEView;
+
+#*****************************************************************************************************************************************************
+#*** STEP 2 - GET NEW ID NUMBER ***#
+nNewID = CELLGETN(cbID, curHLYear, curScenario, 'Total IDs', 'used') + 1;
+sNewID = NUMBERTOSTRING(nNewID);
+
+IF (LONG(sNewID) = 1);
+     sNewID = '0000' | sNewID;
+ENDIF;
+
+IF (LONG(sNewID) = 2);
+     sNewID = '000' | sNewID;
+ENDIF;
+
+IF (LONG(sNewID) = 3);
+     sNewID = '00' | sNewID;
+ENDIF;
+
+IF (LONG(sNewID) = 4);
+     sNewID = '0' | sNewID;
+ENDIF;
+
+IF (LONG(sNewID) = 5);
+     sNewID = sNewID;
+ENDIF;
+
+lCounter = 0;
+
+
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*** CREATE NEW ADJUSTMENT ***#
+
+nYear = STRINGTONUMBER(SUBST(vsHLYear,3,4));
+nCurrentYear = STRINGTONUMBER(SUBST(curHLYear,3,4));
+nVariance = nCurrentYear - nYear;
+snewHLYear = SUBST(vsHLYear,3,4);
+snewcurHLYear = SUBST(curHLYear, 3,4);
+sVariance = NUMBERTOSTRING(nvariance);
+
+nPeriod1 = STRINGTONUMBER(SUBST(vsPer, 1,4));
+nPeriod2 = STRINGTONUMBER(SUBST(vsPer, 6,4));
+
+nNewPeriod1 = (nPeriod1 + nVariance);
+nNewPeriod2 = (nPeriod2 + nVariance);
+
+sNewPeriod = NUMBERTOSTRING(nNewPeriod1) |'-'| NUMBERTOSTRING(nNewPeriod2);
+
+#*****************************************************************************************************************
+#*** GET ID DETAILS DATA ****#
+
+IF (nVariance = 0 & vsScen @= 'current');
+     #*** CHECK CURRENT ID DETAILS DATA
+     cpProg = CELLGETS(cbID, curHLYear, curScenario, vsID, snProg | ' code');
+     cpTitle = CELLGETS(cbID, curHLYear, curScenario, vsID, 'title') | '(Copy of ID' | vsID | ')';
+     cpdescription = '(' | sNewID | ') ' | TRIM(SUBST(CELLGETS(cbID, curHLYear, curScenario, vsID, 'description'),9,250)) | '(Copy of ID' | vsID | ')';
+     cpcomments = CELLGETS(cbID, curHLYear, curScenario, vsID, 'comments');
+     cpreason = CELLGETS(cbID, curHLYear, curScenario, vsID, 'reason');
+     cpOutcome = CELLGETS(cbID, curHLYear, curScenario, vsID, 'outcome');
+     cpFunction = CELLGETS(cbID, curHLYear, curScenario, vsID, 'function');
+     cpSPP = CELLGETS(cbID, curHLYear, curScenario, vsID, 'SPP');
+     cpMeasure =  CELLGETS(cbID, curHLYear, curScenario, vsID, 'measure');
+     cpAppropItem = CELLGETS(cbID, curHLYear, curScenario, vsID, 'appropriation item');
+     cpAppropType = CELLGETS(cbID, curHLYear, curScenario, vsID, 'appropriation type');
+     cpApplyParam = CELLGETS(cbID, curHLYear, curScenario, vsID, 'apply parameters');
+     cpFundLife = CELLGETS(cbID, curHLYear, curScenario, vsID, 'funding life');
+     cpparamgen = CELLGETS(cbID, curHLYear, curScenario, vsID, 'parameter adjustment generated');
+     cpManualCF = CELLGETS(cbID, curHLYear, curScenario, vsID, 'disagree cashflow');
+     cpAdjType = CELLGETS(cbID, curHLYear, curScenario, vsID, 'Adjustment Type');
+     cpControlType = CELLGETS(cbID, curHLYear, curScenario, vsID, 'Control Type');
+
+     #*** ADDITIONAL METADATA FOR MEASURES ***#
+     cpEndDate = CELLGETS(cbID, curHLYear, curScenario, vsID, 'end date');
+     cpGovDec = CELLGETS(cbID, curHLYear, curScenario, vsID, 'government decision');
+     cpGovDecDate = CELLGETS(cbID, curHLYear, curScenario, vsID, 'government decision date');
+
+     #*** ADDITIONAL METADATA FOR ADJ DETAILS ***#
+     cpGrpAdjType = CELLGETS(cbID, curHLYear, curScenario, vsID, 'Group Adj Type');
+     cpCostID = CELLGETS(cbID, curHLYear, curScenario, vsID, 'costing ID');
+     cpZeroCF = CELLGETS(cbID, curHLYear, curScenario, vsID, 'zero cashflow account');
+
+ELSE;
+     cpProg = CELLGETS(cbID, psHLYear, psScenario, vsID, snProg | ' code');
+     cpTitle = CELLGETS(cbID, psHLYear, psScenario, vsID, 'title') | '(Copy of ID' | vsID | ')';
+     cpdescription = '(' | sNewID | ') ' |  TRIM(SUBST(CELLGETS(cbID, psHLYear, psScenario, vsID, 'description'),9,250))  | '(Copy of ID' | vsID | ')';
+     cpcomments = CELLGETS(cbID, psHLYear, psScenario, vsID, 'comments');
+     cpreason = CELLGETS(cbID, psHLYear, psScenario, vsID, 'reason');
+     cpOutcome = CELLGETS(cbID, psHLYear, psScenario, vsID, 'outcome');
+     cpFunction = CELLGETS(cbID, psHLYear, psScenario, vsID, 'function');
+     cpSPP = CELLGETS(cbID, psHLYear, psScenario, vsID, 'SPP');
+     cpMeasure = CELLGETS(cbID, psHLYear, psScenario, vsID, 'measure');
+     cpAppropItem = CELLGETS(cbID, psHLYear, psScenario, vsID, 'appropriation item');
+     cpAppropType = CELLGETS(cbID, psHLYear, psScenario, vsID, 'appropriation type');
+     cpApplyParam = CELLGETS(cbID, psHLYear, psScenario, vsID, 'apply parameters');
+     cpFundLife = CELLGETS(cbID, psHLYear, psScenario, vsID, 'funding life');
+     cpparamgen = CELLGETS(cbID, psHLYear, psScenario, vsID, 'parameter adjustment generated');
+     cpManualCF = CELLGETS(cbID, psHLYear, psScenario, vsID, 'disagree cashflow');
+     cpAdjType = CELLGETS(cbID, psHLYear, psScenario, vsID, 'Adjustment Type');
+     cpControlType = CELLGETS(cbID, psHLYear, psScenario, vsID, 'Control Type');
+
+     #*** ADDITIONAL METADATA FOR MEASURES ***#
+     cpEndDate = CELLGETS(cbID, psHLYear, psScenario, vsID, 'end date');
+     cpGovDec = CELLGETS(cbID, psHLYear, psScenario, vsID, 'government decision');
+     cpGovDecDate = CELLGETS(cbID, psHLYear, psScenario, vsID, 'government decision date');
+
+     #*** ADDITIONAL METADATA FOR ADJ DETAILS ***#
+     cpGrpAdjType = CELLGETS(cbID, psHLYear, psScenario, vsID, 'Group Adj Type');
+     cpCostID = CELLGETS(cbID, psHLYear, psScenario, vsID, 'costing ID');
+     cpZeroCF = CELLGETS(cbID, psHLYear, psScenario, vsID, 'zero cashflow account');
+ENDIF;
+
+
+#*****************************************************************************************************************
+vsProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, vsProg);
+psProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, psProg);
+
+#*** CHECK IF PROGRAMME CODES ARE THE SAME ***#
+IF (psProg @<> 'multiple');
+     IF (vsProg @<> psProg);
+          cpProg = psProg;
+          cpOutcome = CELLGETS (cbProg, curHLYear, curScenario, psProg, 'outcome');
+          cpFunction = CELLGETS (cbProg, curHLYear, curScenario, psProg, 'function');
+          cpAppropType = CELLGETS (cbProg, curHLYear, curScenario, psProg, 'appropriation type');
+          cpAPpropItem = CELLGETS (cbProg, curHLYear, curScenario, psProg, 'appropriation item');
+          cpSPP = CELLGETS (cbProg, curHLYear, curScenario, psProg, 'SPP');
+          cpControlType = CELLGETS (cbProg, curHLYear, curScenario, psProg, 'control type');
+     ENDIF;
+ELSE;
+     cpProg = 'multiple';
+     cpOutcome = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'outcome');
+     cpFunction = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'function');
+     cpAppropType = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'appropriation type');
+     cpAPpropItem = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'appropriation item');
+     cpSPP = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'SPP');
+     cpControlType = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'control type');
+     IF (cpAdjType @<> 'Group');
+          cpAdjType = 'Group';
+     ENDIF;
+
+ENDIF;
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#---- NEW CODE FOR CBMSR - KG : August 2017 
+#---- Certain codes need to be re-mapped to CBMS-R Codes for prior CBMS-R Headline Year.
+#--- These elements are Appropriation Type, Appropriation Item and Reason Code
+#--- CURRENTLY DISABLED FOR TESTING
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#IF (sCBMSRLive @= 'Y' & DIMIX (dmHLYear, psHLYear) <= DIMIX (dmHLYear, sCBMSRLiveHLYear));
+IF (sCBMSRLive @= 'Y');
+
+	#----------------------------------------------------------------------------------------------
+	#---- GET REASON MAPPING
+	#----------------------------------------------------------------------------------------------
+	cpReason = DIMENSIONELEMENTPRINCIPALNAME (dmReason, cpReason);
+	sReasonMapping = ATTRS (dmReason, cpReason, 'CBMS-R Mapping');
+	IF (sReasonMapping @<> '');
+		cpReason = sReasonMapping;
+	ELSE;
+		cpReason = cpReason;
+	ENDIF;
+
+	#----------------------------------------------------------------------------------------------
+	#---- GET APPROP TYPE MAPPING
+	#----------------------------------------------------------------------------------------------
+	cpAppropType = DIMENSIONELEMENTPRINCIPALNAME (dmType, cpAppropType);
+	cpAppropItem = DIMENSIONELEMENTPRINCIPALNAME (dmItem, cpAppropItem);
+	sTypeReqItem = ATTRS (dmType, cpAppropType, 'approp item code required');
+	IF (sTypeReqItem @= '');
+		sAppropTypeMapping = ATTRS (dmType, cpAppropType, 'CBMS-R Approp Type Mapping');
+		sAppropItemMapping = ATTRS (dmType, cpAppropType, 'CBMS-R Approp Item Mapping');
+	ELSE;
+		sAppropTypeMapping = ATTRS (dmItem, cpAppropItem, 'CBMS-R Approp Type Mapping');
+		sAppropItemMapping = ATTRS (dmItem, cpAppropItem, 'CBMS-R Approp Item Mapping');		
+	ENDIF;
+
+	IF (sAppropTypeMapping @<> '');
+		cpAppropType = sAppropTypeMapping;
+	ELSE;
+		cpAppropType = cpAppropType;
+	ENDIF;
+
+	IF (sAppropItemMapping @<> '');
+		cpAppropItem = sAppropItemMapping;
+	ELSE;
+		cpAppropItem = cpAppropItem;
+	ENDIF;
+
+	#----------------------------------------------------------------------------------------------
+	#---- GET RELATED ENTITY MAPPING
+	#---- SOME ACCOUNTS WITH A RE OF 12600 MOVED TO 49800
+	#----------------------------------------------------------------------------------------------
+	sMACheck = ATTRS (dmAcc, vsAcc, 'movement account required');
+	IF (sMACheck @= 'Y');
+		sOldAccRE = ATTRS (dmMA, vsMA, 'legacy assumed related entity');
+		#sOldAccRE = ATTRS (dmMA, vsMA, 'cbms 1 old assumed related entity');
+		sNewAccRE = ATTRS (dmMA, vsMA, 'assumed related entity');
+	ELSE;
+		sOldAccRE = ATTRS (dmAcc, vsAcc, 'legacy assumed related entity');
+		#sOldAccRE = ATTRS (dmAcc, vsAcc, 'cbms 1 old assumed related entity');
+		sNewAccRE = ATTRS (dmAcc, vsAcc, 'assumed related entity');
+
+	ENDIF;
+	vsRE = DIMENSIONELEMENTPRINCIPALNAME (dmRE, vsRE);
+
+	#---------------------------------------------------------------
+	#--- If Old Account RE equals to current RE, do a conversion to new assumed RE
+	#---------------------------------------------------------------
+	IF (sOldAccRE @= vsRE);
+		#---------------------------------------------------------------
+		#--- Even if its the same, CBMSR may not have an assumed RE, so just use current RE
+		#---------------------------------------------------------------
+		IF (DIMIX (dmRE, sNewAccRE) <> 0);
+			vsRE = sNewAccRE;
+		ELSE;
+			vsRE = vsRE;
+		ENDIF;
+	ELSE;
+		vsRE = vsRE;
+	ENDIF;
+
+
+	#----------------------------------------------------------------------------------------------
+	#---- RE-INSTATE ELEMENT NAMES WITH cp Codes for posting data
+	#----------------------------------------------------------------------------------------------
+	vsReason = cpReason;
+	vsType = cpAppropType;
+	vsItem = cpAppropItem;
+
+ENDIF;
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#*****************************************************************************************************************
+#**** INSERT DATA INTO ID DETAILS CUBE ***#
+CELLPUTN(1,cbID, curHLYear, curScenario, sNewID, 'used');
+CELLPUTS(cpProg, cbID, curHLYear, curScenario, sNewID, snProg | ' code');
+sProgDesc = ATTRS (dmProg, cpProg, 'code and description');
+CELLPUTS(sProgDesc, cbID, curHLYear, curScenario, sNewID, snProg | 'description');
+
+CELLPUTS(cpTitle, cbID, curHLYear, curScenario, sNewID, 'title');
+CELLPUTS(cpdescription, cbID, curHLYear, curScenario, sNewID, 'description');
+CELLPUTS(cpcomments, cbID, curHLYear, curScenario, sNewID, 'comments');
+CELLPUTS('unauthorised',cbID, curHLYear, curScenario, sNewID, 'status');
+CELLPUTS(cpreason, cbID, curHLYear, curScenario, sNewID, 'reason');
+CELLPUTS(cpOutcome, cbID, curHLYear, curScenario, sNewID, 'outcome');
+CELLPUTS(cpFunction, cbID, curHLYear, curScenario, sNewID, 'function');
+CELLPUTS(cpSPP, cbID, curHLYear, curScenario, sNewID, 'SPP');
+sNewMeas = DIMENSIONELEMENTPRINCIPALNAME (dmMeasCode, cpMeasure);
+CELLPUTS(sNewMeas, cbID, curHLYear, curScenario, sNewID, 'measure');
+#CELLPUTS(cpMeasure, cbID, curHLYear, curScenario, sNewID, 'measure');
+
+CELLPUTS(cpAppropItem, cbID, curHLYear, curScenario, sNewID, 'appropriation item');
+CELLPUTS(cpAppropType,cbID, curHLYear, curScenario, sNewID, 'appropriation type');
+CELLPUTS(cpApplyParam, cbID, curHLYear, curScenario, sNewID, 'apply parameters');
+CELLPUTS(cpFundLife, cbID, curHLYear, curScenario, sNewID, 'funding life');
+CELLPUTS(cpparamgen,cbID, curHLYear, curScenario, sNewID, 'parameter adjustment generated');
+CELLPUTS(cpManualCF, cbID, curHLYear, curScenario, sNewID, 'disagree cashflow');
+CELLPUTS(cpAdjType, cbID, curHLYear, curScenario, sNewID, 'Adjustment Type');
+CELLPUTS(cpControlType, cbID, curHLYear, curScenario, sNewID, 'Control Type');
+
+#*** ADDITIONAL METADATA ***#
+CELLPUTS(cpEndDate, cbID, curHLYear, curScenario, sNewID, 'end date');
+CELLPUTS(cpGovDec, cbID, curHLYear, curScenario, sNewID, 'government decision');
+CELLPUTS(cpGovDecDate, cbID, curHLYear, curScenario, sNewID, 'government decision date');
+CELLPUTS(cpGrpAdjType, cbID, curHLYear, curScenario, sNewID, 'Group Adj Type');
+CELLPUTS(cpCostID, cbID, curHLYear, curScenario, sNewID, 'costing ID');
+CELLPUTS(cpZeroCF, cbID, curHLYear, curScenario, sNewID, 'zero cashflow account');
+
+sCurUser = TM1User();
+IF (SUBST(sCurUser,1,3) @= 'CAM');
+     sCurUser = ATTRS(dmClients, sCurUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sCurUser) + 1;
+     sCurUser = SUBST(sCurUser, lScan, 9);
+ELSE;
+     sCurUser = TM1User();
+ENDIF;
+
+
+CELLPUTS(sCurUser, cbID, curHLYear, curScenario, sNewID, 'Created By');
+
+     # **** GET DATE VALUES ***#
+     sDNow = TimST( Now, '\D'); 
+     sMNow = TimST( Now, '\m'); 
+     sYNow = TimST( Now, '\Y'); 
+
+     sDay = TRIM(SUBST(sDNow, 1,2));
+
+     IF (LONG (sDay) = 1);
+          sDay = '0' | sDay;
+     ELSE;
+          sDay = sDay;
+     ENDIF;
+
+     sMonth = TRIM(SUBST(sMNow, 1,2));
+
+     IF (LONG (sMonth) = 1);
+          sMonth = '0' | sMonth;
+     ELSE;
+          sMonth = sMonth;
+     ENDIF;
+
+     sYear = TRIM(SUBST(sYNow, 1,4));
+
+     sNow = sDay | '/' | sMonth | '/' | sYear;
+
+CELLPUTS(sNow, cbID, curHLYear, curScenario, sNewID, 'created date');
+
+#ITEMSKIP;
+
+#*****************************************************************************************************************
+#**** COPY VALUES INTO ADJUSTMENTS CUBE ****#
+
+IF (psProg @<> 'multiple');
+	IF (vsProg @= psProg);
+ 	#*** DATA ENTRY FOR SAME PROGRAMS ***#
+          IF (CELLISUPDATEABLE(cbAE, curHLYear, curScenario, 'data', vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeas, vsType, vsMA, vsItem, vsProg, vsAcc, sNewID, vsJur, sNewPeriod) = 1);
+               IF((cpManualCF @<> 'Y') & SUBST(vsAcc,1,1) @<> '6');
+                    CellPutN(vnValue, cbAE, curHLYear, curScenario, 'data', vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeas, vsType, vsMA, vsItem, vsProg, vsAcc, sNewID, vsJur, sNewPeriod);
+               ENDIF;
+
+               IF(cpManualCF @= ' Y');
+                   CellPutN(vnValue,  cbAE, curHLYear, curScenario, 'data', vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeas, vsType, vsMA, vsItem, vsProg, vsAcc, sNewID, vsJur, sNewPeriod);
+              ENDIF;
+          ENDIF;
+     ELSE;
+          #*** DATA ENTRY FOR DIFFERENT PROGRAMS ***#
+          IF (CELLISUPDATEABLE(cbAE, curHLYear, curScenario, 'data', cpOutcome, vsRE, cpFunction, vsReason, cpSPP, vsMeas, cpAppropType, vsMA, cpAppropItem, psProg, vsAcc, sNewID, vsJur, sNewPeriod) = 1);
+               IF((cpManualCF @<> 'Y') & SUBST(vsAcc,1,1) @<> '6');
+                    CellPutN(vnValue, cbAE, curHLYear, curScenario, 'data', cpOutcome, vsRE, cpFunction, vsReason, cpSPP, vsMeas, cpAppropType, vsMA, cpAppropItem, psProg, vsAcc, sNewID, vsJur, sNewPeriod);
+               ENDIF;
+
+               IF(cpManualCF @= ' Y');
+                   CellPutN(vnValue,  cbAE, curHLYear, curScenario, 'data', cpOutcome, vsRE, cpFunction, vsReason, cpSPP, vsMeas, cpAppropType, vsMA, cpAppropItem, psProg, vsAcc, sNewID, vsJur, sNewPeriod);
+              ENDIF;
+         ENDIF;
+     ENDIF;
+
+ELSE;
+
+          #*** DATA ENTRY FOR GROUP ADJUSTMENTS ***#
+
+          IF (CELLISUPDATEABLE(cbAE, curHLYear, curScenario, 'data', cpOutcome, vsRE, cpFunction, vsReason, cpSPP, vsMeas, cpAppropType, vsMA, cpAppropItem, psProg, vsAcc, sNewID, vsJur, sNewPeriod) = 1);
+               IF((cpManualCF @<> 'Y') & SUBST(vsAcc,1,1) @<> '6');
+                    CellPutN(vnValue, cbAE, curHLYear, curScenario, 'data', cpOutcome, vsRE, cpFunction, vsReason, cpSPP, vsMeas, cpAppropType, vsMA, cpAppropItem, psProg, vsAcc, sNewID, vsJur, sNewPeriod);
+               ENDIF;
+
+             #  IF(cpManualCF @= ' Y');
+             #      CellPutN(vnValue,  cbAE, curHLYear, curScenario, 'data', cpOutcome, vsRE, cpFunction, vsReason, cpSPP, vsMeas, cpAppropType, vsMA, cpAppropItem, psProg, vsAcc, sNewID, vsJur, sNewPeriod);
+             #ENDIF;
+         ENDIF;
+
+ENDIF;
+
+#*****************************************************************************************************************
+#**** UPDATE USER PARAMETERS ****#
+sCurUser = TM1User();
+ATTRPUTS (curHLYear, dmClients, sCurUser, 'geus_hlyear');
+ATTRPUTS (curScenario, dmClients, sCurUser, 'geus_scenario');
+ATTRPUTS (sNewID, dmClients, sCurUser, 'geus_id');
+
+lCounter = lCounter + 1;
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmOC, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmFunc, sAEView);
+SUBSETDESTROY (dmReason, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmType, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+
+#*** THIS IS TO ADD TO ID DETAILS CUBE REGARDLESS OF NO DATA AS DATA HAS BEEN COPIED ACCROSS ***#
+IF (lCounter = 0);
+     cpProg = CELLGETS(cbID, psHLYear, psScenario, psID, snProg | ' code');
+     cpTitle = CELLGETS(cbID, psHLYear, psScenario, psID, 'title') | '(Copy of ID' | psID | ')';
+     cpdescription = '(' | sNewID | ')' |  CELLGETS(cbID, psHLYear, psScenario, psID, 'description') | '(Copy of ID' | psID | ')';
+     cpcomments = CELLGETS(cbID, psHLYear, psScenario, psID, 'comments');
+     cpreason = CELLGETS(cbID, psHLYear, psScenario, psID, 'reason');
+     cpOutcome = CELLGETS(cbID, psHLYear, psScenario, psID, 'outcome');
+     cpFunction = CELLGETS(cbID, psHLYear, psScenario, psID, 'function');
+     cpSPP = CELLGETS(cbID, psHLYear, psScenario, psID, 'SPP');
+     cpMeasure = CELLGETS(cbID, psHLYear, psScenario, psID, 'measure');
+     cpAppropItem = CELLGETS(cbID, psHLYear, psScenario, psID, 'appropriation item');
+     cpAppropType = CELLGETS(cbID, psHLYear, psScenario, psID, 'appropriation type');
+     cpApplyParam = CELLGETS(cbID, psHLYear, psScenario, psID, 'apply parameters');
+     cpFundLife = CELLGETS(cbID, psHLYear, psScenario, psID, 'funding life');
+     cpparamgen = CELLGETS(cbID, psHLYear, psScenario, psID, 'parameter adjustment generated');
+     cpManualCF = CELLGETS(cbID, psHLYear, psScenario, psID, 'disagree cashflow');
+     cpAdjType = CELLGETS(cbID, psHLYear, psScenario, psID, 'Adjustment Type');
+     cpControlType = CELLGETS(cbID, psHLYear, psScenario, psID, 'Control Type');
+
+     #*** ADDITIONAL METADATA FOR MEASURES ***#
+     cpEndDate = CELLGETS(cbID, psHLYear, psScenario, psID, 'end date');
+     cpGovDec = CELLGETS(cbID, psHLYear, psScenario, psID, 'government decision');
+     cpGovDecDate = CELLGETS(cbID, psHLYear, psScenario, psID, 'government decision date');
+
+     #*** ADDITIONAL METADATA FOR ADJ DETAILS ***#
+     cpGrpAdjType = CELLGETS(cbID, psHLYear, psScenario, psID, 'Group Adj Type');
+     cpCostID = CELLGETS(cbID, psHLYear, psScenario, psID, 'costing ID');
+     cpZeroCF = CELLGETS(cbID, psHLYear, psScenario, psID, 'zero cashflow account');
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#---- NEW CODE FOR CBMSR - KG : August 2017 
+#---- Certain codes need to be re-mapped to CBMS-R Codes for prior CBMS-R Headline Year.
+#--- These elements are Appropriation Type, Appropriation Item and Reason Code
+#--- CURRENTLY DISABLED TO TEST FIRST
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#IF (sCBMSRLive @= 'Y' & DIMIX (dmHLYear, psHLYear) <= DIMIX (dmHLYear, sCBMSRLiveHLYear));
+IF (sCBMSRLive @= 'Y');
+
+	#----------------------------------------------------------------------------------------------
+	#---- GET REASON MAPPING
+	#----------------------------------------------------------------------------------------------
+	cpReason = DIMENSIONELEMENTPRINCIPALNAME (dmReason, cpReason);
+	sReasonMapping = ATTRS (dmReason, cpReason, 'CBMS-R Mapping');
+	IF (sReasonMapping @<> '');
+		cpReason = sReasonMapping;
+	ELSE;
+		cpReason = cpReason;
+	ENDIF;
+
+
+	#----------------------------------------------------------------------------------------------
+	#---- GET APPROP TYPE MAPPING
+	#----------------------------------------------------------------------------------------------
+	cpAppropType = DIMENSIONELEMENTPRINCIPALNAME (dmType, cpAppropType);
+	cpAppropItem = DIMENSIONELEMENTPRINCIPALNAME (dmItem, cpAppropItem);
+	sTypeReqItem = ATTRS (dmType, cpAppropType, 'approp item code required');
+	IF (sTypeReqItem @= '');
+		sAppropTypeMapping = ATTRS (dmType, cpAppropType, 'CBMS-R Approp Type Mapping');
+		sAppropItemMapping = ATTRS (dmType, cpAppropType, 'CBMS-R Approp Item Mapping');
+	ELSE;
+		sAppropTypeMapping = ATTRS (dmItem, cpAppropItem, 'CBMS-R Approp Type Mapping');
+		sAppropItemMapping = ATTRS (dmItem, cpAppropItem, 'CBMS-R Approp Item Mapping');		
+	ENDIF;
+	
+
+	IF (sAppropTypeMapping @<> '');
+		cpAppropType = sAppropTypeMapping;
+	ELSE;
+		cpAppropType = cpAppropType;
+	ENDIF;
+
+	IF (sAppropItemMapping @<> '');
+		cpAppropItem = sAppropItemMapping;
+	ELSE;
+		cpAppropItem = cpAppropItem;
+	ENDIF;
+ENDIF;
+
+
+
+#*****************************************************************************************************************
+     #**** INSERT DATA INTO ID DETAILS CUBE ***#
+     CELLPUTN(1,cbID, curHLYear, curScenario, sNewID, 'used');
+     CELLPUTS(cpProg, cbID, curHLYear, curScenario, sNewID, snProg | ' code');
+
+     IF (cpProg @= 'multiple');
+          sProgDesc = 'multiple';
+     ELSE;
+          ATTRS (dmProg, cpProg, 'code and description');
+     ENDIF;
+     CELLPUTS(sProgDesc, cbID, curHLYear, curScenario, sNewID, snProg | 'description');
+     CELLPUTS(cpTitle, cbID, curHLYear, curScenario, sNewID, 'title');
+     CELLPUTS(cpdescription, cbID, curHLYear, curScenario, sNewID, 'description');
+     CELLPUTS(cpcomments, cbID, curHLYear, curScenario, sNewID, 'comments');
+     CELLPUTS('unauthorised',cbID, curHLYear, curScenario, sNewID, 'status');
+     CELLPUTS(cpreason, cbID, curHLYear, curScenario, sNewID, 'reason');
+     CELLPUTS(cpOutcome, cbID, curHLYear, curScenario, sNewID, 'outcome');
+     CELLPUTS(cpFunction, cbID, curHLYear, curScenario, sNewID, 'function');
+     CELLPUTS(cpSPP, cbID, curHLYear, curScenario, sNewID, 'SPP');
+     sNewMeas = DIMENSIONELEMENTPRINCIPALNAME (dmMeasCode, cpMeasure);
+     CELLPUTS(sNewMeas, cbID, curHLYear, curScenario, sNewID, 'measure');
+#     CELLPUTS(cpMeasure, cbID, curHLYear, curScenario, sNewID, 'measure');
+     CELLPUTS(cpAppropItem, cbID, curHLYear, curScenario, sNewID, 'appropriation item');
+     CELLPUTS(cpAppropType,cbID, curHLYear, curScenario, sNewID, 'appropriation type');
+     CELLPUTS(cpApplyParam, cbID, curHLYear, curScenario, sNewID, 'apply parameters');
+     CELLPUTS(cpFundLife, cbID, curHLYear, curScenario, sNewID, 'funding life');
+     CELLPUTS(cpparamgen,cbID, curHLYear, curScenario, sNewID, 'parameter adjustment generated');
+     CELLPUTS(cpManualCF, cbID, curHLYear, curScenario, sNewID, 'disagree cashflow');
+     CELLPUTS(cpAdjType, cbID, curHLYear, curScenario, sNewID, 'Adjustment Type');
+     CELLPUTS(cpControlType, cbID, curHLYear, curScenario, sNewID, 'Control Type');
+
+     #*** ADDITIONAL METADATA ***#
+     CELLPUTS(cpEndDate, cbID, curHLYear, curScenario, sNewID, 'end date');
+     CELLPUTS(cpGovDec, cbID, curHLYear, curScenario, sNewID, 'government decision');   
+     CELLPUTS(cpGovDecDate, cbID, curHLYear, curScenario, sNewID, 'government decision date');
+     CELLPUTS(cpGrpAdjType, cbID, curHLYear, curScenario, sNewID, 'Group Adj Type');
+     CELLPUTS(cpCostID, cbID, curHLYear, curScenario, sNewID, 'costing ID');
+     CELLPUTS(cpZeroCF, cbID, curHLYear, curScenario, sNewID, 'zero cashflow account');
+
+
+#*** DECLARE SUBSETS AND VIEWS ***#
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sUser) + 1;
+     sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+     sUser = TM1User();
+ENDIF;
+
+     CELLPUTS(sUser, cbID, curHLYear, curScenario, sNewID, 'Created By');
+ENDIF;
+#endregion

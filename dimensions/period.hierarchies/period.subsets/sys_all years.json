@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"sys_all years",
+	"Expression":"{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [period] )}, 0)}, [period].[type] = \"annual\")}"
+}

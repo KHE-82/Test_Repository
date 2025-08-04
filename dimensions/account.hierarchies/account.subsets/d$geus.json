@@ -1,0 +1,28 @@
+{
+	"@type":"Subset",
+	"Name":"d$geus",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('1280004')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2220001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2220004')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2220005')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2220098')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('5311002')"
+		}
+	]
+}

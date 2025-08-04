@@ -1,0 +1,24 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_set default account measure",
+	"Elements":
+	[
+		{
+			"Name":"flag",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"system flag",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_display flag",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"movement account mapping flag",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

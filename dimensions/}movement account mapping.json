@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"}movement account mapping",
+	"Hierarchies@Code.links":
+	[
+		"}movement account mapping.hierarchies/}movement account mapping.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')"
+	}
+}

@@ -1,0 +1,230 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_FlatFile_view
+#**** DESCRIPTION:       This process creates a view for the flatfile generation
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 28/04/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+cbProg = snProg | ' details';
+
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+sHLYear = ATTRS(dmVar,'headline year','value');
+sScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#*** DECLARE SUBSETS AND VIEWS ***#
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sUser) + 1;
+     sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+     sUser = TM1User();
+ENDIF;
+
+
+#sObject  = sUser | '_$FlatFile';
+#sAEView = sUser | '_$FlatFile';
+sAEView = '$FlatFile';
+sStatus = 'approved';
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmOC, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmFunc, sAEView);
+SUBSETDESTROY (dmReason, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmType, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sAEView);
+SubsetElementInsert(dmHLYear, sAEView, sHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sAEView);
+SubsetElementInsert(dmScenario, sAEView, sScenario, 1);
+
+# Status
+SubsetCreate(dmStatus, sAEView);
+SubsetElementInsert(dmStatus, sAEView, psStatus, 1);
+
+
+# Outcome
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmOC | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Function
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmFunc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Reason
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmReason | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Measure Code
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+#SubsetCreate(dmMeasCode, sAEView);
+#SubsetElementInsert(dmMeasCode, sAEView, 'Total Measures', 1);
+
+
+# Appropriation Type
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmType | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Movement Account
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}, [' | dmMA | '].[flat file] @<> "N")}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Appropriation Item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Programme
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Account
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}, [' | dmAcc | '].[flat file] @<> "N")}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# ID
+SubsetCreate(dmID, sAEView);
+SubsetElementInsert(dmID, sAEView, psID, 1);
+
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Period
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}, [' | dmPer | '].[type] = "annual")}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+#****BUILD VIEW****#
+VIEWCREATE (cbAE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmHLYear, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmScenario, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmStatus, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmOC, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmRE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmFunc, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmReason, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmSPP, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMeasCode, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmType, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMA, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmItem, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmProg, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmAcc, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmID, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmJur, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmPer, sAEView);
+
+ViewTitleElementSet (cbAE, sAEView, dmHLYear, 1);
+ViewTitleElementSet (cbAE, sAEView, dmScenario, 2);
+ViewTitleElementSet (cbAE, sAEView, dmStatus, 3);
+#ViewTitleElementSet (cbAE, sAEView, dmMeasCode, 4);
+
+ViewColumnDimensionSet (cbAE, sAEView, dmPer, 1);
+
+ViewRowDimensionSet (cbAE, sAEView, dmID, 1);
+ViewRowDimensionSet (cbAE, sAEView, dmProg, 2);
+ViewRowDimensionSet (cbAE, sAEView, dmOC, 3);
+ViewRowDimensionSet (cbAE, sAEView, dmFunc, 4);
+ViewRowDimensionSet (cbAE, sAEView, dmType, 5);
+ViewRowDimensionSet (cbAE, sAEView, dmItem, 6);
+ViewRowDimensionSet (cbAE, sAEView, dmReason, 7);
+ViewRowDimensionSet (cbAE, sAEView, dmAcc, 8);
+ViewRowDimensionSet (cbAE, sAEView, dmMA, 9);
+ViewRowDimensionSet (cbAE, sAEView, dmRE, 10);
+ViewRowDimensionSet (cbAE, sAEView, dmSPP, 11);
+ViewRowDimensionSet (cbAE, sAEView, dmJur, 12);
+ViewRowDimensionSet (cbAE, sAEView, dmMeasCode, 13);
+
+ViewSuppressZeroesSet (cbAE, sAEView,1);
+ViewExtractSkipZeroesSet (cbAE, sAEView, 1);
+
+DatasourceASCIIDecimalSeparator='.';
+DatasourceASCIIThousandSeparator='';
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

@@ -1,0 +1,207 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               z_MIgration - Account Dimension Update
+#**** DESCRIPTION:       This process will create new attributes and update those attributes
+#****
+#****                                 
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 01/08/2017    KG             Initial Revision
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------
+#-- Declare dimension and cube
+#---------------------------------------------------------------------------------------------
+dmDim = 'account';
+dmRE = 'related entity';
+dmDimMeas =  '}ElementAttributes_' | dmDim;
+cbAttr = '}ElementAttributes_' | dmDim;
+
+
+#---------------------------------------------------------------------------------------------
+#--- Declare attributes
+#---------------------------------------------------------------------------------------------
+#sAttr1 = 'cbms1 old description';
+#sAttr2 = 'cbms1 old code and description';
+#sAttr3 = 'control type restriction';
+#sAttr4 = 'cbmsr migration mapping';
+#sAttr5 = 'cbms1 old cash flow map';
+#sAttr6 = 'cbms1 old assumed related entity';
+#sAttr7 = 'appropriation type required';
+#sAttr8 = 'cbms1 old related entity enabled';
+#sAttr9 = 'cbms1 old DR/CR';
+
+sAttr1 = 'legacy description';
+sAttr2 = 'legacy code and description';
+sAttr3 = 'control type restriction';
+sAttr4 = 'cbmsr migration mapping';
+sAttr5 = 'legacy cash flow map';
+sAttr6 = 'legacy assumed related entity';
+sAttr7 = 'appropriation type required';
+sAttr8 = 'legacy related entity enabled';
+sAttr9 = 'legacy DR/CR';
+sAttr10 = 'SPP Required';
+
+
+
+
+#---------------------------------------------------------------------------------------------
+#--- Create attributes
+#---------------------------------------------------------------------------------------------
+ATTRINSERT (dmDim, '', sAttr1, 'S');
+ATTRINSERT (dmDim, '', sAttr2, 'S');
+ATTRINSERT (dmDim, '', sAttr3, 'S');
+ATTRINSERT (dmDim, '', sAttr4, 'S');
+ATTRINSERT (dmDim, '', sAttr5, 'S');
+ATTRINSERT (dmDim, '', sAttr6, 'S');
+ATTRINSERT (dmDim, '', sAttr7, 'S');
+ATTRINSERT (dmDim, '', sAttr8, 'S');
+ATTRINSERT (dmDim, '', sAttr9, 'S');
+ATTRINSERT (dmDim, '', sAttr10, 'S');
+
+#---------------------------------------------------------------------------------------------
+#-- STEP 01 : DELETE EXISTING ATTRIBUTES
+#---------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------
+#-- DESTROY EXISTING VIEW
+#---------------------------------------------------------------------------------------------
+sView = '$ClearAttr';
+VIEWDESTROY (cbAttr, sView);
+SUBSETDESTROY (dmDim, sView);
+SUBSETDESTROY (dmDImMeas, sView);
+
+#---------------------------------------------------------------------------------------------
+#-- CREATE SUBSETS
+#---------------------------------------------------------------------------------------------
+
+# Dimension
+MDX = '{TM1SUBSETALL( [' | dmDim | '] )}';
+SUBSETCREATEBYMDX  (sView, MDX);
+
+# Dimension Measure
+SUBSETCREATE (dmDimMeas, sView);
+SUBSETELEMENTINSERT (dmDimMeas, sView, 'description', 1);
+SUBSETELEMENTINSERT (dmDimMeas, sView,'code and description', 2);
+SUBSETELEMENTINSERT (dmDimMeas, sView, 'apply parameter', 3);
+SUBSETELEMENTINSERT (dmDimMeas, sView, 'jurisdiction required', 4);
+SUBSETELEMENTINSERT (dmDimMeas, sView, 'related entity enabled', 5);
+SUBSETELEMENTINSERT (dmDimMeas, sView, 'cash flow map', 6);
+SUBSETELEMENTINSERT (dmDimMeas, sView, 'movement account required', 7);
+SUBSETELEMENTINSERT (dmDimMeas, sView, 'assumed related entity', 8);
+SUBSETELEMENTINSERT (dmDimMeas, sView, 'DR/CR', 9);
+SUBSETELEMENTINSERT (dmDimMeas, sView, 'related entity enabled', 10);
+
+#---------------------------------------------------------------------------------------------
+#-- CREATE VIEWS
+#---------------------------------------------------------------------------------------------
+VIEWCREATE (cbAttr, sView);
+VIEWSUBSETASSIGN (cbAttr, sView, dmDim, sView);
+VIEWSUBSETASSIGN (cbAttr, sView, dmDimMeas, sView);
+
+VIEWZEROOUT (cbAttr, sView);
+
+#---------------------------------------------------------------------------------------------
+#-- DESTROY EXISTING VIEW
+#---------------------------------------------------------------------------------------------
+VIEWDESTROY (cbAttr, sView);
+SUBSETDESTROY (dmDim, sView);
+SUBSETDESTROY (dmDImMeas, sView);
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#sAttr1 = 'cbms1 old description';
+#sAttr2 = 'cbms1 old code and description';
+#sAttr3 = 'control type restriction';
+#sAttr4 = 'cbmsr migration mapping';
+#sAttr5 = 'cbms1 old cash flow map';
+#sAttr6 = 'cbms1 old assumed related entity';
+
+sAttr1 = 'legacy description';
+sAttr2 = 'legacy code and description';
+sAttr3 = 'control type restriction';
+sAttr4 = 'cbmsr migration mapping';
+sAttr5 = 'legacy cash flow map';
+sAttr6 = 'legacy assumed related entity';
+sAttr7 = 'appropriation type required';
+sAttr8 = 'legacy related entity enabled';
+sAttr9 = 'legacy DR/CR';
+
+#---------------------------------------------------------------------------------------------
+#--- REINSTATE ATTRIBUTES
+#---------------------------------------------------------------------------------------------
+CELLPUTS (vsCodeandDesc, cbAttr, vsAcc, 'code and description');
+
+
+IF (DIMIX (dmDim, vsDesc) = 0);
+	CELLPUTS (vsDesc, cbAttr, vsAcc, 'description');
+ELSE;
+	#------------------------------------------------------------------------
+	#--- CHECK IF DESCRIPTION HAS BEEN USED
+	#------------------------------------------------------------------------	
+	sCheckAcc = DIMENSIONELEMENTPRINCIPALNAME (dmDim, vsDesc);
+	IF (sCheckAcc @= vsAcc);
+		CELLPUTS (vsDesc, cbAttr, vsAcc, 'description');
+	ELSE;
+		sNewDesc = vsDesc | ' (' | vsAcc | ')';
+		CELLPUTS (sNewDesc, cbAttr, vsAcc, 'description');
+	ENDIF;
+
+ENDIF;
+
+
+CELLPUTS (vsDRCR, cbAttr, vsAcc, 'DR/CR');
+CELLPUTS (vsApplyParameter, cbAttr, vsAcc, 'apply parameter');
+CELLPUTS (vsJurRequired, cbAttr, vsAcc, 'jurisdiction required');
+CELLPUTS (vsRERequired, cbAttr, vsAcc, 'related entity enabled');
+CELLPUTS (vsCFMap, cbAttr, vsAcc, 'cash flow map');
+CELLPUTS (vsMARequired, cbAttr, vsAcc, 'movement account required');
+IF (vsAssumedRE @= 'NONE');
+	vsAssumedRE = '';
+ELSE;
+	IF (DIMIX (dmRE, vsAssumedRE) <> 0);
+		vsAssumedRE = DIMENSIONELEMENTPRINCIPALNAME (dmRE, vsAssumedRE);
+	ELSE;
+		vsAssumedRE = vsAssumedRE;
+	ENDIF;
+ENDIF;
+CELLPUTS (vsAssumedRE, cbAttr, vsAcc, 'assumed related entity');
+
+#---------------------------------------------------------------------------------------------
+#--- POST NEW CBMS-R ATTRIBUTES
+#---------------------------------------------------------------------------------------------
+CELLPUTS (vsCBMS1Desc, cbAttr, vsAcc, sAttr1);
+CELLPUTS (vsCBMS1CodeandDesc, cbAttr, vsAcc, sAttr2);
+CELLPUTS (vsCtrlTypeRes, cbAttr, vsAcc, sAttr3);
+CELLPUTS (vsNewAccMapping, cbAttr, vsAcc, sAttr4);
+CELLPUTS (vsCBMS1FFMap, cbAttr, vsAcc, sAttr5);
+CELLPUTS (vsCBMS1AssumedRE, cbAttr, vsAcc, sAttr6);
+CELLPUTS (vsAppropTypeRequired, cbAttr, vsAcc, sAttr7);
+CELLPUTS (vsCBMS1REEnabled, cbAttr, vsAcc, sAttr8);
+CELLPUTS (vsCBMS1DRCR, cbAttr, vsAcc, sAttr9);
+CELLPUTS (vsSPPRequired, cbAttr, vsAcc, sAttr10);
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

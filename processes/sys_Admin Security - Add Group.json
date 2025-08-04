@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"sys_Admin Security - Add Group",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Admin Security - Add Group.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psGroup",
+			"Prompt":"",
+			"Value":"AE Approvers",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

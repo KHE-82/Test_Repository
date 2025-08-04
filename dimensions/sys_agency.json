@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_agency",
+	"Hierarchies@Code.links":
+	[
+		"sys_agency.hierarchies/sys_agency.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_agency')/Hierarchies('sys_agency')"
+	}
+}

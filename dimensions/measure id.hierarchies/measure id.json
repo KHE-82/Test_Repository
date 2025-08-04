@@ -1,0 +1,384 @@
+{
+	"@type":"Hierarchy",
+	"Name":"measure id",
+	"Elements":
+	[
+		{
+			"Name":"Total Measures",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"No Measure",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0001",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0002",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0003",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0004",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0005",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0006",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0007",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0008",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0009",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0010",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0011",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0012",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0013",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0014",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0015",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0016",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0017",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0018",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0019",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0020",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0021",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0022",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0023",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0024",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0025",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0026",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0027",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0028",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0029",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0030",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0031",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0032",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0033",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0034",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0035",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0036",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0037",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0038",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0039",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MC0040",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"No Measure",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0001",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0002",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0003",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0004",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0005",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0006",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0007",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0008",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0009",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0010",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0011",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0012",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0013",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0014",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0015",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0016",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0017",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0018",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0019",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0020",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0021",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0022",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0023",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0024",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0025",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0026",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0027",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0028",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0029",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0030",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0031",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0032",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0033",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0034",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0035",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0036",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0037",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0038",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0039",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Measures",
+			"ComponentName":"MC0040",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":[]
+}

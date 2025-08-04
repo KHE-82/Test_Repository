@@ -1,0 +1,151 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_application favourite - clear all favourite application
+#**** DESCRIPTION:       This process clears all the favourite application selected by a user
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date	Initials	Comments
+#****  ====              ======    =========
+#**** 2019	KG	Initial Revision
+#***********************************************************************************************************************
+
+#-------------------------------------------------------------------------------------------------------------
+#--- DECLARE SYSTEM DIMENSIONS
+#-------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+
+#--------------------------------------------------------------------------------------------------------
+#--- DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#--------------------------------------------------------------------------------------------------------
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#--------------------------------------------------------------------------------------------------------
+#--- DECLARE CLIENT GROUPS CUBE
+#--------------------------------------------------------------------------------------------------------
+cbGroups = '}ClientGroups';
+
+#--------------------------------------------------------------------------------------------------------
+#--- GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sCurUser = TM1User();
+
+#--------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#--------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#-------------------------------------------------------------------------------------------------------------
+#--- DECLARE AE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+cbAppFav = 'sys_client favourite application';
+dmApp = 'sys_application';
+dmAppFavMeas = 'sys_client favourite application measure';
+
+#--------------------------------------------------------------------------------------------------------
+#--- DECLARE SUBSETS AND VIEWS ***#
+#--------------------------------------------------------------------------------------------------------
+sView = sUser | '_$ClearAppFav';
+
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - ZERO OUT TARGET VIEW
+#*****************************************************************************************************************************************************
+#-------------------------------------------------------------------------------------------------------------
+#--- DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbAppFav, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmApp, sView);
+SUBSETDESTROY (dmAppFavMeas, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+#--- CREATE SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+# }Client
+SUBSETCREATE (dmClient, sView);
+SUBSETELEMENTINSERT (dmClient, sView, psUser, 1);
+
+# Application
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmApp | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# App Fav Measure
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAppFavMeas | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+#-------------------------------------------------------------------------------------------------------------
+#--- BUILD VIEW
+#-------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbAppFav, sView);
+VIEWSUBSETASSIGN (cbAppFav, sView, dmClient, sView);
+VIEWSUBSETASSIGN (cbAppFav, sView, dmApp, sView);
+VIEWSUBSETASSIGN (cbAppFav, sView, dmAppFavMeas, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+#--- DEFINE VIEW EXTRACT
+#-------------------------------------------------------------------------------------------------------------
+VIEWSUPPRESSZEROESSET(cbAppFav, sView, 1);
+VIEWEXTRACTSKIPZEROESSET (cbAppFav, sView, 1);
+VIEWEXTRACTSKIPRULEVALUESSET (cbAppFav, sView, 1);
+VIEWEXTRACTSKIPCALCSSET (cbAppFav, sView, 1);
+
+
+#-------------------------------------------------------------------------------------------------------------
+#--- DEFINE VIEW EXTRACT
+#-------------------------------------------------------------------------------------------------------------
+VIEWZEROOUT (cbAppFav, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+#--- DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbAppFav, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmApp, sView);
+SUBSETDESTROY (dmAppFavMeas, sView);
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

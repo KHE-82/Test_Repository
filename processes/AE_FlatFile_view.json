@@ -1,0 +1,27 @@
+{
+	"@type":"Process",
+	"Name":"AE_FlatFile_view",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_FlatFile_view.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"ProgRollup",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

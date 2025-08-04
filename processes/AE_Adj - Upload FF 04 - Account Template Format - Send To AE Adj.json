@@ -1,0 +1,29 @@
+{
+	"@type":"Process",
+	"Name":"AE_Adj - Upload FF 04 - Account Template Format - Send To AE Adj",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_Adj - Upload FF 04 - Account Template Format - Send To AE Adj.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"VarType=32€ColType=827€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForClient":"}tmp_ID_tmp Admin",
+		"dataSourceNameForServer":"}tmp_ID_tmp Admin",
+		"subset":"All"
+	},
+	"Parameters":[],
+	"Variables":
+	[
+		{
+			"Name":"vsID",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		}
+	]
+}

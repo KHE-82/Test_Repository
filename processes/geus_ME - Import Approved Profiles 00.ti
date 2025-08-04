@@ -1,0 +1,145 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               	geus_ME - Import Approved Profiles 00
+#**** DESCRIPTION:       	This process acts as a group process to run certain processes based on scenarios selected
+#****			This process is triggered from the Monthly Estimates main menu 
+#****                                  	It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  	Date		Initials	Comments
+#****  	====		======	=========
+#****	23/05/2018	KG	Initial Revision
+#****	02/08/2019	KG	Forecast has now been enabled again (refer to 2 sections below that mentioned DISABLED)
+#**** 	25/06/2020	KG	Updated PRE-ERC functions to include ME loads
+#***********************************************************************************************************************
+
+#----------------------------------------------------------------------------
+#--- BUDGET SCENARIO
+#----------------------------------------------------------------------------
+IF (psScenario @= 'Budget');
+	#---------------------------------------------------------------------------------------------------------------------------
+	#--- Load Approved Profiles By Selected Scenario
+	#---------------------------------------------------------------------------------------------------------------------------
+	sProcess = 'geus_ME - Import Approved Profiles 01';
+	sNewScenario = psScenario;
+	EXECUTEPROCESS (sProcess, 
+		'psYear', psYear,
+		'psScenario', sNewScenario);
+
+	#---------------------------------------------------------------------------------------------------------------------------
+	#--- Load Approved Profiles to Forecast Scenario
+	#--- DISABLED : JAN 2019 as BMS found out that this affects their forecast
+	#---------------------------------------------------------------------------------------------------------------------------
+	sProcess = 'geus_ME - Import Approved Profiles 01';
+	sNewScenario = 'forecast';
+	EXECUTEPROCESS (sProcess, 
+		'psYear', psYear,
+		'psScenario', sNewScenario);
+
+	#---------------------------------------------------------------------------------------------------------------------------
+	#--- Load Approved ANNUAL BUDGET Profiles By Selected Scenario
+	#---------------------------------------------------------------------------------------------------------------------------
+	sProcess = 'geus_ME - Import Approved Profiles 02 - Annual Budget';
+	sNewScenario = psScenario;
+#	EXECUTEPROCESS (sProcess, 
+#		'psYear', psYear,
+#		'psScenario', sNewScenario);
+
+ENDIF;
+
+#----------------------------------------------------------------------------
+#--- MYEFO SCENARIO
+#----------------------------------------------------------------------------
+IF (psScenario @= 'MYEFO');
+	#---------------------------------------------------------------------------------------------------------------------------
+	#--- Load Approved Profiles By Selected Scenario
+	#---------------------------------------------------------------------------------------------------------------------------
+	sProcess = 'geus_ME - Import Approved Profiles 01';
+	sNewScenario = psScenario;
+	EXECUTEPROCESS (sProcess, 
+		'psYear', psYear,
+		'psScenario', sNewScenario);
+
+	#---------------------------------------------------------------------------------------------------------------------------
+	#--- Load Approved Profiles to Forecast Scenario
+	#--- DISABLED : JAN 2019 as BMS found out that this affects their forecast
+	#---------------------------------------------------------------------------------------------------------------------------
+	sProcess = 'geus_ME - Import Approved Profiles 01';
+	sNewScenario = 'forecast';
+	EXECUTEPROCESS (sProcess, 
+		'psYear', psYear,
+		'psScenario', sNewScenario);
+ENDIF;
+
+
+#----------------------------------------------------------------------------
+#--- PRE-ERC SCENARIO
+#----------------------------------------------------------------------------
+IF (psScenario @= 'Pre-ERC');
+
+	#---------------------------------------------------------------------------------------------------------------------------
+	#--- Load Approved Profiles By Selected Scenario - JUNE 2020
+	#---------------------------------------------------------------------------------------------------------------------------
+	sProcess = 'geus_ME - Import Approved Profiles 01';
+	sNewScenario = psScenario;
+	EXECUTEPROCESS (sProcess, 
+		'psYear', psYear,
+		'psScenario', sNewScenario);
+
+	#---------------------------------------------------------------------------------------------------------------------------
+	#--- Load Approved Profiles to Forecast Scenario - ADDED JUNE 2020
+	#---------------------------------------------------------------------------------------------------------------------------
+	sProcess = 'geus_ME - Import Approved Profiles 01';
+	sNewScenario = 'forecast';
+	EXECUTEPROCESS (sProcess, 
+		'psYear', psYear,
+		'psScenario', sNewScenario);
+
+
+	#---------------------------------------------------------------------------------------------------------------------------
+	#--- Load Approved ANNUAL BUDGET Profiles By Selected Scenario
+	#---------------------------------------------------------------------------------------------------------------------------
+	ASCIIOUTPUT ('check.txt', psScenario);
+	sProcess = 'geus_ME - Import Approved Profiles 02 - Annual Budget';
+	sNewScenario = psScenario;
+	EXECUTEPROCESS (sProcess, 
+		'psYear', psYear,
+		'psScenario', sNewScenario);
+
+ENDIF;
+
+#----------------------------------------------------------------------------
+#--- BUDGET SCENARIO
+#----------------------------------------------------------------------------
+IF (psScenario @= 'Revised Budget Estimates');
+	#---------------------------------------------------------------------------------------------------------------------------
+	#--- Load Approved Profiles By Selected Scenario
+	#---------------------------------------------------------------------------------------------------------------------------
+	sProcess = 'geus_ME - Import Approved Profiles 01';
+	sNewScenario = psScenario;
+	EXECUTEPROCESS (sProcess, 
+		'psYear', psYear,
+		'psScenario', sNewScenario);
+
+ENDIF;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

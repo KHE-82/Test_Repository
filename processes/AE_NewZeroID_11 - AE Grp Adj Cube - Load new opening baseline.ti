@@ -1,0 +1,156 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              AE_NewZeroID_11 - AE Grp Adj Cube - Load new opening baseline
+#**** DESCRIPTION:       This process creates a view of the newly archived scenario in the adjustments cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 12/05/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+#  
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE INDEX CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbIndex = 'index';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE CASHFLOW CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbCF= 'AE cash flow';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE GOVERNMENT MEASURE CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbMeas = 'government measures';
+dmMeasDet = 'measure details';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE GOVERNMENT MEASURE DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbMeasDet = 'government measures details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE GROUP ADJUSTMENT ENTRY CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbGrp = 'AE group adjustment entry';
+dmAccType = 'account type';
+dmAccTemp = 'account template';
+dmGrpMeas = 'group adjustment measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sUser) + 1;
+     sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+     sUser = TM1User();
+ENDIF;
+
+
+sHLYear = ATTRS('variables', 'headline year', 'value');
+sScenario = 'current';
+sID = '0000A';
+sNewStatus = 'data';
+#sNewReason = 'Other';
+sNewReason = 'Other variations not elsewhere defined';
+
+sView = '$NewBaseline';
+sSubset = sView;
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*** DATA ENTRY TO AE GROUP ADJUSTMENT ENTRY CUBE ***#
+
+IF (CELLISUPDATEABLE (cbGrp, sHLYear, sScenario, sNewStatus, vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sID, vsJur, vsPeriod, vsGrpMeas) = 1);
+     OldValue = CELLGETN (cbGrp, sHLYear, sScenario, sNewStatus, vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sID, vsJur, vsPeriod, vsGrpMeas);
+     CELLPUTN (OldValue + Value, cbGrp, sHLYear, sScenario, sNewStatus, vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sID, vsJur, vsPeriod, vsGrpMeas);
+ENDIF;
+
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbGrp, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmStatus, sSubset);
+SUBSETDESTROY (dmRE, sSubset);
+SUBSETDESTROY (dmMeasCode, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmAccType, sSubset);
+SUBSETDESTROY (dmAccTemp, sSubset);
+SUBSETDESTROY (dmID, sSubset);
+SUBSETDESTROY (dmJur, sSubset);
+SUBSETDESTROY (dmPer, sSubset);
+SUBSETDESTROY (dmGrpMeas, sSubset);
+#endregion

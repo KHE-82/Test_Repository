@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"}TI_Queue",
+	"Hierarchies@Code.links":
+	[
+		"}TI_Queue.hierarchies/}TI_Queue.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('}TI_Queue')/Hierarchies('}TI_Queue')"
+	}
+}

@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"$MEDept",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Jun')"
+		}
+	]
+}

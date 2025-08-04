@@ -1,0 +1,265 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_CDM Extract - Prog Details
+#**** DESCRIPTION:       This process creates a view of all data in the CURRENT scenario in the adjustments cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** Feb 2023          EC             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+dmProgMeas = 'programme measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+sHLYear = ATTRS(dmVar,'headline year','value');
+sScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+sHLYear = ATTRS(dmVar, 'archive year', 'old value');
+sScenario = ATTRS(dmVar, 'archive scenario', 'old value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = SUBST(sUser, lScan, 9);
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+sPrc = GetProcessName();
+sView = sUser | ' - ' | sPrc;
+sSubset = sView;
+sRE = 'Total related entity';
+sFunc = 'Total Functions';
+sReason = 'Total reason';
+sSPP = 'Total SPP';
+sMeasCode = 'Total Measures';
+sType = 'Total approp types';
+sItem = 'Total approp item';
+sID = 'Total IDs';
+sJur = 'Total jurisdictions';
+sOC = 'Total Outcomes';
+sMA = 'Total Movement'; 
+sPeriod = 'Total years';
+#sStatus = 'Total Approved';
+sCDMDesc ='sys_CDM Prog Desc';
+#*****************************************************************************
+#*** IDENTIFY OUTPUT FILE
+#*****************************************************************************
+sFilePath = ATTRS (dmVar, 'sys_shared directory', 'value');
+sFilePath ='';
+sFileName = 'CDM - Program Details.csv';
+
+sFile = sFilePath | sFileName;
+
+IF( FileExists(sFile) =1);
+	AsciiDelete(sFile);
+ENDIF;
+
+nTitle = 0;
+
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE CDM EXTRACT  CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbCDM = 'sys_CDM publication extract';
+dmCDMId = 'sys_CDM extract ID';
+dmCDMRow = 'sys_CDM row';
+dmCDMMeas = 'sys_CDM publication extract measure';
+sTotal = 'Total Rows';
+sUsed = 'Used';
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 00 : CLEAR TARGET VIEW
+#------------------------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbCDM, sSubset);
+SUBSETDESTROY (dmCDMId, sSubset);
+
+
+#****CREATE SUBSETS****#
+# CDM Extract ID
+sCDMId = 'E0001';
+SubsetCreate(dmCDMId, sSubset);
+SubsetElementInsert(dmCDMId, sSubset, sCDMId, 1);
+
+#****BUILD VIEW****#
+ViewCreate(cbCDM, sView);
+ViewSubsetAssign(cbCDM, sView, dmCDMId, sSubset);
+
+#****CLEAR OUT****#
+ViewZeroOut(cbCDM,sView);
+
+VIEWDESTROY (cbCDM, sSubset);
+SUBSETDESTROY (dmCDMId, sSubset);
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 01 : CREATE SOURCE VIEW
+#------------------------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbProg, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmProgMeas, sSubset);
+
+
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, psScenario, 1);
+
+# Programme
+MDX = '{TM1SUBSETALL( [' | dmProg | '] )}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+#Programme Measure
+SubsetCreate(dmProgMeas, sSubset);
+SubsetElementInsert(dmProgMeas, sSubset, sCDMDesc, 1);
+
+
+
+#****BUILD VIEW****#
+ViewCreate(cbProg, sView);
+
+ViewSubsetAssign(cbProg, sView, dmHLYear, sSubset);
+ViewSubsetAssign(cbProg, sView, dmScenario, sSubset);
+ViewSubsetAssign(cbProg, sView, dmProg, sSubset);
+ViewSubsetAssign(cbProg, sView, dmProgMeas, sSubset);
+
+ViewExtractSkipZeroesSet (cbProg, sView, 1);
+ViewExtractSkipCalcsSet (cbProg, sView, 1);
+ViewExtractSkipRuleValuesSet (cbProg, sView, 1);
+
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#------ASCIIIOUT------#
+IF( nTitle =0);
+	Asciioutput(sFile, vsHLYear, vsScenario);
+	Asciioutput(sFile, dmProg, vsMeas);
+	nTitle =1;
+ENDIF;
+
+Asciioutput(sFile,vsProg,vsValue);
+
+
+#------Populate CDM Extract Cube------#
+nRowNum =1+ CellGetN( cbCDM, sCDMId, sTotal, sUsed);
+sRowNum = NumberToString(nRowNum);
+sRowNum = Fill('0',5-Long(sRowNum)) | sRowNum; 
+
+
+CellPutS(vsProg,cbCDM, sCDMId,sRowNum,'Programme');
+CellPutS(vsValue,cbCDM, sCDMId,sRowNum,'programme description');
+CellPutN(1,cbCDM, sCDMId,sRowNum, 'used');
+
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbProg, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmProgMeas, sSubset);
+
+
+#****CSV To XLSX*****#
+#nFile = Long(sFile);
+#pCSV = sFile;
+#pXLSX = SUBST(sFile,1,nFile-4) | '.xlsx';
+
+#asciioutput('file.csv', pCSV,pXLSX);
+#sPrc = 'sys_csv_to_xlsx';
+#ExecuteProcess(sPrc, 'pCSV',pCSV,'pXLSX', pXLSX);
+#endregion

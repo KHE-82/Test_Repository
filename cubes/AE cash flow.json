@@ -1,0 +1,51 @@
+{
+	"@type":"Cube",
+	"Name":"AE cash flow",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('headline year')"
+		},
+		{
+			"@id":"Dimensions('scenario')"
+		},
+		{
+			"@id":"Dimensions('movement account')"
+		},
+		{
+			"@id":"Dimensions('id')"
+		},
+		{
+			"@id":"Dimensions('account_cf')"
+		},
+		{
+			"@id":"Dimensions('programme')"
+		},
+		{
+			"@id":"Dimensions('account_other')"
+		},
+		{
+			"@id":"Dimensions('related entity')"
+		},
+		{
+			"@id":"Dimensions('cash flow measure')"
+		},
+		{
+			"@id":"Dimensions('period')"
+		}
+	],
+	"Rules@Code.link":"AE cash flow.rules",
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('cash flow measure')"
+	},
+	"TimeDimension":
+	{
+		"@id":"Dimensions('period')"
+	},
+	"Views@Code.links":
+	[
+		"AE cash flow.views/cash flow.json",
+		"AE cash flow.views/derivation weightings.json"
+	]
+}

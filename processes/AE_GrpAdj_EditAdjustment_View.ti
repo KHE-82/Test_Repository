@@ -1,0 +1,255 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_GrpAdj_EditAdjustment_View
+#**** DESCRIPTION:       This process creates an adjustment view and clears out all necessary mappings
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 13/08/2014    KG             Initial Revision
+#****  06/11/2014	KG	Updated version to ensure outyears are flagged
+#***********************************************************************************************************************
+
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+snProg = 'programme';
+cbAE = 'AE group adjustment entry';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmstatus = 'status';
+dmRE = 'related entity';
+dmMeasCode = 'measure code';
+dmProg = snProg;
+dmAccType = 'account type';
+dmAccTemp = 'account template';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+dmGrpMeas = 'group adjustment measure';
+
+#*** DECLARE ACCOUNT TEMPLATE CUBE
+cbAccTemp = 'AE account template';
+dmAccTempRecType = 'account template record type';
+dmAcc = 'account';
+dmMA = 'movement account';
+dmAccTempMeas = 'account template measure';
+
+#*** DECLARE ID DETAILS CUBE
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+dmVar = 'variables';
+
+#*** DECLARE VARIABLES ***#
+curHLYear = ATTRS(dmVar, 'headline year', 'value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#*** DECLARE VARIABLES ***#
+sDefaultJur = ATTRS(dmVar, 'No Jur', 'value');
+sDefaultMA = ATTRS(dmVar, 'No MA', 'value');
+
+dmClients = '}Clients';
+# *** IDENTIFY CURRENT USER ***#
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sUser) + 1;
+     sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+     sUser = TM1User();
+ENDIF;
+
+sAEView = sUser | '_$AEView';
+sPeriod = '0000-0000';
+
+#*** STEP 1 - Clear Adjustments Cube***#
+#*** CLEAR ANY EXISTING MAPPING TO ACCOUNTS ON NEW ADJUSTMENT IF ANY
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAccType, sAEView);
+SUBSETDESTROY (dmAccTemp, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+SUBSETDESTROY (dmGrpMeas, sAEView);
+
+#*** CREATE SUBSETS ***#
+# Headline Year
+SUBSETCREATE (dmHLYear, sAEView);
+SUBSETELEMENTINSERT (dmHLYear, sAEView, psHLYear, 1);
+
+# SCENARIO
+SUBSETCREATE (dmScenario, sAEView);
+SUBSETELEMENTINSERT (dmScenario, sAEView, psScenario, 1);
+
+# ID
+SUBSETCREATE (dmID, sAEView);
+SUBSETELEMENTINSERT (dmID, sAEView, psID, 1);
+
+# Period
+SUBSETCREATE (dmPer, sAEView);
+SUBSETELEMENTINSERT (dmPer, sAEView, sPeriod, 1);
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbAE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmHLYear, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmScenario, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmID, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmPer, sAEView);
+VIEWZEROOUT (cbAE, sAEView);
+
+#*** DESTROY VIEW ***#
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+
+#*** STEP 2 - Add Flag again to ensure outyears are showing ***#
+
+#*** CREATE NEW SUBSETS ***#
+
+# Status
+SUBSETCREATE (dmStatus, sAEView);
+SUBSETELEMENTINSERT (dmStatus, sAEView, 'data', 1);
+
+# Programme
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+ 
+# Measure Code
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Account Type
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAccType | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Account Template
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAccTemp | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Period
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Measure
+SUBSETCREATE (dmGrpMeas, sAEView);
+SUBSETELEMENTINSERT (dmGrpMeas, sAEView, 'value', 1);
+
+VIEWCREATE (cbAE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmHLYear, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmScenario, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmStatus, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmRE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMeasCode, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmProg, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmAccType, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmAccTemp, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmID, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmJur, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmPer, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmGrpMeas, sAEView);
+
+ViewSuppressZeroesSet (cbAE, sAEView,1);
+ViewExtractSkipCalcsSet(cbAE, sAEView, 1);
+ViewExtractSkipZeroesSet (cbAE, sAEView, 1);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sAEView;
+
+
+#*** STEP 3 - Assign Selected HL Year, Scenario and ID to Current User***#
+sCurUser = TM1User();
+ATTRPUTS (psHLYear, dmClients, sCurUser, 'geus_hlyear');
+ATTRPUTS (psScenario, dmClients, sCurUser, 'geus_scenario');
+ATTRPUTS (psID, dmClients, sCurUser, 'geus_id');
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+nCFDataEntryCheck = CELLGETN( cbAccTemp, vsAccTemp, 'data entry', 'Cash Payment', 'account template', '-', 'flag');
+nExpDataEntryCheck = CELLGETN( cbAccTemp, vsAccTemp, 'data entry', 'Expense', 'account template', '-', 'flag');
+nCustNoDataEntryCheck = CELLGETN( cbAccTemp, vsAccTemp, 'data entry', 'Customer Numbers', 'account template', '-', 'flag');
+
+nWOffsDataEntryCheck = CELLGETN( cbAccTemp, vsAccTemp, 'data entry', 'Write Offs', 'account template', '-', 'flag');
+nCashRecDataEntryCheck = CELLGETN( cbAccTemp, vsAccTemp, 'data entry', 'Cash Recoveries', 'account template', '-', 'flag');
+nRecogDataEntryCheck = CELLGETN( cbAccTemp, vsAccTemp, 'data entry', 'Recognition', 'account template', '-', 'flag');
+
+#*** FLAG CASH PAYMENT LINE
+IF (nCFDataEntryCheck = 1);
+     CELLPUTN ( 1, cbAE, vsHLYear, vsScenario, 'data', vsRE, vsMeasCode, vsProg, 'Cash Payment', vsAccTemp, vsID, vsJur, '0000-0000', 'flag');
+ENDIF;
+
+#*** FLAG EXPENSE LINE
+IF (nExpDataEntryCheck = 1);
+     CELLPUTN ( 1, cbAE, vsHLYear, vsScenario, 'data', vsRE, vsMeasCode, vsProg, 'Expense', vsAccTemp, vsID, vsJur, '0000-0000', 'flag');
+ENDIF;
+
+#*** FLAG CUSTOMER NO LINE
+IF (nCustNoDataEntryCheck = 1);
+     CELLPUTN ( 1, cbAE, vsHLYear, vsScenario, 'data', vsRE, vsMeasCode, vsProg, 'Customer Numbers', vsAccTemp, vsID, vsJur, '0000-0000', 'flag');
+ENDIF;
+
+#*** FLAG WRITE OFFS LINE
+IF (nWOffsDataEntryCheck = 1);
+     CELLPUTN ( 1, cbAE, vsHLYear, vsScenario, 'data', vsRE, vsMeasCode, vsProg, 'Write Offs', vsAccTemp, vsID, vsJur, '0000-0000', 'flag');
+ENDIF;
+
+#*** FLAG CASH RECOVERIES LINE
+IF (nCashRecDataEntryCheck = 1);
+     CELLPUTN ( 1, cbAE, vsHLYear, vsScenario, 'data', vsRE, vsMeasCode, vsProg, 'Cash Recoveries', vsAccTemp, vsID, vsJur, '0000-0000', 'flag');
+ENDIF;
+
+#*** FLAG RECOGNITION LINE
+IF (nRecogDataEntryCheck = 1);
+     CELLPUTN ( 1, cbAE, vsHLYear, vsScenario, 'data', vsRE, vsMeasCode, vsProg, 'Recognition', vsAccTemp, vsID, vsJur, '0000-0000', 'flag');
+ENDIF;
+
+#*** CHECK IF IT IS UPDATABLE AND FLAG THIS COMBINATION ***#
+IF (CELLISUPDATEABLE (cbAE, vsHLYear, vsScenario, vsStatus, vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, vsID, vsJur, '0000-0000', 'flag') = 1);
+     CELLPUTN ( 1, cbAE, vsHLYear, vsScenario, vsStatus, vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, vsID, vsJur, '0000-0000', 'flag');
+ENDIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*** DESTROY VIEW ***#
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAccType, sAEView);
+SUBSETDESTROY (dmAccTemp, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+SUBSETDESTROY (dmGrpMeas, sAEView);
+#endregion

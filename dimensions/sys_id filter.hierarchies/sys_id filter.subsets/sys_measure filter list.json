@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"sys_measure filter list",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[sys_id filter].[Measure List]}, ALL, RECURSIVE )}, 0)}"
+}

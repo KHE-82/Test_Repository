@@ -1,0 +1,21 @@
+{
+	"@type":"Cube",
+	"Name":"sys_FBO process mapping",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('sys_extract row id')"
+		},
+		{
+			"@id":"Dimensions('sys_FBO process mapping measure')"
+		}
+	],
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('sys_FBO process mapping measure')"
+	},
+	"Views@Code.links":
+	[
+		"sys_FBO process mapping.views/Default.json"
+	]
+}

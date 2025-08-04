@@ -1,0 +1,58 @@
+{
+	"@type":"NativeView",
+	"Name":"Kelly Hackett_$MEFlatFileExtract",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('sys_flatfile measure')/Hierarchies('sys_flatfile measure')/Subsets('Kelly Hackett_$MEFlatFileExtract')"
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('sys_ME_extract row id')/Hierarchies('sys_ME_extract row id')/Subsets('Kelly Hackett_$MEFlatFileExtract')"
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('}Clients')/Hierarchies('}Clients')/Subsets('Kelly Hackett_$MEFlatFileExtract')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('}Clients')/Hierarchies('}Clients')/Elements('CAMID(\"pans:u:kelly.hackett@dcceew.gov.au\")')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('sys_flatfile scenario')/Hierarchies('sys_flatfile scenario')/Subsets('Kelly Hackett_$MEFlatFileExtract')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('sys_flatfile scenario')/Hierarchies('sys_flatfile scenario')/Elements('upload')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('id')/Hierarchies('id')/Subsets('Kelly Hackett_$MEFlatFileExtract')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('id')/Hierarchies('id')/Elements('0000A')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":true,
+	"SuppressEmptyRows":true,
+	"FormatString":"0.00"
+}

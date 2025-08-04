@@ -1,0 +1,231 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#***************************************************************************************************************************************************
+#***** PROCESS : 			sys_application testing - upload data
+#***** DESCRIPTION:		THIS TI PROCESS IS TO LOAD PREVIOUS TEST DATA FROM A FLATFILE INTO A NEW COPY OF THE DATABASE
+#*****				
+#*****
+#***** MODIFICATION HISTORY :	
+#***** 
+#*****
+#***** DATE		INITIALS		COMMENTS
+#***** =====		=======		==========
+#*****09/12/2019		BL		Initial Version for test number & status only
+#*****14/01/2020		BL		Updated to insert all sys_application testing measure data based on KG's latest test fixes
+#************************************************************************************************************************************************* 
+
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#*****************************************************************************
+#*** DECLARE CUBES AND DIMENSIONS***#
+#*****************************************************************************
+cbSysAppTest= 'sys_application testing';
+dmSysApp = 'sys_application';
+dmTestID = 'measure type';
+dmSysAppMeas = 'sys_application measure';
+
+#*****************************************************************************
+#*** DECLARE SYSTEM VARIABLES
+#*****************************************************************************
+dmVar = 'variables'; 
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+#sImpFilePath = ATTRS(dmVar, 'sys_Costings Import Directory', ' value');
+sFilePath = ATTRS (dmVar, 'sys_upload directory', 'value');
+sFileName = sFilePath | '\' | psFileName;
+
+sImpFilePath = ATTRS(dmVar, 'sys_ImpFileExceptionLogs', ' value');
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+ATTRPUTS ('PASS', dmVar, 'sys_ImpFileValidation', 'value');
+
+# **** GET DATE VALUES ***#
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+sHNow = TimST (Now, '\h');
+sMinNow = TimST (Now, '\i');
+sSNow = TimST (Now, '\s');
+ 
+sDay = TRIM(SUBST(sDNow, 1,2));
+ 
+IF (LONG (sDay) = 1);
+	sDay = '0' | sDay;
+ELSE;
+     	sDay = sDay;
+ENDIF;
+ 
+sMonth = TRIM(SUBST(sMNow, 1,2));
+ 
+IF (LONG (sMonth) = 1);
+     	sMonth = '0' | sMonth;
+ELSE;
+     	sMonth = sMonth;
+ENDIF;
+ 
+sYear = TRIM(SUBST(sYNow, 1,4));
+sNow = sYear | sMonth | sDay | sHNow | sMinNow | sSNow ;
+  
+sOutputFile = 'geus measure upload file failed' | sUser | ' ' | sNow | '.csv';
+
+#*****************************************************************************
+#***** COUNTERS USED
+#*****************************************************************************
+lHeaderCount = 0;
+nLine = 2;
+nValid = 0;
+nTotalValid = 0;
+
+#*****************************************************************************
+#***** DATASOURCE VARIABLES
+#*****************************************************************************
+# IF THIS PROCESS IS RUN DIRECTLY FROM THE TI, ENSURE THAT THE NEXT ROW IS HASHED OUT
+#DATASOURCENAMEFORSERVER = sFileName;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*****************************************************************************
+#*** PERFORM A VALIDATION TEST ***#
+#*****************************************************************************
+nSysAppValid = 0;
+nTestIDValid = 0;
+nTestNumValid = 0;
+nTesterValid = 0;
+nTestDateValid = 0;
+nStatusValid = 0;
+nFixedByValid = 0;
+nFixDateValid = 0;
+nWkbkNameValid = 0;
+nObjTypeValid = 0;
+nObjNAmeVAlid = 0;
+nActionValid = 0;
+nReqResValid = 0;
+nCommentsValid= 0;
+
+sErrSysAppValid = '';
+sErrTestIDValid = '';
+sErrTestNumValid = '';
+sErrTesterValid = '';
+sErrTestDateValid = '';
+sErrStatusValid = '';
+sErrFixedByValid = '';
+sErrWkbkNameValid = '';
+sErrObjTypeValid = '';
+sErrObjNAmeVAlid = '';
+sErrActionValid = '';
+sErrReqResValid = '';
+sErrCommentsValid= '';
+
+#*****************************************************************************
+#**** DEFAULT VALUES
+#*****************************************************************************
+#No Defaults
+
+#*****************************************************************************
+#**** VALIDATION CHECKS 
+#*****************************************************************************
+#No Validation Checks
+
+#******************************************************************************
+#**** CALCULATE VALIDATION AND OUTPUTFILES
+#*****************************************************************************
+nValid = nSysAppValid + nTestIDValid + nTestNumValid + nTesterValid + nTestDateValid + nStatusValid + nFixedByValid + nFixDateValid +nWkbkNameValid + nObjTypeVAlid + nObjNameValid +nActionValid + nReqResVAlid + nCommentsValid;
+
+If (nValid>0);
+
+	#*****************************************************************************
+     	#*** PUT A HEADER ON THE FILE 
+     	#*****************************************************************************
+     	IF (lHeaderCount = 0);
+               		ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Error Description', 'Line Number', 'Entered Value', 'Comments', 'Other Details/Assumed Values');
+
+ELSE;
+
+	ENDIF;
+
+	#***********************************************************************************************************
+	#*** VALIDATION PASSED ****#
+	#***********************************************************************************************************
+	psTestNum = vsTestNum;
+	psStatus = vsStatus;
+	psSysApp = vsSysApp;
+	psTestID = vsTestID;
+
+ENDIF;
+
+#*** DISABLE HEADER LINE ***#
+lHeaderCount = lHeaderCount + 1;
+
+#*** ADD LINE NUMBER
+nLine = nLine + 1;
+
+ASCIIOUTPUT ('BL TEST.txt',vsSysApp,psSysApp,vsTestID, psTestID, vsTEstNum,psTestNum,vsStatus,psStatus);
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#***********************************************************************************************************
+#*** UPDATE SYS_APPLICATION TESTING CUBE
+#***********************************************************************************************************
+#ITEMSKIP;
+
+	psTestNum = vsTestNum;
+	psStatus = vsStatus;
+	psSysApp = vsSysApp;
+	psTestID = vsTestID;
+
+
+CELLPUTS (psTestNum, cbSysAppTest, psSysApp, psTestID, 'Test Number');
+CELLPUTS (vsTester, cbSysAppTest, psSysApp, psTestID, 'Tested By');
+CELLPUTS (vsTestDate, cbSysAppTest, psSysApp, psTestID, 'Test Date');
+CELLPUTS (vsStatus, cbSysAppTest, psSysApp, psTestID, 'Status');
+CELLPUTS (vsFixedBy, cbSysAppTest, psSysApp, psTestID, 'Fixed By');
+CELLPUTS (vsFixDate, cbSysAppTest, psSysApp, psTestID, 'Fix Date');
+#Workbook Name is rule driven;
+CELLPUTS (vsObjType, cbSysAppTest, psSysApp, psTestID, 'Object Type');
+CELLPUTS (vsObjName, cbSysAppTest, psSysApp, psTestID, 'Object Name');
+CELLPUTS (vsACtion, cbSysAppTest, psSysApp, psTestID, 'Action');
+CELLPUTS (vsReqRes, cbSysAppTest, psSysApp, psTestID, 'Required Result');
+CELLPUTS (vsComments, cbSysAppTest, psSysApp, psTestID, 'Comments');
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

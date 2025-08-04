@@ -1,0 +1,551 @@
+{
+	"@type":"NativeView",
+	"Name":"all-m",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('period')/Hierarchies('period')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2004-2005')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2005-2006')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2006-2007')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2007-2008')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2008-2009')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2009-2010')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2010-2011')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2011-2012')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2012-2013')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2013-2014')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2014-2015')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2015-2016')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2016-2017')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2017-2018')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2018-2019')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2019-2020')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2020-2021')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2021-2022')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2022-2023')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2023-2024')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2024-2025')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2025-2026')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2026-2027')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2027-2028')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2028-2029')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2029-2030')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2030-2031')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2031-2032')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2032-2033')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2033-2034')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2034-2035')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2035-2036')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2036-2037')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2037-2038')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2038-2039')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2039-2040')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2040-2041')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2041-2042')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2042-2043')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2043-2044')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2044-2045')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2045-2046')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('P0')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('Jul')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('Aug')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('Sep')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('Oct')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('Nov')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('Dec')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('Jan')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('Feb')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('Mar')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('Apr')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('May')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('Jun')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('cash flow')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('0000-0000')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('measure details')/Hierarchies('measure details')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('CBMS Measure Code')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('ASL')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('government decision')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('measure title')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('measure description')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('decision date')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('funding life')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('start date')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('end date')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('description')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('used')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('value')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('related programme code')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('related programme description')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('control type')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('measure type')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('related agency')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('status')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('costing ID')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('created by')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('created date')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('authorised by')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('authorised date')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('deleted by')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('deleted date')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('rejected by')"
+					},
+					{
+						"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('rejected date')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('headline year')/Hierarchies('headline year')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('headline year')/Hierarchies('headline year')/Elements('HL2019-2020')"
+					},
+					{
+						"@id":"Dimensions('headline year')/Hierarchies('headline year')/Elements('HL2020-2021')"
+					},
+					{
+						"@id":"Dimensions('headline year')/Hierarchies('headline year')/Elements('HL2021-2022')"
+					},
+					{
+						"@id":"Dimensions('headline year')/Hierarchies('headline year')/Elements('HL2022-2023')"
+					},
+					{
+						"@id":"Dimensions('headline year')/Hierarchies('headline year')/Elements('HL2023-2024')"
+					},
+					{
+						"@id":"Dimensions('headline year')/Hierarchies('headline year')/Elements('HL2024-2025')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('scenario')/Hierarchies('scenario')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('current')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('MYEFO')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('Additional Estimates')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('Pre-ERC')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('Budget')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('parameter')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('efficiency dividend')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('Actual')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('Actual Adjustments')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('CBMS')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('PEFO')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('MA CBMS')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('ACM')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('measure code')/Hierarchies('measure code')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00000')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00001')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00002')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00003')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00004')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00005')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00006')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00007')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00008')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00009')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00010')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00011')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00012')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00013')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00014')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00015')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00016')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00017')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00018')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00019')"
+					},
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00020')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('measure fund type')/Hierarchies('measure fund type')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('measure fund type')/Hierarchies('measure fund type')/Elements('ongoing')"
+					},
+					{
+						"@id":"Dimensions('measure fund type')/Hierarchies('measure fund type')/Elements('terminating')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('measure type')/Hierarchies('measure type')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('measure type')/Hierarchies('measure type')/Elements('Expenses')"
+					},
+					{
+						"@id":"Dimensions('measure type')/Hierarchies('measure type')/Elements('Revenue')"
+					},
+					{
+						"@id":"Dimensions('measure type')/Hierarchies('measure type')/Elements('Capital')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Control Type')/Hierarchies('Control Type')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('Control Type')/Hierarchies('Control Type')/Elements('Departmental')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('status')/Hierarchies('status')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('status')/Hierarchies('status')/Elements('approved')"
+					},
+					{
+						"@id":"Dimensions('status')/Hierarchies('status')/Elements('approved non-flat file')"
+					},
+					{
+						"@id":"Dimensions('status')/Hierarchies('status')/Elements('CBMS')"
+					},
+					{
+						"@id":"Dimensions('status')/Hierarchies('status')/Elements('agency authorised')"
+					},
+					{
+						"@id":"Dimensions('status')/Hierarchies('status')/Elements('DOFA validated')"
+					},
+					{
+						"@id":"Dimensions('status')/Hierarchies('status')/Elements('approved balancing')"
+					},
+					{
+						"@id":"Dimensions('status')/Hierarchies('status')/Elements('draft')"
+					},
+					{
+						"@id":"Dimensions('status')/Hierarchies('status')/Elements('business unit authorised')"
+					},
+					{
+						"@id":"Dimensions('status')/Hierarchies('status')/Elements('draft balancing')"
+					},
+					{
+						"@id":"Dimensions('status')/Hierarchies('status')/Elements('data')"
+					},
+					{
+						"@id":"Dimensions('status')/Hierarchies('status')/Elements('cash flow')"
+					},
+					{
+						"@id":"Dimensions('status')/Hierarchies('status')/Elements('unbalanced')"
+					},
+					{
+						"@id":"Dimensions('status')/Hierarchies('status')/Elements('MA Flag')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":[],
+	"SuppressEmptyColumns":true,
+	"SuppressEmptyRows":true,
+	"FormatString":"0.#########"
+}

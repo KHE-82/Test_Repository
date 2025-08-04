@@ -1,0 +1,97 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_ME Setup - Set Parameters
+#**** DESCRIPTION:       This process stores the selected parameters into the sys_ME Variable cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 19/04/2018    KG             Initial Revision
+#***********************************************************************************************************************
+
+ASCIIOUTPUT('sys_ME Setup 1.txt', psUSer,psSourceHLYear,psSourceScenario, psSourceperiod, psTargetHLYear,psTargetScenario, psReasonCode);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+dmHLYear = 'headline year';
+dmReason = 'reason';
+dmPer = 'period';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+cbMEVar = 'sys_ME variable';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+	sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+	lScan = SCAN('\',sUser) + 1;
+	sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+	sUser = TM1User();
+ENDIF;
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** POST DATA TO ME VARIABLE CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+#ASCIIOUTPUT('sys_ME Setup 2-1.txt', numbertostring( DIMIX (dmHLYear, psTargetHLYear)));
+IF (DIMIX (dmHLYear, psTargetHLYear) <> 0);
+#ASCIIOUTPUT('sys_ME Setup 2.txt', psUSer,psSourceHLYear,psSourceScenario, psSourceperiod, psTargetHLYear,psTargetScenario, psReasonCode);
+
+	CELLPUTS (psTargetHLYear, cbMEVar,  'ME_headline year', 'value');
+	CELLPUTS (psTargetScenario, cbMEVar,  'ME_archive scenario', 'value');
+
+#ELSE;
+#	PROCESSERROR;
+ENDIF;
+
+IF (DIMIX (dmPer, psSourcePeriod) <> 0);
+#ASCIIOUTPUT('sys_ME Setup 3.txt', psUSer,psSourceHLYear,psSourceScenario, psSourceperiod, psTargetHLYear,psTargetScenario, psReasonCode);
+	CELLPUTS (psSourcePeriod, cbMEVar,  'ME year', 'value');
+	CELLPUTS (psSourcePeriod, cbMEVar,  'ME_period', 'value');
+#ELSE;
+#	PROCESSERROR;
+ENDIF;
+
+IF (DIMIX (dmReason, psReasonCode) <> 0);
+	sNewReason = DIMENSIONELEMENTPRINCIPALNAME (dmReason, psReasonCode);
+#ASCIIOUTPUT('sys_ME Setup 4.txt', psUSer,psSourceHLYear,psSourceScenario, psSourceperiod, psTargetHLYear,psTargetScenario, psReasonCode,sNewReason);
+	CELLPUTS (sNewReason, cbMEVar,  'ME_ReasonCode', 'value');
+#ELSE;
+#	PROCESSERROR;
+ENDIF;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

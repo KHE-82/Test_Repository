@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"ReTested is ZERO",
+	"Expression":"{Filter( TM1FilterByLevel( TM1SubsetAll( [sys_application] ), 0), [sys_application testing].([sys_application testing measure].ReTested]) =0)}"
+}

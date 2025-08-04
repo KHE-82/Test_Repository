@@ -1,0 +1,326 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE Auth Adj - Validate Adj For Approval
+#**** DESCRIPTION:       This process validates the adjustment approvale capabilities
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    KG             Initial Revision
+#**** 2020	KG	  Added approved non-flatfile - unbalanced
+#**** 2020	KG	Updated process so that any draft adjustments, they stay on screen
+#***********************************************************************************************************************
+
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT GROUPS CUBE
+#******************************************************************************************************************
+cbGroups = '}ClientGroups';
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS
+#******************************************************************************************************************
+cbID = 'AE id details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmID = 'id';
+dmIDMeas = 'id measure';
+
+#******************************************************************************************************************
+#*** DECLARE VALIDATION CUBE
+#******************************************************************************************************************
+cbValid = 'AE validations';
+dmHLYear = 'headline year';
+dmScenariio = 'scenario';
+dmID = 'id';
+dmValidID = 'validation id';
+dmPer = 'period';
+dmValidMeas = 'AE validation measure';
+
+sPer = 'Total years';
+sValidID = 'Total';
+sValidMeas = 'value';
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+
+#******************************************************************************************************************
+#*** GET CLIENT SECURITY GROUPS (NON CAM)
+#******************************************************************************************************************
+sAdmGrp = 'ADMIN';
+sReportGrp = 'AE Reports';
+sDataEntryGrp = 'AE Data Entry';
+sAppGrp = 'AE Approvers';
+
+#******************************************************************************************************************
+#*** NEW SECURITY GROUP FOR CAM 
+#******************************************************************************************************************
+#sCAMAdmGrp = 'CAMID(":Admin)';
+#sCAMReportGrp = 'CAMID(":AE Reports")';
+#sCAMDataEntryGrp = 'CAMID(":AE Data Entry")';
+#sCAMAppGrp = 'CAMID(":AE Approvers")';
+
+#******************************************************************************************************************
+#*** NEW SECURITY GROUP FOR CAM - UPDATE 2021
+#******************************************************************************************************************
+sCAMAdmGrp = sAdmGrp;
+sCAMReportGrp = sReportGrp;
+sCAMDataEntryGrp = sDataEntryGrp;
+sCAMAppGrp = sAppGrp;
+
+
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+
+
+	sAdmGrpCheck = CELLGETS (cbGroups, sUser, sAdmGrp);
+	sCAMReportGrpCheck = CELLGETS (cbGroups, sUser, sCAMReportGrp);
+	sCAMDataEntryGrpCheck = CELLGETS (cbGroups, sUser, sCAMDataEntryGrp);
+	sCAMAppGrpCheck = CELLGETS (cbGroups, sUser, sCAMAppGrp);
+ELSE;
+	sUser = TM1User();
+
+	#******************************************************************************************************************
+	#*** GET CLIENT SECURITY GROUPS
+	#*** SOME AGENCY DO NOT HAVE SECURITY GROUP. MAY NEED TO UPDATE AND CHANGE
+	#******************************************************************************************************************
+	#sAdmGrpCheck = CELLGETS (cbGroups, sUser, sAdmGrp);
+	#sReportGrpCheck = CELLGETS (cbGroups, sUser, sReportGrp);
+	#sDataEntryGrpCheck = CELLGETS (cbGroups, sUser, sDataEntryGrp);
+	#sAppGrpCheck = CELLGETS (cbGroups, sUser, sAppGrp);
+
+	sAdmGrpCheck = '';
+	sReportGrpCheck = '';
+	sDataEntryGrpCheck = '';
+	sAppGrpCheck = '';
+
+	sAdmGrpCheck = CELLGETS (cbGroups, sUser, sAdmGrp);
+	sCAMReportGrpCheck = CELLGETS (cbGroups, sUser, sCAMReportGrp);
+	sCAMDataEntryGrpCheck = CELLGETS (cbGroups, sUser, sCAMDataEntryGrp);
+	sCAMAppGrpCheck = CELLGETS (cbGroups, sUser, sCAMAppGrp);
+
+
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** DO VALIDATION CHECKING
+#*** sAdjValid is used for when finding what validation is using. This determines what screen it needs when validation fails
+#***	V = 'validation screen'
+#***	N = 'stay on authorise screen'
+#*** 	A = 'go to financials'
+#*** 	Y or blank = 'go to adjustment list'
+#******************************************************************************************************************
+sAdjValid = '';
+sErrMessage ='';
+CELLPUTS (sErrMessage, cbClient, sUser, 'adj_editable', 'validate');
+
+#******************************************************************************************************************
+#--- PERFORM ID VALIDATION CHECK
+#******************************************************************************************************************
+sID = CELLGETS (cbClient, sUser,  'geus adj', 'value');
+sOldID = CELLGETS (cbClient, sUser,  'geus adj', 'old value');
+
+IF (sID @<> sOldID);
+
+	#******************************************************************************************************************
+	#*** VALIDATION FAILED 
+	#******************************************************************************************************************
+	CELLPUTS ('N', cbClient, sUser, 'adj_editable', 'value');
+	sErrMessage2 = 'This adjustment can not be authorised as another adjustment is opened.';
+	CELLPUTS (sErrMessage2, cbClient, sUser, 'adj_editable', 'validate');
+	PROCESSQUIT;
+
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** PERFORM VALIDATION CHECKING FOR CURRENT HEADLING YEAR AND CURRENT SCENARIO ONLY
+#******************************************************************************************************************
+nValidation = CELLGETN (cbValid, psHLYear, psScenario, sValidID, psID, sPer);
+
+#******************************************************************************************************************
+#*** CLEAR VALIDATION STATUS AND MESSAGES
+#******************************************************************************************************************
+CELLPUTS (sAdjValid, cbClient, sUser, 'adj_editable', 'value');
+CELLPUTS ('', cbClient, sUser, 'adj_editable', 'validate');
+
+IF (nValidation <> 0);
+
+
+	#******************************************************************************************************************
+	#*** USER SELECTED UNBALANCED STATUS, SO JUST TAKE TO ADJ LIST
+	#******************************************************************************************************************
+
+	IF (psNewStatus @= 'unbalanced' % psNewStatus @= 'unauthorised');
+		sAdjValid = 'Y';
+		sErrMessage = '';
+	ELSE;
+		#******************************************************************************************************************
+		#*** VALIDATION FAILED SO TAKE THEM TO VALIDATION SCREEN
+		#******************************************************************************************************************
+		sAdjValid = 'V';
+		sErrMessage = 'Adjustment has failed validations, please review validations';
+	ENDIF;
+ELSE;
+
+	#******************************************************************************************************************
+	#*** VALIDATION PASSED
+	#******************************************************************************************************************
+
+	#******************************************************************************************************************
+	#*** CHECK IF NEW STATUS IS POPULATED
+	#*** LET USER STAY ON AUTHORISED SCREEN IF NEW STATUS IS BLANK
+	#*** sAdjValid = 'N';
+	#******************************************************************************************************************
+	IF (psNewStatus @= '');
+		sAdjValid = 'N';
+		sErrMessage = 'Please enter a valid status';
+	ELSE;
+		#******************************************************************************************************************
+		#*** CHECK APPROVAL PROCESS FLAGS
+		#******************************************************************************************************************
+		IF ((psStatus @= 'draft' % psStatus @= 'unbalanced' % psStatus @= 'unauthorised') & (psNewStatus @= 'draft' % psNewStatus @= 'unbalanced' % psNewStatus @= 'unauthorised'));
+
+			#******************************************************************************************************************
+			#*** IF ADJUSTMENT IS JUST DRAFT OR UNBALANCED
+			#*** LET USER STAY ON SCREEN AND MOVE TO FINANCIALS OPERATING STATEMENT
+			#*** sAdjValid = 'A';
+			#******************************************************************************************************************
+			#CELLPUTS ('', cbClient, sUser, 'adj_editable', 'value');
+			sAdjValid = 'A';
+			sErrMessage = '';
+		ELSE;
+
+			#******************************************************************************************************************
+			#*** IF ADJUSTMENT IS JUST DRAFT OR UNBALANCED
+			#*** LET USER STAY ON SCREEN AND MOVE TO FINANCIALS OPERATING STATEMENT
+			#*** sAdjValid = 'A';
+			#******************************************************************************************************************
+			IF (psNewStatus @= 'draft' % psNewStatus @= 'unbalanced' % psNewStatus @= 'unauthorised');
+				sAdjValid = 'A';
+				sErrMessage = '';
+
+			ELSE;
+	
+				#******************************************************************************************************************
+				#*** EVERYTHING ELSE
+				#*** GO TO ADJUSTMENT LIST
+				#*** sAdjValid = 'Y';
+				#******************************************************************************************************************
+				#CELLPUTS ('', cbClient, sUser, 'adj_editable', 'value');
+				sAdjValid = 'Y';
+				sErrMessage = '';
+			ENDIF;
+		ENDIF;
+	ENDIF;
+ENDIF;
+
+#******************************************************************************************************************
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#******************************************************************************************************************
+IF ((psHLYear @<> curHLYear) % (psScenario @<> curScenario));
+	CELLPUTS ('N', cbClient, sUser, 'adj_editable', 'value');
+	sErrMessage1 = 'Selected adjustment is uneditable';
+	CELLPUTS (sErrMessage1, cbClient, sUser, 'adj_editable', 'validate');
+ELSE;
+
+	#******************************************************************************************************************
+	#*** ADJUSTMENT IS EDITABLE TO APPROVAL
+	#*** UTILISES PREVIOUS CHECKS ABOVE
+	#******************************************************************************************************************
+	CELLPUTS (sAdjValid, cbClient, sUser, 'adj_editable', 'value');
+	CELLPUTS (sErrMessage, cbClient, sUser, 'adj_editable', 'validate');
+
+	IF (sAdjValid @= 'V');
+		#******************************************************************************************************************
+		#*** VALIDATION FAILED, SO LEAVE AS UNBALANCED
+		#******************************************************************************************************************
+		sProcess = 'AE Auth Adj - Authorise Adjustment';
+		sNewStatus = 'unbalanced';
+
+		#******************************************************************************************************************
+		#*** THIS IS TO BYPASS UNBALANCED JOURNALS, SO AN ADMINISTRATOR CAN ONLY DO THIS
+		#******************************************************************************************************************
+		IF (psNewStatus @= 'approved - unbalanced' % psNewStatus @= 'approved non-flat file - unbalanced' );
+
+			sAdjValid = 'Y';
+			sErrMessage = '';
+			CELLPUTS (sAdjValid, cbClient, sUser, 'adj_editable', 'value');
+			CELLPUTS (sErrMessage, cbClient, sUser, 'adj_editable', 'validate');
+			psComments = psComments | ' This adjustment was authorised from an unbalanced status';
+			EXECUTEPROCESS (sProcess, 'psUser', sUser, 'psHLYear', psHLYear, 'psScenario', psScenario, 'psID', psID, 'psStatus', psNewStatus, 'psComment', psComments);
+		ELSE;
+			EXECUTEPROCESS (sProcess, 'psUser', sUser, 'psHLYear', psHLYear, 'psScenario', psScenario, 'psID', psID, 'psStatus', sNewStatus, 'psComment', psComments);
+		ENDIF;
+	ELSE;
+
+		#******************************************************************************************************************
+		#*** VALIDATION PASSED SO DO CHANGING OF STATUS AS REQUIRED
+		#******************************************************************************************************************
+
+		IF (sAdjValid @<> 'N');
+			sProcess = 'AE Auth Adj - Authorise Adjustment';
+			EXECUTEPROCESS (sProcess, 'psUser', sUser, 'psHLYear', psHLYear, 'psScenario', psScenario, 'psID', psID, 'psStatus', psNewStatus, 'psComment', psComments);
+		ENDIF;
+
+	ENDIF;
+
+ENDIF;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

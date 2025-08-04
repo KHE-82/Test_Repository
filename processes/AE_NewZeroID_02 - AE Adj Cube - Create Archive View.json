@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"AE_NewZeroID_02 - AE Adj Cube - Create Archive View",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_NewZeroID_02 - AE Adj Cube - Create Archive View.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[]
+}

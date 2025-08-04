@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"ME phasing method",
+	"Hierarchies@Code.links":
+	[
+		"ME phasing method.hierarchies/ME phasing method.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('ME phasing method')/Hierarchies('ME phasing method')"
+	}
+}

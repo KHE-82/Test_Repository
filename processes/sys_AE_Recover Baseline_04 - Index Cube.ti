@@ -1,0 +1,263 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_AE_Recover Baseline_04 - Index Cube
+#**** DESCRIPTION:       This process transfers data between headline year and scenario in the index cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials      Comments
+#****  ====              ======    =========
+#**** 12/05/2014    KG           Initial Revision
+#**** 2019	KG	Updated for NEW GEUS
+#***********************************************************************************************************************
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE INDEX CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbIndex = 'index';
+dmIndex = 'index';
+dmIndexMeas = 'index measure';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+
+sHLYear = ATTRS(dmVar, 'archive year', 'old value');
+sScenario = ATTRS(dmVar, 'archive scenario', 'old value');
+#sTargetHLYear = ATTRS('variables', 'archive year', 'value');
+#sTargetScenario = ATTRS('variables', 'archive scenario', 'value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+sView = sUser | '_$RecoverBaseline';
+sSubset = sView;
+
+#***********************************************************************************************************************
+#--- STEP 1 - DELETE TARGET VIEW
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+ViewDestroy(cbIndex, sView);
+SubsetDestroy(dmHLYear, sSubset);
+SubsetDestroy(dmScenario, sSubset);
+SubsetDestroy(dmIndex, sSubset);
+SubsetDestroy(dmIndexMeas, sSubset);
+SubsetDestroy(dmPer, sSubset);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, psTargetHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, psTargetScenario, 1);
+
+
+# Index
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmIndex | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Index Measure
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmIndexMeas | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Period
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****BUILD VIEW
+#---------------------------------------------------------------------------------------------------------------------------
+ViewCreate(cbIndex, sView);
+
+ViewSubsetAssign(cbIndex, sView, dmHLYear, sSubset);
+ViewSubsetAssign(cbIndex, sView, dmScenario, sSubset);
+ViewSubsetAssign(cbIndex, sView, dmIndex, sSubset);
+ViewSubsetAssign(cbIndex, sView, dmIndexMeas, sSubset);
+ViewSubsetAssign(cbIndex, sView, dmPer, sSubset);
+
+
+ViewExtractSkipZeroesSet (cbIndex, sView, 1);
+ViewExtractSkipCalcsSet (cbIndex, sView, 1);
+ViewExtractSkipRuleValuesSet (cbIndex, sView, 1);
+
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- ZERO OUT CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWZEROOUT (cbIndex, sView);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+ViewDestroy(cbIndex, sView);
+SubsetDestroy(dmHLYear, sSubset);
+SubsetDestroy(dmScenario, sSubset);
+SubsetDestroy(dmIndex, sSubset);
+SubsetDestroy(dmIndexMeas, sSubset);
+SubsetDestroy(dmPer, sSubset);
+
+
+#***********************************************************************************************************************
+#--- STEP 1 - DELETE TARGET VIEW
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+ViewDestroy(cbIndex, sView);
+SubsetDestroy(dmHLYear, sSubset);
+SubsetDestroy(dmScenario, sSubset);
+SubsetDestroy(dmIndex, sSubset);
+SubsetDestroy(dmIndexMeas, sSubset);
+SubsetDestroy(dmPer, sSubset);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, psSourceHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, psSourceScenario, 1);
+
+
+# Index
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmIndex | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Index Measure
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmIndexMeas | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Period
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****BUILD VIEW
+#---------------------------------------------------------------------------------------------------------------------------
+ViewCreate(cbIndex, sView);
+
+ViewSubsetAssign(cbIndex, sView, dmHLYear, sSubset);
+ViewSubsetAssign(cbIndex, sView, dmScenario, sSubset);
+ViewSubsetAssign(cbIndex, sView, dmIndex, sSubset);
+ViewSubsetAssign(cbIndex, sView, dmIndexMeas, sSubset);
+ViewSubsetAssign(cbIndex, sView, dmPer, sSubset);
+
+
+ViewExtractSkipZeroesSet (cbIndex, sView, 1);
+ViewExtractSkipCalcsSet (cbIndex, sView, 1);
+ViewExtractSkipRuleValuesSet (cbIndex, sView, 1);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- DEFINE DATA SOURCE
+#---------------------------------------------------------------------------------------------------------------------------
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+IF (CELLISUPDATEABLE (cbIndex, psTargetHLYear, psTargetScenario, vsIndex, vsIndexMeas, vsPeriod) = 1);
+	CELLPUTN(vnValue, cbIndex, psTargetHLYear, psTargetScenario, vsIndex, vsIndexMeas, vsPeriod);
+ENDIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- ZERO OUT SOURCE VIEW
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWZEROOUT (cbIndex, sView);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+ViewDestroy(cbIndex, sView);
+SubsetDestroy(dmHLYear, sSubset);
+SubsetDestroy(dmScenario, sSubset);
+SubsetDestroy(dmIndex, sSubset);
+SubsetDestroy(dmIndexMeas, sSubset);
+SubsetDestroy(dmPer, sSubset);
+#endregion

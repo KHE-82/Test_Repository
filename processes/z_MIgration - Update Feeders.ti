@@ -1,0 +1,37 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               z_MIgration - Update Feeders
+#**** DESCRIPTION:       This process will upload cash flow derivation weightings
+#****
+#****                                 
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 10/08/2017    KG             Initial Revision
+#***********************************************************************************************************************
+
+DELETEALLPERSISTENTFEEDERS;
+CubeProcessFeeders('AE adjustments');
+CubeProcessFeeders('AE cash flow');
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

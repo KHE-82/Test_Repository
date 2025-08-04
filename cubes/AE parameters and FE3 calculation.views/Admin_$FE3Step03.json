@@ -1,0 +1,118 @@
+{
+	"@type":"NativeView",
+	"Name":"Admin_$FE3Step03",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('AE parameters and FE3 calculation measure')/Hierarchies('AE parameters and FE3 calculation measure')/Subsets('Admin_$FE3Step03')"
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('period')/Hierarchies('period')/Subsets('Admin_$FE3Step03')"
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('programme')/Hierarchies('programme')/Subsets('Admin_$FE3Step03')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('1067.01.01')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('spp')/Hierarchies('spp')/Subsets('Admin_$FE3Step03')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('-')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('account')/Hierarchies('account')/Subsets('Admin_$FE3Step03')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('account')/Hierarchies('account')/Elements('9000120')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('movement account')/Hierarchies('movement account')/Subsets('Admin_$FE3Step03')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('-')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('related entity')/Hierarchies('related entity')/Subsets('Admin_$FE3Step03')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('-')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Subsets('Admin_$FE3Step03')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('-')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Subsets('Admin_$FE3Step03')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('-')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('measure code')/Hierarchies('measure code')/Subsets('Admin_$FE3Step03')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00001')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('id')/Hierarchies('id')/Subsets('Admin_$FE3Step03')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('id')/Hierarchies('id')/Elements('0000A')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":false,
+	"SuppressEmptyRows":false,
+	"FormatString":"0.00"
+}

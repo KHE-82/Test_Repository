@@ -1,0 +1,519 @@
+#DB('AE adjustments',!status, !outcome, !function, !reason, !related entity,!spp,!measure code,!appropriation type,!movement account,!appropriation item,!programme,!account,!id,!jurisdiction,!period)
+#DB('AE parameters and FE3 calculation',  !Programme, !spp, !account, !movement account, !related entity, !jurisdiction, !appropriation item, !measure code, !period, !AE parametes and FE3 calculation measure);
+# MYEFO in the 'current budget round' value in the variable attribute is the trigger to determine which FE3 value to use (original value or the Total FE3 adjustment value)
+SKIPCHECK;
+
+# RULE 01
+# Parameter
+# Approp revenue for departmental programmes equals expense calculation
+['49800', '1280004', movementaccount:'-',jurisdiction:'-','parameter value'] = N:  roundp(
+# TEST A - if account is to have parameter applied
+IF(ELISANC('programme', 'Departmental programmes', !programme) = 1,
+# TRUEPART A - data from the CURRENT scenario, multiplied by adjustment factor
+# TEST B - if period is equal to the HL year
+IF ((ATTRS('period', !period, 'type') @= 'annual') & (!period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1) % (DB('}ElementAttributes_variables', 'current budget round', 'value') @= 'MYEFO') & DIMIX ('pe
+riod', !period) >= DIMIX('period', ATTRS('variables', 'FE3 Period', 'value'))),
+# TRUEPART B
+STET,
+# TESTPART C - IF ID is not applied parameters
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details',  DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply parameters') @= 'Y'),
+# TRUE PART C - IF ID has parameters applied
+['total related entity', movementaccount:'-', '1280004', 'Parameters Calculation value'] *
+DB('index', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', DB('programme details', DB('}ElementAttributes_variables', 'headline year', 'value'),'current',!programme, 'parameter'), 'adjustment factor', !period),
+# FALSE PART C - IF ID has parameters applied
+STET)),
+# FALSEPART A - populate with zero
+STET), 0);
+
+# Approp revenue for administered programmes equals expense calculation
+['parameter value', '49800', '7593', '4100001', jurisdiction:'-'] = N:  roundp(
+# TEST A - if account is to have parameter applied
+IF(ELISANC('programme', 'Administered programmes', !programme) = 1 & (!appropriation item @= DB('programme details', DB('}ElementAttributes_variables', 'headline year', 'value'),'current', !programme, 'appropriation item')),
+# TRUEPART A - data from the CURRENT scenario, multiplied by adjustment factor
+# TEST B - if period is equal to the HL year
+IF ((ATTRS('period', !period, 'type') @= 'annual') & (!period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1) % (DB('}ElementAttributes_variables', 'current budget round', 'value') @= 'MYEFO') & DIMIX ('pe
+riod', !period) >= DIMIX('period', ATTRS('variables', 'FE3 Period', 'value'))),
+# TRUEPART B
+STET,
+# TESTPART C - IF ID is not applied parameters
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details',  DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply parameters') @= 'Y'),
+# TRUE PART C - IF ID has parameters applied
+['total related entity', movementaccount:'-', '2000000', 'Total jurisdictions', 'parameter value'],
+# FALSE PART C - IF ID has parameters applied
+STET)),
+# FALSEPART A - populate with zero
+STET), 0);
+
+
+# Capital Budget Expense calculation
+['parameter value', relatedentity:'-', movementaccount:'-', '9170000'] = N:  roundp(
+# TEST A - if period is equal to the HL year
+IF ((ATTRS('period', !period, 'type') @= 'annual') & (!period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1) % (DB('}ElementAttributes_variables', 'current budget round', 'value') @= 'MYEFO') & DIMIX ('pe
+riod', !period) >= DIMIX('period', ATTRS('variables', 'FE3 Period', 'value'))),
+# TRUE PART A - Leave Zero (0)
+STET,
+# FALSE PART A
+# TESTPART B - IF ID is not applied parameters
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details',  DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply parameters') @= 'Y') & (!appropriation item @= DB('programme details', DB('}ElementAttrib
+utes_variables', 'headline year', 'value'),'current', !programme, 'appropriation item (DCB)')),
+# TRUE PART B - IF ID has parameters applied
+[relatedentity:'-', movementaccount:'-', 'Total approp item', '9170000', 'Parameters Calculation value'] *
+DB('index', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', DB('programme details', DB('}ElementAttributes_variables', 'headline year', 'value'),'current',!programme, 'parameter'), 'adjustment factor', !period),
+# FALSEPART B - populate with zero
+STET)), 0);
+
+# Administered Expenses
+['parameter value'] = N:  roundp(
+# TEST A -  if period is equal to the HL year
+IF ((ATTRS('period', !period, 'type') @= 'annual') & (!period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1) % (DB('}ElementAttributes_variables', 'current budget round', 'value') @= 'MYEFO') & DIMIX ('pe
+riod', !period) >= DIMIX('period', ATTRS('variables', 'FE3 Period', 'value'))),
+# TRUEPART A - Current Period is same as headline year
+0,
+# FALSE PART A - Not current period, so apply parameters
+# TEST B - if account and ID is to have parameter applied and is an expense account and is within Administered Programmes
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply parameters') @= 'Y') & ELISANC('account', '2000000', !account) = 1 & (ELISANC('programme',
+ 'Administered programmes', !programme) = 1),
+# TRUEPART B - Apply parameters on Administered Programmes
+['original value'] *
+DB('index', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', DB('programme details',DB('}ElementAttributes_variables', 'headline year', 'value') ,'current',!programme, 'parameter'), 'adjustment factor', !period),
+# FALSE PART B - Not Administered Programmes
+# TEST C - if account and ID is to have parameter applied and is an expense account and is within Departmental Programmes
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply parameters') @= 'Y') &  (!account @= DB('programme details',DB('}ElementAttributes_variabl
+es', 'headline year', 'value') ,'current',!programme, 'parameter account')) & (!related entity @= DB('programme details',DB('}ElementAttributes_variables', 'headline year', 'value') ,'current',!programme, 'parameter related entity'))  & ELISANC('programme
+', 'Departmental programmes', !programme) = 1,
+# TRUEPART C - Programme is administered, copy from appropriations
+['parameter value', '49800', '1280004', movementaccount:'-',jurisdiction:'-'],
+# FALSEPART A - allow data entry
+CONTINUE))), 0);
+
+
+
+# RULE 01A - FE3
+# Parameter
+# Approp revenue for departmental programmes equals expense calculation
+['49800', '1280004', movementaccount:'-',jurisdiction:'-','FE3 parameter value'] = N:  roundp(
+# TEST A - if account is to have parameter applied
+IF(ELISANC('programme', 'Departmental programmes', !programme) = 1,
+# TRUEPART A - data from the CURRENT scenario, multiplied by adjustment factor
+# TEST B - if period is equal to the HL year
+IF ((DB('}ElementAttributes_variables', 'current budget round', 'value') @<> 'MYEFO') & (ATTRS('period', !period, 'type') @= 'annual') & !period @<> DIMNM('period', DIMIX('period', ATTRS('variables', 'FE3 Period', 'value'))),
+# TRUEPART B
+STET,
+# TESTPART C - IF ID is not applied parameters
+IF((DB('}ElementAttributes_variables', 'current budget round', 'value') @= 'MYEFO') & ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details',  DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply parame
+ters') @= 'Y'),
+# TRUE PART C - IF ID has parameters applied
+['total related entity', movementaccount:'-', '1280004', 'FE3 Parameters Calculation value'] *
+DB('index', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', DB('programme details', DB('}ElementAttributes_variables', 'headline year', 'value'),'current',!programme, 'parameter'), 'adjustment factor', !period),
+# FALSE PART C - IF ID has parameters applied
+STET)),
+# FALSEPART A - populate with zero
+STET), 0);
+
+# Approp revenue for administered programmes equals expense calculation
+['FE3 parameter value', '49800', '7593', '4100001', jurisdiction:'-'] = N:  roundp(
+# TEST A - if account is to have parameter applied
+IF(ELISANC('programme', 'Administered programmes', !programme) = 1 & (!appropriation item @= DB('programme details', DB('}ElementAttributes_variables', 'headline year', 'value'),'current', !programme, 'appropriation item')),
+# TRUEPART A - data from the CURRENT scenario, multiplied by adjustment factor
+# TEST B - if period is equal to the HL year
+IF ((DB('}ElementAttributes_variables', 'current budget round', 'value') @<> 'MYEFO') & (ATTRS('period', !period, 'type') @= 'annual') & !period @<> DIMNM('period', DIMIX('period', ATTRS('variables', 'FE3 Period', 'value'))),
+# TRUEPART B
+STET,
+# TESTPART C - IF ID is not applied parameters
+IF((DB('}ElementAttributes_variables', 'current budget round', 'value') @= 'MYEFO') & ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details',  DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply parame
+ters') @= 'Y'),
+# TRUE PART C - IF ID has parameters applied
+['total related entity', movementaccount:'-', '2000000', 'Total jurisdictions', 'FE3 parameter value'],
+# FALSE PART C - IF ID has parameters applied
+STET)),
+# FALSEPART A - populate with zero
+STET), 0);
+
+
+# Capital Budget Expense calculation
+['FE3 parameter value', relatedentity:'-', movementaccount:'-', '9170000'] = N:  roundp(
+# TEST A - if period is equal to the HL year
+IF ((DB('}ElementAttributes_variables', 'current budget round', 'value') @<> 'MYEFO') & (ATTRS('period', !period, 'type') @= 'annual') & !period @<> DIMNM('period', DIMIX('period', ATTRS('variables', 'FE3 Period', 'value'))),
+# TRUE PART A - Leave Zero (0)
+STET,
+# FALSE PART A
+# TESTPART B - IF ID is not applied parameters
+IF((DB('}ElementAttributes_variables', 'current budget round', 'value') @= 'MYEFO') & ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details',  DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply parame
+ters') @= 'Y') & (!appropriation item @= DB('programme details', DB('}ElementAttributes_variables', 'headline year', 'value'),'current', !programme, 'appropriation item (DCB)')),
+# TRUE PART B - IF ID has parameters applied
+[relatedentity:'-', movementaccount:'-', 'Total approp item',  '9170000', 'FE3 Parameters Calculation value'] *
+DB('index', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', DB('programme details', DB('}ElementAttributes_variables', 'headline year', 'value'),'current',!programme, 'parameter'), 'adjustment factor', !period),
+# FALSEPART B - populate with zero
+STET)), 0);
+
+# Administered Expenses
+['FE3 parameter value'] = N:  roundp(
+# TEST A -  if period is equal to the HL year
+IF ((DB('}ElementAttributes_variables', 'current budget round', 'value') @<> 'MYEFO') & (ATTRS('period', !period, 'type') @= 'annual') & !period @<> DIMNM('period', DIMIX('period', ATTRS('variables', 'FE3 Period', 'value'))),
+# TRUEPART A - Current Period is same as headline year
+0,
+# FALSE PART A - Not current period, so apply parameters
+# TEST B - if account and ID is to have parameter applied and is an expense account and is within Administered Programmes
+IF((DB('}ElementAttributes_variables', 'current budget round', 'value') @= 'MYEFO') & ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply paramet
+ers') @= 'Y') & ELISANC('account', '2000000', !account) = 1 & (ELISANC('programme', 'Administered programmes', !programme) = 1),
+# TRUEPART B - Apply parameters on Administered Programmes
+['Total FE3 adjustment value'] *
+DB('index', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', DB('programme details',DB('}ElementAttributes_variables', 'headline year', 'value') ,'current',!programme, 'parameter'), 'adjustment factor', !period),
+# FALSE PART B - Not Administered Programmes
+# TEST C - if account and ID is to have parameter applied and is an expense account and is within Departmental Programmes
+IF((DB('}ElementAttributes_variables', 'current budget round', 'value') @= 'MYEFO') & ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply paramet
+ers') @= 'Y') &  (!account @= DB('programme details',DB('}ElementAttributes_variables', 'headline year', 'value') ,'current',!programme, 'parameter account')) & (!related entity @= DB('programme details',DB('}ElementAttributes_variables', 'headline year',
+ 'value') ,'current',!programme, 'parameter related entity'))  & ELISANC('programme', 'Departmental programmes', !programme) = 1,
+# TRUEPART C - Programme is administered, copy from appropriations
+['FE3 parameter value', '49800', '1280004', movementaccount:'-',jurisdiction:'-'],
+# FALSEPART A - allow data entry
+CONTINUE))), 0);
+
+
+
+# RULE 02
+# Efficiency Dividend
+# Approp revenue for departmental programmes equals expense calculation
+['49800', '1280004', movementaccount:'-',jurisdiction:'-','efficiency dividend value'] = N:  roundp(
+# TEST A - if account is to have parameter applied
+IF(ELISANC('programme', 'Departmental programmes', !programme) = 1,
+# TRUEPART A - data from the CURRENT scenario, multiplied by adjustment factor
+# TEST B - if period is equal to the HL year
+IF ((ATTRS('period', !period, 'type') @= 'annual') & (!period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1) % (DB('}ElementAttributes_variables', 'current budget round', 'value') @= 'MYEFO') & DIMIX ('pe
+riod', !period) >= DIMIX('period', ATTRS('variables', 'FE3 Period', 'value'))),
+# TRUEPART B
+STET,
+# TESTPART C - IF ID is not applied parameters
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details',  DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply parameters') @= 'Y') & DB('programme details',  DB('}ElementAttributes_variables', 'headl
+ine year', 'value'), 'current', !programme, 'efficiency dividend') @= 'Y',
+# TRUE PART C - IF ID has parameters applied
+['total related entity', movementaccount:'-', '1280004', 'original value'] *
+DB('index', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', 'efficiency dividend', 'adjustment factor', !period),
+# FALSE PART C - IF ID has parameters applied
+STET)),
+# FALSEPART A - populate with zero
+CONTINUE), 0);
+
+# Approp revenue for administered programmes equals expense calculation
+['efficiency dividend value', '49800', '7593', '4100001'] = N:  roundp(
+# TEST A - if account is to have parameter applied
+IF(ELISANC('programme', 'Administered programmes', !programme) = 1 & (!appropriation item @= DB('programme details', DB('}ElementAttributes_variables', 'headline year', 'value'),'current', !programme, 'appropriation item')),
+# TRUEPART A - data from the CURRENT scenario, multiplied by adjustment factor
+# TEST B - if period is equal to the HL year
+IF ((ATTRS('period', !period, 'type') @= 'annual') & (!period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1) % (DB('}ElementAttributes_variables', 'current budget round', 'value') @= 'MYEFO') & DIMIX ('pe
+riod', !period) >= DIMIX('period', ATTRS('variables', 'FE3 Period', 'value'))),
+# TRUEPART B
+STET,
+# TESTPART C - IF ID is not applied parameters
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details',  DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply parameters') @= 'Y') & DB('programme details', DB('}ElementAttributes_variables', 'headli
+ne year', 'value'), 'current', !programme, 'efficiency dividend') @= 'Y',
+# TRUE PART C - IF ID has parameters applied
+['total related entity', movementaccount:'-', '2000000', 'Total jurisdictions', 'efficiency dividend value'],
+# FALSE PART C - IF ID has parameters applied
+STET)),
+# FALSEPART A - populate with zero
+STET), 0);
+
+
+# Capital Budget Expense calculation
+['efficiency dividend value', relatedentity:'-', movementaccount:'-', '9170000'] = N:  roundp(
+# TEST A - if period is equal to the HL year
+IF ((ATTRS('period', !period, 'type') @= 'annual') & (!period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1) % (DB('}ElementAttributes_variables', 'current budget round', 'value') @= 'MYEFO') & DIMIX ('pe
+riod', !period) >= DIMIX('period', ATTRS('variables', 'FE3 Period', 'value'))),
+# TRUE PART A - Leave Zero (0)
+STET,
+# FALSE PART A
+# TESTPART B - IF ID is not applied parameters
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details',  DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply parameters') @= 'Y') & DB('programme details',  DB('}ElementAttributes_variables', 'headl
+ine year', 'value'), 'current', !programme, 'efficiency dividend') @= 'Y' & (!appropriation item @= DB('programme details', DB('}ElementAttributes_variables', 'headline year', 'value'),'current', !programme, 'appropriation item (DCB)')),
+# TRUE PART B - IF ID has parameters applied
+[relatedentity:'-', movementaccount:'-', 'Total approp item','9170000', 'original value'] *
+DB('index', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', 'efficiency dividend', 'adjustment factor', !period),
+# FALSEPART B - populate with zero
+STET)), 0);
+
+# Expenses Indexed
+['efficiency dividend value'] = N:  roundp(
+# TEST A -  if period is equal to the HL year
+IF ((ATTRS('period', !period, 'type') @= 'annual') & (!period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1) % (DB('}ElementAttributes_variables', 'current budget round', 'value') @= 'MYEFO')  & DIMIX ('p
+eriod', !period) >= DIMIX('period', ATTRS('variables', 'FE3 Period', 'value'))),
+# TRUEPART A - Current Period is same as headline year
+0,
+# FALSE PART A - Not current period, so apply parameters
+# TEST B - if account and ID is to have parameter applied and is an expense account and is within Administered Programmes
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply parameters') @= 'Y') & ELISANC('account', '2000000', !account) = 1 & (ELISANC('programme',
+ 'Administered programmes', !programme) = 1) & DB('programme details', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !programme, 'efficiency dividend') @= 'Y',
+# TRUEPART B - Apply parameters on Administered Programmes
+['original value'] *
+DB('index', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', 'efficiency dividend', 'adjustment factor', !period),
+# FALSE PART B - Not Administered Programmes
+# TEST C - if account and ID is to have parameter applied and is an expense account and is within Departmental Programmes
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply parameters') @= 'Y') & DB('programme details',  DB('}ElementAttributes_variables', 'headli
+ne year', 'value'), 'current', !programme, 'efficiency dividend') @= 'Y' &  (!account @= DB('programme details',DB('}ElementAttributes_variables', 'headline year', 'value') ,'current',!programme, 'parameter account')) & (!related entity @= DB('programme d
+etails',DB('}ElementAttributes_variables', 'headline year', 'value') ,'current',!programme, 'parameter related entity'))  & ELISANC('programme', 'Departmental programmes', !programme) = 1,
+# TRUEPART C - Programme is administered, copy from appropriations
+['efficiency dividend value', '49800', '1280004', movementaccount:'-',jurisdiction:'-'],
+# FALSEPART A - allow data entry
+STET))), 0);
+
+
+
+
+
+# RULE 02A
+# Efficiency Dividend
+# Approp revenue for departmental programmes equals expense calculation
+['49800', '1280004', movementaccount:'-',jurisdiction:'-','FE3 efficiency dividend value'] = N:  roundp(
+# TEST A - if account is to have parameter applied
+IF(ELISANC('programme', 'Departmental programmes', !programme) = 1,
+# TRUEPART A - data from the CURRENT scenario, multiplied by adjustment factor
+# TEST B - if period is equal to the HL year
+IF ((DB('}ElementAttributes_variables', 'current budget round', 'value') @<> 'MYEFO') & (ATTRS('period', !period, 'type') @= 'annual') & !period @<> DIMNM('period', DIMIX('period', ATTRS('variables', 'FE3 Period', 'value'))),
+# TRUEPART B
+STET,
+# TESTPART C - IF ID is not applied parameters
+IF((DB('}ElementAttributes_variables', 'current budget round', 'value') @= 'MYEFO') & ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details',  DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply parame
+ters') @= 'Y') & DB('programme details',  DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !programme, 'efficiency dividend') @= 'Y',
+# TRUE PART C - IF ID has parameters applied
+['total related entity', movementaccount:'-', '1280004', 'Total  FE3 adjustment value'] *
+DB('index', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', 'efficiency dividend', 'adjustment factor', !period),
+# FALSE PART C - IF ID has parameters applied
+STET)),
+# FALSEPART A - populate with zero
+CONTINUE), 0);
+
+# Approp revenue for administered programmes equals expense calculation
+['FE3 efficiency dividend value', '49800', '7593', '4100001'] = N:  roundp(
+# TEST A - if account is to have parameter applied
+IF(ELISANC('programme', 'Administered programmes', !programme) = 1 & (!appropriation item @= DB('programme details', DB('}ElementAttributes_variables', 'headline year', 'value'),'current', !programme, 'appropriation item')),
+# TRUEPART A - data from the CURRENT scenario, multiplied by adjustment factor
+# TEST B - if period is equal to the HL year
+IF ((DB('}ElementAttributes_variables', 'current budget round', 'value') @<> 'MYEFO') & (ATTRS('period', !period, 'type') @= 'annual') & !period @<> DIMNM('period', DIMIX('period', ATTRS('variables', 'FE3 Period', 'value'))),
+# TRUEPART B
+STET,
+# TESTPART C - IF ID is not applied parameters
+IF((DB('}ElementAttributes_variables', 'current budget round', 'value') @= 'MYEFO') & ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details',  DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply parame
+ters') @= 'Y') & DB('programme details', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !programme, 'efficiency dividend') @= 'Y',
+# TRUE PART C - IF ID has parameters applied
+['total related entity', movementaccount:'-', '2000000', 'Total jurisdictions', 'FE3 efficiency dividend value'],
+# FALSE PART C - IF ID has parameters applied
+STET)),
+# FALSEPART A - populate with zero
+STET), 0);
+
+
+# Capital Budget Expense calculation
+['FE3 efficiency dividend value', relatedentity:'-', movementaccount:'-', '9170000'] = N:  roundp(
+# TEST A - if period is equal to the HL year
+IF ((DB('}ElementAttributes_variables', 'current budget round', 'value') @<> 'MYEFO') & (ATTRS('period', !period, 'type') @= 'annual') & !period @<> DIMNM('period', DIMIX('period', ATTRS('variables', 'FE3 Period', 'value'))),
+# TRUE PART A - Leave Zero (0)
+STET,
+# FALSE PART A
+# TESTPART B - IF ID is not applied parameters
+IF((DB('}ElementAttributes_variables', 'current budget round', 'value') @= 'MYEFO') & ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details',  DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply parame
+ters') @= 'Y') & DB('programme details',  DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !programme, 'efficiency dividend') @= 'Y' & (!appropriation item @= DB('programme details', DB('}ElementAttributes_variables', 'headline yea
+r', 'value'),'current', !programme, 'appropriation item (DCB)')),
+# TRUE PART B - IF ID has parameters applied
+[relatedentity:'-', movementaccount:'-', 'Total approp item', '9170000', 'Total FE3 adjustment value'] *
+DB('index', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', 'efficiency dividend', 'adjustment factor', !period),
+# FALSEPART B - populate with zero
+STET)), 0);
+
+# Expenses Indexed
+['FE3 efficiency dividend value'] = N:  roundp(
+# TEST A -  if period is equal to the HL year
+IF ((DB('}ElementAttributes_variables', 'current budget round', 'value') @<> 'MYEFO') & (ATTRS('period', !period, 'type') @= 'annual') & !period @<> DIMNM('period', DIMIX('period', ATTRS('variables', 'FE3 Period', 'value'))),
+# TRUEPART A - Current Period is same as headline year
+0,
+# FALSE PART A - Not current period, so apply parameters
+# TEST B - if account and ID is to have parameter applied and is an expense account and is within Administered Programmes
+IF((DB('}ElementAttributes_variables', 'current budget round', 'value') @= 'MYEFO') & ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply paramet
+ers') @= 'Y') & ELISANC('account', '2000000', !account) = 1 & (ELISANC('programme', 'Administered programmes', !programme) = 1) & DB('programme details', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !programme, 'efficiency divi
+dend') @= 'Y',
+# TRUEPART B - Apply parameters on Administered Programmes
+['Total FE3 adjustment value'] *
+DB('index', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', 'efficiency dividend', 'adjustment factor', !period),
+# FALSE PART B - Not Administered Programmes
+# TEST C - if account and ID is to have parameter applied and is an expense account and is within Departmental Programmes
+IF((DB('}ElementAttributes_variables', 'current budget round', 'value') @= 'MYEFO') & ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details', DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !id, 'apply paramet
+ers') @= 'Y') & DB('programme details',  DB('}ElementAttributes_variables', 'headline year', 'value'), 'current', !programme, 'efficiency dividend') @= 'Y' &  (!account @= DB('programme details',DB('}ElementAttributes_variables', 'headline year', 'value')
+ ,'current',!programme, 'parameter account')) & (!related entity @= DB('programme details',DB('}ElementAttributes_variables', 'headline year', 'value') ,'current',!programme, 'parameter related entity'))  & ELISANC('programme', 'Departmental programmes', 
+!programme) = 1,
+# TRUEPART C - Programme is administered, copy from appropriations
+['FE3 efficiency dividend value', '49800', '1280004', movementaccount:'-',jurisdiction:'-'],
+# FALSEPART A - allow data entry
+STET))), 0);
+
+# RULE 003
+# Opening Balances
+# opening balances - entity accounts
+# 4100001
+[relatedentity:'No Related Entity', spp:'-', '7211', '4100001'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((ATTRS('period', !period, 'type') @= 'annual') & (DIMIX('period', !period) <> 1) & (!AE parameters and FE3 calculation measure @<> 'original value'),
+# TRUEPART A - take closing balance from previous period
+DB('AE parameters and FE3 calculation', !programme, 'Total SPP', '4100001', '7250', 'Total related entity', !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)-1), !AE parameters and FE3 calculation measure),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# 4100011
+[relatedentity:'No Related Entity', spp:'-', '7211', '4100011'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((ATTRS('period', !period, 'type') @= 'annual') & (DIMIX('period', !period) <> 1) & (!AE parameters and FE3 calculation measure @<> 'original value'),
+# TRUEPART A - take closing balance from previous period
+DB('AE parameters and FE3 calculation',  !programme, 'Total SPP', '4100011', '7250', 'Total related entity', !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)-1), !AE parameters and FE3 calculation measure),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# 4100012
+[relatedentity:'No Related Entity', spp:'-', '7211', '4100012'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((ATTRS('period', !period, 'type') @= 'annual') & (DIMIX('period', !period) <> 1) & (!AE parameters and FE3 calculation measure @<> 'original value'),
+# TRUEPART A - take closing balance from previous period
+DB('AE parameters and FE3 calculation',  !programme, 'Total SPP', '4100012', '7250', 'Total related entity', !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)-1), !AE parameters and FE3 calculation measure),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# 4100013
+[relatedentity:'No Related Entity', spp:'-', '7211', '4100013'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((ATTRS('period', !period, 'type') @= 'annual') & (DIMIX('period', !period) <> 1) & (!AE parameters and FE3 calculation measure @<> 'original value'),
+# TRUEPART A - take closing balance from previous period
+DB('AE parameters and FE3 calculation',  !programme, 'Total SPP', '4100013', '7250', 'Total related entity', !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)-1), !AE parameters and FE3 calculation measure),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# 4100015
+[relatedentity:'No Related Entity', spp:'-', '7211', '4100015'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((ATTRS('period', !period, 'type') @= 'annual') & (DIMIX('period', !period) <> 1) & (!AE parameters and FE3 calculation measure @<> 'original value'),
+# TRUEPART A - take closing balance from previous period
+DB('AE parameters and FE3 calculation',  !programme, 'Total SPP', '4100015', '7250', 'Total related entity', !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)-1), !AE parameters and FE3 calculation measure),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# 4100016
+[relatedentity:'No Related Entity', spp:'-', '7211', '4100016'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((ATTRS('period', !period, 'type') @= 'annual') & (DIMIX('period', !period) <> 1) & (!AE parameters and FE3 calculation measure @<> 'original value'),
+# TRUEPART A - take closing balance from previous period
+DB('AE parameters and FE3 calculation',  !programme, 'Total SPP', '4100016', '7250', 'Total related entity', !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)-1), !AE parameters and FE3 calculation measure),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# 4100003
+[relatedentity:'No Related Entity', spp:'-', '7211', '4100003'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((ATTRS('period', !period, 'type') @= 'annual') & (DIMIX('period', !period) <> 1) & (!AE parameters and FE3 calculation measure @<> 'original value'),
+# TRUEPART A - take closing balance from previous period
+DB('AE parameters and FE3 calculation',  !programme, 'Total SPP', '4100003', '7250', 'Total related entity', !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)-1), !AE parameters and FE3 calculation measure),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# opening balances - non-financial asset accounts
+['7131'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND account is a child of 5310000 and ID is not 0000A
+IF( (ATTRS('period', !period, 'type') @= 'annual') & (DIMIX('period', !period) <> 1) & (ELISANC('account', '5310000', !account) = 1) &  (!AE parameters and FE3 calculation measure @<> 'original value'),
+# TRUEPART A - take closing balance from previous period
+DB('AE parameters and FE3 calculation',  !programme, !spp, !account, '7120', !related entity, !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)-1), !AE parameters and FE3 calculation measure),
+# FALSEPART A - allow data entry
+STET), 0);
+
+['7161'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND account is a child of 5310000 and ID is not 0000A
+IF((ATTRS('period', !period, 'type') @= 'annual') & (DIMIX('period', !period) <> 1) & (ELISANC('account', '5310000', !account) = 1) &  (!AE parameters and FE3 calculation measure @<> 'original value'),
+# TRUEPART A - take closing balance from previous period
+DB('AE parameters and FE3 calculation',  !programme, !spp, !account, '7150', !related entity, !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)-1), !AE parameters and FE3 calculation measure),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# opening balances - non-financial asset accounts (ROU)
+['7331'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND account is a child of 5310000 and ID is not 0000A
+IF((ATTRS('period', !period, 'type') @= 'annual') & (DIMIX('period', !period) <> 1) & (ELISANC('account', '5310000', !account) = 1) &  (!AE parameters and FE3 calculation measure @<> 'original value'),
+# TRUEPART A - take closing balance from previous period
+DB('AE parameters and FE3 calculation',  !programme, !spp, !account, '7320', !related entity, !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)-1), !AE parameters and FE3 calculation measure),
+# FALSEPART A - allow data entry
+STET), 0);
+
+['7361'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND account is a child of 5310000 and ID is not 0000A
+IF((ATTRS('period', !period, 'type') @= 'annual') & (DIMIX('period', !period) <> 1) & (ELISANC('account', '5310000', !account) = 1) &  (!AE parameters and FE3 calculation measure @<> 'original value'),
+# TRUEPART A - take closing balance from previous period
+DB('AE parameters and FE3 calculation',  !programme, !spp, !account, '7360', !related entity, !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)-1), !AE parameters and FE3 calculation measure),
+# FALSEPART A - allow data entry
+STET), 0);
+
+
+# RULE 004
+# total accumulated results - operating result and extraordinary items after tax
+[relatedentity:'No Related Entity', spp:'-', '7201', '4100001', jurisdiction:'-'] = N: roundp(
+['total related entity', 'total spp', movementaccount:'-', '9000110', 'total jurisdictions'],0);
+
+
+FEEDERS;
+#['1280004','49800', movementaccount:'-',jurisdiction:'-','original value'] => ['2000000','Total related entity','parameter value'];
+['1280004','49800', movementaccount:'-',jurisdiction:'-','original value'] =>
+DB('AE parameters and FE3 calculation',  !programme, 'Total SPP', DB('programme details',DB('}ElementAttributes_variables', 'headline year', 'value') ,'current',!programme, 'parameter account'), DB('programme details',DB('}ElementAttributes_variables', 'h
+eadline year', 'value') ,'current',!programme, 'parameter movement account'),DB('programme details',DB('}ElementAttributes_variables', 'headline year', 'value') ,'current',!programme, 'parameter related entity'), !jurisdiction, !appropriation item, !measu
+re code, !id, !period, 'parameter value');
+['original value'] => ['parameter value'];
+['original value'] => ['efficiency dividend value'];
+
+
+['step 1 value'] => ['FE3 parameter value'];
+['step 2 value'] => ['FE3 parameter value'];
+['step 3 value'] => ['FE3 parameter value'];
+
+['step 1 value'] => ['FE3 efficiency dividend value'];
+['step 2 value'] => ['FE3 efficiency dividend value'];
+['step 3 value'] => ['FE3 efficiency dividend value'];
+
+
+# RULE 003
+# Opening Balances
+
+# FALSE PART A
+['Total related entity', 'Total SPP', '7250', '4100001'] =>
+DB('AE parameters and FE3 calculation',  !programme, '-', '4100001', '7211', '-', !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)+1), !AE parameters and FE3 calculation measure);
+
+['Total related entity', 'Total SPP', '7250', '4100011'] =>
+DB('AE parameters and FE3 calculation',  !programme, '-', '4100011', '7211', '-', !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)+1), !AE parameters and FE3 calculation measure);
+
+['Total related entity', 'Total SPP', '7250', '4100012'] =>
+DB('AE parameters and FE3 calculation',  !programme, '-', '4100012', '7211', '-', !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)+1), !AE parameters and FE3 calculation measure);
+
+['Total related entity', 'Total SPP', '7250', '4100013'] =>
+DB('AE parameters and FE3 calculation',  !programme, '-', '4100013', '7211', '-', !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)+1), !AE parameters and FE3 calculation measure);
+
+['Total related entity', 'Total SPP', '7250', '4100015'] =>
+DB('AE parameters and FE3 calculation',  !programme, '-', '4100015', '7211', '-', !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)+1), !AE parameters and FE3 calculation measure);
+
+['Total related entity', 'Total SPP', '7250', '4100016'] =>
+DB('AE parameters and FE3 calculation',  !programme, '-', '4100016', '7211', '-', !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)+1), !AE parameters and FE3 calculation measure);
+
+['Total related entity', 'Total SPP', '7250', '4100003'] =>
+DB('AE parameters and FE3 calculation',  !programme, '-', '4100003', '7211', '-', !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)+1), !AE parameters and FE3 calculation measure);
+
+
+['7120', '5310000'] =>
+DB('AE parameters and FE3 calculation',  !programme, !spp, !account, '7131', !related entity, !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)+1), !AE parameters and FE3 calculation measure);
+
+['7150', '5310000'] =>
+DB('AE parameters and FE3 calculation',  !programme, !spp, !account, '7161', !related entity, !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)+1), !AE parameters and FE3 calculation measure);
+
+['7320', '5310000'] =>
+DB('AE parameters and FE3 calculation',  !programme, !spp, !account, '7331', !related entity, !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)+1), !AE parameters and FE3 calculation measure);
+
+['7360', '5310000'] =>
+DB('AE parameters and FE3 calculation',  !programme, !spp, !account, '7361', !related entity, !jurisdiction, !appropriation item, !measure code, !id, DIMNM('period', DIMIX('period', !period)+1), !AE parameters and FE3 calculation measure);
+
+
+
+
+
+
+# RULE 004
+# total accumulated results - operating result and extraordinary items after tax
+['total related entity', 'total spp', movementaccount:'-', '9000110', 'total jurisdictions'] =>
+['No Related Entity', spp:'-', '7201', '4100001', jurisdiction:'-'];

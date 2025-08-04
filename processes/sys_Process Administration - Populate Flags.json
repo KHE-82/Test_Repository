@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"sys_Process Administration - Populate Flags",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Process Administration - Populate Flags.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[]
+}

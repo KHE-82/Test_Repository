@@ -1,0 +1,425 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Generate FE3 Adj 02 - Review and Populate ID List
+#**** DESCRIPTION:       This process reviews the data and populates the ID Listings
+#****
+#****                                  
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 14/05/2014    KG             Initial Revision
+#**** 13/08/2014    KG             Update to Include No Meas Code for Adjustments
+#****  06/08/2018	KG	  Updated process to FE3 function
+#****  07/08/2018	KG	   Made sure it is 60 characters long
+#**** 26/09/2018	KG	  Some data have dirty data such as multiple outcomes in an adjustment. This is just to group certain fields into one.
+#***********************************************************************************************************************
+
+#**** DECLARE CUBES ****#
+snProg = 'programme';
+sCubeProgDet = snProg | ' details';
+sCube = 'AE adjustments';
+sIDCube = 'AE id details';
+dmTmpID = 'tmp_ID_tmp';
+sDimVar = 'variables';
+sMeasureIDDet = 'Used';
+
+#**** DECLARE VARIABLES ****#
+sView = '$CreateFE3';
+sSubset = sView;
+sHLYear = ATTRS ('variables', 'headline year', 'value');
+sScenario = 'current';
+sStatus = 'Total approved';
+sTotalOC = 'Total outcomes';
+sID ='Total IDs';
+#sID = '0000A';
+
+#*** LET USERS NOW DITACTE WHICH FE2 YEAR TO USE
+sPeriod = psFE2Year;
+#sPeriod = DIMNM('Period',DIMIX('Period',SUBST(sHLYear, 3, 9))+2);
+#sPeriod = DIMNM('Period',DIMIX('Period',SUBST(sHLYear, 3, 9))+3);
+
+#*** SUBSET USED FOR PROGRAMME DIMENSION ***#
+sProgSubSet = 'ProgsforFE3';
+
+#*** REASON CODE USED FOR ADJUSTMENT
+sNewReason = 'Creation of the New 3rd Forward Year Estimates';
+sNewReason = '1033';
+sNewStatus = 'Data';
+sAdjType = 'Generated';
+
+#**** DECLARE USER ***#
+sUser = TM1User();
+dmClients = '}Clients';
+sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy (sCube, sView);
+SubsetDestroy ('headline year', sSubset);
+SubsetDestroy ('scenario', sSubset);
+SubsetDestroy ('status', sSubset);
+SubsetDestroy ('outcome', sSubset);
+SubsetDestroy ('related entity', sSubset);
+SubsetDestroy ('function', sSubset);
+SubsetDestroy ('reason', sSubset);
+SubsetDestroy ('SPP', sSubset);
+SubsetDestroy ('measure code', sSubset);
+SubsetDestroy ('appropriation type', sSubset);
+SubsetDestroy ('movement account', sSubset);
+SubsetDestroy ('appropriation item', sSubset);
+#SubsetDestroy (snProg, sSubset);
+SubsetDestroy ('account', sSubset);
+SubsetDestroy ('ID', sSubset);
+SubsetDestroy ('jurisdiction', sSubset);
+SubsetDestroy ('period', sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate('headline year', sSubset);
+SubsetElementInsert('headline year', sSubset, sHLYear, 1);
+
+# Scenario
+SubsetCreate('scenario', sSubset);
+SubsetElementInsert('scenario', sSubset, sScenario, 1);
+
+# Status
+SubsetCreate('status', sSubset);
+SubsetElementInsert('status', sSubset, sStatus, 1);
+
+# Outcome
+sDim = 'outcome';
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sSubset, MDX);
+
+SubsetCreate(sDim, sSubset);
+SubsetElementInsert(sDim, sSubset, sTotalOC, 1);
+
+
+
+# Related entity
+sDim = 'related entity';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+
+# Function
+sDim = 'function';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Reason
+sDim = 'reason';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# SPP
+sDim = 'spp';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Measure Code
+sDim = 'measure code';
+#*********************************************************************************************************************************************
+#*** ADD MDX CODE TO EXCLUDE MEASURES THAT IS TERMINATING ***#
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | sDim | '] )}, 0)}, [' | sDim | '].[Termination Year] <> "' | psFE2Year | '")}';
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Appropriation Type
+sDim = 'appropriation type';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Movement Account
+sDim = 'movement account';
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | sDim | '] )}, 0)}, [' | sDim | '].[flat file] <> "N")}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Appropriation Item
+sDim = 'appropriation item';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Programme
+sDim = snProg;
+#  We now grab the programme subset we created in the last process
+
+# Account
+sDim = 'account';
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | sDim | '] )}, 0)}, [' | sDim | '].[flat file] <> "N")}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# ID
+sDim = 'id';
+SubsetCreate(sDim, sSubset);
+SubsetElementInsert(sDim, sSubset, sID, 1);
+
+# Jurisdiction
+sDim = 'jurisdiction';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Period
+sDim = 'period';
+SubsetCreate(sDim, sSubset);
+SubsetElementInsert(sDim, sSubset, sPeriod, 1);
+
+lCounter = 0;
+
+#****BUILD VIEW****#
+ViewCreate (sCube, sView);
+
+ViewSubsetAssign (sCube, sView, 'headline year', sSubset);
+ViewSubsetAssign (sCube, sView, 'scenario', sSubset);
+ViewSubsetAssign (sCube, sView, 'status', sSubset);
+ViewSubsetAssign (sCube, sView, 'outcome', sSubset);
+ViewSubsetAssign (sCube, sView, 'related entity', sSubset);
+ViewSubsetAssign (sCube, sView, 'function', sSubset);
+ViewSubsetAssign (sCube, sView, 'reason', sSubset);
+ViewSubsetAssign (sCube, sView, 'SPP', sSubset);
+ViewSubsetAssign (sCube, sView, 'measure code', sSubset);
+ViewSubsetAssign (sCube, sView, 'appropriation type', sSubset);
+ViewSubsetAssign (sCube, sView, 'movement account', sSubset);
+ViewSubsetAssign (sCube, sView, 'appropriation item', sSubset);
+ViewSubsetAssign (sCube, sView, snProg, sProgSubSet);
+ViewSubsetAssign (sCube, sView, 'account', sSubset);
+ViewSubsetAssign (sCube, sView, 'ID', sSubset);
+ViewSubsetAssign (sCube, sView, 'jurisdiction', sSubset);
+ViewSubsetAssign (sCube, sView, 'period', sSubset);
+
+ViewTitleElementSet (sCube, sView, 'headline year', 1);
+ViewTitleElementSet (sCube, sView, 'scenario', 2);
+ViewTitleElementSet (sCube, sView, 'status', 3);
+
+ViewColumnDimensionSet (sCube, sView, 'period', 1);
+
+ViewRowDimensionSet (sCube, sView, 'ID', 1);
+ViewRowDimensionSet (sCube, sView, snProg, 2);
+ViewRowDimensionSet (sCube, sView, 'outcome', 3);
+ViewRowDimensionSet (sCube, sView, 'function', 4);
+ViewRowDimensionSet (sCube, sView, 'measure code', 5);
+ViewRowDimensionSet (sCube, sView, 'appropriation type', 6);
+ViewRowDimensionSet (sCube, sView, 'appropriation item', 7);
+ViewRowDimensionSet (sCube, sView, 'reason', 8);
+ViewRowDimensionSet (sCube, sView, 'account', 9);
+ViewRowDimensionSet (sCube, sView, 'movement account', 10);
+ViewRowDimensionSet (sCube, sView, 'related entity', 11);
+ViewRowDimensionSet (sCube, sView, 'SPP', 12);
+ViewRowDimensionSet (sCube, sView, 'jurisdiction', 13);
+
+ViewSuppressZeroesSet (sCube, sView,1);
+ViewExtractSkipZeroesSet (sCube, sView, 1);
+ViewExtractSkipCalcsSet (sCube, sView, 0);
+
+DATASOURCETYPE = 'VIEW';
+DatasourceCubeview=sView;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF(DTYPE(snProg, vsProg) @<>'N');
+      Itemskip;
+ENDIF;
+
+#just focus on the programs with results in revenues and expenses.
+
+#IF((SUBST(vsAcc,1,1) @= '3') % (SUBST(vsAcc,1,1) @= '4') % (SUBST(vsAcc,1,1) @= '6'));
+#     Itemskip;
+#ELSE;
+#     IF ((SUBST(vsAcc, 1, 1) @= '5') & (vsMA @<> '7121' % vsMA @<> '7153') );
+#          Itemskip;
+#     ENDIF;
+#ENDIF;
+
+
+
+#** FIND NEXT AVAILABLE ID (IF REQUIRED)
+sIDProg = vsProg| vsAppropType | vsAppropItem | vsFunc | vsSPP;
+
+         IF (DIMIX (dmTmpID, sIDProg) = 0);
+              DIMENSIONELEMENTINSERT (dmTmpID, '', sIDProg, 'N');
+              lCounter = lCounter + 1;
+         ENDIF;
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+# *** USE NO MEASURE CODE ***#
+sNoMeasCode = 'M00000';
+
+sIDStatus = 'unauthorised';
+
+IF(DTYPE(snProg,vsProg) @<>'N');
+      Itemskip;
+ENDIF;
+
+#** FIND NEXT AVAILABLE ID (IF REQUIRED)
+#sIDProg = vsProg|vsAppropType|vsFunc;
+sIDProg = vsProg| vsAppropType | vsAppropItem | vsFunc | vsSPP;
+
+IF(Dimix(dmTmpID,sIDProg)=0);
+     itemskip;
+Endif;
+
+sNewID = ATTRS (dmTmpID, sIDProg, 'ID');
+
+sSPP = CellGetS (sCubeProgDet, vsHLYear, vsScenario, vsProg, 'SPP');
+
+#------------------------------------------------------------------
+#---- UPDATE SEP 2018 
+#--- Since I grouped Outcome, now get information from Programme Details for outcome
+#------------------------------------------------------------------
+vsOC = CellGetS (sCubeProgDet, vsHLYear, vsScenario, vsProg, 'outcome');
+
+IF (vsOC @= '');
+      vsOC = ATTRS (sDimVar, 'Default Outcome', 'Value');
+ENDIF;
+
+IF (vsSPP @= '');
+     vsSPP = ATTRS (sDimVar, 'Default SPP', 'Value');
+ENDIF;
+
+IF (vsAppropType @= '');
+     vsAppropType = ATTRS (sDimVar, 'Default App Type', 'Value');
+ENDIF;
+
+IF (vsAppropItem @= '');
+     vsAppropItem = ATTRS (sDimVar, 'Default App Item', 'Value');
+#ELSE;
+#     vsAppropItem = ATTRS ('appropriation item', vsAppropItem, 'code and description');
+ENDIF;
+
+IF (vsFunc @= '');
+    vsFunct = ATTRS (sDimVar, 'Default Function', 'Value');
+ELSE;
+     vsFunc = ATTRS ('function', vsFunc, 'code and description');
+ENDIF;
+
+
+#**** TEST IF WE NEED A NEW ID
+IF (sNewID @= '');
+
+     # GET A NEW ID
+      sNewID = '00000' | TRIM(STR(CELLGETN (sIDCube, sHLYear, sScenario, 'Total IDs', sMeasureIDDet) + 1, 5, 0));
+      sNewID = SUBST (sNewID, LONG (sNewID) - 4, 5);
+
+      ATTRPUTS (sNewID, 'tmp_ID_tmp', sIDProg, 'ID');
+      vsProg = DIMENSIONELEMENTPRINCIPALNAME (snProg, vsProg);
+      ATTRPUTS (vsProg, 'tmp_ID_tmp', sIDProg , 'program');
+
+      sProgDesc = ATTRS(snProg, vsProg, 'code and description');
+
+      ATTRPUTS (vsAppropType, 'tmp_ID_tmp', sIDProg, 'Appropriation Type');
+      ATTRPUTS (vsFunc, 'tmp_ID_tmp', sIDProg , 'Function');
+
+     #**** GET THE ADJUSTMENT TITLE AND DESCRIPTION (BOTH THE SAME)
+     # sNewTitle = sTitle | '(' | sID | ')';
+
+     #*** LOCK IN THE ID
+     CellPutN (1, sIDCube, sHLYear, sScenario, sNewID, sMeasureIDDet);
+
+     #*** POPULATE ID DETAILS CUBE
+
+     CellPutS (vsProg, sIDCube, sHLYear, sScenario, sNewID, snProg | ' code');
+     CellPutS (sProgDesc, sIDCube, sHLYear, sScenario, sNewID, snProg | ' description');
+
+     sDescription = 'FE3 - ' | sProgDesc;
+
+     CellPutS (SUBST(sDescription,1,60), sIDCube, sHLYear, sScenario, sNewID, 'title');
+     CellPutS ('(' | sNewID | ') ' | sDescription, sIDCube, sHLYear, sScenario, sNewID, 'description');
+     CellPutS (sIDStatus, sIDCube, sHLYear, sScenario, sNewID, 'status');
+     CellPutS (sNewReason, sIDCube, sHLYear, sScenario, sNewID, 'reason');
+#     CellPutS (vsMeasCode, sIDCube, sHLYear, sScenario, sNewID, 'measure');
+     CellPutS (sNoMeasCode, sIDCube, sHLYear, sScenario, sNewID, 'measure');
+     CellPutS (vsOC, sIDCube, sHLYear, sScenario, sNewID, 'outcome');
+     CellPutS (vsFunc, sIDCube, sHLYear, sScenario, sNewID, 'function');
+     CellPutS (sSPP, sIDCube, sHLYear, sScenario, sNewID, 'spp');
+     CellPutS (vsAppropItem, sIDCube, sHLYear, sScenario, sNewID, 'appropriation item');
+     CellPutS (vsAppropType, sIDCube, sHLYear, sScenario, sNewID, 'appropriation type');
+     CellPutS ('ongoing', sIDCube, sHLYear, sScenario, sNewID, 'funding life');
+     CellPutS ('Y', sIDCube, sHLYear, sScenario, sNewID, 'apply parameters');
+     
+     sControlType = CELLGETS (sCubeProgDet, sHLYear, sScenario, vsProg, 'control type');
+     CELLPUTS(sControlType, sIDCube, sHLYear, sScenario, sNewID, 'Control Type');
+     CELLPUTS(sAdjType, sIDCube, sHLYear, sScenario, sNewID, 'Adjustment Type');
+
+     #*** Current User ***#
+     sCurUser = TM1User();
+     IF (SUBST(sCurUser,1,3) @= 'CAM');
+          sCurUser = ATTRS(dmClients, sCurUser, '}TM1_DefaultDisplayValue');
+          lScan = SCAN('\',sCurUser) + 1;
+          sCurUser = SUBST(sCurUser, lScan, 9);
+     ELSE;
+          sCurUser = TM1User();
+     ENDIF;
+     CELLPUTS(sCurUser, sIDCube, sHLYear, sScenario, sNewID, 'Created by');
+
+     sNow = TimST( Now, '\D \m \Y');
+     sNow = SUBST(sNow, 1, 2) | '/' | SUBST(sNow, 4, 2) | '/' | SUBST(sNow, 7,4);
+
+     # **** GET DATE VALUES ***#
+     sDNow = TimST( Now, '\D'); 
+     sMNow = TimST( Now, '\m'); 
+     sYNow = TimST( Now, '\Y'); 
+
+     sDay = TRIM(SUBST(sDNow, 1,2));
+
+     IF (LONG (sDay) = 1);
+          sDay = '0' | sDay;
+     ELSE;
+          sDay = sDay;
+     ENDIF;
+
+     sMonth = TRIM(SUBST(sMNow, 1,2));
+
+     IF (LONG (sMonth) = 1);
+          sMonth = '0' | sMonth;
+     ELSE;
+          sMonth = sMonth;
+     ENDIF;
+
+     sYear = TRIM(SUBST(sYNow, 1,4));
+
+     sNow = sDay | '/' | sMonth | '/' | sYear;
+     CELLPUTS(sNow, sIDCube, sHLYear, sScenario, sNewID, 'created date');
+
+     #**** POPULATE PROGRAMME DETAILS CUBE WITH GENERATED FE3 DATE ***#
+     CELLPUTS (sNow, sCubeProgDet, sHLYear, sScenario, vsProg, 'FE3 Generated Date');
+     CELLPUTS (sCurUser, sCubeProgDet, sHLYear, sScenario, vsProg, 'FE3 Generated By');
+     
+ENDIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+#ViewDestroy (sCube, sView);
+#SubsetDestroy ('headline year', sSubset);
+#SubsetDestroy ('scenario', sSubset);
+#SubsetDestroy ('status', sSubset);
+#SubsetDestroy ('outcome', sSubset);
+#SubsetDestroy ('related entity', sSubset);
+#SubsetDestroy ('function', sSubset);
+#SubsetDestroy ('reason', sSubset);
+#SubsetDestroy ('SPP', sSubset);
+#SubsetDestroy ('measure code', sSubset);
+#SubsetDestroy ('appropriation type', sSubset);
+#SubsetDestroy ('movement account', sSubset);
+#SubsetDestroy ('appropriation item', sSubset);
+#SubsetDestroy (snProg, sSubset);
+#SubsetDestroy ('account', sSubset);
+#SubsetDestroy ('ID', sSubset);
+#SubsetDestroy ('jurisdiction', sSubset);
+#SubsetDestroy ('period', sSubset);
+#endregion

@@ -1,0 +1,230 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              AE_NewZeroID_05 - Prog and ID Cube - LoadMetadata to current round
+#**** DESCRIPTION:       This process repopulates the CURRENT scenario in programme details cube in the correct headline year
+#****		          It also reinstates information for IDs 0000A and 0000B in the ID details cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 12/05/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE INDEX CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbIndex = 'index';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE CASHFLOW CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbCF= 'AE cash flow';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE GOVERNMENT MEASURE CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbMeas = 'government measures';
+dmMeasDet = 'measure details';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE GOVERNMENT MEASURE DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbMeasDet = 'government measures details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE GROUP ADJUSTMENT ENTRY CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbGrp = 'AE group adjustment entry';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+
+#sHLYear = ATTRS(dmVar, 'archive year', 'old value');
+#sScenario = ATTRS(dmVar, 'archive scenario', 'old value');
+#sTargetHLYear = ATTRS(dmVar, 'archive year', 'value');
+#sTargetScenario = ATTRS(dmVar, 'archive scenario', 'value');
+sTargetHLYear = ATTRS(dmVar, 'headline year', 'value');
+sTargetScenario = 'current';
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sUser) + 1;
+     sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+     sUser = TM1User();
+ENDIF;
+
+sView = '$ArchiveClear';
+sSubset = sView;
+
+
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy(cbProg, sView);
+SubsetDestroy(dmHLYear, sSubset);
+SubsetDestroy(dmScenario, sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLyear, sSubset, sTargetHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, sTargetScenario, 1);
+
+#****BUILD VIEW****#
+ViewCreate(cbProg, sView);
+
+ViewSubsetAssign(cbProg, sView, dmHLyear, sSubset);
+ViewSubsetAssign(cbProg, sView, dmScenario, sSubset);
+
+ViewSetSkipZeroes(cbProg, sView, 1);
+ViewSetSkipCalcs(cbProg, sView, 1);
+ViewZeroOut(cbProg, sView);
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy(cbProg, sView);
+SubsetDestroy(dmHLYear, sSubset);
+SubsetDestroy(dmScenario, sSubset);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+IF (vsMeasure @<> 'WCi Generated Date' & vsMeasure @<> 'WCI Generated By' & vsMeasure @<> 'ED Generated Date' & vsMeasure @<> 'ED Generated By' & vsMeasure @<> 'FE3 Generated Date' & vsMeasure @<> 'FE3 Generated By');
+
+     IF (VALUE_IS_STRING=0);
+          CellPutN(NVALUE, cbProg, sTargetHLYear, sTargetScenario, vsProg, vsMeasure);
+     ELSE;
+          CellPutS(SVALUE, cbProg, sTargetHLYear, sTargetScenario, vsProg, vsMeasure);
+     ENDIF;
+
+ENDIF;
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+cbProg = 'programme details';
+sView = '$Archive';
+sSubset = sView;
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy(cbProg, sView);
+SubsetDestroy(dmHLYear, sSubset);
+SubsetDestroy(dmScenario, sSubset);
+
+#sNewReason = 'Other';
+sNewReason = 'Other variations not elsewhere defined';
+
+# REINSTATE DETAILS FOR IDS 0000A AND 0000B
+
+#CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '0000A', 'programme');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '0000A', snProg | ' code');
+CellPutS('opening baseline', cbID, sTargetHLYear, sTargetScenario, '0000A', 'title');
+CellPutS('opening baseline', cbID, sTargetHLYear, sTargetScenario, '0000A', 'description');
+CellPutS('Finance validated', cbID, sTargetHLYear, sTargetScenario, '0000A', 'status');
+#CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '0000A', 'reason');
+CellPutS(sNewReason, cbID, sTargetHLYear, sTargetScenario, '0000A', 'reason');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '0000A', 'outcome');
+CellPutS('', cbID, sTargetHLYear, sTargetScenario, '0000A', 'measure');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '0000A', 'function');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '0000A', 'spp');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '0000A', 'appropriation item');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '0000A', 'appropriation type');
+CellPutS('Y', cbID, sTargetHLYear, sTargetScenario, '0000A', 'apply parameters');
+
+#CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '0000B', 'programme');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '0000B', snProg | ' code');
+CellPutS('balance sheet accumulation', cbID, sTargetHLYear, sTargetScenario, '0000B', 'title');
+CellPutS('balance sheet accumulation', cbID, sTargetHLYear, sTargetScenario, '0000B', 'description');
+CellPutS('Finance validated', cbID, sTargetHLYear, sTargetScenario, '0000B', 'status');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '0000B', 'reason');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '0000B', 'outcome');
+CellPutS('', cbID, sTargetHLYear, sTargetScenario, '0000B', 'measure');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '0000B', 'function');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '0000B', 'spp');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '0000B', 'appropriation item');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '0000B', 'appropriation type');
+CellPutS('Y', cbID, sTargetHLYear, sTargetScenario, '0000B', 'apply parameters');
+
+#CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '00FBO', 'programme');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '00FBO', snProg | ' code');
+CellPutS('FBO adjustments', cbID, sTargetHLYear, sTargetScenario, '00FBO', 'title');
+CellPutS('FBO adjustments', cbID, sTargetHLYear, sTargetScenario, '00FBO', 'description');
+CellPutS('Finance validated', cbID, sTargetHLYear, sTargetScenario, '00FBO', 'status');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '00FBO', 'reason');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '00FBO', 'outcome');
+CellPutS('', cbID, sTargetHLYear, sTargetScenario, '00FBO', 'measure');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '00FBO', 'function');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '00FBO', 'spp');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '00FBO', 'appropriation item');
+CellPutS('multiple', cbID, sTargetHLYear, sTargetScenario, '00FBO', 'appropriation type');
+CellPutS('Y', cbID, sTargetHLYear, sTargetScenario, '00FBO', 'apply parameters');
+#endregion

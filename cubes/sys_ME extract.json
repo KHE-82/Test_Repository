@@ -1,0 +1,26 @@
+{
+	"@type":"Cube",
+	"Name":"sys_ME extract",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('}Clients')"
+		},
+		{
+			"@id":"Dimensions('sys_flatfile scenario')"
+		},
+		{
+			"@id":"Dimensions('id')"
+		},
+		{
+			"@id":"Dimensions('sys_ME_extract row id')"
+		},
+		{
+			"@id":"Dimensions('sys_flatfile measure')"
+		}
+	],
+	"Views@Code.links":
+	[
+		"sys_ME extract.views/Kelly Hackett_$MEFlatFileExtract.json"
+	]
+}

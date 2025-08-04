@@ -1,0 +1,274 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Adj_DeleteAdjustment
+#**** DESCRIPTION:       This process will delete the selected adjustment
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 25/03/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+cbProg = snProg | ' details';
+
+#*** DECLARE ID DETAILS CUBE DIMENSIONS
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#*** DECLARE SUBSETS AND VIEWS ***#
+# *** IDENTIFY CURRENT USER ***#
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sUser) + 1;
+     sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+     sUser = TM1User();
+ENDIF;
+
+sObject  = sUser | '_$EditView';
+sAEView = sUser | '_$EditView';
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CREATE SOURCE AE ADJUSTMENTS CUBE VIEW ***#
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmOC, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmFunc, sAEView);
+SUBSETDESTROY (dmReason, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmType, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sAEView);
+SubsetElementInsert(dmHLYear, sAEView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sAEView);
+SubsetElementInsert(dmScenario, sAEView, psScenario, 1);
+
+# Status
+SubsetCreate(dmStatus, sAEView);
+SubsetElementInsert(dmStatus, sAEView, 'data', 1);
+SubsetElementInsert(dmStatus, sAEView, 'cash flow', 2);
+
+# Outcome
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmOC | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Function
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmFunc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Reason
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmReason | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Measure Code
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Appropriation Type
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmType | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Movement Account
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}, [' | dmMA |'].[editable] = "")}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Appropriation Item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Account
+#MDX = '{ EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}, { [' | dmAcc | '].[9000701], [' | dmAcc | '].[9000702], [' | dmAcc | '].[account template] }) }';
+MDX = '{ EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}, { [' | dmAcc | '].[9000701], [' | dmAcc | '].[9000702]}) }';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# ID
+SubsetCreate(dmID, sAEView);
+SubsetElementInsert(dmID, sAEView, psID, 1);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Period
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}, [' | dmPer | '].[type] = "annual")}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbAE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmHLYear, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmScenario, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmStatus, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmOC, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmRE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmFunc, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmReason, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmSPP, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMeasCode, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmType, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMA, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmItem, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmProg, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmAcc, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmID, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmJur, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmPer, sAEView);
+
+#**** CLEAR CUBE ****#
+VIEWZEROOUT (cbAE, sAEView);
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmOC, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmFunc, sAEView);
+SUBSETDESTROY (dmReason, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmType, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+
+#*****************************************************************************************************************************************************
+#*** STEP 2 - CREATE SOURCE AE ID DETAILS VIEW ***#
+sObject  = sUser | '_$EditView';
+sAEIDView = sUser | '_$EditView';
+
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbID, sAEIDView);
+SUBSETDESTROY (dmHLYear, sAEIDView);
+SUBSETDESTROY (dmScenario, sAEIDView);
+SUBSETDESTROY (dmID, sAEIDView);
+SUBSETDESTROY (dmIDMeas, sAEIDView);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sAEIDView);
+SubsetElementInsert(dmHLYear, sAEIDView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sAEView);
+SubsetElementInsert(dmScenario, sAEIDView, psScenario, 1);
+
+# ID
+SubsetCreate(dmID, sAEIDView);
+SubsetElementInsert(dmID, sAEIDView, psID, 1);
+
+# ID Meas
+MDX = '{ EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( ['| dmIDMeas |'] )}, 0)}, { [' | dmIDMeas | '].[used] }) }';
+SUBSETCREATEBYMDX (sAEIDView, MDX);
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbID, sAEIDView);
+VIEWSUBSETASSIGN (cbID, sAEIDView, dmHLYear, sAEIDView);
+VIEWSUBSETASSIGN (cbID, sAEIDView, dmScenario, sAEIDView);
+VIEWSUBSETASSIGN (cbID, sAEIDView, dmID, sAEIDView);
+VIEWSUBSETASSIGN (cbID, sAEIDView, dmIDMeas, sAEIDView);
+
+#**** CLEAR CUBE ****#
+VIEWZEROOUT (cbID, sAEIDView);
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbID, sAEIDView);
+SUBSETDESTROY (dmHLYear, sAEIDView);
+SUBSETDESTROY (dmScenario, sAEIDView);
+SUBSETDESTROY (dmID, sAEIDView);
+SUBSETDESTROY (dmIDMeas, sAEIDView);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

@@ -1,0 +1,21 @@
+{
+	"@type":"Cube",
+	"Name":"ME phasing method",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('ME phasing method')"
+		},
+		{
+			"@id":"Dimensions('period')"
+		},
+		{
+			"@id":"Dimensions('ME phasing method measure')"
+		}
+	],
+	"Rules@Code.link":"ME phasing method.rules",
+	"Views@Code.links":
+	[
+		"ME phasing method.views/Default.json"
+	]
+}

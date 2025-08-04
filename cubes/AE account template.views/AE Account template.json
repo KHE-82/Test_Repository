@@ -1,0 +1,136 @@
+{
+	"@type":"NativeView",
+	"Name":"AE Account template",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('account template measure')/Hierarchies('account template measure')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('account template measure')/Hierarchies('account template measure')/Elements('factor')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('account type')/Hierarchies('account type')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('account type')/Hierarchies('account type')/Elements('Total account groups')"
+					},
+					{
+						"@id":"Dimensions('account type')/Hierarchies('account type')/Elements('Expense')"
+					},
+					{
+						"@id":"Dimensions('account type')/Hierarchies('account type')/Elements('Cash Payment')"
+					},
+					{
+						"@id":"Dimensions('account type')/Hierarchies('account type')/Elements('Customer Numbers')"
+					},
+					{
+						"@id":"Dimensions('account type')/Hierarchies('account type')/Elements('Recognition')"
+					},
+					{
+						"@id":"Dimensions('account type')/Hierarchies('account type')/Elements('Write Offs')"
+					},
+					{
+						"@id":"Dimensions('account type')/Hierarchies('account type')/Elements('Cash Recoveries')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('account')/Hierarchies('account')"
+				},
+				"Alias":"code and description",
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('2300001')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('movement account')/Hierarchies('movement account')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('-')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('account template')/Hierarchies('account template')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00001')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00001')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('account template record type')/Hierarchies('account template record type')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('account template record type')/Hierarchies('account template record type')/Elements('data entry')"
+					},
+					{
+						"@id":"Dimensions('account template record type')/Hierarchies('account template record type')/Elements('mapping')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('account template record type')/Hierarchies('account template record type')/Elements('mapping')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":false,
+	"SuppressEmptyRows":false,
+	"FormatString":"0.#########"
+}

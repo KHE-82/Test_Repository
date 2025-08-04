@@ -1,0 +1,10 @@
+FEEDSTRINGS;
+SKIPCHECK;
+
+['mapping','account mapping'] =S:
+IF (DB('AE account template', !account template, !account template record type, !account type, !account, !movement account, 'factor') <> 0,
+DIMNM('account', DIMIX('account', !account)),
+STET);
+
+FEEDERS;
+['mapping','factor'] => ['mapping', 'account mapping'];

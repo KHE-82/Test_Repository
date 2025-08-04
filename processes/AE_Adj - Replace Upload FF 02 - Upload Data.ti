@@ -1,0 +1,1047 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:                AE_Adj - Replace Upload FF 02 - Upload Data
+#**** DESCRIPTION:       This process creates a view deletes the existing adjustment and replaces it with the flatfile data 
+#****			
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials	Comments
+#****  ====              ======	=========
+#**** 06/10/2015	KG	Initial Revision
+#**** 3/02/2021	KG	Updated Account MDX To delete ALL accounts
+#**** 18/01/2024	BL	Modified to Replace an existing Adjustment with flatfile data 
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS
+#******************************************************************************************************************
+cbID = 'AE id details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmID = 'id';
+dmIDMeas = 'id measure';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+sCube = cbAE;
+
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeas = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#******************************************************************************************************************
+#*** DECLARE PROGRAMME DETAILS CUBE
+#******************************************************************************************************************
+cbProg = snProg | ' details';
+
+#******************************************************************************************************************
+#*** DECLARE MEASURE DETAILS CUBE
+#******************************************************************************************************************
+cbMeasID = 'government measures details';
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+dmCtrlType = 'control type';
+dmFavID = 'favourites_id';
+
+#******************************************************************************************************************
+#*** #*** DECLARE SYSTEM VARIABLES****#
+#******************************************************************************************************************
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sNoMeasCode = ATTRS(dmVar, 'No Measure Code', 'value');
+sDefFavID = ATTRS(dmVar, 'Default favourite id template', 'value');
+sImpFilePath = ATTRS(dmVar, 'sys_ImpFileExceptionLogs', ' value');
+sStatus = 'data';
+sAdjType = 'Manual';
+
+#--------------------------------------------------------------------------------------------------------
+#--- CHECK IF CBMS-R IS LIVE : New Code 08 August 2017 - KG
+#--------------------------------------------------------------------------------------------------------
+sCBMSRLive = ATTRS (dmVar, 'sys_CBMSR GoLive', 'value');
+sCBMSRLiveHLYear = ATTRS (dmVar, 'sys_CBMSR GoLive Headline Year', 'value');
+sCBMSRMigrationScenario = 'CBMS-R OBAL';
+
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, 'GEUS User Name');
+                IF (sUser @= '');
+                          PROCESSQUIT;
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+ATTRPUTS ('PASS', dmVar, 'sys_ImpFileValidation', 'value');
+
+# **** GET DATE VALUES ***#
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+sHNow = TimST (Now, '\h');
+sMinNow = TimST (Now, '\i');
+sSNow = TimST (Now, '\s');
+ 
+sDay = TRIM(SUBST(sDNow, 1,2));
+ 
+IF (LONG (sDay) = 1);
+	sDay = '0' | sDay;
+ELSE;
+     	sDay = sDay;
+ENDIF;
+ 
+sMonth = TRIM(SUBST(sMNow, 1,2));
+ 
+IF (LONG (sMonth) = 1);
+     	sMonth = '0' | sMonth;
+ELSE;
+     	sMonth = sMonth;
+ENDIF;
+ 
+sYear = TRIM(SUBST(sYNow, 1,4));
+sNow = sYear | sMonth | sDay | sHNow | sMinNow | sSNow ;
+ 
+ 
+sOutputFile = 'geus replace adj upload file failed' | sUser | ' ' | sNow | '.csv';
+
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED FOR VIEWS
+#******************************************************************************************************************
+sObject  = sUser | '_$ReplaceView';
+sAEView = sUser | '_$ReplaceView';
+
+#******************************************************************************************************************
+#*** RETRIEVE ID DETAILS
+#******************************************************************************************************************
+sOutcome = CellGetS(cbID, psHLYear, psScenario, psID, 'outcome');
+sFunction = CellGetS(cbID, psHLYear, psScenario, psID, 'function');
+sReason = CellGetS(cbID, psHLYear, psScenario, psID, 'reason');
+sSPP = CellGetS(cbID, psHLYear, psScenario, psID, 'SPP');
+sAppropType = CellGetS(cbID, psHLYear, psScenario, psID, 'appropriation type');
+sAppropItem = CellGetS(cbID, psHLYear, psScenario, psID, 'appropriation item');
+sProg = CellGetS(cbID, psHLYear, psScenario, psID, snProg | ' code');
+sMeasureCode = CellGetS(cbID, psHLYear, psScenario, psID, 'measure');
+
+
+#*****************************************************************************************************************************************************
+#****  STEP 1 - CLEAR AE ADJUSTMENT CUBE
+#*****************************************************************************************************************************************************
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmOC, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmFunc, sAEView);
+SUBSETDESTROY (dmReason, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmMeas, sAEView);
+SUBSETDESTROY (dmType, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+
+#******************************************************************************************************************
+#*** CREATE SUBSETS
+#******************************************************************************************************************
+# headline year
+SubsetCreate(dmHLYear, sAEView);
+SubsetElementInsert(dmHLYear, sAEView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sAEView);
+SubsetElementInsert(dmScenario, sAEView, psScenario, 1);
+
+# Status
+SubsetCreate(dmStatus, sAEView);
+SubsetElementInsert(dmStatus, sAEView, 'data', 1);
+SubsetElementInsert(dmStatus, sAEView, 'cash flow', 2);
+
+# Outcome
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmOC | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Function
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmFunc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Reason
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmReason | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Measure Code
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeas | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Appropriation Type
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmType | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Movement Account
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}, [' | dmMA |'].[editable] = "")}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Appropriation Item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Account
+#MDX = '{ EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}, { [' | dmAcc | '].[9000701], [' | dmAcc | '].[9000702], [' | dmAcc | '].[account template] }) }';
+#MDX = '{ EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}, { [' | dmAcc | '].[9000701], [' | dmAcc | '].[9000702]}) }';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# ID
+SubsetCreate(dmID, sAEView);
+SubsetElementInsert(dmID, sAEView, psID, 1);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Period
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}, [' | dmPer | '].[type] = "annual")}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+#******************************************************************************************************************
+#*** BUILD VIEW ***#
+#******************************************************************************************************************
+VIEWCREATE (cbAE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmHLYear, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmScenario, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmStatus, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmOC, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmRE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmFunc, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmReason, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmSPP, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMeas, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmType, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMA, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmItem, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmProg, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmAcc, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmID, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmJur, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmPer, sAEView);
+
+#******************************************************************************************************************
+#**** CLEAR CUBE ****#
+#******************************************************************************************************************
+VIEWZEROOUT (cbAE, sAEView);
+
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmOC, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmFunc, sAEView);
+SUBSETDESTROY (dmReason, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmMeas, sAEView);
+SUBSETDESTROY (dmType, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+
+#*****************************************************************************
+#***** COUNTERS USED
+#*****************************************************************************
+lHeaderCount = 0;
+nLine = 1;
+nValid = 0;
+nTotalValid = 0;
+
+#*****************************************************************************
+#*** IDENTIFY SOURCE FILE
+#*****************************************************************************
+sFilePath = ATTRS (dmVar, 'sys_CBMS Upload directory', 'value');
+
+#--REMOVE THIS AFTER INITIAL LOAD-----#
+#sFilePath='.\file conversion\';
+#sFileName = sFilePath | psFileName;
+#sFileName = psFileName;
+
+DATASOURCENAMEFORSERVER = psFileName;
+
+
+#**********************************************************************************************************************************************
+#*** ASSUME SYSTEM DERIVED CASH FLOW - CAN BE CHANGED IN THE DATA TAB - UPLOADING 6 ACCOUNTS
+#**********************************************************************************************************************************************
+CELLPUTS('', cbID, psHLYear, psScenario, psID, 'disagree cashflow');
+CELLPUTS ('Y', cbID, psHLYear, psScenario, psID, 'use new cash flow derivation');
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+# Resets flag to say it is not a zero line
+nZeroCheck = 1;
+
+
+IF (vnP01 = 0 & vnP02 = 0 & vnP03 = 0 & vnP04 = 0 & vnP05 = 0 & vnP06 = 0 & vnP07 = 0 & vnP08 = 0 & vnP09 = 0 & vnP10 = 0 & vnP11 = 0 & vnP12 = 0 & vnP13 = 0 & vnP14 = 0 & vnP15 = 0) ;	
+	nZeroCheck = vnP01 + vnP02 + vnP03 + vnP04 + vnP05 + vnP06 + vnP07 + vnP08 + vnP09 + vnP10 + vnP11 + vnP12  + vnP13 + vnP14 +vnP15;	
+	nLine = nLine + 1;
+	ITEMSKIP;
+ENDIF;
+
+
+#*****************************************************************************
+# Get period elements
+#*****************************************************************************
+
+Period02 = SUBST(ATTRS(dmVar, 'headline year', 'value'), 3, 9);
+Period00 = DIMNM('period', DIMIX('period', Period02) -2);
+#Period00 = '2020-2021';
+Period01 = DNEXT('period', Period00);
+#Period02 = DNEXT('period', Period01);
+Period03 = DNEXT('period', Period02);
+Period04 = DNEXT('period', Period03);
+Period05 = DNEXT('period', Period04);
+Period06 = DNEXT('period', Period05);
+Period07 = DNEXT('period', Period06);
+Period08 = DNEXT('period', Period07);
+Period09 = DNEXT('period', Period08);
+Period10 = DNEXT('period', Period09);
+Period11 = DNEXT('period', Period10);
+Period12 = DNEXT('period', Period11);
+Period13 = DNEXT('period', Period12);
+Period14 = DNEXT('period', Period13);
+Period15 = DNEXT('period', Period14);
+Period16 = DNEXT('period', Period15);
+
+
+
+
+#*****************************************************************************
+# SKIP CERTAIN ACCOUNTS
+#*****************************************************************************
+IF (vsAcc @= '3322001' % vsAcc @= '2330008' % vsAcc @= '2330009' % vsAcc @= '3322002' % vsAcc @= '9000510' % vsAcc @= '9000515' % vsAcc @= '9000520' % vsAcc @= '9000525' % vsAcc @= '8260010');
+     ItemSkip;
+ENDIF;
+
+
+#------IGNORE 4100001 /7201  7211 for SPPs - AE Adjustment Rule------#
+IF( DIMIX(dmProg, vsSPP)  <> 0);
+	IF( vsAcc @= '4100001' & vsMA @='7201');
+		ItemSkip;
+	ENDIF;
+
+	IF( vsAcc @= '4100001' & vsMA @='7211');
+		ItemSkip;
+	ENDIF;
+
+ENDIF;
+
+IF( vsAcc @= '6100001' );
+	ItemSkip;
+ENDIF;
+
+IF( vsAcc @= '9000883' );
+	#ItemSkip;
+ENDIF;
+
+#IF( scan( '_old', vsProgName) <>0);
+#	ITEMSKIP;
+#ENDIF;
+#*************************************************************************************************************************************#
+#**** DEFAULT ACCOUNTS ****#
+#**** If these dimensions are blank, use the specified default values:
+
+# Get movement account element
+IF (vsMA @= '');
+	vsMA = '-';
+ELSE;
+	vsMA = DimensionElementPrincipalName(dmMA,vsMA);
+ENDIF;
+
+# Get related entity element
+IF (vsRE @= '');
+	vsRE = '-';
+ELSE;
+	vsRE = DimensionElementPrincipalName(dmRE,vsRE);
+ENDIF;
+
+# Get SPP element
+IF (vsSPP @= '');
+	vsSPP = '-';
+ELSE;
+	vsSPP = DimensionElementPrincipalName(dmSPP,vsSPP);
+ENDIF;
+
+# Get jurisdiction element
+IF (vsJur @= '');
+	vsJur = '-';
+ELSE;
+	vsJur = DimensionElementPrincipalName(dmJur,vsJur);
+ENDIF;
+
+
+#* Get Measure Code Element
+IF (vsMeasCode @= '');
+	vsMeasCode = 'M00000';
+ELSE;
+	vsMeasCode = DimensionElementPrincipalName(dmMeas,vsMeasCode);
+ENDIF;
+
+
+#*****************************************************************************
+#*** PERFORM A VALIDATION TEST ***#
+#*****************************************************************************
+nProgValid = 0;
+nOCValid = 0;
+nMeasValid = 0;
+nReasValid = 0;
+nFuncValid = 0;
+nMAValid = 0;
+nAccValid = 0;
+nItemValid = 0;
+nTypeValid = 0;
+nREValid  = 0;
+nSPPValid = 0;
+
+#*****************************************************************************
+#**** PERFORM ADDITIONAL CHECKS - 20150407
+#*****************************************************************************
+nJurValid = 0;
+nAccREValid = 0;
+nAccJurValid = 0;
+nAccMAValid = 0;
+nMAREValid = 0;
+
+nTitleValid = 0;
+
+
+
+
+#--------------------------------------------------------------------------------
+#*** Check Programme
+#--------------------------------------------------------------------------------
+vsProg = SUBST(vsProg,1,11);
+IF( vsProg @= '');
+	IF( DIMIX( dmProg ,vsCBMSProg) <> 0);
+		sProg = vsCBMSProg;
+		sProgType = DTYPE(dmProg, sProg);
+	
+		WHILE( sProgType @='C');
+			sProg = ELCOMP(dmProg, sProg,1);
+			sProgType = DTYPE(dmProg,sProg);
+
+		END;
+
+		sCtrlTypeCheck = CELLGETS (cbProg, curHLYear, curScenario, sProg, 'Control Type');
+		sOC = CELLGETS (cbProg, curHLYear, curScenario, sProg, 'outcome');
+		sFunc = CELLGETS (cbProg, curHLYear, curScenario, sProg, 'function');
+		sType = CELLGETS (cbProg, curHLYear, curScenario, sProg, 'appropriation type');
+		sItem = CELLGETS (cbProg, curHLYear, curScenario, sProg, 'appropriation item');
+
+	ELSE;
+
+		nProgValid = nProgValid + 1;
+	ENDIF;	
+
+ELSEIF (DIMIX (dmProg, vsProg) = 0);
+	nProgValid = nProgValid + 1;
+ELSE;
+
+	IF( DTYPE(dmProg, vsProg) @='N');
+		sCtrlTypeCheck = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'Control Type');
+		sOC = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'outcome');
+		sFunc = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'function');
+		sType = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'appropriation type');
+		sItem = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'appropriation item');
+		sProg = vsProg;
+
+		IF (sCtrlTypeCheck @<> vsControlType);
+			nProgValid = nProgValid + 1;     
+		ENDIF;
+	ELSE;
+			nProgValid = nProgValid + 1;    
+		
+		
+	ENDIF;
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check Outcome
+#--------------------------------------------------------------------------------
+IF (vsOC @= '');
+	sNewOC = sOC;
+ELSE;
+	sNewOC = DimensionElementPrincipalName(dmOC,vsOC);
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check Reason
+#--------------------------------------------------------------------------------
+IF (DIMIX (dmReason, vsReason) = 0 & vsReason @='');
+	vsReason = '1029';
+ELSE;
+	vsReason = DimensionElementPrincipalName(dmReason,vsReason);
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check Function
+#--------------------------------------------------------------------------------
+IF (vsFunc @= '');
+	sNewFunc = sFunc;
+ELSE;
+	sNewFunc = DimensionElementPrincipalName(dmFunc,vsFunc);
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check Appropriation Item
+#--------------------------------------------------------------------------------
+IF (vsItem @= '');
+	sNewItem = sItem;
+ELSE;
+	sNewItem = DimensionElementPrincipalName(dmItem,vsItem);
+ENDIF;
+
+IF (DIMIX (dmItem, sNewItem) = 0);
+	nItemValid = nItemValid + 1;
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check Appropriation Type
+#--------------------------------------------------------------------------------
+IF (vsItem @= '');
+	sNewType = sType;
+ELSE;
+	sNewType = SUBST(vsItem,1,4);
+ENDIF;
+
+IF (DIMIX (dmType, sNewType) = 0);
+	nTypeValid = nTypeValid + 1;
+ELSE;
+	sItemType = SUBST (sNewItem, 1, 4);
+	IF (sItemType @<> sNewType);
+		nTypeValid = nTypeValid + 1;
+	ENDIF;
+
+ENDIF;
+
+
+#--------------------------------------------------------------------------------
+#*** Check Account
+#--------------------------------------------------------------------------------
+IF (DIMIX (dmAcc, vsAcc) = 0);
+	nAccValid = nAccValid + 1;
+ELSE;
+	#--------------------------------------------------------------------------------
+	#*** NOW CHECK IF IT REQUIRES RELATED ENTITY OR JURISDICTION ***#
+	#--------------------------------------------------------------------------------
+	sRECheck = ATTRS( dmAcc, vsAcc, 'related entity enabled');
+	sAssumedRE = ATTRS( dmAcc, vsAcc, 'assumed related entity');
+	sJurCheck = ATTRS( dmAcc, vsAcc, 'jurisdiction required');
+	sMACheck = ATTRS( dmAcc, vsAcc, 'movement account required');
+
+	#--------------------------------------------------------------------------------   
+	#*** Account has related entity enabled ***#
+	#--------------------------------------------------------------------------------
+	IF (sRECheck @= 'Y');
+     
+		#--------------------------------------------------------------------------------
+		#*** CHECK IF assumed related entity is not blank, otherwise just use another related entity
+		#--------------------------------------------------------------------------------
+		sAssumedRE = ATTRS( dmAcc, vsAcc, 'assumed related entity');
+		IF (sAssumedRE @= '');
+
+			#--------------------------------------------------------------------------------
+                		#*** IF NO ASSUMED RELATED ENTITY, USE OTHER RELATED ENTITY ***#
+			#--------------------------------------------------------------------------------
+			IF (vsRE @<> '-');
+				#--------------------------------------------------------------------------------
+				#*** DO CHECK FOR RE EXISTS ***#
+				#--------------------------------------------------------------------------------
+				IF ( nREValid = 1);
+					#*** UTILIZES PREVIOUS CHECKS ***#
+                           				nAccREValid = nAccREValid + 1;
+                      			ENDIF;  
+                 		ENDIF;
+            		ELSE;
+			#--------------------------------------------------------------------------------
+                		#*** DO CHECK FOR RE EXISTS ***#
+			#--------------------------------------------------------------------------------
+                 		IF ( nREValid = 1);
+				#--------------------------------------------------------------------------------
+                      			#*** UTILIZES PREVIOUS CHECKS ***#
+				#--------------------------------------------------------------------------------
+                 			vsRE = vsRE;
+                 		ELSE;
+				#--------------------------------------------------------------------------------
+                      			#*** IF Account has assumed RE Then use Assumed RE
+				#--------------------------------------------------------------------------------
+                       			IF (vsRE @<> sAssumedRE);
+                             				nAccREValid = nAccREValid + 1;
+                        			ENDIF;
+                  		ENDIF;
+            		ENDIF;
+    
+    	ELSE;
+		#--------------------------------------------------------------------------------
+          		#*** SOMETIMES EVEN WITHOUT RELATED ENTITY ENABLED, THIS ACCOUNT SHOULD HAVE A RELATED ENTITY ***#
+		#--------------------------------------------------------------------------------
+          		sAssumedRE = ATTRS( dmAcc, vsAcc, 'assumed related entity');
+          		IF (sAssumedRE @<> '');
+               			#*** DO CHECK FOR RE EXISTS ***#
+               			IF ( nREValid = 1);
+				#--------------------------------------------------------------------------------
+                    			#*** UTILIZES PREVIOUS CHECKS ***#
+				#--------------------------------------------------------------------------------
+                    			vsRE = vsRE;
+                		ELSE;
+                    			IF (vsRE @<> sAssumedRE);
+                         				vsRE = sAssumedRE;
+                    			ENDIF;
+                		ENDIF;
+          		ENDIF;
+
+     	ENDIF;
+
+	#--------------------------------------------------------------------------------
+	#*** Account has Jurisdiction enabled ***#
+	#--------------------------------------------------------------------------------
+     	IF (sJurCheck @= 'Y');
+     
+          		#*** Now check if Jurisdiction is Blank or '-' ***#
+               		IF (vsJur @= '-');
+			#--------------------------------------------------------------------------------
+                    		#*** Validation Fail for Jurisdiction as this account requires Jurisdiction not blank, if so, then account check failed
+			#--------------------------------------------------------------------------------
+                    		nAccJurValid = nAccJurValid + 1;
+               		ELSE;
+			#--------------------------------------------------------------------------------
+                   		#*** DO CHECK FOR JURISDICTION EXISTS ***#
+			#--------------------------------------------------------------------------------
+                    		IF (DIMIX (dmJur, vsJur) = 0);
+                         			nAccJurValid = nAccJurValid + 1;
+                    		ENDIF;
+               		ENDIF;       
+     	ENDIF;
+
+	#--------------------------------------------------------------------------------
+     	#*** Account has Movment Account enabled ***#
+	#--------------------------------------------------------------------------------
+     	IF (sMACheck @= 'Y');
+     
+		#--------------------------------------------------------------------------------
+          		#*** Now check if Jurisdiction is Blank or '-' ***#
+		#--------------------------------------------------------------------------------
+               		IF (vsMA @= '-');
+			#--------------------------------------------------------------------------------
+                    		#*** Validation Fail for Movement Account as this account requires a Movement Account , if so, then account check failed
+			#--------------------------------------------------------------------------------
+                    		nAccMAValid = nAccMAValid + 1;
+               		ELSE;
+			#--------------------------------------------------------------------------------
+                   		#*** DO CHECK FOR MOVEMENT ACCOUNT EXISTS ***#
+			#--------------------------------------------------------------------------------
+                    		IF (nMAValid = 1);
+				#--------------------------------------------------------------------------------
+                        			#*** UTILIZES PREVIOUS CHECKS ***#
+				#--------------------------------------------------------------------------------
+                    		ELSE;
+				#--------------------------------------------------------------------------------
+                         			#*** IF MA EXISTS, CHECK ASSUMED RE ***#
+				#--------------------------------------------------------------------------------
+                         			sMARECheck = ATTRS (dmMA, vsMA, 'related entity enabled');
+                         			sMAAssumedRE = ATTRS (dmMA, vsMA, 'assumed related entity');
+
+				#--------------------------------------------------------------------------------
+                         			#*** Movement Account has related entity enabled ***#
+				#--------------------------------------------------------------------------------
+                         			IF (sMARECheck @= 'Y');
+					#--------------------------------------------------------------------------------
+                              				#*** CHECK IF assumed related entity is not blank, if so, then account check failed
+					#--------------------------------------------------------------------------------
+                              				sMAAssumedRE = ATTRS (dmMA, vsMA, 'assumed related entity');
+
+                              				IF (sMAAssumedRE @= '');
+						#--------------------------------------------------------------------------------
+                                   				#*** IF NO ASSUMED RELATED ENTITY, USE OTHER RELATED ENTITY ***#
+						#--------------------------------------------------------------------------------
+                                   				IF (vsRE @<> '-');
+							#--------------------------------------------------------------------------------
+                                        					#*** DO CHECK FOR RE EXISTS ***#
+							#--------------------------------------------------------------------------------
+                                        					IF ( nREValid = 1);
+								#--------------------------------------------------------------------------------
+                                             						#*** UTILIZES PREVIOUS CHECKS ***#
+								#--------------------------------------------------------------------------------
+                                             						nMAREValid = nMAREValid + 1;
+                                        					ENDIF;  
+                                   				ENDIF;
+                              				ELSE;
+						#--------------------------------------------------------------------------------
+                                   				#*** IF Account has assumed RE Then use Assumed RE
+						#--------------------------------------------------------------------------------
+                                   				IF (vsRE @<> sMAAssumedRE);
+                                        					vsRE = sMAAssumedRE;
+                                   				ENDIF;
+                              				ENDIF;
+                       			ELSE;
+					#--------------------------------------------------------------------------------
+                             				#*** DO CHECK FOR RE EXISTS ***#
+					#--------------------------------------------------------------------------------
+                             				IF ( nREValid = 1);
+						#--------------------------------------------------------------------------------
+                                  				#*** UTILIZES PREVIOUS CHECKS ***#
+						#--------------------------------------------------------------------------------
+                             				ELSE;
+
+						#--------------------------------------------------------------------------------
+				                                #*** SOMETIMES EVEN WITHOUT RELATED ENTITY ENABLED, THIS ACCOUNT SHOULD HAVE A RELATED ENTITY ***#
+                                 				sMAAssumedRE = ATTRS (dmMA, vsMA, 'assumed related entity');
+						#--------------------------------------------------------------------------------
+                                 				IF (sMAAssumedRE @<> '');
+                                      					IF (vsRE @<> sMAAssumedRE);
+                                           						vsRE = sMAAssumedRE;
+                                       					ENDIF;
+                                  				ENDIF;
+                             				ENDIF;
+                        			ENDIF;
+                    		ENDIF;
+               		ENDIF;
+     	ELSE;
+		#--------------------------------------------------------------------------------
+     		#*** DO NOTHING IF ACCOUNT IS NO MOVEMENT ACCOUNT ***#
+		#--------------------------------------------------------------------------------
+	ENDIF;
+ENDIF;
+
+#*************************************************************************************************************************************
+
+#sCheckCBMSVar = vsCBMSVar | vsProg | vsOC | vsFunc | vsType | vsItem | vsSPP | vsReason | vsMeasCode | vsTitle;
+#sCheckCBMSVar = vsID | sProg | sNewOC | sNewFunc | sNewType | sNewItem | vsSPP | vsReason | vsMeasCode | vsDesc;
+#sCheckCBMSVar = vsID | sProg | sNewOC | sNewFunc | vsSPP | vsReason | vsMeasCode | vsDesc;
+sCheckCBMSVar = vsID | sProg | sNewOC | sNewFunc | vsReason | vsMeasCode | vsDesc;
+#Asciioutput('id.csv', sCheckCBMSVar);
+
+#*****************************************************************************
+#**** GET A NEW ID - ###DISABLED
+#*****************************************************************************  
+
+#IF (sOldCBMS @<> vsCBMSVar);
+#IF (sOldCBMS @<> sCheckCBMSVar);
+
+#	#******************************************************************************************************************
+#	#*** EXECUTE NEXT PROCESS
+#	#*** RUN PROCESS TO CREATE NEW SYSTEM ID
+#	#******************************************************************************************************************
+#	StringGlobalVariable ('NextID');
+
+#	sNewIDProcess = 'AE_Adj - Assign New ID';	
+#	sProcess = 'sys_Queue - Add Process to Queue';
+#	EXECUTEPROCESS(sProcess, 'psTI', sNewIDProcess, 'psParams','psUser;' | sUser);
+
+#	sNewID = NextID;
+
+#	sID = sNewID;
+#ELSE;
+
+#	sID = sOldID;
+#	sNewID = sID;
+
+#ENDIF;
+
+#*****************************************************************************
+#**** USE EXISTING ID
+#*****************************************************************************  
+sNewID=SUBST(vsID,2,5);
+
+#*****************************************************************************
+#**** IMPORT DATA INTO ID DETAILS CUBE
+#*****************************************************************************   
+CELLPUTN(1,cbID, psHLYear, psScenario, psID, 'used');
+#CELLPUTS('Y', cbID, psHLYear, psScenario, psID, 'disagree cashflow');
+###################
+CELLPUTS(sProg, cbID, psHLYear, psScenario, psID,  snProg | ' code');
+###################
+sProgDesc = ATTRS(dmProg, sProg, 'code and description');
+CELLPUTS(sProgDesc, cbID, psHLYear, psScenario, psID, snProg | ' description');
+CELLPUTS(vsTitle, cbID, psHLYear, psScenario, psID, 'title');
+
+######sNEWID##########
+#CELLPUTS('(' | sNewID | ') ' | vsTitle, cbID, psHLYear, psScenario, psID, 'description');
+#BL NEED TO USE psID AS PASSED FROM PROCESS 01 TO ENSURE ANY LEADING APOSTROPHE HAS BEEN REMOVED.
+CELLPUTS(' (' | psID | ') ' | vsTitle, cbID, psHLYear, psScenario, psID, 'description');
+
+CELLPUTS('unauthorised',cbID, psHLYear, psScenario, psID, 'status');
+CELLPUTS(vsReason, cbID, psHLYear, psScenario, psID, 'reason');
+CELLPUTS(sNewOC, cbID, psHLYear, psScenario, psID, 'outcome');
+CELLPUTS(sNewFunc, cbID, psHLYear, psScenario, psID, 'function');
+CELLPUTS(vsSPP, cbID, psHLYear, psScenario, psID, 'SPP');
+#CELLPUTS(sNewItem, cbID, psHLYear, psScenario, psID, 'appropriation item');
+#CELLPUTS(sNewType,cbID, psHLYear, psScenario, psID, 'appropriation type');
+CELLPUTS(sItem, cbID, psHLYear, psScenario, psID, 'appropriation item');
+CELLPUTS(sType,cbID, psHLYear, psScenario, psID, 'appropriation type');
+
+CELLPUTS('ongoing',cbID, psHLYear, psScenario, psID, 'funding life');
+CELLPUTS(vsMeasCode,cbID, psHLYear, psScenario, psID, 'measure');
+
+#*** Comments are not included in GEUS FF Extract - Disabled
+#CELLPUTS(vsComments, cbID, psHLYear, psScenario, psID, 'comments');
+
+#IF (UPPER(SUBST (vsApplyParam, 1,1)) @= 'Y');
+	CELLPUTS('Y', cbID, psHLYear, psScenario, psID, 'apply parameters');
+#ELSE;
+	#CELLPUTS('', cbID, psHLYear, psScenario, psID, 'apply parameters');
+#ENDIF;
+
+CELLPUTS(sUser, cbID, psHLYear, psScenario, psID, 'created by');
+
+#*****************************************************************************
+#**** GET DATE
+#*****************************************************************************   
+# **** GET DATE VALUES ***#
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+
+sDay = TRIM(SUBST(sDNow, 1,2));
+
+IF (LONG (sDay) = 1);
+	sDay = '0' | sDay;
+ELSE;
+	sDay = sDay;
+ENDIF;
+
+sMonth = TRIM(SUBST(sMNow, 1,2));
+
+IF (LONG (sMonth) = 1);
+	sMonth = '0' | sMonth;
+ELSE;
+	sMonth = sMonth;
+ENDIF;
+
+sYear = TRIM(SUBST(sYNow, 1,4));
+
+sNow = sDay | '/' | sMonth | '/' | sYear;
+
+CELLPUTS(sNow, cbID, psHLYear, psScenario, psID, 'created date');
+CELLPUTS(sAdjType, cbID, psHLYear, psScenario, psID, 'Adjustment Type');
+CELLPUTS(vsControlType, cbID, psHLYear, psScenario, psID, 'Control Type');
+
+
+#*****************************************************************************
+#**** GET MEASURE DATA
+#*****************************************************************************   
+sFundLife = CELLGETS (cbMeasID, psHLYear, psScenario, vsMeasCode, 'funding life');
+
+IF (vsMeasCode @= 'M00000');
+	sFundLife = 'ongoing';
+ENDIF;
+     
+IF (sFundLife @= '');
+	sFundLife = 'ongoing';
+ENDIF;
+
+sEndDate = CELLGETS (cbMeasID, curHLYear, curScenario, vsMeasCode, 'end date');
+
+CELLPUTS (sFundLife, cbID, curHLYear, curScenario, psID, 'funding life');
+CELLPUTS (sEndDate, cbID, curHLYear, curScenario, psID, 'end date');
+
+
+
+#*****************************************************************************
+#*** TO INSERT TO DISAGREE CASH FLOW FLAG IF CASHFLOW IS INCLUDED FOR A PARTICULAR ID
+#*****************************************************************************  
+IF (SUBST(vsAcc,1,1) @= '6');
+	CELLPUTS('Y', cbID, psHLYear, psScenario, psID, 'disagree cashflow');
+	CELLPUTS ('', cbID, psHLYear, psScenario, psID, 'use new cash flow derivation');
+ENDIF;
+
+
+
+#*****************************************************************************
+#**** CONVERT SIGNAGE ON FLAT FILE VALUE
+#*****************************************************************************  
+IF (vsMA @= '-');
+	X = ATTRS(dmAcc, vsAcc, 'DR/CR');
+ELSE;
+	X = ATTRS(dmMA, vsMA, 'DR/CR');
+ENDIF;
+
+#IF (psSource @= 'CBMS');
+#IF (psSign @= 'Natural Sign');
+
+IF (psSign @= 'All DR Sign');
+	#-----------------------------------------------------------------------------------
+	#--- Since its all DR Sign, there would be negatives, so would need to convert.
+	#-----------------------------------------------------------------------------------
+	IF (X @= 'CR');
+         		iConversion = -1;
+     	ELSE;
+         		iConversion = 1;
+     	ENDIF;
+ELSE;
+	iConversion = 1;
+ENDIF;
+
+
+NP01 = vnP01 * iConversion;
+NP02 = vnP02 * iConversion;
+NP03 = vnP03 * iConversion;
+NP04 = vnP04 * iConversion;
+NP05 = vnP05 * iConversion;
+NP06 = vnP06 * iConversion;
+NP07 = vnP07 * iConversion;
+NP08 = vnP08 * iConversion;
+NP09 = vnP09 * iConversion;
+NP10 = vnP10 * iConversion;
+NP11 = vnP11 * iConversion;
+NP12 = vnP12 * iConversion;
+NP13 = vnP13 * iConversion;
+NP14 = vnP14 * iConversion;
+NP15 = vnP15 * iConversion;
+
+#*****************************************************************************
+#**** Get program element (deliberately at this position rather than at the beginning with the other elements)
+#*****************************************************************************  
+#sElType = DTYPE(dmProg, vsProg);
+#WHILE (sElType @= 'C');
+#	vsProg = ELCOMP(dmProg, vsProg, 1);
+#     	sElType = DTYPE(dmProg, vsProg);
+#END;
+
+
+#*****************************************************************************
+#**** GET EXISTING VALUE FROM CUBE
+#*****************************************************************************  
+
+OldP01 = CellGetN(sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period01);
+OldP02 = CellGetN(sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period02);
+OldP03 = CellGetN(sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period03);
+OldP04 = CellGetN(sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period04);
+OldP05 = CellGetN(sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period05);
+OldP06 = CellGetN(sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period06);
+OldP07 = CellGetN(sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period07);
+OldP08 = CellGetN(sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period08);
+OldP09 = CellGetN(sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period09);
+OldP10 = CellGetN(sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period10);
+OldP11 = CellGetN(sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period11);
+OldP12 = CellGetN(sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period12);
+OldP13 = CellGetN(sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period13);
+OldP14 = CellGetN(sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period14);
+OldP15 = CellGetN(sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period15);
+
+
+
+IF (CELLISUPDATEABLE(sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period01) = 1);
+	CellPutN(OldP01 + NP01, sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period01);
+	CellPutN(OldP02 + NP02, sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period02);
+	CellPutN(OldP03 + NP03, sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period03);
+	CellPutN(OldP04 + NP04, sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period04);
+	CellPutN(OldP05 + NP05, sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period05);
+	CellPutN(OldP06 + NP06, sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period06);
+	CellPutN(OldP07 + NP07, sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period07);
+	CellPutN(OldP08 + NP08, sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period08);
+	CellPutN(OldP09 + NP09, sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period09);
+	CellPutN(OldP10 + NP10, sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period10);
+	CellPutN(OldP11 + NP11, sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period11);
+	CellPutN(OldP12 + NP12, sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period12);
+	CellPutN(OldP13 + NP13, sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period13);
+	CellPutN(OldP14 + NP14, sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period14);
+	CellPutN(OldP15 + NP15, sCube, psHLYear, psScenario, sStatus, sNewOC, vsRE, sNewFunc, vsReason, vsSPP, vsMeasCode, sNewType, vsMA, sNewItem, sProg, vsAcc, psID, vsJur, Period15);
+
+
+ENDIF;
+
+
+
+#*****************************************************************************
+#**** GET THIS LINES CBMS VALUE
+#*****************************************************************************  
+#sOldCBMS = sCheckCBMSVar;
+#sOldID = psID;
+
+#sOldCBMS = vsCBMSVar;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"sys_Nav - Home To Archive",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Nav - Home To Archive.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[]
+}

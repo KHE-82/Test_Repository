@@ -1,0 +1,13 @@
+{
+	"@type":"Subset",
+	"Name":"GenerateFE3",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('Administered Programmes')"
+		},
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('Departmental Programmes')"
+		}
+	]
+}

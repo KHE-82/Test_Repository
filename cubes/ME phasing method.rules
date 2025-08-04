@@ -1,0 +1,313 @@
+
+
+# Rule 001 - June = 100% Always
+#[{'Jun','JFA', 'Adj 1', 'Adj 2', 'Adj 3'}, 'value'] = N:
+#[{'Jun'}, 'value'] = N:
+#IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+#100,
+#STET);
+
+# Rule 002 - Zero Out Spread (All 0)
+[{'Jul','Aug','Sep','Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May','Jun'}, 'zero out spread (clear all)', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP(0,2),
+STET);
+
+# Rule 003 - Equal Spread
+# Jul
+['Jul', 'equal spread (pro-rata)', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((1/12)*100,2),
+STET);
+
+# Aug
+['Aug', 'equal spread (pro-rata)', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((1/12)*100,2),
+STET);
+
+# Sep
+['Sep', 'equal spread (pro-rata)', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((1/12)*100,2),
+STET);
+
+# Oct
+['Oct', 'equal spread (pro-rata)', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((1/12)*100,2),
+STET);
+
+# Nov
+['Nov', 'equal spread (pro-rata)', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((1/12)*100,2),
+STET);
+
+# Dec
+['Dec', 'equal spread (pro-rata)', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((1/12)*100,2),
+STET);
+
+# Jan
+['Jan', 'equal spread (pro-rata)', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((1/12)*100,2),
+STET);
+
+# Feb
+['Feb', 'equal spread (pro-rata)', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((1/12)*100,2),
+STET);
+
+# Mar
+['Mar', 'equal spread (pro-rata)', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((1/12)*100,2),
+STET);
+
+# Apr
+['Apr', 'equal spread (pro-rata)', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((1/12)*100,2),
+STET);
+
+# May
+['May', 'equal spread (pro-rata)', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((1/12)*100,2),
+STET);
+
+# Jun
+['Jun', 'equal spread (pro-rata)', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((1/12)*100,2),
+STET);
+
+
+# Rule 004 -  Seasonal Spread - Quarterly
+# Jul
+['Jul', 'seasonal spread quarterly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Aug
+['Aug', 'seasonal spread quarterly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Sep
+['Sep', 'seasonal spread quarterly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((3/12)*100,2),
+STET);
+
+# Oct
+['Oct', 'seasonal spread quarterly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Nov
+['Nov', 'seasonal spread quarterly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Dec
+['Dec', 'seasonal spread quarterly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((3/12)*100,2),
+STET);
+
+# Jan
+['Jan', 'seasonal spread quarterly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Feb
+['Feb', 'seasonal spread quarterly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Mar
+['Mar', 'seasonal spread quarterly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((3/12)*100,2),
+STET);
+
+# Apr
+['Apr', 'seasonal spread quarterly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# May
+['May', 'seasonal spread quarterly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# June
+['Jun', 'seasonal spread quarterly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((3/12)*100,2),
+STET);
+
+
+
+
+
+# Rule 005 -  Seasonal Spread - Bi Monthly
+# Jul
+['Jul', 'seasonal spread bi monthly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Aug
+['Aug', 'seasonal spread bi monthly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((2/12)*100,2),
+STET);
+
+# Sep
+['Sep', 'seasonal spread bi monthly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Oct
+['Oct', 'seasonal spread bi monthly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((2/12)*100,2),
+STET);
+
+# Nov
+['Nov', 'seasonal spread bi monthly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Dec
+['Dec', 'seasonal spread bi monthly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((2/12)*100,2),
+STET);
+
+# Jan
+['Jan', 'seasonal spread bi monthly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Feb
+['Feb', 'seasonal spread bi monthly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((2/12)*100,2),
+STET);
+
+# Mar
+['Mar', 'seasonal spread bi monthly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Apr
+['Apr', 'seasonal spread bi monthly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((2/12)*100,2),
+STET);
+
+# May
+['May', 'seasonal spread bi monthly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+
+# June
+['Jun', 'seasonal spread bi monthly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((2/12)*100,2),
+STET);
+
+
+# Rule 006 -  Seasonal Spread - Half Yearly
+# Jul
+['Jul', 'seasonal spread half yearly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Aug
+['Aug', 'seasonal spread half yearly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Sep
+['Sep', 'seasonal spread half yearly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Oct
+['Oct', 'seasonal spread half yearly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Nov
+['Nov', 'seasonal spread half yearly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Dec
+['Dec', 'seasonal spread half yearly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((6/12)*100,2),
+STET);
+
+# Jan
+['Jan', 'seasonal spread half yearly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Feb
+['Feb', 'seasonal spread half yearly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Mar
+['Mar', 'seasonal spread half yearly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# Apr
+['Apr', 'seasonal spread half yearly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# May
+['May', 'seasonal spread half yearly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((0/12)*100,2),
+STET);
+
+# June
+['Jun', 'seasonal spread half yearly', 'value'] = N:
+IF (ATTRS('ME phasing method', !ME phasing method, 'status') @= '',
+ROUNDP((6/12)*100,2),
+STET);

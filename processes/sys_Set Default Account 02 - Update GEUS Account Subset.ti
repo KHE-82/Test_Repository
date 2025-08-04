@@ -1,0 +1,177 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_Set Default Account 02 - Update GEUS Account Subset
+#**** DESCRIPTION:       This process will create subsets for the account dimension based on flags in sys_SetDefaultAcc cube.
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    	KG             Initial Revision
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYS SET DEFAULT ACCOUNT CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+
+cbSDA = 'sys_set default account';
+dmMA = 'movement account';
+dmAcc = 'account';
+dmMeas='sys_set default account measure';
+
+#******************************************************************************************************************
+#*** DECLARE ENTITY SEGMENT CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbMAMap = 'sys_movement account mapping';
+dmMAMap = '}movement account mapping';
+dmMapMeas = 'sys_mapping measure';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE }ElementAttributes_account CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+cbAcc = '}ElementAttributes_Account';
+dmElAcc = '}ElementAttributes_Account';
+
+#--------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#--------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+sAEView = sUser | '_SetDefaultAcc02';
+sSubset = sAEView;
+
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CHECK IF SUBSET EXISTS
+#*****************************************************************************************************************************************************
+sAccSubset = '$geus';
+IF (SUBSETEXISTS(dmAcc, sAccSubset) = 0);
+	SUBSETCREATE (dmAcc, sAccSubset);
+ELSE;
+	SUBSETDELETEALLELEMENTS (dmAcc, sAccSubset);
+ENDIF;
+
+#*****************************************************************************************************************************************************
+#*** STEP 2 - CLEAR SOURCE VIEW
+#*****************************************************************************************************************************************************
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbSDA, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmMeas, sAEView);
+
+
+#-------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+
+# Account
+#MDX = '{ EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}, { [' | dmAcc | '].[9000701], [' | dmAcc | '].[9000702]}) }';
+MDX = '{TM1SORT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}, ASC)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Movement Account
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sAEView, MDX);
+
+SubsetCreate(dmMA, sAEView);
+SubsetElementInsert(dmMA, sAEView, 'Total movement', 1);
+
+
+# Set Default Account Measure
+SubsetCreate(dmMeas, sAEView);
+SubsetElementInsert(dmMeas, sAEView, 'flag', 1);
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** BUILD VIEW
+#-------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbSDA, sAEView);
+VIEWSUBSETASSIGN (cbSDA, sAEView, dmAcc, sAEView);
+VIEWSUBSETASSIGN (cbSDA, sAEView, dmMA, sAEView);
+VIEWSUBSETASSIGN (cbSDA, sAEView, dmMeas, sAEView);
+
+#-------------------------------------------------------------------------------------------------------------
+# *** DEFINE VIEW EXTRACT
+#-------------------------------------------------------------------------------------------------------------
+VIEWEXTRACTSKIPZEROESSET (cbSDA, sAEView, 1);
+VIEWEXTRACTSKIPRULEVALUESSET (cbSDA, sAEView, 1);
+VIEWEXTRACTSKIPCALCSSET (cbSDA, sAEView, 0);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sAEView;
+
+#*****************************************************************************************************************************************************
+#*** STEP 3 - SET COUNTER
+#*****************************************************************************************************************************************************
+nAccSubsetCounter = 1;
+nMASubsetCounter = 1;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+SUBSETELEMENTINSERT (dmAcc, sAccSubset, vsAcc, nAccSubsetCounter);
+nAccSubsetCounter = nAccSubsetCounter + 1;
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbSDA, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmMeas, sAEView);
+
+#-------------------------------------------------------------------------------------------------------------
+#*** CALL PROCESS TO UPDATE MOVEMENT ACCOUNT
+#-------------------------------------------------------------------------------------------------------------
+sProcess = 'sys_Set Default Account 03 - Update GEUS Movement Account Subset';
+EXECUTEPROCESS (sProcess);
+#endregion

@@ -1,0 +1,45 @@
+{
+	"@type":"Process",
+	"Name":"sys_Set Default Account 01 - Populate Display Flag",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Set Default Account 01 - Populate Display Flag.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForClient":"}ElementAttributes_account",
+		"dataSourceNameForServer":"}ElementAttributes_account",
+		"view":"Admin_SetDefaultAcc"
+	},
+	"Parameters":[],
+	"Variables":
+	[
+		{
+			"Name":"vsAcc",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsMeas",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsValue",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		}
+	]
+}
