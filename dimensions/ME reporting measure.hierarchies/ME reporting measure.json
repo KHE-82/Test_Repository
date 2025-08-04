@@ -45,8 +45,5 @@
 		}
 	],
 	"Subsets@Code.links":
-	[
-		"ME reporting measure.subsets/Amy Vu_$MEGenProf02.json",
-		"ME reporting measure.subsets/Michael Longley_$MEGenProf02.json"
-	]
+	[]
 }
