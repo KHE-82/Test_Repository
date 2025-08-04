@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"Amy Vu_$MEGenProf02",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('headline year')/Hierarchies('headline year')/Elements('HL2022-2023')"
+		}
+	]
+}
