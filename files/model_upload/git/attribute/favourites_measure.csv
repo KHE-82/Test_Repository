@@ -1,0 +1,3 @@
+"flag","AS","picklist","static:1:0"
+"movement account mapping","AS","picklist","subset:movement account:sys_all-n"
+"related entity mapping","AS","picklist","subset:related entity:sys_all-n"
