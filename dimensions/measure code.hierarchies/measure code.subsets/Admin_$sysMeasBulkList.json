@@ -1,5 +1,0 @@
-{
-	"@type":"Subset",
-	"Name":"Admin_$sysMeasBulkList",
-	"Expression":"{ [measure code].[M00000]}"
-}

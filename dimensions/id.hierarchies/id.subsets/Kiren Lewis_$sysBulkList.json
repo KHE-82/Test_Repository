@@ -1,5 +1,0 @@
-{
-	"@type":"Subset",
-	"Name":"Kiren Lewis_$sysBulkList",
-	"Expression":"{ [id].[cash flow]}"
-}
