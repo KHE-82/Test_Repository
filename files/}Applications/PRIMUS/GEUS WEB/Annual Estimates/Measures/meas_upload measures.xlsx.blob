@@ -1,5 +1,0 @@
-﻿FILE_FORMAT=100
-ENTRYNAME=meas_upload measures.xlsx
-ENTRYTYPE=blob
-ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\meas_upload measures.xlsx_20230214232024.xlsx
-REMOVEBLOBONDELETE=Yes

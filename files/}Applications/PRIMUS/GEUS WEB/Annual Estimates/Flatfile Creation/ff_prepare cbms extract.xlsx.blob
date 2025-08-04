@@ -1,5 +1,0 @@
-﻿FILE_FORMAT=100
-ENTRYNAME=ff_prepare cbms extract.xlsx
-ENTRYTYPE=blob
-ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\ff_prepare cbms extract.xlsx_20230214231531.xlsx
-REMOVEBLOBONDELETE=Yes
