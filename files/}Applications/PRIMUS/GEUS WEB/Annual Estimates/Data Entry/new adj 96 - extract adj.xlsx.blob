@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=new adj 96 - extract adj.xlsx
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\new adj 96 - extract adj.xlsx_20230214231407.xlsx
+REMOVEBLOBONDELETE=Yes

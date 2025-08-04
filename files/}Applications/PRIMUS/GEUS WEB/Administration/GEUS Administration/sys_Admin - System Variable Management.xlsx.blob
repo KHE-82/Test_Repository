@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=sys_Admin - System Variable Management.xlsx
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\sys_Admin - System Variable Management.xlsx_20230214230653.xlsx
+REMOVEBLOBONDELETE=Yes

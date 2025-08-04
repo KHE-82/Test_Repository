@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=Monthly Estimates - Homepage.xlsx
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\Monthly Estimates - Homepage.xlsx_20230214234843.xlsx
+REMOVEBLOBONDELETE=Yes

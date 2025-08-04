@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=view measure 01 - measure header details.xlsx
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\view measure 01 - measure header details.xlsx_20230214232046.xlsx
+REMOVEBLOBONDELETE=Yes

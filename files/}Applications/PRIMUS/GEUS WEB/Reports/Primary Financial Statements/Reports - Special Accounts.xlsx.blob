@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=Reports - Special Accounts.xlsx
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\Reports - Special Accounts_20241204023843.xlsx
+REMOVEBLOBONDELETE=Yes

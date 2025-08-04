@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=sys_Admin - Favourite List.xlsx
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\sys_Admin - Favourite List.xlsx_20230214230436.xlsx
+REMOVEBLOBONDELETE=Yes

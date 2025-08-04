@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=upload adjustment - error log.xlsx
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\upload adjustment - error log.xlsx_20240827081043.xlsx
+REMOVEBLOBONDELETE=Yes

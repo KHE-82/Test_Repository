@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=adj_parameters - reconciliation.xlsx
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\adj_parameters - reconciliation.xlsx_20230214231154.xlsx
+REMOVEBLOBONDELETE=Yes

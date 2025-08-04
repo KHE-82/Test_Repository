@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=new group adj 07 - customer no data entry.xlsx
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\new group adj 07 - customer no data entry.xlsx_20230214231806.xlsx
+REMOVEBLOBONDELETE=Yes
