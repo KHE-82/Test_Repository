@@ -1,0 +1,2340 @@
+{
+	"@type":"NativeView",
+	"Name":"z_OBAL CF",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('scenario')/Hierarchies('scenario')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('CBMSR RECO')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('period')/Hierarchies('period')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2016-2017')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2017-2018')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2018-2019')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2019-2020')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2020-2021')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2021-2022')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2022-2023')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2023-2024')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2024-2025')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2025-2026')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2026-2027')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2027-2028')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2028-2029')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2029-2030')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2030-2031')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2031-2032')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2032-2033')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2033-2034')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2034-2035')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2035-2036')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2036-2037')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2037-2038')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2038-2039')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2039-2040')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2040-2041')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2041-2042')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2042-2043')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2043-2044')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2044-2045')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2045-2046')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('programme')/Hierarchies('programme')"
+				},
+				"Alias":"code and description",
+				"Elements":[]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('-')"
+					},
+					{
+						"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('ACT')"
+					},
+					{
+						"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('NSW')"
+					},
+					{
+						"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('QLD')"
+					},
+					{
+						"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('NT')"
+					},
+					{
+						"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('WA')"
+					},
+					{
+						"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('SA')"
+					},
+					{
+						"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('VIC')"
+					},
+					{
+						"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('TAS')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('spp')/Hierarchies('spp')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('-')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('function')/Hierarchies('function')"
+				},
+				"Elements":[]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('outcome')/Hierarchies('outcome')"
+				},
+				"Elements":[]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('account')/Hierarchies('account')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6100001')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6100002')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6205100')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6205102')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211001')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211002')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211003')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211004')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211005')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211006')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211007')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211008')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211009')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211010')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211011')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211012')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211013')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211098')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212001')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212002')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212003')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212004')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212005')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212006')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212007')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212008')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212009')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212010')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212011')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212012')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212013')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212021')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212041')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212051')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212098')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6221101')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6221102')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6221198')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6221201')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6221298')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6222109')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6222114')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6222120')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6222206')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6222211')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6222220')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6231001')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6231003')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6231008')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6231010')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6231013')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6231098')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6232001')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6232003')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6232004')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6232007')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6232008')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6800001')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6800002')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6800003')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6900001')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6900002')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('6900003')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('A001')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('A002')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('A003')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('A004')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('A005')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('A006')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('A007')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('A008')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('A009')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('A010')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Special Appropriation')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('A200')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('A300')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Administered Revenue')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Approp (Economic Security) Bill (No.1) 08-09')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation (NTER) Bill (No. 1) 2007-2008')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation (Regional Telecommunications Services) Bill 2005-2006')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 1')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 1 - Capital Budget (DCB) - - Non Operating')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 2 - New Administered Expenses')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 2 - SPP')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 3')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 4 - New Administered Expenses')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 4 - SPP')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 5')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 6 - New Administered Expenses')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Bill 6 - SPP')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Type - Unallocated')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 2 - Non Operating - Administered Assets and Liabilities')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 2 - Non Operating - Equity Injection')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 2 - Non Operating - Loan')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 2 - Non Operating - Previous Years Outputs')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 4 - Non Operating - Administered Assets and Liabilities')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 4 - Non Operating - Equity Injection')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 4 - Non Operating - Loan')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 4 - Non Operating - Previous Years Outputs')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 6 - Non Operating - Administered Assets and Liabilities')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 6 - Non Operating - Equity Injection')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 6 - Non Operating - Loan')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Bill 6 - Non Operating - Previous Years Outputs')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Departmental Revenue')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('GST payments (s30A FMA)')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Other Receipts from Independent Sources')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Other Receipts from Independent Sources (CAC entities only)')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parl Bill 1 - Non Operating - Administered Assets and Liabilities')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parl Bill 1 - Non Operating - Equity Injection')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parl Bill 1 - Non Operating - Loan')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parl Bill 1 - Non Operating - Previous Years Outputs')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parl Bill 2 - Non Operating - Administered Assets and Liabilities')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parl Bill 2 - Non Operating - Equity Injection')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parl Bill 2 - Non Operating - Loan')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parl Bill 2 - Non Operating - Previous Years Outputs')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parliamentary Appropriation Bill 1')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parliamentary Appropriation Bill 2')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Parliamentary Appropriation Bill 1 - Capital Budget (DCB) - - Non Operating')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Receipts from Independent Sources (Appropriation)')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Receipts from Independent Sources (Revenue Authority)')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Refunds of Receipts (s28 FMA)')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Retained Prior Years Appropriation')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Special Account')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Special Capital Appropriation')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Special Public Money / Assets Held in Trust')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Supply Bill 1')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Supply Bill 2')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Receipts/Payments from/to Independent Sources - FMA Act s31, FMA Reg 15 - F2008C00384 (FMA only)')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('2016-17 only - Residual Appropriation Bill 1')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('2016-17 only - Residual Appropriation Bill 1 - Capital Budget (DCB) - - Non Operating')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('2016-17 only - Residual Appropriation Bill 2 - Non Operating - Equity Injection')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('2016-17 only - Residual Appropriation Bill 2 - SPP')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Appropriation Type - Unallocated - Capital Budget (DCB) - - Non Operating')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Supply Bill 2 - SPP')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Supply Bill 1 - Capital Budget (DCB) - - Non Operating')"
+					},
+					{
+						"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Supply Bill 2 - Non Operating - Equity Injection')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('related entity')/Hierarchies('related entity')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('-')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('10000')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('10500')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('10800')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('11100')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('11300')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('11400')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('11600')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('11700')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12000')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12100')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12200')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12300')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12400')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12500')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12600')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12700')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12800')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('12900')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('13200')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('13300')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('13700')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('13800')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('13900')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('14000')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('14100')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('14300')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('14400')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('14500')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('14600')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('14700')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15000')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15100')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15200')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15300')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15500')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15600')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15700')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('15800')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('16100')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('16300')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('16400')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('17700')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('17800')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('17900')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('18300')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('19800')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('20400')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('20900')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('21100')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('21300')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('22000')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('22400')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('22700')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('22900')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('23100')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('23200')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('23400')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('23800')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('23900')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('24100')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('24200')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('24400')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('24500')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('24700')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('24800')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('24900')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('25000')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('25100')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('25200')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('25300')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('25600')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('25700')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('26200')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('26300')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('30100')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('30200')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('30300')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('40000')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('40900')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('41500')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('41600')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('42000')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('42300')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('43100')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('43200')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('43300')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('43400')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('43500')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('43600')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('43700')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('43800')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('43900')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('44000')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('44300')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('44500')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('44600')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('44800')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('45000')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('45400')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('45500')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('46800')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('47300')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('47500')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('47600')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('47700')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('47800')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('48000')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('48100')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('49100')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('49200')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('49800')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('50600')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('50700')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('50800')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('50900')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('51200')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('51400')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('51600')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('52700')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('53000')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('53200')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('53400')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('53600')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('53700')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('53800')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('54200')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('54300')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('70100')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('70300')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('72000')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('72200')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('80500')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('80600')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('80900')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('99100')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('99999')"
+					},
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('Cash flow')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('-')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A001-00001-05000')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A001-00001-05001')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A001-00002-05000')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A001-00002-05001')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A001-00003-05000')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A001-00003-05001')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A001-00004-05000')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A001-00004-05001')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A001-00016-05000')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A001-00016-05001')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00005-05002')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00005-05003')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00005-05004')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00005-05005')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00005-05007')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00006-05002')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00006-05003')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00006-05004')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00006-05005')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00006-05007')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00007-05002')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00007-05003')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00007-05004')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00007-05005')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00007-05007')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00008-05002')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00008-05003')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00008-05004')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00008-05005')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00008-05007')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00017-05002')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00017-05003')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00017-05004')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00017-05005')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A002-00017-05007')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A006-00019-05000')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A006-00019-05001')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A007-00020-05002')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A007-00020-05004')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A009-00013-05006')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('A010-00014-01436')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1038')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1039')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1070')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1078')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1085')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1097')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1128')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1139')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1171')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1173')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1208')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1296')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1313')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1314')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1319')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1322')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1331')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1350')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1351')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1352')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1355')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1365')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1373')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1376')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1379')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1380')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1381')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1382')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1383')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1385')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1386')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1413')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1415')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1416')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1417')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1418')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1419')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1420')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1421')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1422')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1423')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1424')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1425')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1426')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1427')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1431')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1436')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1438')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1439')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1468')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1470')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1629')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1633')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1725')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1843')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1844')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1845')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1846')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1847')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1848')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1849')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1850')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1851')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1852')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1853')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1854')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1855')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1856')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1857')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1858')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1859')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1860')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1861')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1862')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1863')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1864')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1865')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1866')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1867')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1868')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1869')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1870')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1871')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1873')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1874')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1875')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1876')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1878')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1879')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1880')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1881')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1882')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1883')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1884')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1885')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1886')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1887')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1888')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1889')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1890')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1891')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1892')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1893')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1894')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1895')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1896')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1897')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1898')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1899')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1900')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1901')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1902')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1903')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1904')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1905')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1906')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1907')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1908')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1909')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1910')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1911')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1912')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1913')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1914')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1915')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1916')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1917')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1918')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1919')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1920')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1921')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1922')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1923')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1924')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1925')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1926')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1927')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1928')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1929')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1930')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1931')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1932')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1933')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1934')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1935')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1936')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1937')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1938')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1939')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1940')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1941')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1942')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1943')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1944')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1945')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1946')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1947')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1948')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1949')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1950')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1951')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1952')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1953')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1954')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1956')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1957')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1958')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1960')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1961')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1963')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1964')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1965')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1967')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1969')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1970')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1972')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1973')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1975')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1976')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1977')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1979')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1980')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1982')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1983')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1985')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1986')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1988')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1989')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1991')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1992')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1994')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1995')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1997')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('1998')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2107')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2108')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2109')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2110')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2111')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2254')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2272')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2277')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2375')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2379')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2380')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2381')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2382')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2383')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2522')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2523')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2524')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2601')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2627')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2703')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2857')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2858')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2859')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2860')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2905')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2946')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2947')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('2948')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3004')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3005')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3006')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3034')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3094')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3095')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3096')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3161')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3189')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3190')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3363')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3464')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3486')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3776')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3829')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3908')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3928')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3935')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3945')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3953')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('3954')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4027')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4028')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4029')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4030')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4031')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4032')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4033')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4034')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4035')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4036')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4037')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4038')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4039')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4040')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4041')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4042')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4043')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4044')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4045')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4046')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4047')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4048')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4059')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4060')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4061')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4062')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4063')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4064')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4065')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4066')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4067')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4068')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4069')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4070')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4073')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4076')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4106')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4107')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4200')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4201')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4202')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4183')"
+					},
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('4247')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('reason')/Hierarchies('reason')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Government decision or measure')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1004')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1005')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1008')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1009')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1011')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1012')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1015')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1018')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1019')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1020')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1021')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1022')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1029')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1032')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1033')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Balance Sheet or Related Entity')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1036')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1038')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Whole of Government Savings')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1040')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1041')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1042')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1045')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('1046')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Slippage in budget measure')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Change in interest rates')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Changes in price & wage indices')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Changes in number of unemployment beneficiaries')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Changes in foreign exchange rates')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('25% of male total AWE commitment')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Changes in interest or foreign exchange rates')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('PDI Changes')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Changes in beneficiary numbers excluding unemployment')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Change in beneficiary composition or average rates')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Program specific - beneficiary or rate changes')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Program specific - other')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Borrowings')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Equity Injections')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Application of efficiency dividend')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Receipts from independent sources')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Approved movement of funds between years')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Movement of administered funds between years')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Self balancing transfers between same year')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Section 32 Transfers')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Eliminations')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Changes/Restatement of Opening Balances')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Creation of the New 3rd Forward Year Estimates''')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Competitive neutrality')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Provisional Estimate')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Other')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Other variations not elsewhere defined')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Other changes in program specific parameters')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('27th Period')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Departmental Capital Budget (DCB) - Temporary Adjustments')"
+					},
+					{
+						"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Related Entity')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('headline year')/Hierarchies('headline year')"
+				},
+				"Elements":[]
+			},
+			"Selected":null
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('status')/Hierarchies('status')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('status')/Hierarchies('status')/Elements('Total approved')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('status')/Hierarchies('status')/Elements('Total approved')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('id')/Hierarchies('id')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('id')/Hierarchies('id')/Elements('00000')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('id')/Hierarchies('id')/Elements('00000')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('measure code')/Hierarchies('measure code')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('Total Measures')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('Total Measures')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('movement account')/Hierarchies('movement account')"
+				},
+				"Alias":"code and description",
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('-')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('-')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":true,
+	"SuppressEmptyRows":true,
+	"FormatString":"#,##0"
+}

@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"Admin_$AccTempSubset01",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account template measure')/Hierarchies('account template measure')/Elements('flag')"
+		}
+	]
+}

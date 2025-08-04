@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"Admin_sys_id_list",
+	"Expression":"{TM1SORT({ EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [ id] )}, 0)}, { [id].[0000A], [id].[0000B], [id].[00FBO] }) }, DESC)}"
+}

@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"Dinesh Yoganantham_$sysBulkList",
+	"Expression":"{{TM1SORT({FILTER( {{FILTER( {EXCEPT( {[id].[Total IDs].Children}, {[id].[00000],[id].[cash flow]} )}, [AE id details].([Headline Year].[HL2025-2026],[scenario].[current],[id measure].[status]) = \"approved\" )  }}, INSTR( [AE id details].([Headline Year].[HL2025-2026],[scenario].[current],[id measure].[title]), \"\" ) >=1)}, DESC)},[id].[cash flow]}"
+}
