@@ -23,7 +23,6 @@
 	},
 	"Views@Code.links":
 	[
-		"programme details.views/$CreateFE3II.json",
 		"programme details.views/Default.json"
 	]
 }
