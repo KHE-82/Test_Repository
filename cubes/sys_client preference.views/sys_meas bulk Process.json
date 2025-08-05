@@ -65,13 +65,8 @@
 				[
 					{
 						"@id":"Dimensions('}Clients')/Hierarchies('}Clients')/Elements('Admin')"
-					},
-					{
-						"@id":"Dimensions('}Clients')/Hierarchies('}Clients')/Elements('CAMID(\"pans:u:hattie.huang@dcceew.gov.au\")')"
-					},
-					{
-						"@id":"Dimensions('}Clients')/Hierarchies('}Clients')/Elements('CAMID(\"pans:u:khe@excelerated.com.au\")')"
 					}
+
 				]
 			},
 			"Selected":
