@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=Monthly Estimates - Operating Statement Data Entry.xlsx
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\Monthly Estimates - Operating Statement Data Entry_20250604081254.xlsx
+REMOVEBLOBONDELETE=Yes

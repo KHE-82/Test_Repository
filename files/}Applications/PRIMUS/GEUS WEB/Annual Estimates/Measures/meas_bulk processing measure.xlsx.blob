@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=meas_bulk processing measure.xlsx
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\meas_bulk processing measure.xlsx_20230214231951.xlsx
+REMOVEBLOBONDELETE=Yes
