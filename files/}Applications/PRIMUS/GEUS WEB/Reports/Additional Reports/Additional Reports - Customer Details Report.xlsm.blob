@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=Additional Reports - Customer Details Report.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\Additional Reports - Customer Details Report_20250811023343.xlsm
+REMOVEBLOBONDELETE=Yes

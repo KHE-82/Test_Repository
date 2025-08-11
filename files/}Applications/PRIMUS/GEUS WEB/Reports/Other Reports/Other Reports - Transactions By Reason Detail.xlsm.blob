@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=Other Reports - Transactions By Reason Detail.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\Other Reports - Transactions By Reason Detail_20250811023453.xlsm
+REMOVEBLOBONDELETE=Yes

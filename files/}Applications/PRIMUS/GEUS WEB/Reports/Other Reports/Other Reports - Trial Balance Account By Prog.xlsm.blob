@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=Other Reports - Trial Balance Account By Prog.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\Other Reports - Trial Balance Account By Prog_20250811023457.xlsm
+REMOVEBLOBONDELETE=Yes

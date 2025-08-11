@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=Other Reports - Primary Financial Statements Details.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\Other Reports - Primary Financial Statements Details_20250811023436.xlsm
+REMOVEBLOBONDELETE=Yes

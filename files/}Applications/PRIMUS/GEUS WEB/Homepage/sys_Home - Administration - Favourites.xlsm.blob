@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=sys_Home - Administration - Favourites.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\sys_Home - Administration - Favourites_20250811023225.xlsm
+REMOVEBLOBONDELETE=Yes

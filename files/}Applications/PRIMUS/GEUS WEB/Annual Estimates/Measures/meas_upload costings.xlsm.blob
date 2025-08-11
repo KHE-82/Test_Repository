@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=meas_upload costings.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\meas_upload costings_20250811023206.xlsm
+REMOVEBLOBONDELETE=Yes

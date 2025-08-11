@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=adj_id list.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\adj_id list_20250811022951.xlsm
+REMOVEBLOBONDELETE=Yes

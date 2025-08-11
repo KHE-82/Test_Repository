@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=adj_parameters - indexation setup.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\adj_parameters - indexation setup_20250811022955.xlsm
+REMOVEBLOBONDELETE=Yes
