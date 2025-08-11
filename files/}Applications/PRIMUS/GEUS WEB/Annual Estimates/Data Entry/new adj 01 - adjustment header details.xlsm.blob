@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=new adj 01 - adjustment header details.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\new adj 01 - adjustment header details_20250811023016.xlsm
+REMOVEBLOBONDELETE=Yes

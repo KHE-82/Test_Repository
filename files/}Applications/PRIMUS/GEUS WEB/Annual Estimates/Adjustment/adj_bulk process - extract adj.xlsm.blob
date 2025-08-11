@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=adj_bulk process - extract adj.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\adj_bulk process - extract adj_20250811022936.xlsm
+REMOVEBLOBONDELETE=Yes

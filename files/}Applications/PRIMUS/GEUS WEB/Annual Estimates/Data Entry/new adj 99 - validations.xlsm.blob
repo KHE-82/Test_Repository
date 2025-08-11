@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=new adj 99 - validations.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\new adj 99 - validations_20250811023030.xlsm
+REMOVEBLOBONDELETE=Yes

@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=Other Reports - Primary Financial Statements SPP and Jur.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\Other Reports - Primary Financial Statements SPP and Jur_20250811023440.xlsm
+REMOVEBLOBONDELETE=Yes

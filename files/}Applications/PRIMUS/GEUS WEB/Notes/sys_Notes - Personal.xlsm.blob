@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=sys_Notes - Personal.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\sys_Notes - Personal_20250811023339.xlsm
+REMOVEBLOBONDELETE=Yes

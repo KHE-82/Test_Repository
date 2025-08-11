@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=Monthly Estimates - Account Template.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\Monthly Estimates - Account Template_20250811023305.xlsm
+REMOVEBLOBONDELETE=Yes

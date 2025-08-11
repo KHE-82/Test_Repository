@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=new adj 03 - authorise.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\new adj 03 - authorise_20250811023021.xlsm
+REMOVEBLOBONDELETE=Yes

@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=Other Reports - Measures Financials.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\Other Reports - Measures Financials_20250811023433.xlsm
+REMOVEBLOBONDELETE=Yes

@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=adj_program transfer.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\adj_program transfer_20250811023012.xlsm
+REMOVEBLOBONDELETE=Yes

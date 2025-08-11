@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=sys_Admin - Account Template List.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\sys_Admin - Account Template List_20250811023155.xlsm
+REMOVEBLOBONDELETE=Yes

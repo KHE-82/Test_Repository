@@ -1,0 +1,7 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=ff_flatfile upload template - upload measures.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\ff_flatfile upload template - upload measures.xlsx_20230214233957.xlsx
+REMOVEBLOBONDELETE=Yes
+
+

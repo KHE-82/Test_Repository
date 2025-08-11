@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=new group adj 06 - copy reverse delete.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\new group adj 06 - copy reverse delete_20250811023138.xlsm
+REMOVEBLOBONDELETE=Yes

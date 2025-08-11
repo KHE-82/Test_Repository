@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=Reports - Appropriation QA Report.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\Reports - Appropriation QA Report_20250811023504.xlsm
+REMOVEBLOBONDELETE=Yes

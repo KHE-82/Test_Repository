@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=adj_bulk process.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\adj_bulk process_20250811022938.xlsm
+REMOVEBLOBONDELETE=Yes

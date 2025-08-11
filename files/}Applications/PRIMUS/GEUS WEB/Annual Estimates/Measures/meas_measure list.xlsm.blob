@@ -1,0 +1,5 @@
+﻿FILE_FORMAT=100
+ENTRYNAME=meas_measure list.xlsm
+ENTRYTYPE=blob
+ENTRYREFERENCE=TM1:///blob/PUBLIC/.\}externals\meas_measure list_20250811023204.xlsm
+REMOVEBLOBONDELETE=Yes
