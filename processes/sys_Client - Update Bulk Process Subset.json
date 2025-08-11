@@ -1,0 +1,45 @@
+{
+	"@type":"Process",
+	"Name":"sys_Client - Update Bulk Process Subset",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Client - Update Bulk Process Subset.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"Admin",
+			"Type":"String"
+		},
+		{
+			"Name":"psMDX",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psFilter",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psHLYear",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psScenario",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

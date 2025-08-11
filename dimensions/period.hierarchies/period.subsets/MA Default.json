@@ -1,0 +1,85 @@
+{
+	"@type":"Subset",
+	"Name":"MA Default",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('P0')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Year')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Jul')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Aug')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Sep')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Oct')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Nov')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Dec')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Jan')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Feb')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Mar')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Apr')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('May')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Jun')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Jul YTD')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Aug YTD')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Sep YTD')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Oct YTD')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Nov YTD')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Dec YTD')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Jan YTD')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Feb YTD')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Mar YTD')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Apr YTD')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('May YTD')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('Jun YTD')"
+		}
+	]
+}

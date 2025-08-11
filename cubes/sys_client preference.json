@@ -1,0 +1,27 @@
+{
+	"@type":"Cube",
+	"Name":"sys_client preference",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('}Clients')"
+		},
+		{
+			"@id":"Dimensions('sys_client preference')"
+		},
+		{
+			"@id":"Dimensions('sys_client preference measure')"
+		}
+	],
+	"Rules@Code.link":"sys_client preference.rules",
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('sys_client preference measure')"
+	},
+	"Views@Code.links":
+	[
+		"sys_client preference.views/data entry.json",
+		"sys_client preference.views/sys_bulk Process.json",
+		"sys_client preference.views/sys_meas bulk Process.json"
+	]
+}

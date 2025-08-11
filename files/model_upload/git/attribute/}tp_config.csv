@@ -1,0 +1,3 @@
+"TI Message Expiration (Days)","AN","Numeric Value","3"
+"EnableElementSecurityOnApproval","AS","String Value","Y"
+"ApplicationMaintenanceRunning","AS","String Value","N"

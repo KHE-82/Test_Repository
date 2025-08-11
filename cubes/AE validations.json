@@ -1,0 +1,27 @@
+{
+	"@type":"Cube",
+	"Name":"AE validations",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('headline year')"
+		},
+		{
+			"@id":"Dimensions('scenario')"
+		},
+		{
+			"@id":"Dimensions('validation id')"
+		},
+		{
+			"@id":"Dimensions('id')"
+		},
+		{
+			"@id":"Dimensions('period')"
+		}
+	],
+	"Rules@Code.link":"AE validations.rules",
+	"Views@Code.links":
+	[
+		"AE validations.views/Default.json"
+	]
+}

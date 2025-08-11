@@ -1,0 +1,186 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               ME_FlatFile 99 - Clear sys_Extract
+#**** DESCRIPTION:       This process creates a view for the flatfile generation
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 02/08/2017    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+cbME = 'ME adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+cbID = 'ME id details';
+#---------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+cbProg = snProg | ' details';
+#---------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE EXTRACT CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+cbExtract = 'sys_ME extract';
+dmFFScenario = 'sys_flatfile scenario';
+dmID = 'id';
+dmRowID = 'sys_ME_extract row id';
+dmExtractMeas = 'sys_flatfile measure';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+sHLYear = ATTRS(dmVar,'headline year','value');
+sScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     	sUser = ATTRS(dmClients, sUser, 'GEUS User Name');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+     	sUser = TM1User();
+ENDIF;
+
+
+#sObject  = sUser | '_$FlatFile';
+sAEView = sUser | '_$FlatFile';
+#sAEView = '$FlatFile';
+sFFScenario = 'upload';
+sFFScenario1 = 'legacy';
+sStatus = 'approved';
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CLEAR CURRENT ID FLAT FILE ***#
+#*****************************************************************************************************************************************************
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbME, sAEView);
+VIEWDESTROY (cbExtract, sAEView);
+SUBSETDESTROY (dmClients, sAEView);
+SUBSETDESTROY (dmFFScenario, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmRowID, sAEView);
+SUBSETDESTROY (dmExtractMeas, sAEView);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS****#
+#---------------------------------------------------------------------------------------------------------------------------
+
+# Client
+SubsetCreate(dmClients, sAEView);
+SubsetElementInsert(dmClients, sAEView, sUser, 1);
+
+# FF Scenario
+SubsetCreate(dmFFScenario, sAEView);
+SubsetElementInsert(dmFFScenario, sAEView, sFFScenario, 1);
+SubsetElementInsert(dmFFScenario, sAEView, sFFScenario1, 2);
+
+
+# ID
+MDX = '{ EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmID | '] )}, 0)}, { [' | dmID | '].[0000A], [' | dmID | '].[0000B], [' | dmID | '].[00FBO], [' | dmID | '].[Cash flow] }) }';
+SUBSETCREATEBYMDX (sAEView, MDX);
+#SUBSETMDXSET (dmJur, sAEView, MDX);
+
+# Row ID
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRowID | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+#SUBSETMDXSET (dmRowID, sAEView, MDX);
+
+
+# Extract Measure
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmExtractMeas | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+#SUBSETMDXSET (dmExtractMeas, sAEView, MDX);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****BUILD VIEW****#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbExtract, sAEView);
+VIEWSUBSETASSIGN (cbExtract, sAEView, dmClients, sAEView);
+VIEWSUBSETASSIGN (cbExtract, sAEView, dmFFScenario, sAEView);
+VIEWSUBSETASSIGN (cbExtract, sAEView, dmRowID, sAEView);
+VIEWSUBSETASSIGN (cbExtract, sAEView, dmID, sAEView);
+VIEWSUBSETASSIGN (cbExtract, sAEView, dmExtractMeas, sAEView);
+
+VIEWZEROOUT (cbExtract, sAEView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbExtract, sAEView);
+SUBSETDESTROY (dmClients, sAEView);
+SUBSETDESTROY (dmFFScenario, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmRowID, sAEView);
+SUBSETDESTROY (dmExtractMeas, sAEView);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

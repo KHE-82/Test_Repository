@@ -1,0 +1,199 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_Client - Update Adj Process Picklist
+#**** DESCRIPTION:       This process will update the picklist required for when the user selects an adjustment to copy/reverse/delete
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    KG             Initial Revision
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS
+#******************************************************************************************************************
+cbID = 'AE id details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmID = 'id';
+dmIDMeas = 'id measure';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT GROUPS CUBE
+#******************************************************************************************************************
+cbGroups = '}ClientGroups';
+dmGroups = '}Groups';
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#******************************************************************************************************************
+#*** GET CLIENT SECURITY GROUPS (NON CAM)
+#******************************************************************************************************************
+sAdmGrp = 'ADMIN';
+sReportGrp = 'AE Reports';
+sDataEntryGrp = 'AE Data Entry';
+sAppGrp = 'AE Approvers';
+
+#******************************************************************************************************************
+#*** NEW SECURITY GROUP FOR CAM 
+#******************************************************************************************************************
+#sCAMAdmGrp = 'CAMID(":Admin)';
+#sCAMReportGrp = 'CAMID(":AE Reports")';
+#sCAMDataEntryGrp = 'CAMID(":AE Data Entry")';
+#sCAMAppGrp = 'CAMID(":AE Approvers")';
+
+#******************************************************************************************************************
+#*** NEW SECURITY GROUP FOR CAM - UPDATE 2021
+#******************************************************************************************************************
+sCAMAdmGrp = sAdmGrp;
+sCAMReportGrp = sReportGrp;
+sCAMDataEntryGrp = sDataEntryGrp;
+sCAMAppGrp = sAppGrp;
+
+
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+	sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+	lScan = SCAN('\',sUser) + 1;
+	sUser = TRIM(SUBST(sUser, lScan, 100));
+
+	sAdmGrpCheck = CELLGETS (cbGroups, sUser, sAdmGrp);
+	sCAMReportGrpCheck = CELLGETS (cbGroups, sUser, sCAMReportGrp);
+	sCAMDataEntryGrpCheck = CELLGETS (cbGroups, sUser, sCAMDataEntryGrp);
+	sCAMAppGrpCheck = CELLGETS (cbGroups, sUser, sCAMAppGrp);
+ELSE;
+	sUser = TM1User();
+
+	#******************************************************************************************************************
+	#*** GET CLIENT SECURITY GROUPS
+	#*** SOME AGENCY DO NOT HAVE SECURITY GROUP. MAY NEED TO UPDATE AND CHANGE
+	#******************************************************************************************************************
+	#sAdmGrpCheck = CELLGETS (cbGroups, sUser, sAdmGrp);
+	#sReportGrpCheck = CELLGETS (cbGroups, sUser, sReportGrp);
+	#sDataEntryGrpCheck = CELLGETS (cbGroups, sUser, sDataEntryGrp);
+	#sAppGrpCheck = CELLGETS (cbGroups, sUser, sAppGrp);
+
+	sAdmGrpCheck = '';
+	sReportGrpCheck = '';
+	sDataEntryGrpCheck = '';
+	sAppGrpCheck = '';
+
+	sAdmGrpCheck = CELLGETS (cbGroups, sUser, sAdmGrp);
+	sCAMReportGrpCheck = CELLGETS (cbGroups, sUser, sCAMReportGrp);
+	sCAMDataEntryGrpCheck = CELLGETS (cbGroups, sUser, sCAMDataEntryGrp);
+	sCAMAppGrpCheck = CELLGETS (cbGroups, sUser, sCAMAppGrp);
+
+
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** GET STATUS OF ADJUSTMENT
+#******************************************************************************************************************
+sStatus = CELLGETS (cbID, psHLYear, psScenario, psID, 'status');
+
+#******************************************************************************************************************
+#*** CLEAR CURRENT PICKLISTS
+#******************************************************************************************************************
+sClientMeas = 'sys_adj process picklist';
+CELLPUTS ('',cbClient, sUser, sClientMeas, 'value');
+
+#******************************************************************************************************************
+#*** PROCESS FOR CURRENT HEADLINE YEAR AND CURRENT SCENARIO
+#******************************************************************************************************************
+
+IF (psHLYear @= curHLYear & psScenario @= curScenario & (sStatus @= 'draft' % sStatus @= 'unauthorised' % sStatus @= 'unbalanced'));
+	sPickListReport  = '';
+	sPickListDE = 'static:Copy:Reverse:Copy and Reverse:Delete';
+	sPickListApp = 'static:Copy:Reverse:Copy and Reverse:Delete';
+	sPickListAdm = 'static:Copy:Reverse:Copy and Reverse:Delete';
+ELSE;
+
+	#******************************************************************************************************************
+	#*** SHOW ONLY A FEW PROCESSES IN PREVIOUS HL YEAR AND SCENARIO
+	#******************************************************************************************************************
+	sPickListReport  = '';
+	sPickListDE = 'static:Copy:Reverse:Copy and Reverse';
+	sPickListApp = 'static:Copy:Reverse:Copy and Reverse';
+	sPickListAdm = 'static:Copy:Reverse:Copy and Reverse';
+
+ENDIF;
+
+#******************************************************************************************************************
+#*** ADD TO PICKLIST
+#******************************************************************************************************************
+
+#*** REPORTS ONLY PICKLIST
+IF (sReportGrpCheck @<> '' % sCAMReportGrpCheck @<> '');
+	CELLPUTS (sPickListReport, cbClient, sUser, sClientMeas, 'value');
+ENDIF;
+
+
+#*** DATA ENTRY ONLY PICKLIST
+IF (sDataEntryGrpCheck @<> '' % sCAMDataEntryGrpCheck @<> '');
+	CELLPUTS (sPickListDE, cbClient, sUser, sClientMeas, 'value');
+ENDIF;
+
+#*** APPROVER PICKLIST
+IF (sAppGrpCheck @<> '' % sCAMAppGrpCheck @<> '');
+	CELLPUTS (sPickListApp, cbClient, sUser, sClientMeas, 'value');
+ENDIF;
+
+#*** ADMINISTRATORS PICKLIST
+IF (sAdmGrpCheck @<> '');
+	CELLPUTS (sPickListAdm, cbClient, sUser, sClientMeas, 'value');
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** CLEAR OUT SYS_ADJ PROCESS VALUE
+#******************************************************************************************************************
+sClientMeas = 'sys_adj process';
+CELLPUTS ('', cbClient, sUser, sClientMeas, 'value');
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

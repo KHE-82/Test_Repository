@@ -1,0 +1,470 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Measure Bulk - Process Journals
+#**** DESCRIPTION:       This process manages which process to execute during the bulk process function	
+#****
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    KG             Initial Revision
+#**** 2020   	KG	  Updated processes for validations
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+
+IF (DIMENSIONEXISTS ('programme') = 1);
+	sProgDimName = 'programme';
+	sTotalProg = 'Total Programmes';
+ELSE;
+	sProgDimName = 'program';
+	sTotalProg = 'Total Programs';
+ENDIF;
+
+
+snProg = sProgDimName;
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS
+#******************************************************************************************************************
+cbID = 'AE id details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmID = 'id';
+dmIDMeas = 'id measure';
+
+sMeasure = 'bulk processing flag';
+
+
+#******************************************************************************************************************
+#*** DECLARE BULK PROCESS CUBE
+#******************************************************************************************************************
+cbBulk = 'AE bulk processing';
+
+
+#******************************************************************************************************************
+#*** DECLARE GOVERNMENT MEASURES DETAILS
+#******************************************************************************************************************
+cbMeasDet = 'government measures details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmMeasCode = 'measure code';
+dmMeasCodeDet = 'measure details';
+
+
+#******************************************************************************************************************
+#*** DECLARE BULK PROCESS CUBE
+#******************************************************************************************************************
+cbMeasBulk = 'government measures bulk processing';
+
+#******************************************************************************************************************
+#*** DECLARE PROCESS SECURITY CUBE
+#******************************************************************************************************************
+cbProcessSec = '}ProcessSecurity';
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED
+#******************************************************************************************************************
+sView = sUser | '_$sysMeasBulkProcess';
+sSubset = sUser | '_$sysMeasBulkList';
+sPrintSubset = sUser | '_$sysMeasBulkPrintList';
+nMaxPrintCounter = 20;
+
+sTotalHLYear = 'Total headline year';
+sTotalScenario = 'sys_BudgetRound';
+sStatus = 'data';
+sTotalOC = 'Total outcomes';
+sTotalRE = 'Total related entity';
+sTotalFunc = 'Total functions';
+sTotalReason = 'Total reason';
+sTotalSPP = 'Total spp';
+sTotalType = 'Total approp types';
+sTotalMA = 'Total movement';
+sTotalItem = 'Total approp item';
+sRevAcc = '1000001';
+sExpAcc = '2000000';
+sCapAcc = '9000020';
+sTotalID = 'Total Ids';
+sTotalJur = 'Total jurisdictions';
+sTotalPer = 'Total years';
+
+
+#******************************************************************************************************************
+#*** ADD VALIDATION TO ENSURE A PROCESS IS SELECTED
+#******************************************************************************************************************
+IF (psProcess @='');
+	CELLPUTS ('FAIL',cbClient, sUser, 'sys_meas bulk process', 'validate');
+	PROCESSQUIT;
+ENDIF;
+
+
+
+#******************************************************************************************************************
+#*** STEP 1 - CREATE VIEW AND CLEAR OUT ALL FLAGS
+#******************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbMeasBulk, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmMeasCodeDet, sView);
+
+
+#******************************************************************************************************************
+#*** CREATE SUBSETS
+#******************************************************************************************************************
+# Client
+SUBSETCREATE (dmClient, sView);
+SUBSETELEMENTINSERT (dmClient, sView, sUser, 1);
+
+# Headline Year
+SUBSETCREATE (dmHLYear, sView);
+SUBSETELEMENTINSERT (dmHLYear, sView, psHLYear, 1);
+
+# Scenario
+SUBSETCREATE (dmScenario, sView);
+SUBSETELEMENTINSERT (dmScenario, sView, psScenario, 1);
+
+# Measure Code
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode |'] )}, 0)}, [' | dmMeasCode |'].[Non-Measure] = "")}';
+
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmMeasCode, sView , MDX);
+
+# Measure Code Details
+SUBSETCREATE (dmMeasCodeDet, sView);
+SUBSETELEMENTINSERT (dmMeasCodeDet, sView, sMeasure, 1);
+
+
+#******************************************************************************************************************
+#*** BUILD VIEW
+#******************************************************************************************************************
+VIEWCREATE (cbMeasBulk, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmClient, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmHLYear, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmScenario, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmMeasCode, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmMeasCodeDet, sView);
+
+VIEWSETSKIPZEROES (cbMeasBulk, sView, 1);
+VIEWSUPPRESSZEROESSET( cbMeasBulk, sView, 1);
+VIEWSETSKIPCALCS (cbMeasBulk, sView, 1);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+#******************************************************************************************************************
+#*** STEP 2 - IDENTIFY WHICH PROCESS TO USE FOR THE ADJUSTMENT
+#*** FIND OUT WHAT PROCESS THE USER SELECTED
+
+# Approve
+# Copy
+# Reject
+# Delete
+# Print
+#******************************************************************************************************************
+
+#******************************************************************************************************************
+#*** GET SELECTED PROCESS
+#******************************************************************************************************************
+sSelProcess = CELLGETS (cbClient, sUser,  'sys_meas bulk process', 'value');
+
+#******************************************************************************************************************
+#*** LIST OF AVAILABLE PROCESSES
+#****************************************************************************************************************** 
+sPrcCopy = 'AE_Measure - Copy';
+sPrcDel = 'AE_Measure - Delete';
+sPrcRej = 'AE_measure_Approve';
+sPrcAuth = 'AE_measure_Approve';
+sPrcPrint = '';
+
+lCounter = 0;
+
+#******************************************************************************************************************
+#*** STEP 3 - PERFORM VALIDATIONS
+#******************************************************************************************************************
+
+#******************************************************************************************************************
+#*** STOP PROCESS IF PROCESS IS BLANK
+#****************************************************************************************************************** 
+
+IF (sSelProcess @= '' & psProcess @='');
+	PROCESSQUIT;
+ELSE;
+
+	sOldProcess = CELLGETS (cbClient, sUser, 'sys_meas bulk process', 'old value');
+	#******************************************************************************************************************
+	#*** STOP PROCESS IF PROCESS IS NOT THE SAME AS THE SELECTED PROCESS
+	#****************************************************************************************************************** 
+
+	IF (sOldProcess @<> psProcess);
+		ASCIIOUTPUT ('processquitB.txt', sSelProcess, psProcess);
+		PROCESSQUIT;
+	ENDIF;
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** STEP 4 - BULK PRINT SUBSETS
+#******************************************************************************************************************
+SUBSETDESTROY (dmMeasCode, sPrintSubset);
+CELLPUTS ('',cbClient, sUser, 'sys_meas bulk process', 'validate');
+lPrintCounter = 1;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#******************************************************************************************************************
+#*** GET PREVIOUS COMMENTS
+#*** ONLY USED FOR REJECTING PURPOSES
+#******************************************************************************************************************
+#sOldComment = CELLGETS (cbMeasDet, vsHLYear, vsScenario, vsMeasCode, 'approver comments');
+sOldComment = '';
+
+#******************************************************************************************************************
+#*** RUN PROCESSES
+#******************************************************************************************************************
+
+#******************************************************************************************************************
+#*** APPROVED TO CBMS
+#******************************************************************************************************************
+IF (sSelProcess @= 'Approve');
+	sProcess = sPrcAuth;
+	sChangeStatus = 'approved';
+
+	IF (sOldComment @<> '');
+		sNewComment = sOldComment | ' ';
+	ELSE;
+		sNewComment = '';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psMeasCode', vsMeasCode, 'psStatus', sChangeStatus);
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** REJECT
+#******************************************************************************************************************
+IF (sSelProcess @= 'Reject');
+	sNewComment = CELLGETS(cbClient, sUser, 'sys_meas bulk process comment', 'value');
+
+	sProcess = sPrcAuth;
+	sChangeStatus = 'draft';
+	IF (sOldComment @<> '');
+#		sNewComment = sOldComment | ' please review measure (bulk reverse)';
+	ELSE;
+#		sNewComment = 'Please review measure (bulk reverse)';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psMeasCode', vsMeasCode, 'psStatus', sChangeStatus);
+ENDIF;
+
+
+
+#******************************************************************************************************************
+#*** COPY
+#******************************************************************************************************************
+IF (sSelProcess @= 'Copy');
+	sProcess = sPrcCopy;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psHLYear', vsHLYear, 'psScenario', vsScenario, 'psMeasCode', vsMeasCode);
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** DELETE UNAUTHORISED JOURNALS
+#******************************************************************************************************************
+IF (sSelProcess @= 'Delete');
+	sProcess = sPrcDel;
+	nCheckRevBalance = CELLGETN (cbAE, sTotalHLYear, sTotalScenario, sStatus, sTotalOC, sTotalRE, sTotalFunc, sTotalReason, sTotalSPP, vsMeasCode, sTotalType, sTotalMA, sTotalItem, sTotalProg, sRevAcc, sTotalID, sTotalJur, sTotalPer);
+	nCheckExpBalance = CELLGETN (cbAE, sTotalHLYear, sTotalScenario, sStatus, sTotalOC, sTotalRE, sTotalFunc, sTotalReason, sTotalSPP, vsMeasCode, sTotalType, sTotalMA, sTotalItem, sTotalProg, sExpAcc, sTotalID, sTotalJur, sTotalPer);
+	nCheckCapBalance = CELLGETN (cbAE, sTotalHLYear, sTotalScenario, sStatus, sTotalOC, sTotalRE, sTotalFunc, sTotalReason, sTotalSPP, vsMeasCode, sTotalType, sTotalMA, sTotalItem, sTotalProg, sCapAcc, sTotalID, sTotalJur, sTotalPer);
+	nCheckBalance = nCheckRevBalance + nCheckExpBalance + nCheckCapBalance;
+
+	
+	IF (nCheckBalance = 0);
+		EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psHLYear', vsHLYear, 'psScenario', vsScenario, 'psMeasCode', vsMeasCode);
+	ELSE;
+		sErrMsg = vsMeasCode | ' has values and can not be deleted.';
+		sErrMsg = 'Selected Measure Codes has adjustments and can not be deleted';
+		ASCIIOUTPUT ('bulk.txt', NUMBERTOSTRING (nCheckBalance), vsMeasCode, sErrMsg, sUser);
+		CELLPUTS (sErrMsg, cbClient, sUser, 'sys_meas bulk process', 'validate');
+	ENDIF;
+ENDIF;
+
+#******************************************************************************************************************
+#*** PRINT JOURNALS
+#******************************************************************************************************************
+IF (sSelProcess @= 'Print');
+	sProcess = sPrcPrint;
+	IF (lCounter = 0);
+		SUBSETCREATE (dmMeascode, sPrintSubset);
+#		EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psHLYear', vsHLYear, 'psScenario', vsScenario, 'psMeasCode', vsMeasCode);
+	ENDIF;
+
+	#****************************************************************************************
+	#*** ADD ID TO BULK PRINT SUBSET
+	#****************************************************************************************
+	sCheckTitle = CELLGETS (cbMeasDet, vsHLYear, vsScenario, vsMeasCode, 'measure title');
+	IF (sCheckTitle @<> '');
+		SUBSETELEMENTINSERT (dmMeasCode, sPrintSubset, vsMeasCode, lPrintCounter);
+
+		IF (lPrintCounter > nMaxPrintCounter);
+			sValidate = 'FAIL';
+		ELSE;
+			sValidate = '';
+		ENDIF;
+
+		lPrintCounter = lPrintCounter + 1;
+	ENDIF;
+	CELLPUTS (NUMBERTOSTRING (lPrintCounter), cbClient, sUser, 'sys_meas bulk process count', 'value');
+
+ENDIF;
+
+
+
+#******************************************************************************************************************
+#*** COUNTER
+#******************************************************************************************************************
+lCounter = lCounter + 1;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+#******************************************************************************************************************
+#*** PUT COUNTER IN CLIENT DETAILS
+#******************************************************************************************************************
+CELLPUTS (NUMBERTOSTRING (lCounter), cbClient, psUser, 'sys_meas bulk process count', 'value');
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbMeasBulk, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmMeasCodeDet, sView);
+
+#******************************************************************************************************************
+#*** RUN PROCESS TO CLEAR THE FLAGS
+#******************************************************************************************************************
+sProcess = 'AE_Measure Bulk- Clear Flags';
+EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psHLYear', psHLYear, 'psScenario', psScenario);
+
+#******************************************************************************************************************
+#*** DELETE BULK PRINT SUBSETS
+#******************************************************************************************************************
+sUser = TM1User();
+
+IF (psProcess @= 'Print');
+	IF (lCounter = 0);
+		CELLPUTS ('FAIL',cbClient, sUser, 'sys_meas bulk process', 'validate');
+		CELLPUTS('', cbClient, sUser, 'sys_meas bulk process comment', 'value');
+		PROCESSERROR;
+	ELSE;
+		#--------------------------------------------------------
+		#---- IF VALIDATION FAILED, BREAK PROCESS
+		#--------------------------------------------------------
+		CELLPUTS (sValidate,cbClient, sUser, 'sys_meas bulk process', 'validate');
+		IF (sValidate @= 'FAIL');
+			CELLPUTS('', cbClient, sUser, 'sys_meas bulk process comment', 'value');
+			PROCESSERROR;
+		ENDIF;
+	
+	ENDIF;
+
+ENDIF;
+
+
+
+#******************************************************************************************************************
+#*** CLEAR APPROVER COMMENTS 
+#******************************************************************************************************************
+#CELLPUTS('', cbClient, sUser, 'sys_meas bulk process comment', 'value');
+
+#endregion

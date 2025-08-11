@@ -1,0 +1,48 @@
+{
+	"@type":"Cube",
+	"Name":"government measures",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('headline year')"
+		},
+		{
+			"@id":"Dimensions('scenario')"
+		},
+		{
+			"@id":"Dimensions('status')"
+		},
+		{
+			"@id":"Dimensions('Control Type')"
+		},
+		{
+			"@id":"Dimensions('measure fund type')"
+		},
+		{
+			"@id":"Dimensions('measure type')"
+		},
+		{
+			"@id":"Dimensions('measure code')"
+		},
+		{
+			"@id":"Dimensions('period')"
+		},
+		{
+			"@id":"Dimensions('measure details')"
+		}
+	],
+	"Rules@Code.link":"government measures.rules",
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('measure details')"
+	},
+	"TimeDimension":
+	{
+		"@id":"Dimensions('period')"
+	},
+	"Views@Code.links":
+	[
+		"government measures.views/all-m.json",
+		"government measures.views/Default.json"
+	]
+}

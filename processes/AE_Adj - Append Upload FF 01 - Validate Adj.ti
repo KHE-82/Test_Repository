@@ -1,0 +1,997 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Adj - Append Upload FF 01 - Validate Adj
+#**** DESCRIPTION:       This process will check if the Adjustment can have Journal lines appended
+#****		Process relies on source flatfile CSV being created via Adj Extract process
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 03/01/2024    BL             Initial Revision
+#***********************************************************************************************************************
+
+snProg = 'programme';
+curPrc = GETPROCESSNAME();
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+
+#*****************************************************************************
+#*** DECLARE CUBES AND DIMENSIONS***#
+#*****************************************************************************
+cbMeasID = 'government measures details';
+cbAE = 'AE adjustments';
+sCube = cbAE;
+cbID = 'AE id details';
+
+cbProg = snProg | ' details';
+dmProg = snProg;
+
+cbSysLog = 'sys_logging';
+dmRowID = 'RowID';
+dmSysLogMeas = 'sys_logging measure';
+
+
+#*****************************************************************************
+#*** DECLARE SYSTEM VARIABLES
+#*****************************************************************************
+dmVar = 'variables'; 
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+curBudRnd=ATTRS(dmVar, 'current budget round', 'value');
+
+#sImpFilePath = ATTRS(dmVar, 'sys_Costings Import Directory', ' value');
+sImpFilePath = ATTRS(dmVar, 'sys_ImpFileExceptionLogs', ' value');
+
+IF(psHLYear @='');
+	sHLYear = curHLYear;
+ELSE;
+	sHLYear = psHLYear;
+ENDIF;
+
+IF(psScenario @='');
+	sScenario = curScenario;
+ELSE;
+	sScenario = psScenario;
+ENDIF;
+
+sStatus = 'data';
+sAdjType = 'Manual';
+
+#*****************************************************************************
+#*** DECLARE AE ADJUSTMENTS DIMENSIONS ***#
+#*****************************************************************************
+dmID = 'id';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmReason = 'reason';
+dmType = 'appropriation type';
+dmItem = 'appropriation item';
+dmFunc = 'function';
+dmMeas = 'measure code';
+dmAcc = 'account';
+dmMA = 'movement account';
+dmSPP = 'spp';
+dmJur = 'jurisdiction';
+dmStatus = 'status';
+
+sOldTitle = '';
+sOldCBMS = '';
+sOldID = '';
+
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, 'GEUS User Name');
+                IF (sUser @= '');
+                          PROCESSQUIT;
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+
+#****Reset Validation messages
+ATTRPUTS ('PASS', dmVar, 'sys_ImpFileValidation', 'value');
+CELLPUTS ('', cbClient, sUser,  'sys_ImpFileValidation', 'value');
+
+# **** GET DATE VALUES ***#
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+sHNow = TimST (Now, '\h');
+sMinNow = TimST (Now, '\i');
+sSNow = TimST (Now, '\s');
+ 
+sDay = TRIM(SUBST(sDNow, 1,2));
+ 
+IF (LONG (sDay) = 1);
+	sDay = '0' | sDay;
+ELSE;
+     	sDay = sDay;
+ENDIF;
+ 
+sMonth = TRIM(SUBST(sMNow, 1,2));
+ 
+IF (LONG (sMonth) = 1);
+     	sMonth = '0' | sMonth;
+ELSE;
+     	sMonth = sMonth;
+ENDIF;
+ 
+sYear = TRIM(SUBST(sYNow, 1,4));
+sNow = sYear | sMonth | sDay | sHNow | sMinNow | sSNow ;
+ 
+ 
+sOutputFile = 'geus append adj upload file failed' | sUser | ' ' | sNow | '.csv';
+#*****************************************************************************
+#*** IDENTIFY SOURCE FILE
+#*****************************************************************************
+sFilePath = ATTRS (dmVar, 'sys_CBMS Upload directory', 'value');
+
+#--REMOVE THIS AFTER INITIAL LOAD-----#
+#sFilePath='.\file conversion\';
+sFileName = sFilePath | psFileName;
+#sFileName = psFileName;
+
+#******************************************************************************************************************
+#****CLEAR SYS LOGGING CUBE
+#******************************************************************************************************************
+sPrc = 'sys_logging - clear';
+EXECUTEPROCESS (sPrc,'psUser', psUser);
+
+
+#******************************************************************************************************************
+#**** CHECK IF THE UPLOAD FILE IS CORRECT FOR THIS PROCESS
+#******************************************************************************************************************
+nFilenameValid=0;
+IF( SCAN ('APPEND', psFilename)=0);
+	sErrMsg = 'Invalid Filename for selected process.  ';
+	nFileNameValid= nFileNameValid+1;
+ENDIF;	
+
+IF(FileExists(sFileName) = 0);
+	sErrMsg = 'File cannot be found in the upload Directory.Please check file name and extension.' ;
+	nFileNameValid= nFileNameValid+1;
+ENDIF;
+
+IF (nFileNameValid>0);
+	ATTRPUTS ('FAIL', dmVar, 'sys_ImpFileValidation', 'value');
+	CELLPUTS ('FAIL: ' | sErrMsg, cbClient, sUser,  'sys_ImpFileValidation', 'value');
+	sProcess = 'sys_logging - update';
+	EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg); 
+	PROCESSQUIT;
+ENDIF;
+
+
+
+#*****************************************************************************
+#***** COUNTERS USED
+#*****************************************************************************
+lHeaderCount = 0;
+nLine = 2;
+nValid = 0;
+nTotalValid = 0;
+
+#**** ADJ Validation Counters
+nUsedValid=0;
+nHLYearValid=0;
+nScenarioValid=0;
+nStatusValid=0;
+nProgValid=0;
+nProgValid2=0;
+nAdjValidTotal = 0;
+
+
+DATASOURCENAMEFORSERVER = sFileName;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*****************************************************************************
+#*** VALIDATION OF ADJUSTMENT FOR APPEND***#
+#*****************************************************************************
+#*** NOTE: Adj Extract process does not include Scenario or Status!
+#*** Adj can only be appended if in current HLYear and Scenario and status 
+#*** is NOT Approved, Approved non-flatfile, or CBMS.
+#*** GEUS Program code in flatfile data must match existing Adjustment
+
+#*** EXCLUDE THE LEADING APOSTROPHE FROM EXTRACTED FLATFILE  VARIATION NUMBER
+#***  ID from Source CSV may contain leading apostrophe which needs to be excluded
+#***  Max Adj ID length is 5 Charcathers
+sID=vsID;
+IF( LONG(sID) >5);
+	sID=SUBST(vsID,2,5);
+ENDIF;
+
+
+
+#**** GET ADJUSTMENT ID DETAILS ****#
+nUsed = CELLGETN(cbID, sHLYear, sScenario, sID, 'used');
+sAdjStatus = CELLGETS(cbID, sHLYear, sScenario, sID, 'sys_status');
+sTitle = CELLGETS(cbID, sHLYear, sScenario, sID, 'sys_title');
+sDesc = CELLGETS(cbID, sHLYear, sScenario, sID, 'sys_description');
+
+sProg = CELLGETS(cbID, sHLYear, sScenario, sID, 'programme code');
+sProg = DimensionElementPrincipalName(dmProg, sProg);
+
+sReason = CELLGETS(cbID, sHLYear, sScenario, sID, 'Reason');
+IF( DIMIX(dmReason,sReason) <>0);
+	sReason = DimensionElementPrincipalName(dmReason, sReason);
+ENDIF;
+
+sMeasure = CELLGETS(cbID, sHLYear, sScenario, sID, 'Measure');
+IF( DIMIX(dmMeas,sMeasure) <>0);
+	sMeasure = DimensionElementPrincipalName(dmMeas, sMeasure);
+ENDIF;
+
+sFunc = CELLGETS(cbID, sHLYear, sScenario, sID, 'Function');
+
+IF( DIMIX(dmFunc,sFunc) <>0);
+	sFunc = DimensionElementPrincipalName(dmFunc, sFunc);
+ENDIF;
+
+
+
+#**** CHECK IF THE ADJUSTMENT CAN BE UPDATED ****#
+IF (nUsed = 0);
+	nUsedValid = nUsedValid+1;
+	sErrMsg = 'Invalid Adjustment ID Used Flag on line ' | NUMBERTOSTRING( nLine) |' Check Adj ID Number is correct';
+	sCmt = vsID | ' used flag is ' | NUMBERTOSTRING(nUsed);
+	sProcess = 'sys_logging - update';
+	EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+ENDIF;
+
+
+# PREVENT APPENDING TO ADJUSTMENTS THAT HAVE BEEN PREVIOUSLY DELETED
+IF (nUsed = 1 & sAdjStatus@='');
+# ADJUSTMENT DOES NOT HAVE A STATUS. BASED ON CUBE RULE,  HLYEAR & SCENARIO ARE BLANK THEREFORE ADJUSTMENT HAS BEEN DELETED
+	nUsedValid = nUsedValid+1;
+		sErrMsg = 'Adjustment ID previously deleted on line ' | NUMBERTOSTRING( nLine) |' Check Adj ID Number is correct';
+		sCmt = vsID | ' used flag is ' | NUMBERTOSTRING(nUsed) |' but there are no header details,';
+		sProcess = 'sys_logging - update';
+		EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+ENDIF;
+
+
+IF(vsHLYear@<> CurHLYear);
+	nHLYearValid = nHLYearValid +1;
+	sErrMsg = 'Invalid HeadlineYear on line ' | NUMBERTOSTRING( nLine);
+	sCmt = vsHLYear;
+	sProcess = 'sys_logging - update';
+	EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+ENDIF;
+
+IF(vsBudRnd@= curBudRnd % vsBudRnd@= curScenario);
+ELSE;
+	nScenarioValid = nScenarioValid +1;
+	sErrMsg = 'Invalid Budget Round on line ' | NUMBERTOSTRING( nLine);
+	sCmt = vsBudRnd;
+	sProcess = 'sys_logging - update';
+	EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+ENDIF;
+
+IF(ELISANC(dmStatus,'Total approved',sAdjStatus) =1);
+	nStatusValid = nStatusValid +1;
+	sErrMsg = 'Invalid adjustment status on line ' | NUMBERTOSTRING( nLine);
+	sCmt = vsStatus;
+	sProcess = 'sys_logging - update';
+	EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+ENDIF;
+
+vsProg = DimensionElementPrincipalName(dmProg, vsProg);
+IF(sProg@<> vsProg);
+	nProgValid2 = nProgValid2 +1;
+	#sErrMsg = 'Line: ' |  NUMBERTOSTRING( nLine) | ' TM1 GEUS Program code invalid. Must match existing adjustment program code - ' | sProg | '. Check all Lines';
+	sErrMsg = ' TM1 GEUS Program code invalid on line ' | NUMBERTOSTRING( nLine) | '. Must match existing adjustment program code -'  | sProg | '.';
+	sCmt = vsProg;
+	sProcess = 'sys_logging - update';
+	EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+ELSE;
+	sCtrlTypeCheck = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'Control Type');
+	sOC = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'outcome');
+	sFunc = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'function');
+	sType = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'appropriation type');
+	sItem = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'appropriation item');
+ENDIF;
+
+
+nAdjValidTotal = nUsedValid + nHLYearValid + nScenarioValid  + nStatusValid + nProgValid2 ;
+
+
+# Resets flag to say it is not a zero line
+nZeroCheck = 1;
+
+IF (vnP01 = 0 & vnP02 = 0 & vnP03 = 0 & vnP04 = 0 & vnP05 = 0 & vnP06 = 0 & vnP07 = 0 & vnP08 = 0 & vnP09 = 0 & vnP10 = 0 & vnP11 = 0 & vnP12 = 0 & vnP13 = 0 & vnP14 = 0 & vnP15 = 0) ;
+	nZeroCheck = vnP01 + vnP02 + vnP03 + vnP04 + vnP05 + vnP06 + vnP07 + vnP08 + vnP09 + vnP10 + vnP11 + vnP12  + vnP13 + vnP14 +vnP15;	
+	nLine = nLine + 1;
+	ITEMSKIP;
+ENDIF;
+
+
+#*****************************************************************************
+# SKIP CERTAIN ACCOUNTS
+#*****************************************************************************
+#*** 3322001 - Current employee liabilities
+#*** 2330008 - Grants - Capital
+#*** 2330009 - Grants - Current
+#*** 3322002 - Non-current employee liabilities
+#*** 9000510 - Gross Cash Payments
+#*** 9000515 - Gross Cash Receipts
+#*** 9000520 - Gross Expenses
+#*** 9000525 - Gross Revenue
+#*** 8260010    Unknown 
+
+IF (vsAcc @= '3322001' % vsAcc @= '2330008' % vsAcc @= '2330009' % vsAcc @= '3322002' % vsAcc @= '9000510' % vsAcc @= '9000515' % vsAcc @= '9000520' % vsAcc @= '9000525'% vsAcc @= '8260010');
+	nLine = nLine + 1;
+     ItemSkip;
+ENDIF;
+
+
+#------IGNORE 4100001 /7201 7211 for SPPs - AE Adjustment Rule------#
+#*** 4100001 - Accumulated results
+#*** 7201 - Operating Result
+#*** 7211 - Entity Balance - 30 June last year
+
+IF( DIMIX(dmProg, vsSPP)  <> 0);
+	IF( vsAcc @= '4100001' & vsMA @='7201');
+		nLine = nLine + 1;
+		ItemSkip;
+	ENDIF;
+
+	IF( vsAcc @= '4100001' & vsMA @='7211');
+		nLine = nLine + 1;
+		ItemSkip;
+	ENDIF;
+
+ENDIF;
+
+#------IGNORE Opening Cash & Cash T/F to OPA-----#
+#*** 6100001 - Cash at beginning of year
+#*** - No_Mvt
+#*** 9000883 - Cash transferred to OPA - Special Accounts
+
+IF( vsAcc @= '6100001' & vsMA @='-');
+	nLine = nLine + 1;
+	ItemSkip;
+ENDIF;
+
+IF( vsAcc @= '9000883' & vsMA @='-');
+	#ItemSkip;
+ENDIF;
+
+
+#*****************************************************************************
+#*** PERFORM A VALIDATION TEST ***#
+#*****************************************************************************
+nProgValid = 0;
+nOCValid = 0;
+nMeasValid = 0;
+nReasValid = 0;
+nFuncValid = 0;
+nMAValid = 0;
+nAccValid = 0;
+nItemValid = 0;
+nTypeValid = 0;
+nREValid  = 0;
+nSPPValid = 0;
+
+#*****************************************************************************
+#**** PERFORM ADDITIONAL CHECKS - 20150407
+#*****************************************************************************
+nJurValid = 0;
+nAccREValid = 0;
+nAccJurValid = 0;
+nAccMAValid = 0;
+nMAREValid = 0;
+
+nTitleValid = 0;
+
+#*************************************************************************************************************************************#
+#**** DEFAULT ACCOUNTS ****#
+#**** If these dimensions are blank, use the specified default values:
+
+# Get movement account element
+IF (vsMA @= '');
+	vsMA = '-';
+ELSE;
+	vsMA = DimensionElementPrincipalName(dmMA,vsMA);
+ENDIF;
+
+# Get related entity element
+IF (vsRE @= '');
+	vsRE = '-';
+ELSE;
+	vsRE = DimensionElementPrincipalName(dmRE,vsRE);
+ENDIF;
+
+# Get SPP element
+IF (vsSPP @= '');
+	vsSPP = '-';
+ELSE;
+	vsSPP = DimensionElementPrincipalName(dmSPP,vsSPP);
+ENDIF;
+
+# Get jurisdiction element
+IF (vsJur @= '');
+	vsJur = '-';
+ELSE;
+	vsJur = DimensionElementPrincipalName(dmJur,vsJur);
+ENDIF;
+
+
+#* Get Measure Code Element
+IF (vsMeasCode @= '');
+	vsMeasCode = 'M00000';
+ELSE;
+	vsMeasCode = DimensionElementPrincipalName(dmMeas,vsMeasCode);
+ENDIF;
+
+
+#*************************************************************************************************************************************#
+#*****************************************************************************
+#**** VALIDATION CHECKS TO ENSURE THEY EXIST IN THE DIMENSION
+#*****************************************************************************
+
+#--- Check Title to have 60 characters
+#--- NEW 20171016 - KG
+#----------------------------------------------------------------------------------
+IF (LONG (vsTitle) > 60);
+	nTitleValid = nTitleValid + 1;
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check Outcome
+#--------------------------------------------------------------------------------
+IF (vsOC @= '');
+	sNewOC = sOC;
+ELSE;
+	sNewOC = DimensionElementPrincipalName(dmOC,vsOC);
+ENDIF;
+
+IF (DIMIX (dmOC, sNewOC) = 0);
+	nOCValid = nOCValid + 1;
+ENDIF;
+
+IF(sNewOC @<> sOC);
+	nOCValid = nOCValid + 1;
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check Measure
+#--------------------------------------------------------------------------------
+IF (DIMIX (dmMeas, vsMeasCode) = 0);
+	nMeasValid = nMeasValid + 1;
+ELSE;
+	DimensionElementPrincipalName(dmMeas,vsMeasCode);
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check Reason
+#--------------------------------------------------------------------------------
+IF (DIMIX (dmReason, vsReason) = 0 & vsReason @<>'');
+	nReasValid = nReasValid + 1;
+ELSE;
+	vsReason = DimensionElementPrincipalName(dmReason, vsReason);
+ENDIF;
+
+IF (ATTRS(dmReason,vsReason,'measure required') @='Y' & vsReason @<>'');
+	IF(DimensionElementPrincipalName(dmMeas,vsMeasCode) @= 'M00000' );
+		nMeasValid = nMeasValid + 1;
+	ENDIF;
+ENDIF;
+
+
+#--------------------------------------------------------------------------------
+#***SAME REASON and MEASURE CODE AS EXISTING ADJUSTMENT
+#-------------------------------------------------------------------------------
+IF( vsReason @<>sReason);
+	nReasValid = nReasValid + 1;
+ENDIF;
+
+IF( vsMeasCode @<>sMeasure);
+
+	nMeasValid = nMeasValid + 1;
+ENDIF;
+
+
+#--------------------------------------------------------------------------------
+#*** Check Function
+#--------------------------------------------------------------------------------
+IF (vsFunc @= '');
+	sNewFunc = sFunc;
+ELSE;
+	sNewFunc = vsFunc;
+ENDIF;
+
+IF (DIMIX (dmFunc, sNewFunc) = 0);
+	nFuncValid = nFuncValid + 1;
+ELSE;
+	sNewFunc = DimensionElementPrincipalName(dmFunc,sFunc);
+
+ENDIF;
+
+IF( sNewFunc @<>sFunc);
+	nFuncValid = nFuncValid + 1;
+ENDIF;
+
+
+
+#--------------------------------------------------------------------------------
+#*** Check MA
+#--------------------------------------------------------------------------------
+IF (DIMIX (dmMA, vsMA) = 0);
+	nMAValid = nMAValid + 1;
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check Appropriation Item
+#--------------------------------------------------------------------------------
+IF (vsItem @= '');
+	sNewItem = sItem;
+ELSE;
+	sNewItem = DimensionElementPrincipalName(dmItem,vsItem);
+ENDIF;
+
+IF (DIMIX (dmItem, sNewItem) = 0);
+	nItemValid = nItemValid + 1;
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check Appropriation Type
+#--------------------------------------------------------------------------------
+IF (vsItem @= '');
+	sNewType = sType;
+ELSE;
+	sNewType = SUBST(vsItem,1,4);
+ENDIF;
+
+IF (DIMIX (dmType, sNewType) = 0);
+	nTypeValid = nTypeValid + 1;
+ELSE;
+	sItemType = SUBST (sNewItem, 1, 4);
+	IF (sItemType @<> sNewType);
+		nTypeValid = nTypeValid + 1;
+	ENDIF;
+
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check Related Entity
+#--------------------------------------------------------------------------------
+IF (DIMIX (dmRE, vsRE) = 0);
+	nREValid = nREValid + 1;
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check SPP
+#--------------------------------------------------------------------------------
+IF (DIMIX (dmSPP, vsSPP) = 0);
+	nSPPValid = nSPPValid + 1;
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check Account
+#--------------------------------------------------------------------------------
+IF (DIMIX (dmAcc, vsAcc) = 0);
+	nAccValid = nAccValid + 1;
+ELSE;
+	#--------------------------------------------------------------------------------
+	#*** NOW CHECK IF IT REQUIRES RELATED ENTITY OR JURISDICTION ***#
+	#--------------------------------------------------------------------------------
+	sRECheck = ATTRS( dmAcc, vsAcc, 'related entity enabled');
+	sAssumedRE = ATTRS( dmAcc, vsAcc, 'assumed related entity');
+	sJurCheck = ATTRS( dmAcc, vsAcc, 'jurisdiction required');
+	sMACheck = ATTRS( dmAcc, vsAcc, 'movement account required');
+
+	#--------------------------------------------------------------------------------   
+	#*** Account has related entity enabled ***#
+	#--------------------------------------------------------------------------------
+	IF (sRECheck @= 'Y');
+     
+		#--------------------------------------------------------------------------------
+		#*** CHECK IF assumed related entity is not blank, otherwise just use another related entity
+		#--------------------------------------------------------------------------------
+		sAssumedRE = ATTRS( dmAcc, vsAcc, 'assumed related entity');
+		IF (sAssumedRE @= '');
+
+			#--------------------------------------------------------------------------------
+                		#*** IF NO ASSUMED RELATED ENTITY, USE OTHER RELATED ENTITY ***#
+			#--------------------------------------------------------------------------------
+			IF (vsRE @<> '-');
+				#--------------------------------------------------------------------------------
+				#*** DO CHECK FOR RE EXISTS ***#
+				#--------------------------------------------------------------------------------
+				IF ( nREValid = 1);
+					#*** UTILIZES PREVIOUS CHECKS ***#
+                           				nAccREValid = nAccREValid + 1;
+                      			ENDIF;  
+                 		ENDIF;
+            		ELSE;
+			#--------------------------------------------------------------------------------
+                		#*** DO CHECK FOR RE EXISTS ***#
+			#--------------------------------------------------------------------------------
+                 		IF ( nREValid = 1);
+				#--------------------------------------------------------------------------------
+                      			#*** UTILIZES PREVIOUS CHECKS ***#
+				#--------------------------------------------------------------------------------
+                 			vsRE = vsRE;
+                 		ELSE;
+				#--------------------------------------------------------------------------------
+                      			#*** IF Account has assumed RE Then use Assumed RE
+				#--------------------------------------------------------------------------------
+                       			IF (vsRE @<> sAssumedRE);
+                             				nAccREValid = nAccREValid + 1;
+                        			ENDIF;
+                  		ENDIF;
+            		ENDIF;
+    
+    	ELSE;
+		#--------------------------------------------------------------------------------
+          		#*** SOMETIMES EVEN WITHOUT RELATED ENTITY ENABLED, THIS ACCOUNT SHOULD HAVE A RELATED ENTITY ***#
+		#--------------------------------------------------------------------------------
+          		sAssumedRE = ATTRS( dmAcc, vsAcc, 'assumed related entity');
+          		IF (sAssumedRE @<> '');
+               			#*** DO CHECK FOR RE EXISTS ***#
+               			IF ( nREValid = 1);
+				#--------------------------------------------------------------------------------
+                    			#*** UTILIZES PREVIOUS CHECKS ***#
+				#--------------------------------------------------------------------------------
+                    			vsRE = vsRE;
+                		ELSE;
+                    			IF (vsRE @<> sAssumedRE);
+                         				vsRE = sAssumedRE;
+                    			ENDIF;
+                		ENDIF;
+          		ENDIF;
+
+     	ENDIF;
+
+	#--------------------------------------------------------------------------------
+	#*** Account has Jurisdiction enabled ***#
+	#--------------------------------------------------------------------------------
+     	IF (sJurCheck @= 'Y');
+     
+          		#*** Now check if Jurisdiction is Blank or '-' ***#
+               		IF (vsJur @= '-');
+			#--------------------------------------------------------------------------------
+                    		#*** Validation Fail for Jurisdiction as this account requires Jurisdiction not blank, if so, then account check failed
+			#--------------------------------------------------------------------------------
+                    		nAccJurValid = nAccJurValid + 1;
+               		ELSE;
+			#--------------------------------------------------------------------------------
+                   		#*** DO CHECK FOR JURISDICTION EXISTS ***#
+			#--------------------------------------------------------------------------------
+                    		IF (DIMIX (dmJur, vsJur) = 0);
+                         			nAccJurValid = nAccJurValid + 1;
+                    		ENDIF;
+               		ENDIF;       
+     	ENDIF;
+
+	#--------------------------------------------------------------------------------
+     	#*** Account has Movment Account enabled ***#
+	#--------------------------------------------------------------------------------
+     	IF (sMACheck @= 'Y');
+     
+		#--------------------------------------------------------------------------------
+          		#*** Now check if Jurisdiction is Blank or '-' ***#
+		#--------------------------------------------------------------------------------
+               		IF (vsMA @= '-');
+			#--------------------------------------------------------------------------------
+                    		#*** Validation Fail for Movement Account as this account requires a Movement Account , if so, then account check failed
+			#--------------------------------------------------------------------------------
+                    		nAccMAValid = nAccMAValid + 1;
+               		ELSE;
+			#--------------------------------------------------------------------------------
+                   		#*** DO CHECK FOR MOVEMENT ACCOUNT EXISTS ***#
+			#--------------------------------------------------------------------------------
+                    		IF (nMAValid = 1);
+				#--------------------------------------------------------------------------------
+                        			#*** UTILIZES PREVIOUS CHECKS ***#
+				#--------------------------------------------------------------------------------
+                    		ELSE;
+				#--------------------------------------------------------------------------------
+                         			#*** IF MA EXISTS, CHECK ASSUMED RE ***#
+				#--------------------------------------------------------------------------------
+                         			sMARECheck = ATTRS (dmMA, vsMA, 'related entity enabled');
+                         			sMAAssumedRE = ATTRS (dmMA, vsMA, 'assumed related entity');
+
+				#--------------------------------------------------------------------------------
+                         			#*** Movement Account has related entity enabled ***#
+				#--------------------------------------------------------------------------------
+                         			IF (sMARECheck @= 'Y');
+					#--------------------------------------------------------------------------------
+                              				#*** CHECK IF assumed related entity is not blank, if so, then account check failed
+					#--------------------------------------------------------------------------------
+                              				sMAAssumedRE = ATTRS (dmMA, vsMA, 'assumed related entity');
+
+                              				IF (sMAAssumedRE @= '');
+						#--------------------------------------------------------------------------------
+                                   				#*** IF NO ASSUMED RELATED ENTITY, USE OTHER RELATED ENTITY ***#
+						#--------------------------------------------------------------------------------
+                                   				IF (vsRE @<> '-');
+							#--------------------------------------------------------------------------------
+                                        					#*** DO CHECK FOR RE EXISTS ***#
+							#--------------------------------------------------------------------------------
+                                        					IF ( nREValid = 1);
+								#--------------------------------------------------------------------------------
+                                             						#*** UTILIZES PREVIOUS CHECKS ***#
+								#--------------------------------------------------------------------------------
+                                             						nMAREValid = nMAREValid + 1;
+                                        					ENDIF;  
+                                   				ENDIF;
+                              				ELSE;
+						#--------------------------------------------------------------------------------
+                                   				#*** IF Account has assumed RE Then use Assumed RE
+						#--------------------------------------------------------------------------------
+                                   				IF (vsRE @<> sMAAssumedRE);
+                                        					vsRE = sMAAssumedRE;
+                                   				ENDIF;
+                              				ENDIF;
+                       			ELSE;
+					#--------------------------------------------------------------------------------
+                             				#*** DO CHECK FOR RE EXISTS ***#
+					#--------------------------------------------------------------------------------
+                             				IF ( nREValid = 1);
+						#--------------------------------------------------------------------------------
+                                  				#*** UTILIZES PREVIOUS CHECKS ***#
+						#--------------------------------------------------------------------------------
+                             				ELSE;
+
+						#--------------------------------------------------------------------------------
+				                                #*** SOMETIMES EVEN WITHOUT RELATED ENTITY ENABLED, THIS ACCOUNT SHOULD HAVE A RELATED ENTITY ***#
+                                 				sMAAssumedRE = ATTRS (dmMA, vsMA, 'assumed related entity');
+						#--------------------------------------------------------------------------------
+                                 				IF (sMAAssumedRE @<> '');
+                                      					IF (vsRE @<> sMAAssumedRE);
+                                           						vsRE = sMAAssumedRE;
+                                       					ENDIF;
+                                  				ENDIF;
+                             				ENDIF;
+                        			ENDIF;
+                    		ENDIF;
+               		ENDIF;
+     	ELSE;
+		#--------------------------------------------------------------------------------
+     		#*** DO NOTHING IF ACCOUNT IS NO MOVEMENT ACCOUNT ***#
+		#--------------------------------------------------------------------------------
+	ENDIF;
+ENDIF;
+
+
+#**************************************************************************************************************************************#
+#*****************************************************************************
+#**** OUTPUT FILES
+#*****************************************************************************
+#nValid = nProgValid + nOCValid + nMeasValid + nReasValid + nFuncValid +  nMAValid + nAccValid +  nTypeValid + nItemValid + nREValid + nSPPValid;
+#nValid = nTitleValid + nProgValid + nOCValid + nReasValid + nMeasValid +  nFuncValid +  nMAValid + nAccValid +  nTypeValid + nItemValid + nREValid + nSPPValid + nJurValid + nAccREValid + nAccJurValid + nAccMAValid + nMAREValid;
+
+nValid = nTitleValid + nProgValid + nOCValid + nReasValid + nMeasValid + nFuncValid +  nMAValid + nAccValid +  + nAccREValid + nAccJurValid + nAccMAValid + nMAREValid + nTypeValid + nItemValid + nREValid + nSPPValid + nJurValid ;
+nTotalValid = nTotalValid + nValid;
+
+IF (nValid > 0);
+     
+	#*****************************************************************************
+     	#*** PUT A HEADER ON THE FILE 
+     	#*****************************************************************************
+     	#IF (lHeaderCount = 0);
+                #	ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Error Description', 'Line Number', 'Entered Value', 'Comments', 'Other Details/Assumed Values');
+     	#ENDIF;
+
+     	#*****************************************************************************
+     	#**** VALIDATION FAILED
+     	#*****************************************************************************
+
+	IF (nTitleValid > 0);
+          		#ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Title length is greater than 60 characters on line ', NUMBERTOSTRING(nLine), vsTitle);
+		
+		sErrMsg = 'Title length is greater than 60 characters on line ' | NUMBERTOSTRING(nLine);
+		sCmt = vsTitle;
+		sProcess = 'sys_logging - update';
+		EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+     	ENDIF;
+
+     	IF (nProgValid > 0);
+     		#ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Programme Code error on line ', NUMBERTOSTRING(nLine), vsProg, vsControlType);
+
+		sErrMsg = 'Programme Code error on line ' | NUMBERTOSTRING(nLine);
+		sCmt = vsProg |', '| vsControlType;
+		sProcess = 'sys_logging - update';
+		EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+     	ENDIF;
+
+     	IF (nMeasValid > 0);
+     		#ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Measure Code error on line ', NUMBERTOSTRING(nLine), vsMeasCode);
+
+		sErrMsg = 'Measure Code error on line ' | NUMBERTOSTRING(nLine);
+		sCmt = vsMeasCode;
+		sProcess = 'sys_logging - update';
+		EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+     	ENDIF;
+
+     	IF (nReasValid > 0);
+          		#ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Reason Code error on line ', NUMBERTOSTRING(nLine), vsReason);
+
+		sErrMsg = 'Reason Code error on line ' | NUMBERTOSTRING(nLine);
+		sCmt = vsReason;
+		sProcess = 'sys_logging - update';
+		EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+     	ENDIF;
+
+     	IF (nOCValid > 0);
+          		#ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Outcome Code error on line ', NUMBERTOSTRING(nLine), sNewOC);
+
+		sErrMsg = 'Outcome Code error on line ' | NUMBERTOSTRING(nLine);
+		sCmt = sNewOC;
+		sProcess = 'sys_logging - update';
+		EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+     	ENDIF;
+
+     	IF (nFuncValid > 0);
+          		#ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Function Code error on line ', NUMBERTOSTRING(nLine), sNewFunc);
+
+		sErrMsg = 'Function Code error on line ' | NUMBERTOSTRING(nLine);
+		sCmt = sNewFunc;
+		sProcess = 'sys_logging - update';
+		EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+     	ENDIF;
+
+     	IF (nMAValid > 0);	
+          		#ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Movement Account Code error on line ', NUMBERTOSTRING(nLine), vsMA);
+
+		sErrMsg = 'Movement Account Code error on line ' | NUMBERTOSTRING(nLine);
+		sCmt = vsMA;
+		sProcess = 'sys_logging - update';
+		EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+     	ENDIF;
+
+     	IF (nAccValid > 0);
+          		#ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Account Code error on line ', NUMBERTOSTRING(nLine), vsAcc);
+
+		sErrMsg = 'Account Code error on line ' | NUMBERTOSTRING(nLine);
+		sCmt = vsAcc;
+		sProcess = 'sys_logging - update';
+		EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+     	ENDIF;
+
+     	IF (nAccREValid >0);
+          		#ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Account has an invalid Related Entity Code error on line ', NUMBERTOSTRING(nLine), vsRE, vsAcc, sAssumedRE);
+
+		sErrMsg = 'Account has an invalid Related Entity Code error on line ' | NUMBERTOSTRING(nLine);
+		sCmt = vsRE | ', '|  vsAcc|', '| sAssumedRE;
+		sProcess = 'sys_logging - update';
+		EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+     	ENDIF;
+
+     	IF (nAccJurValid >0);
+          		#ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Account has an invalid Jurisdiction Code error on line ', NUMBERTOSTRING(nLine), vsJur, vsAcc);
+
+		sErrMsg = 'Account has an invalid Jurisdiction Code error on line ' | NUMBERTOSTRING(nLine);
+		sCmt = vsJur |', ' | vsAcc;
+		sProcess = 'sys_logging - update';
+		EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+     	ENDIF;
+	
+     	IF (nAccMAValid >0);
+          		#ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Account is missing or has an invalid Movement Account Code error on line ', NUMBERTOSTRING(nLine), vsMA, vsAcc);
+
+		sErrMsg = 'Account is missing or has an invalid Movement Account Code error on line ' | NUMBERTOSTRING(nLine);
+		sCmt = vsMA |', '| vsAcc;
+		sProcess = 'sys_logging - update';
+		EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);     	
+     	ENDIF;
+
+     	IF (nMAREValid >0);
+          		#ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Movement Account has an invalid Related Entity Code error on line ', NUMBERTOSTRING(nLine), vsRE, vsAcc, vsMA);
+
+		sErrMsg = 'Movement Account has an invalid Related Entity Code error on line ' | NUMBERTOSTRING(nLine);
+		sCmt = vsRE |', ' | vsAcc| ', '|  vsMA;
+		sProcess = 'sys_logging - update';
+		EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+     	ENDIF;
+
+     	IF (nTypeValid > 0);
+          		#ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Appropriation Type error on line ', NUMBERTOSTRING(nLine), sNewType, sNewItem);
+
+		sErrMsg = 'Appropriation Type error on line ' | NUMBERTOSTRING(nLine);
+		sCmt =  sNewType | ', ' |  sNewItem;
+		sProcess = 'sys_logging - update';
+		EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+     	ENDIF;
+
+     	IF (nItemValid > 0);
+          		#ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Appropriation Item error on line ', NUMBERTOSTRING(nLine), sNewItem);
+
+		sErrMsg = 'Programme Code error on line ' | NUMBERTOSTRING(nLine);
+		sCmt = sNewItem;
+		sProcess = 'sys_logging - update';
+		EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+     	ENDIF;
+
+     	IF (nREValid > 0);
+          		ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Related Entity error on line ', NUMBERTOSTRING(nLine), vsRE);
+
+		sErrMsg = 'Related Entity error on line ' | NUMBERTOSTRING(nLine);
+		sCmt = vsRE;
+		sProcess = 'sys_logging - update';
+		EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+     	ENDIF;
+
+     	IF (nSPPValid > 0);
+          		#ASCIIOUTPUT (sImpFilePath | ' geus upload file failed.csv', 'SPP error on line ', NUMBERTOSTRING(nLine), vsSPP);
+
+		sErrMsg = 'SPP error on line ' | NUMBERTOSTRING(nLine);
+		sCmt = vsSPP;
+		sProcess = 'sys_logging - update';
+		EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+     	ENDIF;
+
+     	IF (nJurValid > 0);
+          		#ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Jurisdiction error on line ', NUMBERTOSTRING(nLine), vsJur);
+
+		sErrMsg = 'Jurisdiction error on line ' | NUMBERTOSTRING(nLine);
+		sCmt = vsJur;
+		sProcess = 'sys_logging - update';
+		EXECUTEPROCESS (sProcess,'psUser', psUser, 'psProcName', CurPrc, 'psErrorMsg', sErrMsg, 'psCmt', sCmt);
+     	ENDIF;
+
+ELSE;
+
+	#*** VALIDATION PASSED ****#
+	# Do Nothing
+
+ENDIF;
+
+#*** DISABLE HEADER LINE ***#
+lHeaderCount = lHeaderCount + 1;
+
+#*** ADD LINE NUMBER
+nLine = nLine + 1;
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF (nAdjValidTotal > 0 % nTotalValid >0);
+	
+	ATTRPUTS ('FAIL', dmVar, 'sys_ImpFileValidation', 'value');
+	CELLPUTS ('FAIL: ' | 'Please View the Upload Error Log and correct any data errors', cbClient, sUser,  'sys_ImpFileValidation', 'value');
+	PROCESSQUIT;
+
+ELSE;
+
+	#*** FILE VALIDATION PASSED
+	sProcess = 'AE_Adj - Append Upload FF 02 - Data Validate and Load';
+	EXECUTEPROCESS (sProcess, 'psUser', sUser, 'psFileName', sFileName, 'psSign', psSign, 'psID', sID, 'psHLYear',psHLYear, 'psScenario',psScenario);
+
+	ATTRPUTS ('PASS', dmVar, 'sys_ImpFileValidation', 'value');
+	CELLPUTS ('PASS', cbClient, sUser,  'sys_ImpFileValidation', 'value');
+
+ENDIF;
+#endregion

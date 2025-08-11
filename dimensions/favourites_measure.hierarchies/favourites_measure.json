@@ -1,0 +1,44 @@
+{
+	"@type":"Hierarchy",
+	"Name":"favourites_measure",
+	"Elements":
+	[
+		{
+			"Name":"flag",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"comment",
+			"Type":"String"
+		},
+		{
+			"Name":"selected",
+			"Type":"String"
+		},
+		{
+			"Name":"movement account mapping",
+			"Type":"String"
+		},
+		{
+			"Name":"related entity mapping",
+			"Type":"String"
+		},
+		{
+			"Name":"jurisdiction mapping",
+			"Type":"String"
+		},
+		{
+			"Name":"appropriation type",
+			"Type":"String"
+		},
+		{
+			"Name":"appropriation item",
+			"Type":"String"
+		},
+		{
+			"Name":"spp",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

@@ -1,0 +1,107 @@
+{
+	"@type":"NativeView",
+	"Name":"Default",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_application measure')/Hierarchies('sys_application measure')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_application measure')/Hierarchies('sys_application measure')/Elements('Caption Name')"
+					},
+					{
+						"@id":"Dimensions('sys_application measure')/Hierarchies('sys_application measure')/Elements('Caption')"
+					},
+					{
+						"@id":"Dimensions('sys_application measure')/Hierarchies('sys_application measure')/Elements('Workbook Name')"
+					},
+					{
+						"@id":"Dimensions('sys_application measure')/Hierarchies('sys_application measure')/Elements('Workbook')"
+					},
+					{
+						"@id":"Dimensions('sys_application measure')/Hierarchies('sys_application measure')/Elements('Worksheet Name')"
+					},
+					{
+						"@id":"Dimensions('sys_application measure')/Hierarchies('sys_application measure')/Elements('Worksheet')"
+					},
+					{
+						"@id":"Dimensions('sys_application measure')/Hierarchies('sys_application measure')/Elements('Key Words')"
+					},
+					{
+						"@id":"Dimensions('sys_application measure')/Hierarchies('sys_application measure')/Elements('Worksheet description')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_application')/Hierarchies('sys_application')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('GEUS Annual Estimates')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Homepage')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Adjustment')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Group Data Entry')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Measures')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Reports')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Other Reports')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Analytical Reports')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Administration')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Flat File')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Notes')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Additional Reports')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('NPP')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Monthly Estimates')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":[],
+	"SuppressEmptyColumns":false,
+	"SuppressEmptyRows":false,
+	"FormatString":"0.#########"
+}

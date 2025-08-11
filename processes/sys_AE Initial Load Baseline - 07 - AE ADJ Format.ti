@@ -1,0 +1,545 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              sys_AE Initial Load Baseline - 01
+#**** DESCRIPTION:       This process will load a CBMS Upload file into GEUS for reconciliation purposes
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 13/06/2014    KG             Initial Revision
+#**** 08/08/2017	KG	Converting this process from AE_CBMS Reconciliations to AE_Reco - CBMSR Reconciliatio Upload
+#**** 2020 	KG	 Updated for New GEUS
+#*** 16/11/2020	KG	  Updated validations
+#****
+#***********************************************************************************************************************
+
+snProg = 'programme';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#*****************************************************************************
+#*** DECLARE CUBES AND DIMENSIONS***#
+#*****************************************************************************
+sCube = 'AE adjustments';
+sView = '$RECO';
+sSubset = sView;
+
+cbProg = snProg | ' details';
+dmProg = snProg;
+
+cbID = 'AE id details';
+
+#*****************************************************************************
+#*** DECLARE AE ADJUSTMENTS DIMENSIONS ***#
+#*****************************************************************************
+dmID = 'id';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmReason = 'reason';
+dmType = 'appropriation type';
+dmItem = 'appropriation item';
+dmFunc = 'function';
+dmMeas = 'measure code';
+dmAcc = 'account';
+dmMA = 'movement account';
+dmSPP = 'spp';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#*****************************************************************************
+#*** DECLARE SYSTEM VARIABLES
+#*****************************************************************************
+dmVar = 'variables';
+dmVar = 'variables'; 
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+#sImpFilePath = ATTRS(dmVar, 'sys_ImpFileExceptionLogs', ' value');
+sImpFilePath = 'upload error.csv';
+sDefOC = ATTRS(dmVar, 'AE Default Outcome', 'value');
+
+
+sScenario = 'CBMS';
+sStatus = 'data';
+sReason = 'Other variations not elsewhere defined';
+sID = '0000A';
+
+#*****************************************************************************
+#****DELETE EXISTING VIEWS AND SUBSETS
+#*****************************************************************************
+ViewDestroy(sCube, sView);
+SubsetDestroy('headline year', sSubset);
+SubsetDestroy('scenario', sSubset);
+SubsetDestroy(dmProg, sSubset);
+
+#*****************************************************************************
+#****CREATE SUBSETS****#
+#*****************************************************************************
+# headline year
+SubsetCreate('headline year', sSubset);
+SubsetElementInsert('headline year', sSubset, psHLYear, 1);
+
+#*****************************************************************************
+# Scenario
+#*****************************************************************************
+SubsetCreate('scenario', sSubset);
+SubsetElementInsert('scenario', sSubset, psScenario, 1);
+
+#*****************************************************************************
+# Programme
+#*****************************************************************************
+#MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( { [' | dmProg | '].[Total Programmes] }, ALL, RECURSIVE )}, 0)}';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+#*****************************************************************************
+# ID
+#*****************************************************************************
+SubsetCreate('id', sSubset);
+SubsetElementInsert('id', sSubset, psID, 1);
+
+
+
+
+#*****************************************************************************
+#****BUILD VIEW
+#*****************************************************************************
+ViewCreate(sCube, sView);
+
+ViewSubsetAssign(sCube, sView, 'headline year', sSubset);
+ViewSubsetAssign(sCube, sView, 'scenario', sSubset);
+ViewSubsetAssign(sCube, sView, dmProg, sSubset);
+ViewSubsetAssign(sCube, sView, dmID, sSubset);
+
+ViewSetSkipZeroes(sCube, sView, 1);
+ViewSetSkipCalcs(sCube, sView, 1);
+ViewZeroOut(sCube, sView);
+
+
+#*****************************************************************************
+#****DELETE EXISTING VIEWS AND SUBSETS
+#*****************************************************************************
+ViewDestroy(sCube, sView);
+SubsetDestroy('headline year', sSubset);
+SubsetDestroy('scenario', sSubset);
+SubsetDestroy(dmProg, sSubset);
+SubsetDestroy(dmID, sSubset);
+
+
+#*****************************************************************************
+#*** FILE VALIDATION FLAG VARIABLES
+#*****************************************************************************
+nLine = 2;
+nTotalValid = 0;
+
+nValid = 0;
+nTotalValid = 0;
+
+
+#*****************************************************************************
+#*** SET IMPORT FILE STATUS BACK TO PASS ***#
+#*****************************************************************************
+ATTRPUTS ('PASS', dmVar, 'sys_ImpFileValidation', 'value');
+
+
+#*****************************************************************************
+#*** IDENTIFY SOURCE FILE
+#*****************************************************************************
+sFilePath = ATTRS (dmVar, 'sys_CBMS Upload directory', 'value');
+sFilePath='file conversion\';
+#sFileName =  psFileName;
+#sFileName = sFilePath | psFileName;
+#DATASOURCENAMEFORSERVER = sFileName;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#asciioutput('src.csv', vsOC, vsfunc,vsacc,vsReason,vsMA,vsRE);
+
+#*****************************************************************************
+# SKIP CERTAIN ACCOUNTS
+#*****************************************************************************
+# Account
+IF (vsAcc @= '3322001' % vsAcc @= '2330008' % vsAcc @= '2330009' % vsAcc @= '3322002' % vsAcc @= '9000510' % vsAcc @= '9000515' % vsAcc @= '9000520' % vsAcc @= '9000525');
+	#ItemSkip;
+ENDIF;
+
+IF(vsProg @='40005' % vsMA @='7894');
+	ITEMSKIP;
+ENDIF;
+
+#nLong =Long(vsProg);
+
+#IF( nLong >13);
+
+#	vsProg = SUBST(vsProg,1,10);
+
+#ENDIF;
+
+#*****************************************************************************
+#*** PERFORM A VALIDATION TEST ***#
+#*****************************************************************************
+nProgValid = 0;
+nOCValid = 0;
+nMeasValid = 0;
+nReasValid = 0;
+nFuncValid = 0;
+nMAValid = 0;
+nAccValid = 0;
+nItemValid = 0;
+nTypeValid = 0;
+nREValid  = 0;
+nSPPValid = 0;
+
+
+#*************************************************************************************************************************************#
+#**** DEFAULT VALUES
+#*************************************************************************************************************************************#
+
+#---------------------------------------------------------------
+# Get outcome element
+#---------------------------------------------------------------
+
+IF (DIMIX(dmOC, vsOC) = 0);
+          	#asciioutput(psFileName, vsOC, 'Outcome code is not valid');
+	nOCValid = 1;	
+
+     ELSE;
+          	vsOC = vsOC;
+ENDIF;
+
+#---------------------------------------------------------------
+# Get movement account element
+#---------------------------------------------------------------
+IF (vsMA @= '');
+	vsMA = '-';
+ELSEIF(DIMIX(dmMA,vsMA)=0);
+          	#asciioutput(psFileName, vsMA, 'MA code is not valid');
+	nMAValid = 1;	
+ENDIF;
+
+#---------------------------------------------------------------
+# Get related entity element
+#---------------------------------------------------------------
+IF (vsRE @= '');
+	vsRE = '-';
+ELSEIF(DIMIX(dmRE,vsRE)=0);
+          	#asciioutput(psFileName, vsRE, 'RE code is not valid');
+	nREValid = 1;	
+ENDIF;
+
+#---------------------------------------------------------------
+# Get SPP element
+#---------------------------------------------------------------
+IF (vsSPP @= '');
+	vsSPP = '-';
+ELSEIF(DIMIX(dmSPP,vsSPP)=0);
+          	#asciioutput(psFileName, vsSPP, 'SPP code is not valid');
+	nSPPValid = 1;	
+ENDIF;
+
+#---------------------------------------------------------------
+# Get jurisdiction element
+#---------------------------------------------------------------
+IF (vsJur @= '');
+	vsJur = '-';
+ELSEIF(DIMIX(dmJur,vsJur)=0);
+          	#asciioutput(psFileName, vsJur, 'Jur code is not valid');
+	nJurValid = 1;	
+ENDIF;
+
+#---------------------------------------------------------------
+#*** Appropriation Type
+#---------------------------------------------------------------
+
+
+
+	IF( vsItem @= '');
+		vsType = 'A001';
+	ELSE;
+		vsType = SUBST(vsItem, 1,4);
+		IF(DIMIX(dmType,vsType)=0);
+	          		#asciioutput(psFileName, vsType, 'Approp Type code is not valid');
+			nTypeValid = nTypevalid + 1;
+
+		ENDIF;
+
+	ENDIF;
+
+#---------------------------------------------------------------
+#* Get Appropriation Item elemnent
+#---------------------------------------------------------------
+
+#IF(vsControlType @= 'Departmental');
+	IF (vsItem @= '');
+		vsItem = 'A001-00001-05000';
+	ELSEIF(DIMIX(dmItem,vsItem)=0);
+	          	#asciioutput(psFileName, vsItem, 'Approp Item code is not valid');
+		nJurValid = 1;	
+	ENDIF;
+#ELSEIF(vsControlType @= 'Administered');
+	IF (vsItem @= '');
+		vsItem = 'A001-00001-05000';
+	ELSEIF(DIMIX(dmItem,vsItem)=0);
+	          	#asciioutput(psFileName, vsItem, 'Approp Item code is not valid');
+		nJurValid = 1;	
+	ENDIF;
+#ENDIF;
+
+#---------------------------------------------------------------
+#* Get Measure Code Element
+#---------------------------------------------------------------
+IF (vsMeasCode @= '');
+	vsMeasCode = 'M00000';
+ELSEIF(DIMIX(dmMeas,vsMeasCode)=0);
+          	#asciioutput(psFileName, vsMeasCode, 'Measure Code code is not valid');
+	nMeasValid = 1;	
+ENDIF;
+
+
+#---------------------------------------------------------------
+#*** Check Programme
+#---------------------------------------------------------------
+vsProg = Subst(vsProg,1,11);
+
+IF (DIMIX (dmProg, vsProg) = 0);
+	IF (vsProg @<> 'Program Unallocated');
+		nProgValid = nProgValid + 1;
+	ENDIF;
+ENDIF;
+
+IF( vsSPP @<>'');
+
+	IF(DIMIX(dmProg, vsSPP) =0);
+		nProgValid = nProgValid + 1;
+		
+	ELSE;
+		sSPP = DimensionElementPrincipalName(dmProg,vsSPP);
+		sProg = DimensionElementPrincipalName(dmProg,vsProg);
+		IF( sSPP @<> sProg);
+			nProgValid = nProgValid + 1;
+		ENDIF;
+	ENDIF;
+ENDIF;
+	
+
+#---------------------------------------------------------------
+#*** Check Reason
+#---------------------------------------------------------------
+IF( vsReason @='');
+	vsReason = sReason;
+
+ELSEIF(DIMIX (dmReason, vsReason) = 0);
+          	#asciioutput(psFileName, vsReason, 'Reason Code code is not valid');
+	nReasValid = nReasValid + 1;
+
+ENDIF;
+
+#---------------------------------------------------------------
+#*** Check Function
+#---------------------------------------------------------------
+IF (DIMIX (dmFunc, vsFunc) = 0);
+          	#asciioutput(psFileName, vsFunc, 'SubFunc Code code is not valid');
+	nFuncValid = nFuncValid + 1;
+ENDIF;
+
+
+
+#---------------------------------------------------------------
+#*** Check Account
+#---------------------------------------------------------------
+IF (DIMIX (dmAcc, vsAcc) = 0);
+          	#asciioutput(psFileName, vsAcc, 'Account Code code is not valid');
+	nAccValid = nAccValid + 1;
+ENDIF;
+
+
+#---------------------------------------------------------------
+#*** Check Related Entity
+#---------------------------------------------------------------
+IF (DIMIX (dmRE, vsRE) = 0);
+          #	asciioutput(psFileName, vsRE, 'RE code is not valid');
+	nREValid = nREValid + 1;
+ENDIF;
+
+#---------------------------------------------------------------
+#*** Check SPP
+#---------------------------------------------------------------
+IF (DIMIX (dmSPP, vsSPP) = 0);
+          	#asciioutput(psFileName, vsSPP, 'SPP Code code is not valid');
+	nSPPValid = nSPPValid + 1;
+ENDIF;
+
+
+#*************************************************************************************************************************************#
+#**** CREATE OUTPUT FILES FOR FAILED VALIDATIONS
+#*************************************************************************************************************************************#
+
+nValid = nProgValid + nOCValid + nMeasValid + nReasValid + nFuncValid +  nMAValid + nAccValid +  nTypeValid + nItemValid + nREValid + nSPPValid;
+nTotalValid = nTotalValid + nValid;
+IF (nValid > 0);
+	IF (nProgValid > 0);
+          		ASCIIOUTPUT (sImpFilePath  | psFilename | ' cbms upload extract failed .csv', 'Programme Code error on line ', NUMBERTOSTRING(nLine), vsProg,vsSPP);
+     	ENDIF;
+
+	IF (nMeasValid > 0);
+          		ASCIIOUTPUT (sImpFilePath | psFilename | ' cbms upload extract failed.csv', 'Measure Code error on line ', NUMBERTOSTRING(nLine), vsMeasCode);
+     	ENDIF;
+
+     	IF (nReasValid > 0);
+          		ASCIIOUTPUT (sImpFilePath | psFilename |  ' cbms upload extract failed.csv', 'Reason Code error on line ', NUMBERTOSTRING(nLine), vsReason);
+     	ENDIF;
+
+     	IF (nOCValid > 0);
+          		ASCIIOUTPUT (sImpFilePath | psFilename | ' cbms upload extract failed.csv', 'Outcome Code error on line ', NUMBERTOSTRING(nLine), vsOC);
+     	ENDIF;
+
+     	IF (nFuncValid > 0);
+          		ASCIIOUTPUT (sImpFilePath | psFilename |' cbms upload extract failed.csv', 'Function Code error on line ', NUMBERTOSTRING(nLine), vsFunc);
+     	ENDIF;
+
+     	IF (nMAValid > 0);
+          		ASCIIOUTPUT (sImpFilePath | psFilename | ' cbms upload extract failed.csv', 'Movement Account Code error on line ', NUMBERTOSTRING(nLine), vsMA);
+     	ENDIF;
+
+     	IF (nAccValid > 0);
+          		ASCIIOUTPUT (sImpFilePath | psFilename | ' cbms upload extract failed.csv', 'Account Code error on line ', NUMBERTOSTRING(nLine), vsAcc);
+     	ENDIF;
+
+     	IF (nTypeValid > 0);
+          		ASCIIOUTPUT (sImpFilePath | psFilename | ' cbms upload extract failed.csv', 'Appropriation Type error on line ', NUMBERTOSTRING(nLine), vsType, vsItem);
+     	ENDIF;
+
+     	IF (nItemValid > 0);
+          		ASCIIOUTPUT (sImpFilePath | psFilename | ' cbms upload extract failed.csv', 'Appropriation Item error on line ', NUMBERTOSTRING(nLine), vsItem);
+     	ENDIF;
+
+     	IF (nREValid > 0);
+          		ASCIIOUTPUT (sImpFilePath | psFilename | ' cbms upload extract failed.csv', 'Related Entity error on line ', NUMBERTOSTRING(nLine), vsRE);
+     	ENDIF;
+
+     	IF (nSPPValid > 0);
+          		ASCIIOUTPUT (sImpFilePath | psFilename | ' cbms upload extract failed.csv', 'SPP error on line ', NUMBERTOSTRING(nLine), vsSPP);
+     	ENDIF;
+
+ENDIF;
+
+nLine = nLine + 1;
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#ITEMSKIP;
+
+Period01= '2019-2020';
+sProg = SUBST(vsPRog,1,11);
+
+
+sPeriod = Period01;
+IF(CellIsUpdateable(sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod)=1);
+	CellIncrementN(vnYr01,sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod);
+ENDIF;
+
+
+sPeriod= DNEXT(dmPer,sPeriod);
+IF(CellIsUpdateable(sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod)=1);
+	CellIncrementN(vnYr02,sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod);
+ENDIF;
+
+sPeriod= DNEXT(dmPer,sPeriod);
+IF(CellIsUpdateable(sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod)=1);
+	CellIncrementN(vnYr03,sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod);
+ENDIF;
+
+sPeriod= DNEXT(dmPer,sPeriod);
+IF(CellIsUpdateable(sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod)=1);
+	CellIncrementN(vnYr04,sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod);
+ENDIF;
+
+sPeriod= DNEXT(dmPer,sPeriod);
+IF(CellIsUpdateable(sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod)=1);
+	CellIncrementN(vnYr05,sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod);
+ENDIF;
+
+sPeriod= DNEXT(dmPer,sPeriod);
+IF(CellIsUpdateable(sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod)=1);
+	CellIncrementN(vnYr06,sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod);
+ENDIF;
+
+sPeriod= DNEXT(dmPer,sPeriod);
+IF(CellIsUpdateable(sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod)=1);
+	CellIncrementN(vnYr07,sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod);
+ENDIF;
+
+
+sPeriod= DNEXT(dmPer,sPeriod);
+IF(CellIsUpdateable(sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod)=1);
+	CellIncrementN(vnYr08,sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod);
+ENDIF;
+
+
+sPeriod= DNEXT(dmPer,sPeriod);
+IF(CellIsUpdateable(sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod)=1);
+	CellIncrementN(vnYr09,sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod);
+ENDIF;
+
+sPeriod= DNEXT(dmPer,sPeriod);
+IF(CellIsUpdateable(sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod)=1);
+	CellIncrementN(vnYr10,sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod);
+ENDIF;
+
+sPeriod= DNEXT(dmPer,sPeriod);
+IF(CellIsUpdateable(sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod)=1);
+	CellIncrementN(vnYr11,sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod);
+ENDIF;
+
+sPeriod= DNEXT(dmPer,sPeriod);
+IF(CellIsUpdateable(sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod)=1);
+	CellIncrementN(vnYr12,sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod);
+ENDIF;
+
+sPeriod= DNEXT(dmPer,sPeriod);
+IF(CellIsUpdateable(sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod)=1);
+	CellIncrementN(vnYr13,sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod);
+ENDIF;
+
+sPeriod= DNEXT(dmPer,sPeriod);
+IF(CellIsUpdateable(sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod)=1);
+	CellIncrementN(vnYr14,sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod);
+ENDIF;
+
+sPeriod= DNEXT(dmPer,sPeriod);
+IF(CellIsUpdateable(sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod)=1);
+	CellIncrementN(vnYr15,sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod);
+ENDIF;
+
+sPeriod= DNEXT(dmPer,sPeriod);
+IF(CellIsUpdateable(sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod)=1);
+	CellIncrementN(vnYr16,sCube, psHLYear,psScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, psID, vsJur, sPeriod);
+ENDIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

@@ -1,0 +1,69 @@
+{
+	"@type":"Process",
+	"Name":"sys_AE Generate FE3 Adj 98 - Populate Flags",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_AE Generate FE3 Adj 98 - Populate Flags.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForClient":"programme details",
+		"dataSourceNameForServer":"programme details",
+		"view":"$CreateFE3Flag"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psProg",
+			"Prompt":"",
+			"Value":"Administered Programmes",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vsHLYear",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsScenario",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsProg",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsMeasure",
+			"Type":"String",
+			"Position":4,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsValue",
+			"Type":"String",
+			"Position":5,
+			"StartByte":0,
+			"EndByte":0
+		}
+	]
+}

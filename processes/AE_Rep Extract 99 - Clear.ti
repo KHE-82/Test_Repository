@@ -1,0 +1,188 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Rep Extract 99 - Clear
+#**** DESCRIPTION:       This process creates a view and adds a flag to the combination to be used for the 02 process
+#****			
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 20/09/2017    KG             Initial Revision
+#**** 24/01/2024   BL             Updated process for sys_Extract Report cube
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYS_EXTRACT REPORT CUBE***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbSXR = 'sys_Extract Report';
+dmRowID ='row id';
+dmSXRMeas = 'sys_report extract measure';
+ 
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = SUBST(sUser, lScan, 9);
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+sView = sUser | ' $SysExtractRpt';
+sSubset = sView;
+
+CubeSetLogChanges(cbSXR , 0);
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbSXR, sView);
+
+SUBSETDESTROY (dmClients, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmRowID, sView);
+SUBSETDESTROY (dmPer, sView);
+SUBSETDESTROY (dmSXRMeas, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+
+#Client
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmClients | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# HLYear
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmHLYear | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Scenario
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmScenario | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Row ID
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRowID | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Period
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# SXR Measure
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSXRMEas | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** BUILD VIEW
+#-------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbSXR, sView);
+VIEWSUBSETASSIGN (cbSXR, sView, dmClients, sView);
+VIEWSUBSETASSIGN (cbSXR, sView, dmHLYear, sView);
+VIEWSUBSETASSIGN (cbSXR, sView, dmScenario, sView);
+VIEWSUBSETASSIGN (cbSXR, sView, dmRowID, sView);
+VIEWSUBSETASSIGN (cbSXR, sView, dmPer, sView);
+VIEWSUBSETASSIGN (cbSXR, sView, dmSXRMeas, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+# *** DEFINE VIEW EXTRACT
+#-------------------------------------------------------------------------------------------------------------
+ViewExtractSkipZeroesSet(cbSXR, sView, 1);
+ViewSuppressZeroesSet(cbSXR, sView, 1);
+ViewExtractSkipCalcsSet(cbSXR, sView, 1);
+
+#-------------------------------------------------------------------------------------------------------------
+# ***ZERO OUT CUBE
+#-------------------------------------------------------------------------------------------------------------
+VIEWZEROOUT(cbSXR, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbSXR, sView);
+
+SUBSETDESTROY (dmClients, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmRowID, sView);
+SUBSETDESTROY (dmPer, sView);
+SUBSETDESTROY (dmSXRMeas, sView);
+
+CubeSetLogChanges(cbSXR , 1);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+
+#endregion

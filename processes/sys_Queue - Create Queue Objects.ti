@@ -1,0 +1,48 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:  	             	sys_Queue - Create Queue Objects
+#**** DESCRIPTION:	This process will create the system dimension }TI_Queue
+#****
+#****                                  	It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#****  29/06/2016     KG             Initial Revision
+#***********************************************************************************************************************
+
+#--- Dimensions
+#-----------------------
+dmQ = '}TI_Queue';
+
+#--- Delete structures before creating
+#--------------------------------------------------------
+DimensionDestroy (dmQ);
+
+#--- Create the dimensions
+#---------------------------------------
+DimensionCreate (dmQ);
+DimensionSortOrder (dmQ, 'ByInput', 'Ascending', 'ByInput', 'Ascending');
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

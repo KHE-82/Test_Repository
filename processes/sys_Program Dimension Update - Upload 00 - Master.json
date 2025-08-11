@@ -1,0 +1,39 @@
+{
+	"@type":"Process",
+	"Name":"sys_Program Dimension Update - Upload 00 - Master",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Program Dimension Update - Upload 00 - Master.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psDim",
+			"Prompt":"",
+			"Value":"Programme2",
+			"Type":"String"
+		},
+		{
+			"Name":"psConsol",
+			"Prompt":"",
+			"Value":"total programmes",
+			"Type":"String"
+		},
+		{
+			"Name":"psFile",
+			"Prompt":"",
+			"Value":"programv3.csv",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

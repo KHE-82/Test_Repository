@@ -1,0 +1,51 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               	geus_ME - Import Approved Profiles 99 - Clear Validations
+#**** DESCRIPTION:       	This process clears the upload validation
+#****                                  	It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  	Date		Initials	Comments
+#****  	====		======	=========
+#****	23/05/2018	KG	Initial Revision
+#****
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- DECLARE SYSTEM VARIABLES
+#--- Assign File Path for source data from entries stored in the variables cube
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variable';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- CLEAR VALIDATION
+#---------------------------------------------------------------------------------------------------------------------------
+ATTRPUTS ('', dmVar, 'geus monthly estimates upload validation', 'value');
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#endregion

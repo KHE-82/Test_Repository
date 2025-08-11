@@ -1,0 +1,45 @@
+{
+	"@type":"Process",
+	"Name":"AE_adj - Add new account",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_adj - Add new account.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psID",
+			"Prompt":"",
+			"Value":"00008",
+			"Type":"String"
+		},
+		{
+			"Name":"psAcc",
+			"Prompt":"",
+			"Value":"2230002",
+			"Type":"String"
+		},
+		{
+			"Name":"psMA",
+			"Prompt":"",
+			"Value":"No movement code",
+			"Type":"String"
+		},
+		{
+			"Name":"psRE",
+			"Prompt":"",
+			"Value":"12800",
+			"Type":"String"
+		},
+		{
+			"Name":"psJur",
+			"Prompt":"",
+			"Value":"No jurisdiction",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

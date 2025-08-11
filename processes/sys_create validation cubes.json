@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"sys_create validation cubes",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_create validation cubes.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[]
+}

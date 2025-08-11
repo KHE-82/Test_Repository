@@ -1,0 +1,49 @@
+{
+	"@type":"NativeView",
+	"Name":"sys_bulk Process",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_client preference measure')/Hierarchies('sys_client preference measure')"
+				},
+				"Expression":"TM1SubsetAll([sys_client preference measure])"
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('}Clients')/Hierarchies('}Clients')"
+				},
+				"Expression":"TM1SubsetAll([}Clients])"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_client preference')/Hierarchies('sys_client preference')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_client preference')/Hierarchies('sys_client preference')/Elements('sys_bulk process')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":[],
+	"SuppressEmptyColumns":false,
+	"SuppressEmptyRows":false,
+	"FormatString":"0.#########"
+}

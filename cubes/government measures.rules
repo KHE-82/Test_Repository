@@ -1,0 +1,626 @@
+Skipcheck;
+
+# Rule 0001
+# Measure M00000 - Stet
+['M00000'] =N :STET;
+
+# Rule 0001
+# Departmental Ongoing Expense Measures
+['data','Expenses','ongoing','Departmental','value'] =N:
+# TEST A - Check if Measure is Ongoing
+IF (DB('government measures details', !headline year, !scenario, !measure code, 'funding life') @= 'ongoing',
+# TRUE PART A - MEASURE IS ONGOING
+DB('AE adjustments', !headline year, !scenario, 'Total approved','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', !measure code, 'Total approp types', '-', 'Total approp item', 'Departmental Programmes', '2000000',
+ 'Total Ids', 'Total jurisdictions', !period),
+# FALSE PART A - MEASURE IS TERMINATING - STET
+STET);
+
+# Rule 0002
+# Departmental Terminating Expense Measures
+['data','Expenses','terminating','Departmental','value'] =N:
+# TEST A - Check if Measure is Ongoing
+IF (DB('government measures details', !headline year, !scenario, !measure code, 'funding life') @= 'terminating',
+# TRUE PART A - MEASURE IS ONGOING
+DB('AE adjustments', !headline year, !scenario, 'Total approved','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', !measure code, 'Total approp types', '-', 'Total approp item', 'Departmental Programmes', '2000000',
+ 'Total Ids', 'Total jurisdictions', !period),
+# FALSE PART A - MEASURE IS TERMINATING - STET
+STET);
+
+# Rule 0003
+# Administered Ongoing Expense Measures
+['data','Expenses','ongoing','Administered','value'] =N:
+# TEST A - Check if Measure is Ongoing
+IF (DB('government measures details', !headline year, !scenario, !measure code, 'funding life') @= 'ongoing',
+# TRUE PART A - MEASURE IS ONGOING
+DB('AE adjustments', !headline year, !scenario, 'Total approved','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', !measure code, 'Total approp types', '-', 'Total approp item', 'Administered Programmes', '2000000',
+ 'Total Ids', 'Total jurisdictions', !period),
+# FALSE PART A - MEASURE IS TERMINATING - STET
+STET);
+
+# Rule 0004
+# Administered Terminating Expense Measures
+['data','Expenses','terminating','Administered','value'] =N:
+# TEST A - Check if Measure is Ongoing
+IF (DB('government measures details', !headline year, !scenario, !measure code, 'funding life') @= 'terminating',
+# TRUE PART A - MEASURE IS ONGOING
+DB('AE adjustments', !headline year, !scenario, 'Total approved','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', !measure code, 'Total approp types', '-', 'Total approp item', 'Administered Programmes', '2000000',
+ 'Total Ids', 'Total jurisdictions', !period),
+# FALSE PART A - MEASURE IS TERMINATING - STET
+STET);
+
+# Rule 0005
+# Departmental Ongoing Revenue Measures
+['data','Revenue','ongoing','Departmental','value'] =N:
+# TEST A - Check if Measure is Ongoing
+IF (DB('government measures details', !headline year, !scenario, !measure code, 'funding life') @= 'ongoing',
+# TRUE PART A - MEASURE IS ONGOING
+DB('AE adjustments', !headline year, !scenario, 'Total approved','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', !measure code, 'Total approp types', '-', 'Total approp item', 'Departmental Programmes', 'Total Inc
+ome Less Approps', 'Total Ids', 'Total jurisdictions', !period),
+# FALSE PART A - MEASURE IS TERMINATING - STET
+STET);
+
+# Rule 0006
+# Departmental Terminating Revenue Measures
+['data','Revenue','terminating','Departmental','value'] =N:
+# TEST A - Check if Measure is Ongoing
+IF (DB('government measures details', !headline year, !scenario, !measure code, 'funding life') @= 'terminating',
+# TRUE PART A - MEASURE IS ONGOING
+DB('AE adjustments', !headline year, !scenario, 'Total approved','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', !measure code, 'Total approp types', '-', 'Total approp item', 'Departmental Programmes', 'Total Inc
+ome Less Approps', 'Total Ids', 'Total jurisdictions', !period),
+# FALSE PART A - MEASURE IS TERMINATING - STET
+STET);
+
+# Rule 0007
+# Administered Ongoing Revenue Measures
+['data','Revenue','ongoing','Administered','value'] =N:
+# TEST A - Check if Measure is Ongoing
+IF (DB('government measures details', !headline year, !scenario, !measure code, 'funding life') @= 'ongoing',
+# TRUE PART A - MEASURE IS ONGOING
+DB('AE adjustments', !headline year, !scenario, 'Total approved','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', !measure code, 'Total approp types', '-', 'Total approp item', 'Administered Programmes', 'Total Inc
+ome Less Approps', 'Total Ids', 'Total jurisdictions', !period),
+# FALSE PART A - MEASURE IS TERMINATING - STET
+STET);
+
+# Rule 0008
+# Administered Terminating Revenue Measures
+['data','Revenue','terminating','Administered','value'] =N:
+# TEST A - Check if Measure is Ongoing
+IF (DB('government measures details', !headline year, !scenario, !measure code, 'funding life') @= 'terminating',
+# TRUE PART A - MEASURE IS ONGOING
+DB('AE adjustments', !headline year, !scenario, 'Total approved','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', !measure code, 'Total approp types', '-', 'Total approp item', 'Administered Programmes', 'Total Inc
+ome Less Approps', 'Total Ids', 'Total jurisdictions', !period),
+# FALSE PART A - MEASURE IS TERMINATING - STET
+STET);
+
+# Rule 0009
+# Departmental Ongoing Capital Measures
+['data','Capital','ongoing','Departmental','value'] =N:
+# TEST A - Check if Measure is Ongoing
+IF (DB('government measures details', !headline year, !scenario, !measure code, 'funding life') @= 'ongoing',
+# TRUE PART A - MEASURE IS ONGOING
+DB('AE adjustments', !headline year, !scenario, 'Total approved','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', !measure code, 'Total approp types', 'Capital Measures', 'Total approp item', 'Departmental Programm
+es', '4100003', 'Total Ids', 'Total jurisdictions', !period),
+# FALSE PART A - MEASURE IS TERMINATING - STET
+STET);
+
+# Rule 0010
+# Departmental Terminating Capital Measures
+['data','Capital','terminating','Departmental','value'] =N:
+# TEST A - Check if Measure is Ongoing
+IF (DB('government measures details', !headline year, !scenario, !measure code, 'funding life') @= 'terminating',
+# TRUE PART A - MEASURE IS ONGOING
+DB('AE adjustments', !headline year, !scenario, 'Total approved','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', !measure code, 'Total approp types', 'Capital Measures', 'Total approp item', 'Departmental Programm
+es', '4100003', 'Total Ids', 'Total jurisdictions', !period),
+# FALSE PART A - MEASURE IS TERMINATING - STET
+STET);
+
+# Rule 0011
+# Administered Ongoing Capital Measures
+['data','Capital','ongoing','Administered','value'] =N:
+# TEST A - Check if Measure is Ongoing
+IF (DB('government measures details', !headline year, !scenario, !measure code, 'funding life') @= 'ongoing',
+# TRUE PART A - MEASURE IS ONGOING
+DB('AE adjustments', !headline year, !scenario, 'Total approved','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', !measure code, 'Total approp types', 'Capital Measures', 'Total approp item', 'Administered Programm
+es', '4100003', 'Total Ids', 'Total jurisdictions', !period),
+# FALSE PART A - MEASURE IS TERMINATING - STET
+STET);
+
+# Rule 0012
+# Administered Terminating Capital Measures
+['data','Capital','terminating','Administered','value'] =N:
+# TEST A - Check if Measure is Ongoing
+IF (ATTRS('measure code', !measure code, 'funding life') @= 'terminating',
+# TRUE PART A - MEASURE IS ONGOING
+DB('AE adjustments', !headline year, !scenario, 'Total approved','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', !measure code, 'Total approp types', 'Capital Measures', 'Total approp item', 'Administered Programm
+es', '4100003', 'Total Ids', 'Total jurisdictions', !period),
+# FALSE PART A - MEASURE IS TERMINATING - STET
+STET);
+
+# Rule 0025
+# replicate "data" status element against status element indicated against each ID in the ID details cube
+[scenario:'CBMS', 'Finance validated'] = N: [scenario:'CBMS', 'data'];
+
+['draft',{'value','ASL'}] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('government measures details', !headline year, !scenario, !measure code, 'status') @= 'draft',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['business unit authorised',{'value','ASL'}] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('government measures details', !headline year, !scenario, !measure code, 'status') @= 'business unit authorised',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['approved',{'value','ASL'}] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('government measures details', !headline year, !scenario, !measure code, 'status') @= 'approved',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['approved non-flat file',{'value','ASL'}] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('government measures details', !headline year, !scenario, !measure code, 'status') @= 'approved non-flat file',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+[status:'CBMS',{'value','ASL'}] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('government measures details', !headline year, !scenario, !measure code, 'status') @= 'cbms',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['agency authorised',{'value','ASL'}] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('government measures details', !headline year, !scenario, !measure code, 'status') @= 'agency authorised',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['submitted',{'value','ASL'}] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('government measures details', !headline year, !scenario, !measure code, 'status') @= 'DOFA validated',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['Finance validated',{'value','ASL'}] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('government measures details', !headline year, !scenario, !measure code, 'status') @= 'DOFA validated',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+Feeders;
+# Feeder - rule 0025
+[scenario:'CBMS', 'data'] => [scenario:'CBMS', 'Finance validated'];
+[{'data', 'cash flow'}] =>
+['draft'],
+['business unit authorised'],
+['approved'],
+['approved non-flat file'],
+[status:'cbms'],
+['submitted'],
+['agency authorised'],
+['finance validated'];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

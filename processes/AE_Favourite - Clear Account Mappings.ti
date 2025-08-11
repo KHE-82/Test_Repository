@@ -1,0 +1,207 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Favourite - Clear Account Mappings
+#**** DESCRIPTION:       This process creates a view and deletes the adjustment
+#****			
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 06/10/2015    KG             Initial Revision
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#******************************************************************************************************************
+#*** DECLARE FAVOURITE TEMPLATE CUBE
+#******************************************************************************************************************
+cbFav = 'sys_favourite template';
+dmFavID = 'favourites_id';
+dmAcc = 'account';
+dmMA = 'movement account';
+dmJur = 'jurisdiction';
+dmRE = 'related entity';
+dmSPP = 'spp';
+dmItem = 'appropriation item';
+dmFavMeas = 'sys_favourite template measure';
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+dmCtrlType = 'control type';
+
+#******************************************************************************************************************
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#******************************************************************************************************************
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sNoMeasCode = ATTRS(dmVar, 'No Measure Code', 'value');
+sDefFavID = ATTRS(dmVar, 'Default favourite id template', 'value');
+sProgDimName = ATTRS(dmVar, 'program dimension name', 'value');
+
+#******************************************************************************************************************
+#*** DECLARE OTHER DIMENSIONS
+#******************************************************************************************************************
+IF (sProgDimName @<> '');
+	snProg = sProgDimName;
+ELSE;
+	snProg = 'programme';
+ENDIF;
+
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmFunc = 'function';
+dmReason = 'reason';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmPer = 'period';
+
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED FOR VIEWS
+#******************************************************************************************************************
+sObject  = sUser | '_$DeleteFavView';
+sAEView = sUser | '_$DeleteFavView';
+
+#*****************************************************************************************************************************************************
+#****  STEP 1 - CLEAR FAVOURITE MAPPING CUBE
+#*****************************************************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbFav, sAEView);
+SUBSETDESTROY (dmFavID, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+SUBSETDESTROY (dmFavMeas, sAEView);
+
+
+#******************************************************************************************************************
+#*** CREATE SUBSETS
+#******************************************************************************************************************
+# favourite id
+SubsetCreate(dmFavID, sAEView);
+SubsetElementInsert(dmFavID, sAEView, psFavID, 1);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Movement Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Appropriation Item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Favourite Measure
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmFavMeas | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+#******************************************************************************************************************
+#*** BUILD VIEW ***#
+#******************************************************************************************************************
+VIEWCREATE (cbFav, sAEView);
+VIEWSUBSETASSIGN (cbFav, sAEView, dmFavID, sAEView);
+VIEWSUBSETASSIGN (cbFav, sAEView, dmAcc, sAEView);
+VIEWSUBSETASSIGN (cbFav, sAEView, dmMA, sAEView);
+VIEWSUBSETASSIGN (cbFav, sAEView, dmJur, sAEView);
+VIEWSUBSETASSIGN (cbFav, sAEView, dmRE, sAEView);
+VIEWSUBSETASSIGN (cbFav, sAEView, dmSPP, sAEView);
+VIEWSUBSETASSIGN (cbFav, sAEView, dmItem, sAEView);
+VIEWSUBSETASSIGN (cbFav, sAEView, dmFavMeas, sAEView);
+
+#******************************************************************************************************************
+#**** CLEAR CUBE ****#
+#******************************************************************************************************************
+VIEWZEROOUT (cbFav, sAEView);
+
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbFav, sAEView);
+SUBSETDESTROY (dmFavID, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+SUBSETDESTROY (dmFavMeas, sAEView);
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

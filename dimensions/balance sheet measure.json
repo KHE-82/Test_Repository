@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"balance sheet measure",
+	"Hierarchies@Code.links":
+	[
+		"balance sheet measure.hierarchies/balance sheet measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('balance sheet measure')/Hierarchies('balance sheet measure')"
+	}
+}

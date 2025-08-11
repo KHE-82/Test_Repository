@@ -1,0 +1,51 @@
+{
+	"@type":"Process",
+	"Name":"ME Generate Profiles 98 - Clear Data",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"ME Generate Profiles 98 - Clear Data.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psuser",
+			"Prompt":"",
+			"Value":"Admin",
+			"Type":"String"
+		},
+		{
+			"Name":"psHLYear",
+			"Prompt":"",
+			"Value":"HL2018-2019",
+			"Type":"String"
+		},
+		{
+			"Name":"psScenario",
+			"Prompt":"",
+			"Value":"current",
+			"Type":"String"
+		},
+		{
+			"Name":"psProg",
+			"Prompt":"",
+			"Value":"6258",
+			"Type":"String"
+		},
+		{
+			"Name":"psID",
+			"Prompt":"",
+			"Value":"00001",
+			"Type":"String"
+		},
+		{
+			"Name":"pnCounter",
+			"Prompt":"",
+			"Value":0,
+			"Type":"Numeric"
+		}
+	],
+	"Variables":[]
+}

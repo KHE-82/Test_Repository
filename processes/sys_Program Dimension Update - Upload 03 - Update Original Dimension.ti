@@ -1,0 +1,435 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_Program Dimension Update - Upload 03 - Update Original Dimension
+#**** DESCRIPTION:       This process will 
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date	Initials	Comments
+#****  ====              ======    =========
+#**** 15/08/2023     EC           Initial Revision
+#***********************************************************************************************************************
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+cbEAProg = '}ElementAttributes_'|snProg;
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYS APPLICATION CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbApp = 'sys_application';
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYS CLIENT FAVOURITE APPLICATION CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbFavApp = 'sys_client favourite application';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE ID DETAILS CUBE DIMENSIONS
+#-------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS
+#-------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+#dmClients = '}Clients';
+cbEAVar = '}ElementAttributes_variables';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT GROUPS CUBE
+#******************************************************************************************************************
+cbGroups = '}ClientGroups';
+
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sCurUser = TM1User();
+
+#--------------------------------------------------------------------------------------------------------
+#--- CHECK IF CBMS-R IS LIVE : New Code 08 August 2017 - KG
+#--------------------------------------------------------------------------------------------------------
+sCBMSRLive = ATTRS (dmVar, 'sys_CBMSR GoLive', 'value');
+sCBMSRLiveHLYear = ATTRS (dmVar, 'sys_CBMSR GoLive Headline Year', 'value');
+sCBMSRMigrationScenario = 'CBMS-R OBAL';
+
+#--------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#--------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = SUBST(sUser, lScan, 9);
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+sSubset  = sUser | '_$EditView';
+sAEView = sUser | '_$EditView';
+
+sVarUpLoad = 'sys_upload directory';
+
+#******************************************************************************************************************
+# **** GET DATE VALUES AND POST USER AND DATE STAMP
+#******************************************************************************************************************
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+sHNow = TimST( Now, '\h');
+sMNow = TimST( Now, '\i');
+sSNow = TimST( Now, '\s');
+
+sDay = TRIM(SUBST(sDNow, 1,2));
+
+IF (LONG (sDay) = 1);
+	sDay = '0' | sDay;
+ELSE;
+	sDay = sDay;
+ENDIF;
+
+sMonth = TRIM(SUBST(sMNow, 1,2));
+
+IF (LONG (sMonth) = 1);
+	sMonth = '0' | sMonth;
+ELSE;
+	sMonth = sMonth;
+ENDIF;
+
+sYear = TRIM(SUBST(sYNow, 1,4));
+sNow = sDay | '/' | sMonth | '/' | sYear;
+sNow = sYNow | sMNow | sDNow | sHNow| sMNow | sSNow; 
+
+nTime = 1;
+
+#-------------------------------------------------------------------------------------------------------------
+#*** Validation on Parameters 
+#-------------------------------------------------------------------------------------------------------------
+nValid =0;
+
+sClientMeas = 'geus programme';
+sValid = 'validate';
+sErrorPreFix= 'Error : ';
+
+CellPutS( '', cbClient, sUser, sClientMeas, sValid);
+
+#-------------------------------------------------------------------------------------------------------------
+#*** Create Source in Temp Dimension
+#-------------------------------------------------------------------------------------------------------------
+
+dmTemp = '}temp_' | sUser;
+cbEATemp = '}ElementAttributes_'| dmTemp;
+
+
+SubsetDestroy(dmTemp,sSubSet);
+MDX = '{TM1SUBSETALL( [' | dmTemp | '] )}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+SUBSETMDXSET (dmTemp, sSubset, '');
+
+DATASOURCENAMEFORSERVER = dmTemp;
+DATASOURCETYPE = 'Subset';
+DATASOURCEDIMENSIONSUBSET = sSubset;
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF( nValid <>0);
+	ItemSkip;
+ENDIF;
+
+#------Deal with Elements in Alternative Hierarchy-----#
+#------Suffix was created from 01 process------#
+
+sAltSuff = '_Alt';
+nAltSuff = Scan(sAltSuff,vsEL);
+
+IF(nAltSuff <>0);
+	sOriEL = SubSt(vsEL,1,nAltSuff-1);
+ELSE;
+	sOriEL = vsEL;
+ENDIF;
+
+
+sConsolAlt = 'sys_unused elements';
+
+IF( DIMIX(psDim, sConsolAlt) =0);
+	DimensionElementInsert(psDim, '', sConsolAlt,'C');
+ENDIF;
+
+sPar = CellGetS(cbEATemp,vsEL, 'sys_Parent');
+
+sType = CellGetS(cbEATemp,sOriEL, 'sys_type');
+
+IF(sType @='C');
+	IF(DIMIX(psDim, sOriEL) =0);
+		#------Create New Element and Insert into Parent------#
+		sPar = CellGetS(cbEATemp,vsEL, 'sys_Parent');
+		nWeight = CellGetN(cbEATemp, vsEL, 'sys_weight');
+		DimensionElementInsert(psDim, '', vsEl,'C');
+
+		IF(nWeight =0);
+			nWeight =1;
+		ENDIF;
+
+		IF(DIMIX(psDim,sPar) <>0);
+			DimensionElementComponentAdd(psDim, sPar,sOriEL, nWeight); 
+		ENDIF;
+
+	ELSEIF( DTYPE(psDim, sOriEL) @='C');
+		IF( vsEL @= sOriEL);
+		#------Unwind N Elements ------#
+		#------Elements in Allternative Hierachy will skip this process ------#
+		sSubN = ' sys_unwind N_' | sUser;
+		SubSetDestroy(psDim, sSubN);
+		MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {['|psDim|'].['| sOriEL | ']}, ALL, RECURSIVE )}, 0)}';
+  		SubsetCreatebyMDX(sSubN, MDX, psDim,1);
+
+		nSiz = SubSetGetSize(psDim, sSubN);
+		nIndex = 1;
+
+		While( nIndex <=nSiz);	
+			sSubEL = SubsetGetElementName(psDim, sSubN, nIndex);
+
+			sDimPar = ELPAR(psDim,sSubEL,1);
+
+			DimensionElementComponentDelete(psDim, sDimPar,sSubEl);
+			DimensionElementComponentAdd(psDim, sConsolAlt,sSubEL, 1);
+
+			#DimensionElementDelete(psDim,sSubEl);
+			#DimensionElementInsert(psDim,'',sSubEL,'N');
+			#DimensionElementComponentAdd(psDim, sConsolAlt,sSubEL, 1);		
+
+			nIndex = nIndex +1;
+		END;
+
+		SubSetDestroy(psDim, sSubN);
+
+ 		#------Unwind Components------#
+		sSubN = ' sys_unwind C_' | sUser;
+		SubSetDestroy(psDim, sSubN);
+		MDX = '{descendants(['|psDim|'].['| sOriEL | '],1,self)}';
+
+  		SubsetCreatebyMDX(sSubN, MDX, psDim,1);
+
+		nSiz = SubSetGetSize(psDim, sSubN);
+		nIndex = 1;
+
+		While( nIndex <=nSiz);	
+			sSubEL = SubsetGetElementName(psDim, sSubN, nIndex);
+			sSubType = DTYPE(psDim, sSubEL);
+
+			IF( sSubType @='C' & ELISANC(psDim,sOriEL,sSubEL) =1);	
+				DimensionElementComponentAdd(psDim, sConsolAlt,sSubEL, 1);
+				DimensionElementComponentDeleteDirect(psDim, sOriEL,sSubEL);	
+			ENDIF;
+
+			nIndex = nIndex +1;
+		END;
+
+		SubSetDestroy(psDim, sSubN);
+		ENDIF;
+
+ 		#------Delete C Element and Re-Create C Element------#
+		#-----Remove C Element out of Main hierarchy and place it on Root------#
+		
+		#----Find Parent in Main Hierarchy before unwinding ----#
+
+		sDimPar = ELPAR(psDim, sOriEL,1);
+	
+		IF( vsEL @= sOriEL & DIMIX(psDim,sDimPar) <>0);
+			#DimensionElementDelete(psDim, sOriEL);
+			#DimensionElementInsert(psDim, '', sOriEL,'C');
+		
+		#----Only unwinding once----#
+			IF( ELISANC(psDim, sConsolAlt,sOriEL) =0);
+				DimensionElementComponentDelete(psDim, sDimPar,sOriEL);
+			ENDIF;
+
+		ENDIF;
+
+		IF( ELISANC(psDim,sConsolAlt,sOriEL) =0);
+			DimensionElementComponentAdd(psDim, sConsolAlt, sOriEL,nWeight);
+		ENDIF;
+
+		IF(nWeight =0);
+			nWeight =1;
+		ENDIF;
+		
+		sPar = CellGetS(cbEATemp,vsEL, 'sys_Parent');
+
+		#-----Place C Elements in to Hierarchy------#
+		
+		#----Find Parent for the top C element in the upload file ----#
+		IF(sPar@='');
+			sPar = sDimPar;
+		#----Create NewParent element in the upload file ----#
+		ELSEIF( DIMIX(psDim,sPar) =0);
+			DimensionElementInsert(psDim,'',sPar,'C');
+			DimensionElementComponentAdd(psDim, sPar, sOriEL,nWeight);
+		#----For the Exisiting Parent element in the upload file ----#
+		ELSEIF( DIMIX(psDim,sPar) <>0);
+			DimensionElementComponentAdd(psDim, sPar, sOriEL,nWeight);
+		ENDIF;
+
+		nWeight = CellGetN(cbEATemp, vsEL, 'sys_weight');
+
+
+		#------ New C Element with no Parent------#
+		IF( DIMIX(psDim,sPar) <>0);
+			DimensionElementComponentAdd(psDim, sPar, sOriEL,nWeight);
+		ENDIF;
+
+		DimensionElementComponentDelete(psDim, sConsolAlt,sOriEL);
+		
+	ELSEIF( DTYPE(psDim, vsEL) @='N');
+		sMsgBody = vsEL | ' is a N level element and cannot be re-classified as C level element';
+
+		sOldMsg = CellGetS(cbClient, sUser, sClientMeas, sValid);
+
+		IF( sOldMsg @='');
+			sMsg = sErrorPreFix | sMsgBody;
+		ELSEIF(scan(sErrorPreFix,sOldMsg) <>0);
+			sMsg = sOldMsg |' | ' | sMsgBody;
+		ELSE;
+			sMsg = sErrorPreFix | sMsgBody;
+		ENDIF; 
+
+		CellPutS( sMsg,cbClient, sUser, sClientMeas, sValid); 	
+	
+	ENDIF;
+ENDIF;
+
+
+
+IF(sType @='');
+
+	IF(DIMIX(psDim, sOriEL) =0);
+		#------Create New Element and Insert into Parent------#
+		sPar = CellGetS(cbEATemp,vsEL, 'sys_Parent');
+		nWeight = CellGetN(cbEATemp, vsEL, 'sys_weight');
+		DimensionElementInsert(psDim, '', sOriEL,'N');
+
+		IF(nWeight =0);
+			nWeight =1;
+		ENDIF;
+	
+		IF(DIMIX(psDim, sPar)<>0);
+			DimensionElementComponentAdd(psDim, sPar,sOriEL, nWeight);
+		ENDIF;
+
+		IF(ELISANC(psDim, sConsolAlt, sOriEL)=1);
+			DimensionElementComponentDelete(psDim, sConsolAlt,sOriEL);
+		ENDIF;
+	ELSEIF(DTYPE(psDim, sOriEL) @='N');
+
+		#------Create New Element and Insert into Parent------#
+		sPar = CellGetS(cbEATemp,vsEL, 'sys_Parent');
+		nWeight = CellGetN(cbEATemp, vsEL, 'sys_weight');
+
+		IF(nWeight =0);
+			nWeight =1;
+		ENDIF;
+	
+		IF(DIMIX(psDim, sPar)<>0);
+
+			DimensionElementComponentAdd(psDim, sPar,sOriEL, nWeight);
+		ENDIF;
+
+		IF(ELISANC(psDim, sConsolAlt, vsEL)=1);
+			DimensionElementComponentDelete(psDim, sConsolAlt,sOriEL);
+		ENDIF;
+	ELSEIF( DTYPE(psDim, sOriEL) @='C');
+
+		sMsgBody = vsEL | ' is a C level element and cannot be re-classified as N level element';
+
+		sOldMsg = CellGetS(cbClient, sUser, sClientMeas, sValid);
+
+		IF( sOldMsg @='');
+			sMsg = sErrorPreFix | sMsgBody;
+		ELSEIF(scan(sErrorPreFix,sOldMsg) <>0);
+			sMsg = sOldMsg |' | ' | sMsgBody;
+		ELSE;
+			sMsg = sErrorPreFix | sMsgBody;
+		ENDIF; 
+
+		CellPutS( sMsg,cbClient, sUser, sClientMeas, sValid); 
+	
+	ENDIF;
+
+
+
+ENDIF;
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF( nValid <>0);
+	ProcessQuit;
+ENDIF;
+#endregion

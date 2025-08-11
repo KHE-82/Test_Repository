@@ -1,0 +1,121 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_ParameterAndED_98 - Populate Flags
+#**** DESCRIPTION:       This process clears the Y Flags in the programme details cube
+#****
+#****                                  
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 04/07/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#**** DECLARE CUBES ****#
+snProg = 'programme';
+sCube = snProg | ' details';
+
+#*** DECLARE DIMENSIONS ***#
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmProg = snProg;
+dmMeas = snProg | ' measure';
+
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#**** DECLARE VARIABLES ****#
+sView = '$CreateParamFlag';
+sSubset = sView;
+
+sHLYear = ATTRS (dmVar, 'headline year', 'value');
+sScenario = 'current';
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy (sCube, sView);
+SubsetDestroy (dmHLYear, sSubset);
+SubsetDestroy (dmScenario, sSubset);
+SubsetDestroy (dmProg, sSubset);
+SubsetDestroy (dmMeas, sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, sHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, sScenario, 1);
+
+# Programme
+#MDX = '{TM1SUBSETALL( [' | dmProg | '] )}';
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmProg | '].[' | psProg | '] }, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Programme Measure
+SubsetCreate(dmMeas, sSubset);
+
+IF (psAdjType @= 'parameter');
+     SubsetElementInsert(dmMeas, sSubset, 'parameter', 1);
+ELSE;
+     SubsetElementInsert(dmMeas, sSubset, 'efficiency dividend', 1);
+ENDIF;
+
+#****BUILD VIEW****#
+ViewCreate (sCube, sView);
+ViewSubsetAssign (sCube, sView, dmHLYear, sSubset);
+ViewSubsetAssign (sCube, sView, dmScenario, sSubset);
+ViewSubsetAssign (sCube, sView, dmProg, sSubset);
+ViewSubsetAssign (sCube, sView, dmMeas, sSubset);
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*** POPULATE CUBE WITH 'Y' IN THE FLAGS
+IF (vsMeas @= 'parameter');
+
+     #*** FOR PARAMETERS ***#
+     IF (vsValue @<> '');
+          CELLPUTS ('Y', sCube, vsHLYear, vsScenario, vsProg, 'Generate WCI');
+     ENDIF;
+ELSE;
+
+     #*** FOR EFFICIENCY DIVIDEND ***#
+     IF (vsValue @<> '');
+          CELLPUTS ('Y', sCube, vsHLYear, vsScenario, vsProg, 'Generate ED');
+     ENDIF;
+
+ENDIF;
+     
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy (sCube, sView);
+SubsetDestroy (dmHLYear, sSubset);
+SubsetDestroy (dmScenario, sSubset);
+SubsetDestroy (dmProg, sSubset);
+SubsetDestroy (dmMeas, sSubset);
+#endregion

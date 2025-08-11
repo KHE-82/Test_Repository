@@ -1,0 +1,283 @@
+{
+	"@type":"NativeView",
+	"Name":"Default",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('id measure')/Hierarchies('id measure')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('CBMS ID')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('variation no')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('programme')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('programme code')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('programme description')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('title')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('title2')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('title3')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('title4')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('description')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('description2')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('description3')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('description4')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('comments')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('status')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('ID reference')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('reason')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('outcome')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('measure')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('CBMS measure code')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('function')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('spp')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('appropriation item')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('appropriation type')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('apply parameters')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('funding life')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('end date')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('parameter adjustment generated')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('efficiency dividend adjustment generated')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('include in AEs')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('value')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('government decision')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('government decision date')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('disagree cashflow')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('zero cashflow account')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('viewID')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Control Type')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Adjustment Type')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('costing ID')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('created by')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('created date')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('submitted by')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('submitted date')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('authorised by')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('authorised date')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('cancelled by')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('cancelled date')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('account')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('jurisdiction')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('movement account')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('related entity')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('MA_Adjustment dimension')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 01')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 02')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 03')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 04')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 05')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 06')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 07')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 08')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 09')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 10')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 01 Desc')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 02 Desc')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 03 Desc')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 04 Desc')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 05 Desc')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 06 Desc')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 07 Desc')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 08 Desc')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 09 Desc')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Attachment 10 Desc')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Claimed User')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('Group Adj Type')"
+					},
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('agency')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('id')/Hierarchies('id')"
+				},
+				"Expression":"TM1SubsetAll([id])"
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('headline year')/Hierarchies('headline year')/Subsets('Default')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('headline year')/Hierarchies('headline year')/Elements('HL2025-2026')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('scenario')/Hierarchies('scenario')/Subsets('Default')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('current')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":false,
+	"SuppressEmptyRows":false,
+	"FormatString":"0.#########"
+}

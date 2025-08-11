@@ -1,0 +1,121 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              sys_Meas Correction - one off 04
+#**** DESCRIPTION:       
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 06/10/2017    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** DECLARE CUBES AND DIMENSIONS ***#
+snProg = 'program';
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+cbID = 'ae id details';
+
+sCube = cbAE;
+sPrc = GetProcessName();
+sUser = TM1User();
+sView = sUser | ' - ' | sPrc;
+sSubset = sView;
+sStatus = 'data';
+
+sSourceID = '00FBO';
+sSourceReason = 'Other variations not elsewhere defined';
+sSourceMeasCode = 'M00000';
+
+sTargetID = '00FBO';
+sTargetReason = 'Other variations not elsewhere defined';
+sTargetMeasCode = 'M00000';
+
+
+
+sIDView = 'sys_correct id';
+#sIDView = 'sys_correct id1';
+
+cbEAMeasCode = '}ElementAttributes_measure code';
+cbMeasDet = 'government measures details';
+
+ViewDestroy(cbMeasDet, sView);
+SubSetDestroy(dmHLyear, sView);
+SubSetDestroy(dmScenario, sView);
+
+SubsetCreate(dmHLYear, sView);
+SubsetElementInsert(dmHLyear,sView, psHLYear,1);
+
+SubsetCreate(dmScenario, sView);
+SubsetElementInsert(dmScenario,sView, psScenario,1);
+
+
+ViewCreate(cbMeasDet,sView);
+ViewSubsetAssign(cbMeasDet, sView, dmHLyear, sView);
+ViewSubsetAssign(cbMeasDet, sView, dmScenario, sView);
+
+ViewZeroOut(cbMeasDet,sView);
+
+
+###############################################
+ViewDestroy(cbMeasDet, sView);
+SubSetDestroy(dmHLyear, sView);
+SubSetDestroy(dmScenario, sView);
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF( CellIsUpdateable(cbMeasDet,vsHLYear, 'current',vsMeasCode,vsMeas)=1);
+
+IF(vsMeas @= 'used' % vsMeas @= 'sys_current measure counter');
+	CellPutN(1, cbMeasDet,vsHLYear, 'current',vsMeasCode,vsMeas);
+ELSE;
+	CellPutS(vsValue, cbMeasDet,vsHLYear, 'current',vsMeasCode,vsMeas);
+
+ENDIF;
+
+ENDIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+ViewDestroy(cbMeasDet, sView);
+SubSetDestroy(dmHLyear, sView);
+SubSetDestroy(dmScenario, sView);
+#endregion

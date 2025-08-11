@@ -1,0 +1,39 @@
+{
+	"@type":"Process",
+	"Name":"sys_AE Generate ParameterAndED Adj 01 - Create View",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_AE Generate ParameterAndED Adj 01 - Create View.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"Admin",
+			"Type":"String"
+		},
+		{
+			"Name":"psProg",
+			"Prompt":"",
+			"Value":"Departmental Programmes",
+			"Type":"String"
+		},
+		{
+			"Name":"psAdjType",
+			"Prompt":"",
+			"Value":"parameter",
+			"Type":"String"
+		},
+		{
+			"Name":"psCreateAdjByMeasures",
+			"Prompt":"",
+			"Value":"Y",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

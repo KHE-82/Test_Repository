@@ -1,0 +1,252 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Generate Integrated Reporting Extract
+#**** DESCRIPTION:       This process will create a copy of the selected adjustment
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 26/05/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+dmVar = 'variables';
+dmClients = '}Clients';
+
+sObject  = '$AE_PUFExtract';
+sAEView = '$AE_PUFExtract';
+
+sFileLocation = ATTRS(dmVar, 'AE PUF Export Path', 'value');
+sFile = sFileLocation | 'COBRA PUF Extract.csv';
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CREATE SOURCE VIEW ***#
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmOC, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmFunc, sAEView);
+SUBSETDESTROY (dmReason, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmType, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sAEView);
+SubsetElementInsert(dmHLYear, sAEView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sAEView);
+SubsetElementInsert(dmScenario, sAEView, psScenario, 1);
+
+# Status
+SubsetCreate(dmStatus, sAEView);
+SubsetElementInsert(dmStatus, sAEView, 'Total approved', 1);
+
+# Outcome
+SubsetCreate(dmOC, sAEView);
+SubsetElementInsert(dmOC, sAEView, 'Total outcomes', 1);
+
+
+# Related Entity
+SubsetCreate(dmRE, sAEView);
+SubsetElementInsert(dmRE, sAEView, 'Total related entity', 1);
+
+
+# Function
+SubsetCreate(dmFunc, sAEView);
+SubsetElementInsert(dmFunc, sAEView, 'Total functions', 1);
+
+
+# Reason
+SubsetCreate(dmReason, sAEView);
+SubsetElementInsert(dmReason, sAEView, 'Total reason', 1);
+
+# SPP
+SubsetCreate(dmSPP, sAEView);
+SubsetElementInsert(dmSPP, sAEView, 'Total SPP', 1);
+
+# Measure Code
+SubsetCreate(dmMeasCode, sAEView);
+SubsetElementInsert(dmMeasCode, sAEView, 'Total Measures', 1);
+
+# Appropriation Type
+SubsetCreate(dmType, sAEView);
+SubsetElementInsert(dmType, sAEView, 'Total Appropriations', 1);
+
+# Movement Account
+SubsetCreate(dmMA, sAEView);
+SubsetElementInsert(dmMA, sAEView, '7593', 1);
+
+# Appropriation Item
+SubsetCreate(dmItem, sAEView);
+SubsetElementInsert(dmItem, sAEView, 'Total approp item', 1);
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmProg | '].[Administered programmes]}, ALL, RECURSIVE )}, 2)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+SUBSETALIASSET (dmProg, sAEView, 'description');
+
+# Account
+SubsetCreate(dmAcc, sAEView);
+SubsetElementInsert(dmAcc, sAEView, '4100001', 1);
+
+# ID
+SubsetCreate(dmID, sAEView);
+SubsetElementInsert(dmID, sAEView, 'Total IDs', 1);
+
+# Jurisdiction
+SubsetCreate(dmJur, sAEView);
+SubsetElementInsert(dmJur, sAEView, 'Total jurisdictions', 1);
+
+# Period
+sPer02 = SUBST(psHLYear, 3, 9);
+sPer01 = DIMNM(dmPer, DIMIX(dmPer, sPer02) - 1);
+sPer03 = DIMNM(dmPer, DIMIX(dmPer, sPer02) + 1);
+sPer04 = DIMNM(dmPer, DIMIX(dmPer, sPer02) + 2);
+sPer05 = DIMNM(dmPer, DIMIX(dmPer, sPer02) + 3);
+
+SubsetCreate(dmPer, sAEView);
+SubsetElementInsert(dmPer, sAEView, sPer01, 1);
+SubsetElementInsert(dmPer, sAEView, sPer02, 2);
+SubsetElementInsert(dmPer, sAEView, sPer03, 3);
+SubsetElementInsert(dmPer, sAEView, sPer04, 4);
+SubsetElementInsert(dmPer, sAEView, sPer05, 5);
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbAE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmHLYear, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmScenario, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmStatus, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmOC, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmRE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmFunc, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmReason, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmSPP, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMeasCode, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmType, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMA, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmItem, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmProg, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmAcc, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmID, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmJur, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmPer, sAEView);
+
+#*** SET TITLE DIMENSIONS ***#
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmHLYear);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmScenario);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmStatus);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmID);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmStatus);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmReason);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmSPP);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmOC);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmFunc);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmMeasCode);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmType);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmItem);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmAcc);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmMA);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmRE);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmJur);
+
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmProg, 1);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmPer, 2);
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbAE, sAEView, 1);
+ViewSuppressZeroesSet(cbAE, sAEView, 1);
+ViewExtractSkipCalcsSet(cbAE, sAEView, 0);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sAEView;
+
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*** SEND EXTRACT FILE TO LOCATION ***#
+
+     ASCIIOUTPUT ('COBRA PUF Extract.csv', vsProg, vsPer, NUMBERTOSTRING(Value));
+     #ASCIIOUTPUT (sFileLocation | 'COBRA PUF Extract.csv', vsProg, vsPer, NUMBERTOSTRING (Value));
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmOC, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmFunc, sAEView);
+SUBSETDESTROY (dmReason, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmType, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+#endregion

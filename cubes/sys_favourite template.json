@@ -1,0 +1,39 @@
+{
+	"@type":"Cube",
+	"Name":"sys_favourite template",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('favourites_id')"
+		},
+		{
+			"@id":"Dimensions('account')"
+		},
+		{
+			"@id":"Dimensions('movement account')"
+		},
+		{
+			"@id":"Dimensions('jurisdiction')"
+		},
+		{
+			"@id":"Dimensions('related entity')"
+		},
+		{
+			"@id":"Dimensions('spp')"
+		},
+		{
+			"@id":"Dimensions('appropriation item')"
+		},
+		{
+			"@id":"Dimensions('sys_favourite template measure')"
+		}
+	],
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('sys_favourite template measure')"
+	},
+	"Views@Code.links":
+	[
+		"sys_favourite template.views/Default.json"
+	]
+}

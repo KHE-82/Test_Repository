@@ -1,0 +1,21 @@
+{
+	"@type":"Cube",
+	"Name":"sys_account selection entry",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('favourites_id')"
+		},
+		{
+			"@id":"Dimensions('id row')"
+		},
+		{
+			"@id":"Dimensions('account')"
+		},
+		{
+			"@id":"Dimensions('favourites_measure')"
+		}
+	],
+	"Rules@Code.link":"sys_account selection entry.rules",
+	"Views@Code.links":[]
+}

@@ -1,0 +1,53 @@
+{
+	"@type":"Process",
+	"Name":"sys_Dimension Replicate Export",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Dimension Replicate Export.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForClient":"sys_Dimension Replicate",
+		"dataSourceNameForServer":"sys_Dimension Replicate",
+		"view":"Default"
+	},
+	"Parameters":[],
+	"Variables":
+	[
+		{
+			"Name":"vsDatabase",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsDimension",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsMeasure",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsValue",
+			"Type":"String",
+			"Position":4,
+			"StartByte":0,
+			"EndByte":0
+		}
+	]
+}

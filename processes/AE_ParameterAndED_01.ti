@@ -1,0 +1,231 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_ParameterAndED_01
+#**** DESCRIPTION:       This process will create a view for the parameters and efficiency dividend adjustments
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 28/04/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#**** DECLARE AE CUBES & DIMENSIONS ****#
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+cbProg = 'programme details';
+sHLYear = ATTRS ('variables', 'headline year', 'value');
+sScenario = 'current';
+
+dmClients = '}Clients';
+#*** DECLARE SUBSETS AND VIEWS ***#
+IF (psUser @= '');
+     sUser = TM1User();
+ELSE;
+     sUser = psUser;
+ENDIF;
+
+sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+lScan = SCAN('\',sUser) + 1;
+sUser = TRIM(SUBST(sUser, lScan, 100));
+
+#sAEView = sUser | '_$parameters';
+sAEView = '$parameters';
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbAE, sAEView);
+#SUBSETDESTROY (dmHLYear, sAEView);
+#SUBSETDESTROY (dmScenario, sAEView);
+#SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmOC, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmFunc, sAEView);
+SUBSETDESTROY (dmReason, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+#SUBSETDESTROY (dmType, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+#SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+
+#*** JUST DELETE ALL ELEMENTS
+SUBSETDELETEALLELEMENTS (dmHLYear, sAEView);
+SUBSETDELETEALLELEMENTS (dmScenario, sAEView);
+SUBSETDELETEALLELEMENTS (dmStatus, sAEView);
+SUBSETDELETEALLELEMENTS (dmType, sAEView);
+SUBSETDELETEALLELEMENTS (dmProg, sAEView);
+
+
+#****CREATE SUBSETS****#
+# headline year
+#SubsetCreate(dmHLYear, sAEView);
+SubsetElementInsert(dmHLYear, sAEView, sHLYear, 1);
+
+# scenario
+#SubsetCreate(dmScenario, sAEView);
+SubsetElementInsert(dmScenario, sAEView, psAdjType, 1);
+
+# Status
+#SubsetCreate(dmStatus, sAEView);
+SubsetElementInsert(dmStatus, sAEView, 'data', 1);
+
+# Outcome
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmOC | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Function
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmFunc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Reason
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmReason | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Measure Code
+#*** ACTIVATE THESE LINE OF CODES IF YOU WANT TO CREATE PARAMETERS ADJ BY MEASURE CODE ***#
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sAEView, MDX);
+
+#*** ACTIVATE THESE LINE OF CODES IF YOU WANT TO JUST HAVE A CONSOLIDATION OF ALL MEASURES INTO 1 ADJ
+SubsetCreate(dmMeasCode, sAEView);
+SubsetElementInsert(dmMeasCode, sAEView, 'Total Measures', 1);
+
+
+# Appropriation Type
+#SubsetCreate(dmType,sAEView);
+SubsetElementInsert(dmType, sAEView, 'Appropriation Bill 1', 1);
+SubsetElementInsert(dmType, sAEView, 'Special Appropriation', 2);
+SubsetElementInsert(dmType, sAEView, 'Appropriation Bill 1 - Capital Budget (DCB) - - Non Operating', 3);
+
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmType | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Movement Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Appropriation Item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+
+# Programme
+#SubsetCreate(dmProg, sAEView);
+
+lIndex = 1;
+lCounter = 0;
+lDimSize = DIMSIZ(dmProg);
+
+While (lIndex <= lDimSize);
+     sElement = DIMNM(dmProg, lIndex);
+     IF (DTYPE(dmProg, sElement) @= 'N');
+          IF (psAdjType @= 'parameter');
+               sCheckFlag = CELLGETS(cbProg, sHLYear, sScenario, sElement, 'Generate WCI');
+          ELSE;
+               sCheckFlag = CELLGETS(cbProg, sHLYear, sScenario, sElement, 'Generate ED');
+          ENDIF;
+
+#          IF (sCheckFlag @= '' % sCheckFlag @<> 'N');
+          IF (sCheckFlag @= 'Y');
+               lCounter = lCounter + 1;
+               # ADD ALL PROGRAMMES EXCEPT IF THEY SAY NO
+               SubsetElementInsert(dmProg, sAEView, sElement, lCounter);
+          ENDIF;
+     ELSE;
+          # C Levels - Disable do nothing as rule does not allow data entry on C Levels
+     ENDIF;
+     lIndex = lIndex + 1;
+End;
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# ID
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmID | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Period
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}, [' | dmPer | '].[type] = "annual")}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+#****BUILD VIEW****#
+VIEWCREATE (cbAE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmHLYear, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmScenario, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmStatus, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmOC, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmRE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmFunc, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmReason, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmSPP, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMeasCode, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmType, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMA, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmItem, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmProg, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmAcc, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmID, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmJur, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmPer, sAEView);
+
+ViewSuppressZeroesSet (cbAE, sAEView, 1);
+ViewExtractSkipZeroesSet (cbAE, sAEView, 1);
+ViewExtractSkipCalcsSet(cbAE, sAEView, 0);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

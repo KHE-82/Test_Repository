@@ -1,0 +1,51 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              sys_Set Default Headline Year
+#**** DESCRIPTION:       This process creates a view of index data in the recently archived scenario in the index cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 12/05/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+sDim = 'headline year';
+sSubset = 'Default';
+sSubset1 = 'Current';
+sHLYear = ATTRS('variables', 'headline year', 'value');
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+#SubsetDestroy('headline year', sSubset);
+SubsetDeleteAllElements('headline year', sSubset);
+SubsetDeleteAllElements('headline year', sSubset1);
+
+#****CREATE SUBSETS****#
+# headline year
+#SubsetCreate('headline year', sSubset);
+SubsetElementInsert('headline year', sSubset, sHLYear, 1);
+SubsetElementInsert('headline year', sSubset1, sHLYear, 1);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

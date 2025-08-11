@@ -1,0 +1,24 @@
+{
+	"@type":"Hierarchy",
+	"Name":"balance sheet measure",
+	"Elements":
+	[
+		{
+			"Name":"PL and BS output data",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"derivation weightings",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"PL BS and CF input data",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"source movement account",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

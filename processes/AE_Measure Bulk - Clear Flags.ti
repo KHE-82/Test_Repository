@@ -1,0 +1,186 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Measure Bulk - Clear Flags
+#**** DESCRIPTION:        This process will change the status of the selected adjustment
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    KG             Initial Revision
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS
+#******************************************************************************************************************
+cbID = 'AE id detail';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmID = 'id';
+dmIDMeas = 'id measure';
+
+sMeasure = 'bulk processing flag';
+
+#******************************************************************************************************************
+#*** DECLARE GOVERNMENT MEASURES DETAILS
+#******************************************************************************************************************
+cbMeasDet = 'government measures details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmMeasCode = 'measure code';
+dmMeasCodeDet = 'measure details';
+
+#******************************************************************************************************************
+#*** DECLARE BULK PROCESS CUBE
+#******************************************************************************************************************
+cbBulk = 'AE bulk processing';
+
+#******************************************************************************************************************
+#*** DECLARE BULK PROCESS CUBE
+#******************************************************************************************************************
+cbMeasBulk = 'government measures bulk processing';
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED
+#******************************************************************************************************************
+sView = sUser | '_$sysMeasBulkClear';
+
+#******************************************************************************************************************
+#*** STEP 1 - CREATE VIEW AND CLEAR OUT ALL FLAGS
+#******************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbMeasBulk, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmMeasCodeDet, sView);
+
+#******************************************************************************************************************
+#*** CREATE SUBSETS
+#******************************************************************************************************************
+# Client
+SUBSETCREATE (dmClient, sView);
+SUBSETELEMENTINSERT (dmClient, sView, sUser, 1);
+
+# Headline Year
+SUBSETCREATE (dmHLYear, sView);
+SUBSETELEMENTINSERT (dmHLYear, sView, psHLYear, 1);
+
+# Scenario
+SUBSETCREATE (dmScenario, sView);
+SUBSETELEMENTINSERT (dmScenario, sView, psScenario, 1);
+
+# ID
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode |'] )}, 0)}, [' | dmMeasCode |'].[Non-Measure] = "")}';
+
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmMeasCode, sView , MDX);
+
+# Measure Code Details
+SUBSETCREATE (dmMeasCodeDet, sView);
+SUBSETELEMENTINSERT (dmMeasCodeDet, sView, sMeasure, 1);
+
+
+#******************************************************************************************************************
+#*** BUILD VIEW
+#******************************************************************************************************************
+VIEWCREATE (cbMeasBulk, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmClient, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmHLYear, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmScenario, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmMeasCode, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmMeasCodeDet, sView);
+
+#VIEWSETSKIPZEROES (cbMeasBulk, sView, 1);
+#VIEWSETSKIPCALCS (cbMeasBulk, sView, 1);
+
+ViewExtractSkipZeroesSet(cbMeasBulk, sView, 1);
+ViewSuppressZeroesSet(cbMeasBulk, sView, 1);
+ViewExtractSkipCalcsSet(cbMeasBulk, sView, 1);
+
+VIEWZEROOUT (cbMeasBulk, sView);
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbMeasBulk, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmMeasCodeDet, sView);
+
+#******************************************************************************************************************
+#*** CLEAR BULK PROCESS VALIDATION
+#******************************************************************************************************************
+CELLPUTS ('', cbClient, sUser, 'sys_meas bulk process', 'validate');
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

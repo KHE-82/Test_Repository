@@ -1,0 +1,25 @@
+{
+	"@type":"Cube",
+	"Name":"sys_CDM publication extract",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('sys_CDM extract ID')"
+		},
+		{
+			"@id":"Dimensions('sys_CDM row')"
+		},
+		{
+			"@id":"Dimensions('sys_CDM publication extract measure')"
+		}
+	],
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('sys_CDM publication extract measure')"
+	},
+	"Views@Code.links":
+	[
+		"sys_CDM publication extract.views/CDM Summary.json",
+		"sys_CDM publication extract.views/Default.json"
+	]
+}

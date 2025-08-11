@@ -1,0 +1,45 @@
+{
+	"@type":"Process",
+	"Name":"sys_Export Group Data",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Export Group Data.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForClient":"}ClientGroups",
+		"dataSourceNameForServer":"}ClientGroups",
+		"view":"}segd_src"
+	},
+	"Parameters":[],
+	"Variables":
+	[
+		{
+			"Name":"vsClient",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsGroup",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsValue",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		}
+	]
+}

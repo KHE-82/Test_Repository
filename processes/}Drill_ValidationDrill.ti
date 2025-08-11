@@ -1,0 +1,5 @@
+#region Epilog
+#****Begin: Generated Statements***
+ReturnViewHandle('MA Adjustments','Validation001');
+#****End: Generated Statements****
+#endregion

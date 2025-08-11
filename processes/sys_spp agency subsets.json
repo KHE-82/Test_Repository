@@ -1,0 +1,77 @@
+{
+	"@type":"Process",
+	"Name":"sys_spp agency subsets",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_spp agency subsets.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€",
+		"VarType=33€ColType=827€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForClient":"sys_spp agency mapping",
+		"dataSourceNameForServer":"sys_spp agency mapping",
+		"view":"Admin_$AccTempSubset01"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"Admin",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vsHLYear",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsScenario",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsSpp",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsAg",
+			"Type":"String",
+			"Position":4,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsMeas",
+			"Type":"String",
+			"Position":5,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vnValue",
+			"Type":"Numeric",
+			"Position":6,
+			"StartByte":0,
+			"EndByte":0
+		}
+	]
+}

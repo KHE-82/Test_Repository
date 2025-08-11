@@ -1,0 +1,618 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Measure Change Code 02 - Validate
+#**** DESCRIPTION:       This process validates the data entered by the user
+#****			
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 10/09/2015    KG             Initial Revision
+#**** 2020	KG	  Added status for NEW GEUS
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+
+#******************************************************************************************************************
+#*** DECLARE GOVERNMENT MEASURES DETAILS CUBE DIMENSIONS
+#******************************************************************************************************************
+cbMeas = 'government measures details';
+dmGovtMeas = 'measure details';
+
+dmMeasType = 'measure type';
+dmMeasFundType = 'measure fund type';
+
+
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS CUBE DIMENSIONS
+#******************************************************************************************************************
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+dmCtrlType = 'control type';
+dmFavID = 'favourites_id';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sNoMeasCode = ATTRS(dmVar, 'No Measure Code', 'value');
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** VARIABLES USED 
+#******************************************************************************************************************
+sStatus = 'unauthorised';
+sAdjType = 'Manual';
+
+#*****************************************************************************************************************************************************
+#**** STEP 1 - VALIDATE CURRENT DATA ENTRY 
+#******************************************************************************************************************
+#*** VALIDATION CHECK RESETS
+#*** These validation checks are set to 0, to reset. 
+#*** 0 means valid, Greater than 0, means it is invalid
+#******************************************************************************************************************
+
+sErrCBMSMeasCode = '';
+sErrTitle = '';
+sErrPubTitle = '';
+sErrDesc = '';
+sErrMeasType = '';
+sErrFundLife = '';
+sErrCostingID = '';
+sErrProg = '';
+sErrEndDay = '';
+sErrEndMth = '';
+sErrEndYear = '';
+
+#----------------------------------------------------------------------
+#*** Clear validate rules
+#----------------------------------------------------------------------
+CELLPUTS (sErrCBMSMeasCode, cbClient, sUser, 'meas_CBMS Measure Code', 'validate');
+CELLPUTS (sErrTitle, cbClient, sUser, 'meas_title', 'validate');
+CELLPUTS (sErrPubTitle, cbClient, sUser, 'meas_published title', 'validate');
+CELLPUTS (sErrDesc, cbClient, sUser, 'meas_description', 'validate');
+CELLPUTS (sErrMeasType, cbClient, sUser, 'meas_measure type', 'validate');
+CELLPUTS (sErrFundLife, cbClient, sUser, 'meas_FundLife', 'validate');
+CELLPUTS (sErrCostingID, cbClient, sUser, 'meas_costing ID', 'validate');
+CELLPUTS (sErrProg, cbClient, sUser, 'meas_programme', 'validate');
+CELLPUTS (sErrEndDay, cbClient, sUser, 'meas_end day', 'validate');
+CELLPUTS (sErrEndMth, cbClient, sUser, 'meas_end month', 'validate');
+CELLPUTS (sErrEndYear, cbClient, sUser, 'meas_end year', 'validate');
+
+#----------------------------------------------------------------------
+#*** Reset Validation Counters
+#----------------------------------------------------------------------
+nCBMSMeasCodeValid = 0;
+nTItleValid = 0;
+nPubTItleValid = 0;
+nDescValid = 0;
+nMeasTypeValid = 0;
+nFundLifeValid = 0;
+nProgValid = 0;
+nCostingIDValid = 0;
+nEndDayValid = 0;
+nEndMthValid = 0;
+nEndYearValid = 0;
+
+
+nIDValid = 0;
+
+
+#******************************************************************************************************************
+#*** GET ENTERED DATA 
+#*** GET DATA FROM SYS CLIENT PREFERENCE CUBE
+#******************************************************************************************************************
+#*** OLD VALUES
+sMeasure = 'old value';
+
+sOldActive = CELLGETS (cbClient, sUser, 'meas_active', sMeasure);
+sOldStatus = CELLGETS (cbClient, sUser, 'meas_status', sMeasure);
+sOldTitle = CELLGETS (cbClient, sUser, 'meas_title', sMeasure);
+sOldPubTitle = CELLGETS (cbClient, sUser, 'meas_published title', sMeasure);
+sOldDesc = CELLGETS (cbClient, sUser, 'meas_description', sMeasure);
+
+sOldCBMSMeasCode = CELLGETS (cbClient, sUser, 'meas_CBMS Measure Code', sMeasure);
+sOldMeasType = CELLGETS (cbClient, sUser, 'meas_measure type', sMeasure);
+sOldCostingID = CELLGETS (cbClient, sUser, 'meas_costing ID', sMeasure);
+sOldProg = CELLGETS (cbClient, sUser, 'meas_programme', sMeasure);
+sOldFundLife = CELLGETS (cbClient, sUser, 'meas_fund life', sMeasure);
+
+sOldGovtDec = CELLGETS (cbClient, sUser, 'meas_govt decision', sMeasure);
+sOldDecDay = CELLGETS (cbClient, sUser, 'meas_decision day', sMeasure);
+sOldDecMth = CELLGETS (cbClient, sUser, 'meas_decision month', sMeasure);
+sOldDecYear = CELLGETS (cbClient, sUser, 'meas_decision year', sMeasure);
+
+sOldStartDay = CELLGETS (cbClient, sUser, 'meas_start day', sMeasure);
+sOldStartMth = CELLGETS (cbClient, sUser, 'meas_start month', sMeasure);
+sOldStartYear = CELLGETS (cbClient, sUser, 'meas_start year', sMeasure);
+
+sOldEndDay = CELLGETS (cbClient, sUser, 'meas_end day', sMeasure);
+sOldEndMth = CELLGETS (cbClient, sUser, 'meas_end month', sMeasure);
+sOldEndYear = CELLGETS (cbClient, sUser, 'meas_end year', sMeasure);
+
+sOldNotForPublication = CELLGETS (cbClient, sUser, 'meas_not for publication', sMeasure);
+
+sOldPolicyEntity = CELLGETS (cbClient, sUser, 'meas_policy entity', sMeasure);
+sOldPubRound = CELLGETS (cbClient, sUser, 'meas_publication round', sMeasure);
+sOldPubYear = CELLGETS (cbClient, sUser, 'meas_publication year', sMeasure);
+sOldElectionCommit = CELLGETS (cbClient, sUser, 'meas_election commitment', sMeasure);
+
+#*** CURRENT VALUES
+sMeasure = 'value';
+sActive = CELLGETS (cbClient, sUser, 'meas_active', sMeasure);
+sStatus = CELLGETS (cbClient, sUser, 'meas_status', sMeasure);
+sTitle = CELLGETS (cbClient, sUser, 'meas_title', sMeasure);
+sPubTitle = CELLGETS (cbClient, sUser, 'meas_published title', sMeasure);
+sDesc = CELLGETS (cbClient, sUser, 'meas_description', sMeasure);
+
+sCBMSMeasCode = CELLGETS (cbClient, sUser, 'meas_CBMS Measure Code', sMeasure);
+sMeasType = CELLGETS (cbClient, sUser, 'meas_measure type', sMeasure);
+sCostingID = CELLGETS (cbClient, sUser, 'meas_costing ID', sMeasure);
+sProg = CELLGETS (cbClient, sUser, 'meas_programme', sMeasure);
+sFundLife = CELLGETS (cbClient, sUser, 'meas_fund life', sMeasure);
+
+sGovtDec = CELLGETS (cbClient, sUser, 'meas_govt decision', sMeasure);
+sDecDay = CELLGETS (cbClient, sUser, 'meas_decision day', sMeasure);
+sDecMth = CELLGETS (cbClient, sUser, 'meas_decision month', sMeasure);
+sDecYear = CELLGETS (cbClient, sUser, 'meas_decision year', sMeasure);
+
+sStartDay = CELLGETS (cbClient, sUser, 'meas_start day', sMeasure);
+sStartMth = CELLGETS (cbClient, sUser, 'meas_start month', sMeasure);
+sStartYear = CELLGETS (cbClient, sUser, 'meas_start year', sMeasure);
+
+sEndDay = CELLGETS (cbClient, sUser, 'meas_end day', sMeasure);
+sEndMth = CELLGETS (cbClient, sUser, 'meas_end month', sMeasure);
+sEndYear = CELLGETS (cbClient, sUser, 'meas_end year', sMeasure);
+
+sNotForPublication = CELLGETS (cbClient, sUser, 'meas_not for publication', sMeasure);
+
+sPolicyEntity = CELLGETS (cbClient, sUser, 'meas_policy entity', sMeasure);
+sPubRound = CELLGETS (cbClient, sUser, 'meas_publication round', sMeasure);
+sPubYear = CELLGETS (cbClient, sUser, 'meas_publication year', sMeasure);
+sElectionCommit = CELLGETS (cbClient, sUser, 'meas_election commitment', sMeasure);
+
+
+#******************************************************************************************************************
+#*** MEASURE CODE
+#*** Check if this element exist
+#******************************************************************************************************************
+IF (DIMIX (dmMeasCode, sCBMSMeasCode) = 0);
+	#sErrMeasCode = 'Measure Code selected does not exist';
+	#nMeasCodeValid = nMeasCodeValid + 1;
+ELSE;
+	#---------------------------------------------------------------------------------
+	#--- CHECK IF MEASURE ALREADY EXISTS WITH ANOTHER ELEMENT
+	#---------------------------------------------------------------------------------
+	sUniqueMeasCode = DIMENSIONELEMENTPRINCIPALNAME (dmMeasCode, sCBMSMeasCode);
+	#IF (sUniqueMeasCode @<> sCBMSMeasCode);
+	IF (sUniqueMeasCode @<> psMeasCode);
+		nCBMSMeasCodeValid = nCBMSMeasCodeValid + 1;
+		sErrCBMSMeasCode = 'CBMS Measure Code already exists for ' | sUniqueMeasCode;
+	ENDIF;
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** TITLE
+#*** Title can not be blank or greater than 250 characters
+#******************************************************************************************************************
+IF (sTitle @= '');
+	sErrTitle = 'Title can not be blank';
+	nTitleValid = nTitleValid + 1;
+ELSE;
+	IF (LONG(sTitle) > 250);
+		sErrTitle = 'Please review title as it has more than 250 characters long';
+		nTitleValid = nTitleValid + 1;
+	ENDIF;
+ENDIF;
+
+#******************************************************************************************************************
+#*** DESCRIPTION
+#*** Title can not be blank or greater than 250 characters
+#******************************************************************************************************************
+IF (sDesc @= '');
+	sErrDesc = 'Description can not be blank';
+	nDescValid = nDescValid + 1;
+ELSE;
+
+ENDIF;
+
+
+
+#******************************************************************************************************************
+#*** MEASURE TYPE
+#*** Check if measurel type is valid
+#******************************************************************************************************************
+
+IF (DIMIX (dmMeasType, sMeasType) = 0);
+	sErrMeasType = 'Measure Type selected does not exist';
+	nMeasTypeValid = nMeasTypeValid + 1;
+ENDIF;
+
+#******************************************************************************************************************
+#*** FUNDING LIFE
+#*** Check if fundling life is valid
+#******************************************************************************************************************
+
+IF (DIMIX (dmMeasFundType, sFundLife) = 0);
+	sErrFundLife = 'Measure Funding LIfe selected does not exist';
+	nFundLifeValid = nFundLifeValid + 1;
+ENDIF;
+
+#******************************************************************************************************************
+#*** END DAY
+#*** Check if data exists if funding life is terminating
+#******************************************************************************************************************
+IF (sFundLife @= 'terminating');
+	IF (sEndDay @= '' % sEndMth @= '' % sEndYear @= '');
+		
+		nEndDayValid = nEndDayValid + 1;
+		nEndMthValid = nEndMthValid + 1;
+		nEndYearValid = nEndYearValid + 1;
+
+		sErrEndDay = 'Please enter a valid end date for a terminating measure';
+		sErrEndMth = 'Please enter a valid end date for a terminating measure';
+		sErrEndYear = 'Please enter a valid end date for a terminating measure';
+	ENDIF;
+
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** STEP 02 - PERFORM VALIDATION
+#*** CALCULATE ALL VALIDATIONS
+#******************************************************************************************************************
+
+nIDValid = nCBMSMeasCodeValid + nTItleValid + nDescValid + nMeasTypeValid + nFundLifeValid + nEndDayValid + nEndMthValid + nEndYearValid;
+
+IF (nIDValid > 0);
+
+	#******************************************************************************************************************
+	#*** VALIDATION FAILED
+	#******************************************************************************************************************
+
+	CELLPUTS (sErrCBMSMeasCode, cbClient, sUser, 'meas_CBMS Measure Code', 'validate');
+	CELLPUTS (sErrTitle, cbClient, sUser, 'meas_title', 'validate');
+	CELLPUTS (sErrPubTitle, cbClient, sUser, 'meas_published title', 'validate');
+	CELLPUTS (sErrDesc, cbClient, sUser, 'meas_description', 'validate');
+	CELLPUTS (sErrMeasType, cbClient, sUser, 'meas_measure type', 'validate');
+	CELLPUTS (sErrFundLife, cbClient, sUser, 'meas_FundLife', 'validate');
+	CELLPUTS (sErrCostingID, cbClient, sUser, 'meas_costing ID', 'validate');
+	CELLPUTS (sErrProg, cbClient, sUser, 'meas_programme', 'validate');
+	CELLPUTS (sErrEndDay, cbClient, sUser, 'meas_end day', 'validate');
+	CELLPUTS (sErrEndMth, cbClient, sUser, 'meas_end month', 'validate');
+	CELLPUTS (sErrEndYear, cbClient, sUser, 'meas_end year', 'validate');
+
+
+	#******************************************************************************************************************
+	#*** STOP PROCESS SINCE VALIDATION FAILED
+	#******************************************************************************************************************
+
+	PROCESSQUIT;
+ELSE;
+
+	#******************************************************************************************************************
+	#*** VALIDATION PASSED
+	#*** UPDATE AE ID DETAILS
+	#*** CREATE SOURCE VIEW TO TRANSFER DATA TO NEW COMBINATIONS
+	#******************************************************************************************************************
+
+	#******************************************************************************************************************
+	#*** GET PRINCIPAL ELEMENT NAME FROM PARAMETERS
+	#******************************************************************************************************************
+
+	#******************************************************************************************************************
+	#*** GET PRINCIPAL ELEMENT NAME FROM PARAMETERS
+	#******************************************************************************************************************
+
+	sMeasType = DIMENSIONELEMENTPRINCIPALNAME (dmMeasType, sMeasType);
+	sFundLife = DIMENSIONELEMENTPRINCIPALNAME (dmMeasFundType, sFundLife);
+
+	sProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, sProg);
+	IF (DIMIX (dmProg, sProg) <> 0);
+		sProgDesc = ATTRS (dmProg, sProg, 'code and description');
+	ELSE;
+		sProgDesc = '';
+	ENDIF;
+
+	#******************************************************************************************************************
+	#*** POST METADATA OF ADJUSTMENT IN AE ID DETAIL
+	#******************************************************************************************************************
+	IF (sCBMSMeasCode @= 'TBA' % sCBMSMeasCode @= '');
+		sCBMSMeasCode = 'TBA';
+	ELSE;
+		sCBMSMeasCode = sCBMSMeasCode;
+	ENDIF;
+
+	CELLPUTS (sCBMSMeasCode,  cbMeas, psHLYear, psScenario, psMeasCode, 'CBMS Measure Code');
+
+	CELLPUTS (sTitle, cbMeas, psHLYear, psScenario, psMeasCode, 'measure title');
+	IF (sPubTitle @= '');
+		CELLPUTS (sTitle, cbMeas, psHLYear, psScenario, psMeasCode, 'measure published title');
+	ELSE;
+		CELLPUTS (sPubTitle, cbMeas, psHLYear, psScenario, psMeasCode, 'measure published title');
+	ENDIF;		
+	CELLPUTS (sDesc, cbMeas, psHLYear, psScenario, psMeasCode, 'measure description');
+	CELLPUTS (sMeasType, cbMeas, psHLYear, psScenario, psMeasCode, 'measure type');
+	CELLPUTS (sFundLife, cbMeas, psHLYear, psScenario, psMeasCode, 'funding life');
+	CELLPUTS (sCostingID, cbMeas, psHLYear, psScenario, psMeasCode, 'costing ID');
+	CELLPUTS (sProg, cbMeas, psHLYear, psScenario, psMeasCode, 'related programme code');
+	CELLPUTS (sGovtDec, cbMeas, psHLYear, psScenario, psMeasCode, 'government decision');
+
+	CELLPUTS (sStatus, cbMeas, psHLYear, psScenario, psMeasCode, 'status');
+
+	#-------------------------------------------------------------------------
+	#--- Decision Date
+	#-------------------------------------------------------------------------
+	CELLPUTS (sDecDay, cbMeas, psHLYear, psScenario, psMeasCode, 'sys_decision day');
+	CELLPUTS (sDecMth, cbMeas, psHLYear, psScenario, psMeasCode, 'sys_decision month');
+	CELLPUTS (sDecYear, cbMeas, psHLYear, psScenario, psMeasCode, 'sys_decision year');
+
+	#-------------------------------------------------------------------------
+	#--- Start Date
+	#-------------------------------------------------------------------------
+	CELLPUTS (sStartDay, cbMeas, psHLYear, psScenario, psMeasCode, 'sys_start day');
+	CELLPUTS (sStartMth, cbMeas, psHLYear, psScenario, psMeasCode, 'sys_start month');
+	CELLPUTS (sStartYear, cbMeas, psHLYear, psScenario, psMeasCode, 'sys_start year');
+
+	#-------------------------------------------------------------------------
+	#--- End Date
+	#-------------------------------------------------------------------------
+	CELLPUTS (sEndDay, cbMeas, psHLYear, psScenario, psMeasCode, 'sys_end day');
+	CELLPUTS (sEndMth, cbMeas, psHLYear, psScenario, psMeasCode, 'sys_end month');
+	CELLPUTS (sEndYear, cbMeas, psHLYear, psScenario, psMeasCode, 'sys_end year');
+
+	#-------------------------------------------------------------------------
+	#--- End Terminating/Termination Year
+	#-------------------------------------------------------------------------
+	IF (sFundLife @= 'terminating' & sEndYear @<> ''); 
+
+		#------------------------------------------------------------------------------------------
+		#--- System Terminating Year (1 Year forward after end year)
+		#------------------------------------------------------------------------------------------
+		nTerminatingYear = STRINGTONUMBER (sEndYear) + 1;
+		sTerminatingYear = NUMBERTOSTRING (nTerminatingYear);
+		sTerminatingYear = sEndYear | '-' | sTerminatingYear;
+
+		CELLPUTS (sTerminatingYear, cbMeas, psHLYear, psScenario, psMeasCode, 'sys_terminating year');
+
+		#------------------------------------------------------------------------------------------
+		#--- System DisplayTerminating Year (1 Year before end year)
+		#------------------------------------------------------------------------------------------
+		nDisplayTerminatingYear = STRINGTONUMBER (sEndYear) - 1;
+		sDisplayTerminatingYear = NUMBERTOSTRING (nDisplayTerminatingYear);
+		sDisplayTerminatingYear = sDisplayTerminatingYear | '-' | sEndYear;
+
+		IF (CELLISUPDATEABLE (cbMeas, psHLYear, psScenario, psMeasCode, 'sys_display terminating year') = 1);
+			CELLPUTS (sDisplayTerminatingYear, cbMeas, psHLYear, psScenario, psMeasCode, 'sys_display terminating year');
+		ENDIF;
+
+	ENDIF;
+
+	#----------------------------------------------------------------------------
+	#--- ADDITIONAL MEASURES
+	#----------------------------------------------------------------------------
+	CELLPUTS (sNotForPublication, cbMeas, psHLYear, psScenario, psMeasCode, 'not for publication');
+	CELLPUTS (sPolicyEntity, cbMeas, psHLYear, psScenario, psMeasCode, 'policy entity');
+	CELLPUTS (sPubRound, cbMeas, psHLYear, psScenario, psMeasCode, 'publication round');
+	CELLPUTS (sPubYear, cbMeas, psHLYear, psScenario, psMeasCode, 'publication year');
+	CELLPUTS (sElectionCommit, cbMeas, psHLYear, psScenario, psMeasCode, 'election commitment');
+
+	#-------------------------------------------------------------------------
+	#--- UPDATE MEASURE CODE ATTRIBUTES
+	#-------------------------------------------------------------------------
+	ATTRPUTS (sTitle, dmMeasCode, psMeasCode, 'title');
+	ATTRPUTS (sActive, dmMeasCode, psMeasCode, 'Active');
+	ATTRPUTS(sFundLife, dmMeasCode, psMeasCode, 'Funding Life');
+
+	IF (sCBMSMeasCode @= 'TBA' % sCBMSMeasCode @= '');
+		ATTRPUTS ('', dmMeasCode, psMeasCode, 'CBMS');
+	ELSE;
+		ATTRPUTS (sCBMSMeasCode, dmMeasCode, psMeasCode, 'CBMS');
+	ENDIF;
+
+	ATTRPUTS (sTerminatingYear, dmMeasCode, psMeasCode, 'Termination Year');
+	#ATTRPUTS (sTerminatingYear, dmMeasCode, psMeasCode, 'Terminating Year');
+
+
+	#-------------------------------------------------------------------------
+	#--- UPDATE CLIENT PREFERENCE
+	#-------------------------------------------------------------------------
+	CELLPUTS (psHLYear, cbClient, sUser, 'geus hlyear', 'value');
+	CELLPUTS (psScenario, cbClient, sUser, 'geus scenario', 'value');
+	CELLPUTS (psMeasCode, cbClient, sUser, 'geus measure code', 'value');
+
+
+ENDIF;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#******************************************************************************************************************
+#*** NOW POPULATE OLD VALUE FOR CLIENT PREFERENCE USING NEW VALUES
+#*** TO ENSURE VALIDATION IS CHECKED AGAIN IF USER DOES NOT LEAVE SCREEN
+#******************************************************************************************************************
+
+IF (nIDValid = 0);
+
+	#******************************************************************************************************************
+	#*** GET ENTERED DATA 
+	#*** GET DATA FROM SYS CLIENT PREFERENCE CUBE
+	#******************************************************************************************************************
+	#*** OLD VALUES
+	sMeasure = 'old value';
+	sOldStatus = CELLGETS (cbClient, sUser, 'meas_status', sMeasure);
+	sOldTitle = CELLGETS (cbClient, sUser, 'meas_title', sMeasure);
+	sOldPubTitle = CELLGETS (cbClient, sUser, 'meas_published title', sMeasure);
+	sOldDesc = CELLGETS (cbClient, sUser, 'meas_description', sMeasure);
+
+	sOldCBMSMeasCode = CELLGETS (cbClient, sUser, 'meas_CBMS Measure Code', sMeasure);
+	sOldMeasType = CELLGETS (cbClient, sUser, 'meas_measure type', sMeasure);
+	sOldCostingID = CELLGETS (cbClient, sUser, 'meas_costing ID', sMeasure);
+	sOldProg = CELLGETS (cbClient, sUser, 'meas_programme', sMeasure);
+	sOldFundLife = CELLGETS (cbClient, sUser, 'meas_fund life', sMeasure);
+
+	sOldGovtDec = CELLGETS (cbClient, sUser, 'meas_govt decision', sMeasure);
+	sOldDecDay = CELLGETS (cbClient, sUser, 'meas_decision day', sMeasure);
+	sOldDecMth = CELLGETS (cbClient, sUser, 'meas_decision month', sMeasure);
+	sOldDecYear = CELLGETS (cbClient, sUser, 'meas_decision year', sMeasure);
+
+	sOldStartDay = CELLGETS (cbClient, sUser, 'meas_start day', sMeasure);
+	sOldStartMth = CELLGETS (cbClient, sUser, 'meas_start month', sMeasure);
+	sOldStartYear = CELLGETS (cbClient, sUser, 'meas_start year', sMeasure);
+
+	sOldEndDay = CELLGETS (cbClient, sUser, 'meas_end day', sMeasure);
+	sOldEndMth = CELLGETS (cbClient, sUser, 'meas_end month', sMeasure);
+	sOldEndYear = CELLGETS (cbClient, sUser, 'meas_end year', sMeasure);
+
+	sOldNotForPublication = CELLGETS (cbClient, sUser, 'meas_not for publication', sMeasure);
+
+
+
+	#*** CURRENT VALUES
+	sMeasure = 'value';
+	sStatus = CELLGETS (cbClient, sUser, 'meas_status', sMeasure);
+	sTitle = CELLGETS (cbClient, sUser, 'meas_title', sMeasure);
+	sPubTitle = CELLGETS (cbClient, sUser, 'meas_published title', sMeasure);
+	sDesc = CELLGETS (cbClient, sUser, 'meas_description', sMeasure);
+
+	sCBMSMeasCode = CELLGETS (cbClient, sUser, 'meas_CBMS Measure Code', sMeasure);
+	sMeasType = CELLGETS (cbClient, sUser, 'meas_measure type', sMeasure);
+	sCostingID = CELLGETS (cbClient, sUser, 'meas_costing ID', sMeasure);
+	sProg = CELLGETS (cbClient, sUser, 'meas_programme', sMeasure);
+	sFundLife = CELLGETS (cbClient, sUser, 'meas_fund life', sMeasure);
+
+	sGovtDec = CELLGETS (cbClient, sUser, 'meas_govt decision', sMeasure);
+	sDecDay = CELLGETS (cbClient, sUser, 'meas_decision day', sMeasure);
+	sDecMth = CELLGETS (cbClient, sUser, 'meas_decision month', sMeasure);
+	sDecYear = CELLGETS (cbClient, sUser, 'meas_decision year', sMeasure);
+
+	sStartDay = CELLGETS (cbClient, sUser, 'meas_start day', sMeasure);
+	sStartMth = CELLGETS (cbClient, sUser, 'meas_start month', sMeasure);
+	sStartYear = CELLGETS (cbClient, sUser, 'meas_start year', sMeasure);
+
+	sEndDay = CELLGETS (cbClient, sUser, 'meas_end day', sMeasure);
+	sEndMth = CELLGETS (cbClient, sUser, 'meas_end month', sMeasure);
+	sEndYear = CELLGETS (cbClient, sUser, 'meas_end year', sMeasure);
+
+	sNotForPublication = CELLGETS (cbClient, sUser, 'meas_not for publication', sMeasure);
+
+
+	#******************************************************************************************************************
+	#*** NOW POPULATE OLD VALUE FOR CLIENT PREFERENCE USING NEW VALUES
+	#*** TO ENSURE VALIDATION IS CHECKED AGAIN IF USER DOES NOT LEAVE SCREEN
+	#******************************************************************************************************************
+	sMeasure = 'old value';
+
+	CELLPUTS (sStatus, cbClient, sUser, 'meas_status', sMeasure);
+	CELLPUTS (sTitle, cbClient, sUser, 'meas_title', sMeasure);
+	CELLPUTS (sPubTitle, cbClient, sUser, 'meas_published title', sMeasure);
+	CELLPUTS (sDesc, cbClient, sUser, 'meas_description', sMeasure);
+
+	CELLPUTS (sCBMSMeasCode, cbClient, sUser, 'meas_CBMS Measure Code', sMeasure);
+	CELLPUTS (sMeasType, cbClient, sUser, 'meas_measure type', sMeasure);
+	CELLPUTS (sCostingID, cbClient, sUser, 'meas_costing ID', sMeasure);
+	CELLPUTS (sProg, cbClient, sUser, 'meas_programme', sMeasure);
+	CELLPUTS (sFundLife, cbClient, sUser, 'meas_fund life', sMeasure);
+
+	CELLPUTS (sGovtDec, cbClient, sUser, 'meas_govt decision', sMeasure);
+	CELLPUTS (sDecDay, cbClient, sUser, 'meas_decision day', sMeasure);
+	CELLPUTS (sDecMth, cbClient, sUser, 'meas_decision month', sMeasure);
+	CELLPUTS (sDecYear, cbClient, sUser, 'meas_decision year', sMeasure);
+
+	CELLPUTS (sStartDay, cbClient, sUser, 'meas_start day', sMeasure);
+	CELLPUTS (sStartMth, cbClient, sUser, 'meas_start month', sMeasure);
+	CELLPUTS (sStartYear, cbClient, sUser, 'meas_start year', sMeasure);
+
+	CELLPUTS (sEndDay, cbClient, sUser, 'meas_end day', sMeasure);
+	CELLPUTS (sEndMth, cbClient, sUser, 'meas_end month', sMeasure);
+	CELLPUTS (sEndYear, cbClient, sUser, 'meas_end year', sMeasure);
+
+	CELLPUTS (sNotForPublication, cbClient, sUser, 'meas_not for publication', sMeasure);
+
+
+
+ENDIF;
+#endregion

@@ -1,0 +1,582 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:              sys_ME Setup - Load MA CBMS Data
+#**** DESCRIPTION:       This process will load a CBMS Upload file into GEUS MA 
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 13/06/2014    KG             Initial Revision
+#**** 08/08/2017	KG	Converting this process from AE_CBMS Reconciliations to AE_Load_AE_CBMSR Reconciliation
+#**** 26/11/2019	KG	Made changes to loading movements and using original file without any manipulation
+#***********************************************************************************************************************
+
+snProg = 'programme';
+
+#*** DECLARE CUBES AND DIMENSIONS***#
+sCube = 'ME Reporting';
+sView = '$RECO';
+sSubset = sView;
+
+cbProg = snProg | ' details';
+dmProg = snProg;
+
+#*** DECLARE AE ADJUSTMENTS DIMENSIONS ***#
+
+dmHLYear = 'headline year';
+dmScenario= 'scenario';
+dmRE = 'related entity';
+dmSPP = 'spp';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'Jurisdiction';
+dmPer= 'Period';
+dmMEMeas = sCube | ' measure';
+
+#*** DECLARE SYSTEM VARIABLES
+dmVar = 'variables';
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+#sImpFilePath = ATTRS(dmVar, 'sys_ImpFileExceptionLogs', ' value');
+sImpFilePath ='';
+sScenario = 'Actual';
+sStatus = 'data';
+sReason = 'Other variations not elsewhere defined';
+sID = '0000A';
+sMEMeas = ' Value';
+
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (sCube, sView);
+nDim = CubeDimensionCountGet(sCube);
+nCounter = 1;
+
+While(nCounter <= nDim);
+	sDim = TABDIM(sCube, nCounter);
+	SUBSETDESTROY (sDim, sView);
+	nCounter = nCounter +1;
+End;
+
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, psScenario, 1);
+
+# RE
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# MA
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Programme
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Approp Item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# ID
+SubsetCreate(dmID, sSubset);
+SubsetElementInsert(dmID, sSubset, sID, 1);
+
+# Jur
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Period
+SubsetCreate(dmPer, sSubset);
+SubsetElementInsert(dmPer, sSubset, psPer, 1);
+
+# ME Reporting Measure
+SubsetCreate(dmMEMeas, sSubset);
+SubsetElementInsert(dmMEMeas, sSubset, sMEMeas, 1);
+
+
+
+#****BUILD VIEW****#
+ViewCreate(sCube, sView);
+
+nDim = CubeDimensionCountGet(sCube);
+nCounter = 1;
+
+While(nCounter <= nDim);
+	sDim = TABDIM(sCube, nCounter);
+	VIEWSUBSETASSIGN (sCube, sView, sDim, sView);
+	nCounter = nCounter +1;
+End;
+
+
+ViewExtractSkipZeroesSet(sCube, sView, 1);
+ViewSuppressZeroesSet(sCube, sView, 1);
+ViewExtractSkipCalcsSet(sCube, sView, 1);
+
+
+ViewZeroOut(sCube, sView);
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+
+
+ViewDestroy(sCube, sView);
+
+nDim = CubeDimensionCountGet(sCube);
+nCounter = 1;
+
+While(nCounter <= nDim);
+	sDim = TABDIM(sCube, nCounter);
+	SUBSETDESTROY (sDim, sView);
+	nCounter = nCounter +1;
+End;
+
+
+
+
+#*** FILE VALIDATION FLAG VARIABLES
+nLine = 1;
+nValid = 0;
+nTotalValid = 0;
+
+#*** SET IMPORT FILE STATUS BACK TO PASS ***#
+#ATTRPUTS ('PASS', dmVar, 'sys_ImpFileValidation', 'value');
+
+#DATASOURCENAMEFORSERVER = psFile;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#itemSkip;
+
+
+#-------------------------------------------------------------------------------
+#---- Skip cash flow - loaded cashflow
+#-------------------------------------------------------------------------------
+IF (vsValueType @= 'Loaded Cashflow');
+	ITEMSKIP;
+ENDIF;
+
+
+#-------------------------------------------------------------------------------
+#--- Skip Certain Accounts
+#-------------------------------------------------------------------------------
+IF (vsAcc @= '3322001' % vsAcc @= '3322002');
+     ItemSkip;
+ENDIF;
+
+
+IF (ELISANC (dmAcc, '9000130', vsAcc) <> 1 & ELISANC (dmAcc, '3800001', vsAcc) <> 1 & ELISANC (dmAcc, '9000850', vsAcc) <> 1);
+	ITEMSKIP;
+ENDIF;
+
+#-------------------------------------------------------------------------------
+#--- Find account codes if it has the word (Annual Only)
+#-------------------------------------------------------------------------------
+sAccDesc = ATTRS (dmAcc, vsAcc, 'description');
+nSCAN = SCAN('Annual Only', sAccDesc);
+IF (nSCAN > 0);
+	ITEMSKIP;
+ENDIF;
+
+
+
+#*** PERFORM A VALIDATION TEST ***#
+nProgValid = 0;
+nMAValid = 0;
+nAccValid = 0;
+nItemValid = 0;
+nREValid  = 0;
+nSPPValid = 0;
+nJurValid=0;
+
+
+
+#*************************************************************************************************************************************#
+#**** DEFAULT ACCOUNTS ****#
+
+# Get movement account element
+IF (vsMA @= '');
+     sMA = '-';
+ELSE;
+     sMA = vsMA;
+ENDIF;
+
+# Get related entity element
+IF (vsRE @= '');
+      sRE = '-';
+ELSE;
+      sRE = vsRE;
+ENDIF;
+
+# Get SPP element
+IF (vsSPP @= '');
+     sSPP = '-';
+ELSE;
+     sSPP = vsSPP;
+ENDIF;
+
+# Get jurisdiction element
+IF (vsJur @= '');
+     sJur = '-';
+ELSE;
+     sJur = vsJur;
+ENDIF;
+
+# Get appropiration item element
+IF (vsItem @= '');
+     sItem = '-';
+ELSE;
+     sItem = vsItem;
+ENDIF;
+
+
+#*************************************************************************************************************************************#
+#**** VALIDATION CHECKS ****#
+#*************************************************************************************************************************************#
+
+#*** Check Programme
+IF (DIMIX (dmProg, vsProg) = 0);
+     nProgValid = nProgValid + 1;
+ENDIF;
+
+
+#*** Check MA
+IF (DIMIX (dmMA, sMA) = 0);
+     nMAValid = nMAValid + 1;
+ENDIF;
+
+#*** Check Account
+IF (DIMIX (dmAcc, vsAcc) = 0);
+     nAccValid = nAccValid + 1;
+ENDIF;
+
+#* Check Appropriation Item elemnent
+IF (DIMIX (dmItem, sItem) = 0);
+     nItemValid = nItemValid + 1;
+ENDIF;
+
+#*** Check Related Entity
+IF (DIMIX (dmRE, sRE) = 0);
+     nREValid = nREValid + 1;
+ENDIF;
+
+#*** Check SPP
+IF (DIMIX (dmSPP, sSPP) = 0);
+     nSPPValid = nSPPValid + 1;
+ENDIF;
+
+#*** Check Jur
+IF (DIMIX (dmJur, sJur) = 0);
+     nJurValid = nJurValid + 1;
+ENDIF;
+
+
+
+
+#*************************************************************************************************************************************#
+#**** VALIDATION CHECKS ****#
+
+nValid = nProgValid +  nMAValid + nAccValid + nItemValid + nREValid + nSPPValid + nJurValid;
+nTotalValid = nTotalValid + nValid;
+
+IF (nValid > 0);
+     IF (nProgValid > 0);
+          ASCIIOUTPUT (sImpFilePath | ' cbms upload extract failed.csv', 'Programme Code error on line ', NUMBERTOSTRING(nLine), vsProg);
+     ENDIF;
+
+     IF (nMAValid > 0);
+          ASCIIOUTPUT (sImpFilePath | ' cbms upload extract failed.csv', 'Movement Account Code error on line ', NUMBERTOSTRING(nLine), sMA);
+     ENDIF;
+
+     IF (nAccValid > 0);
+          ASCIIOUTPUT (sImpFilePath | ' cbms upload extract failed.csv', 'Account Code error on line ', NUMBERTOSTRING(nLine), vsAcc);
+     ENDIF;
+
+     IF (nItemValid > 0);
+          ASCIIOUTPUT (sImpFilePath | ' cbms upload extract failed.csv', 'Appropriation Item error on line ', NUMBERTOSTRING(nLine), sItem);
+     ENDIF;
+
+     IF (nREValid > 0);
+          ASCIIOUTPUT (sImpFilePath | ' cbms upload extract failed.csv', 'Related Entity error on line ', NUMBERTOSTRING(nLine), sRE);
+     ENDIF;
+
+     IF (nSPPValid > 0);
+          ASCIIOUTPUT (sImpFilePath | ' cbms upload extract failed.csv', 'SPP error on line ', NUMBERTOSTRING(nLine), sSPP);
+     ENDIF;
+
+     IF (nJurValid > 0);
+          ASCIIOUTPUT (sImpFilePath | ' cbms upload extract failed.csv', 'Jurisdiction Code error on line ', NUMBERTOSTRING(nLine), sJur);
+     ENDIF;
+
+
+ENDIF;
+
+     nLine = nLine + 1;
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#-------------------------------------------------------------------------------
+#---- Convert vsValue to NUMERIC (vnValue)
+#-------------------------------------------------------------------------------
+vnValue = STRINGTONUMBER (vsValue);
+
+
+#-------------------------------------------------------------------------------
+#---- Skip cash flow - loaded cashflow
+#-------------------------------------------------------------------------------
+IF (vsValueType @= 'Loaded Cashflow');
+	ITEMSKIP;
+ENDIF;
+
+
+#-------------------------------------------------------------------------------
+#--- Skip Non Actuals Reason Codes
+#-------------------------------------------------------------------------------
+
+#**** SKIP LINE IF DIMENSIONS ARENT VALID ***#
+IF (nTotalValid > 0);
+     ATTRPUTS ('FAIL', dmVar, 'sys_ImpFileValidation', 'value');
+     ITEMSKIP;
+#     PROCESSQUIT;
+ENDIF;
+
+
+# Account
+IF (vsAcc @= '3322001' % vsAcc @= '3322002');
+     ItemSkip;
+ENDIF;
+
+
+
+IF (ELISANC (dmAcc, '9000130', vsAcc) <> 1 & ELISANC (dmAcc, '3800001', vsAcc) <> 1 & ELISANC (dmAcc, '9000850', vsAcc) <> 1 & ELISANC (dmAcc, '9000003', vsAcc) <> 1);
+	ASCIIOUTPUT ('kg1.txt', psHLYear, psScenario, vsRE, vsFunc, vsSPP, vsAcc, sID, vsJur);
+	ITEMSKIP;
+ENDIF;
+
+#-------------------------------------------------------------------------------
+#--- Find account codes if it has the word (Annual Only)
+#-------------------------------------------------------------------------------
+sAccDesc = ATTRS (dmAcc, vsAcc, 'description');
+nSCAN = SCAN('Annual Only', sAccDesc);
+IF (nSCAN > 0);
+	ASCIIOUTPUT ('kg1.txt', psHLYear, psScenario, vsRE, vsFunc, vsSPP, vsAcc, sID, vsJur);
+	ITEMSKIP;
+ENDIF;
+
+
+
+
+# 01/08/2017 - For now load the cash flow it is only coming through as Derived
+#IF ((SUBST(vsAcc, 1, 1) @= '6') & (sSystemDerived @= 'TRUE'));
+#     ItemSkip;
+#ENDIF;
+
+Period00 = psPer;
+sPriorPer = DIMNM (dmPer, DIMIX (dmPer, psPer) - 1);
+Period00YTD = sPriorPer | '  YTD';
+
+
+
+#********************************************************************************************
+#**** DEFAULT ACCOUNTS ****#
+
+# Get movement account element
+IF (vsMA @= '');
+     sMA = '-';
+ELSE;
+     sMA = vsMA;
+ENDIF;
+
+# Get related entity element
+IF (vsRE @= '');
+     sRE = '-';
+ELSE;
+     sRE = vsRE;
+ENDIF;
+
+# Get SPP element
+IF (vsSPP @= '');
+     sSPP = '-';
+ELSE;
+     sSPP = vsSPP;
+ENDIF;
+
+# Get jurisdiction element
+IF (vsJur @= '');
+     sJur = '-';
+ELSE;
+     sJur = vsJur;
+ENDIF;
+
+
+# Get programme element (deliberately at this position rather than at the beginning with the other elements)
+sNewProg = vsProg;
+sElType = DTYPE(dmProg, sNewProg);
+WHILE (sElType @= 'C');
+	sNewProg = ELCOMP(dmProg, sNewProg, 1);
+	sElType = DTYPE(dmProg, sNewProg);
+END;
+
+#* Get Appropriation Item elemnent
+IF (vsItem @= '');
+     sItem = '-';
+ELSE;
+     sItem = vsItem;
+ENDIF;
+
+IF (sItem @= '-');
+	sType = CELLGETS (cbProg, curHLYear, curScenario, sNewProg, 'appropriation type');
+
+	IF (sType @= '');
+		sNewType = 'A010';
+		sNewItem = 'A010-00014-01436';
+	ELSE;
+		sNewType = sType;
+		sNewItem = CELLGETS(cbProg, curHLYear, curScenario, sNewProg, 'appropriation item');
+	ENDIF;
+ELSE;
+	sNewType = SUBST(sItem, 1,4);
+	sNewItem = sItem;
+ENDIF;
+
+
+#****************************************************************************************************************************
+#--- NEW UPDATE TO ENSURE EVERYTHING GOES TO - FOR NON APPROPRIATION LINES
+#****************************************************************************************************************************
+sAcctAppnReqQM = '';
+sMvtAcctAppnReqQM = '';
+
+
+sMACheck = ATTRS(dmAcc , vsAcc , 'movement account Required');
+sAcctAppnReqQM = ATTRS(dmAcc , vsAcc , 'Appropriation Type Required');
+sMvtAcctAppnReqQM = ATTRS(dmMA , sMA , 'Appropriation Type Required');
+
+IF (sMACheck @= '');
+	IF(sAcctAppnReqQM @='');
+		sApprnItem = '-';
+	ELSE;
+		sApprnItem = sNewItem;
+	ENDIF;
+
+ELSE;
+	IF (sMvtAcctAppnReqQM @='');
+		sApprnItem = '-';
+	ELSE;
+		sApprnItem = sNewItem;
+	ENDIF;
+ENDIF;
+
+sNewItem = sApprnItem;
+
+
+
+
+#****************************************************************************************************************************
+
+# Convert signage on flat file value
+IF (sMA @= '-');
+     X = ATTRS(dmAcc, vsAcc, 'DR/CR');
+ELSE;
+     X = ATTRS(dmMA, sMA, 'DR/CR');
+ENDIF;
+
+IF (X @= 'CR');
+     iConversion = -1;
+ELSE;
+     iConversion = 1;
+ENDIF;
+
+NP00 = vnValue * iConversion;
+
+#--------------------------------------------------------------------------------------------
+#--- GET TOTAL VALUE
+#--------------------------------------------------------------------------------------------
+
+
+#--------------------------------------------------------------------------------------------
+#--- OPERATING STATEMENT
+#--------------------------------------------------------------------------------------------
+OldP00 = CellGetN(sCube, psHLYear, psScenario, sRE, sSPP,  sMA, sNewProg,sNewItem, vsAcc, sID, sJur, Period00, sMEMeas );
+
+
+nYTD = CellGetN(sCube, psHLYear, psScenario, sRE, sSPP,  sMA, sNewProg,sNewItem, vsAcc, sID, sJur, Period00YTD, sMEMeas );
+nMovement = nP00 - nYTD;
+
+IF ((ELISANC(dmAcc, '9000130', vsAcc) = 1) % (ELISANC(dmAcc, '2332000', vsAcc) = 1) % (ELISANC(dmAcc, '9000003', vsAcc) = 1) %
+	((ATTRS(dmAcc, vsAcc, 'movement account required') @= 'Y') & ((vsMA @<> '7131' ) & (vsMA @<> '7161') & (vsMA @<> '7211'))) %
+	(vsAcc @= '5234201' % vsAcc @= '5234301' % vsAcc @= '5234501' % vsAcc @= '6100001'));
+
+
+	IF (CellisUpdateable(sCube, psHLYear, psScenario, sRE, sSPP,  sMA, sNewProg,sNewItem, vsAcc, sID, sJur, Period00, sMEMeas ) = 1);
+		CellPutN(OldP00 + nP00, sCube, psHLYear, psScenario, sRE, sSPP,  sMA, sNewProg,sNewItem, vsAcc, sID, sJur, Period00, sMEMeas );
+		#ASCIIOUTPUT ('kh.csv',NUMBERTOSTRING (OldP00),NUMBERTOSTRING (NP00), sCube, psHLYear, psScenario, sRE, sSPP,  sMA, sNewProg,sNewItem, vsAcc, sID, sJur, Period00, sMEMeas );
+	ENDIF;
+
+ENDIF;
+
+
+#------------------------------------------------------------------------------------
+# IF movement account is 7131 or 7161 or 7211 or account is 5234101
+#------------------------------------------------------------------------------------
+IF ((vsMA @= '7131') % (vsMA @= '7161') % (vsMA @= '7211') % (vsAcc @= '5234101'));
+
+
+
+ENDIF;
+
+
+#------------------------------------------------------------------------------------
+# IF account is a BS account that doesn't require a movement account (ie all remaining BS accounts)
+#------------------------------------------------------------------------------------
+IF ((ELISANC(dmAcc, '3800001', vsAcc) = 1) & (ATTRS(dmAcc, vsAcc, 'movement account required') @<> 'Y') & (vsAcc @<> '5234101' & 
+	vsAcc @<> '5234201' & vsAcc @<> '5234301' & vsAcc @<> '5234501'));
+
+	OldP00 = CellGetN(sCube, psHLYear, psScenario, sRE, sSPP,  sMA, sNewProg,sNewItem, vsAcc, sID, sJur, Period00, sMEMeas );
+	nYTD = CellGetN(sCube, psHLYear, psScenario, sRE, sSPP,  sMA, sNewProg,sNewItem, vsAcc, sID, sJur, Period00YTD, sMEMeas );
+	nMovement = nP00 - nYTD;
+
+
+	IF (CellisUpdateable(sCube, psHLYear, psScenario, sRE, sSPP,  sMA, sNewProg,sNewItem, vsAcc, sID, sJur, Period00, sMEMeas ) = 1);
+		CellPutN(OldP00 + nMovement, sCube, psHLYear, psScenario, sRE, sSPP,  sMA, sNewProg,sNewItem, vsAcc, sID, sJur, Period00, sMEMeas );
+		#ASCIIOUTPUT ('kh.csv',NUMBERTOSTRING (OldP00),NUMBERTOSTRING (NP00), sCube, psHLYear, psScenario, sRE, sSPP,  sMA, sNewProg,sNewItem, vsAcc, sID, sJur, Period00, sMEMeas );
+	ENDIF;
+
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

@@ -1,0 +1,82 @@
+{
+	"@type":"Subset",
+	"Name":"all-n",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Government decision or measure')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Slippage in budget measure')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Change in interest rates')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Changes in price & wage indices')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Changes in number of unemployment beneficiaries')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('25% of male total AWE commitment')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Changes in foreign exchange rates')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('PDI Changes')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Changes in beneficiary numbers excluding unemployment')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Change in beneficiary composition or average rates')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Other changes in program specific parameters')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Borrowings')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Equity Injections')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Application of efficiency dividend')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Receipts from independent sources')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Movement of administered funds between years')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Self balancing transfers between same year')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Section 32 Transfers')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Eliminations')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Changes/Restatement of Opening Balances')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Competitive neutrality')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Provisional Estimate')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Other')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('27th Period')"
+		},
+		{
+			"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Creation of the New 3rd Forward Year Estimates''')"
+		}
+	]
+}

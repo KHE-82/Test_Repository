@@ -1,0 +1,19 @@
+{
+	"@type":"Cube",
+	"Name":"sys_ae reporting stage",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('reporting stage')"
+		},
+		{
+			"@id":"Dimensions('sys_ae reporting stage measure')"
+		}
+	],
+	"Rules@Code.link":"sys_ae reporting stage.rules",
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('sys_ae reporting stage measure')"
+	},
+	"Views@Code.links":[]
+}

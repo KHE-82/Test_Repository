@@ -1,0 +1,363 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_ME Setup - Transfer Profiles To ID 00001
+#**** DESCRIPTION:       This process creates loads the csv file created from Finance Cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 15/04/2018    KG             Initial Revision
+#**** 23/04/2019	KG	  Made changes to call Load Finance Cube Data
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#--------------------------------------------------------------------------------------------------------------------------
+#*** DIMENSION ATTRIBUTES
+#--------------------------------------------------------------------------------------------------------------------------
+dmReasonAttr = '}ElementAttributes_reason';
+dmAccAttr = '}ElementAttributes_account';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+dmProgMeas = snProg | ' measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE MONTHLY ESTIMATES CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+cbME = 'ME reporting';
+dmMEMeas = 'ME reporting measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE ME MAPPING CUBES
+#---------------------------------------------------------------------------------------------------------------------------
+dmFinCC = 'finance cost centre';
+dmFinGL = 'finance gl code';
+
+cbMECCMap = 'sys_ME cost centre mapping';
+cbMEGLMap = 'sys_ME GL Code mapping';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+cbMEVar = 'sys_ME variable';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sSourcePeriod = CELLGETS (cbMEVar, 'ME_period', 'value');
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+	sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+	lScan = SCAN('\',sUser) + 1;
+	sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+	sUser = TM1User();
+ENDIF;
+
+sMEView = sUser | ' $MELoadProfiles';
+
+
+sStatus = 'Total approved';
+sOC = 'Total outcomes';
+sReason = 'Total reason';
+sFunc = 'Total functions';
+sSPP = 'Total SPP';
+sAppType = 'Total approp types';
+sItem = 'Total approp item';
+sMeasCode = 'Total Measures';
+sID = 'Total IDs';
+sSourceID = '0000A';
+sTargetID = '00001';
+
+sTargetRptMeas = 'value';
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#*** STEP 1 - CALL AND LOAD ALL FILES
+#*** psSourceMeas is the scenario used in the homepage to determine what files to use to load data
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+sProcess = 'sys_ME Setup - Load Finance Cube Data';
+#EXECUTEPROCESS (sProcess, 
+#	'psUser', sUser,
+#	'psSourceHLYear', psSourceHLYear,
+#	'psSourceScenario', psSourceMeas,
+#	'psSourcePeriod', sSourcePeriod,
+#	'psTargetHLYear', psTargetHLYear,
+#	'psTargetScenario', psTargetScenario);
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#*** STEP 2 - CLEAR TARGET CUBE 
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbME, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+SUBSETDESTROY (dmRE, sMEView);
+SUBSETDESTROY (dmSPP, sMEView);
+SUBSETDESTROY (dmMA, sMEView);
+SUBSETDESTROY (dmProg, sMEView);
+SUBSETDESTROY (dmItem, sMEView);
+SUBSETDESTROY (dmAcc, sMEView);
+SUBSETDESTROY (dmID, sMEView);
+SUBSETDESTROY (dmJur, sMEView);
+SUBSETDESTROY (dmPer, sMEView);
+SUBSETDESTROY (dmMEMeas, sMEView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS****#
+#---------------------------------------------------------------------------------------------------------------------------
+# headline year
+SubsetCreate(dmHLYear, sMEView);
+SubsetElementInsert(dmHLYear, sMEView, psTargetHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sMEView);
+SubsetElementInsert(dmScenario, sMEView, psTargetScenario, 1);
+
+# Programme
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmProg | '].[Administered Programmes]}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[2000000]}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+
+# ID
+SubsetCreate(dmID, sMEView);
+SubsetElementInsert(dmID, sMEView, sTargetID, 1);
+
+# Measure
+SubsetCreate(dmMEMeas, sMEView);
+SubsetElementInsert(dmMEMeas, sMEView, sTargetRptMeas, 1);
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbME, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmHLYear, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmScenario, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmID, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmMEMeas, sMEView);
+
+#VIEWZEROOUT (cbME, sMEView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbME, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+SUBSETDESTROY (dmRE, sMEView);
+SUBSETDESTROY (dmSPP, sMEView);
+SUBSETDESTROY (dmMA, sMEView);
+SUBSETDESTROY (dmProg, sMEView);
+SUBSETDESTROY (dmItem, sMEView);
+SUBSETDESTROY (dmAcc, sMEView);
+SUBSETDESTROY (dmID, sMEView);
+SUBSETDESTROY (dmJur, sMEView);
+SUBSETDESTROY (dmPer, sMEView);
+SUBSETDESTROY (dmMEMeas, sMEView);
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#*** STEP 3 - CREATE SOURCE VIEW
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+IF (psSourceMeas @= 'Budget');
+	sSourceMeas = 'finance budget value';
+ELSEIF (psSourceMeas @= 'Actual');
+	sSourceMeas = 'finance actual value';
+ELSE;
+	sSourceMeas = 'finance forecast value';
+ENDIF;
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbME, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+SUBSETDESTROY (dmRE, sMEView);
+SUBSETDESTROY (dmSPP, sMEView);
+SUBSETDESTROY (dmMA, sMEView);
+SUBSETDESTROY (dmProg, sMEView);
+SUBSETDESTROY (dmItem, sMEView);
+SUBSETDESTROY (dmAcc, sMEView);
+SUBSETDESTROY (dmID, sMEView);
+SUBSETDESTROY (dmJur, sMEView);
+SUBSETDESTROY (dmPer, sMEView);
+SUBSETDESTROY (dmMEMeas, sMEView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS****#
+#---------------------------------------------------------------------------------------------------------------------------
+# headline year
+SubsetCreate(dmHLYear, sMEView);
+SubsetElementInsert(dmHLYear, sMEView, psSourceHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sMEView);
+SubsetElementInsert(dmScenario, sMEView, psSourceScenario, 1);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# MA
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+
+
+# Programme
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmProg | '].[Administered Programmes]}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Appropriation Item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+#SubsetCreate(dmItem, sMEView);
+#SubsetElementInsert(dmItem, sMEView, psSourceScenario, 1);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[2000000]}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Jur
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Period
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# ID
+SubsetCreate(dmID, sMEView);
+SubsetElementInsert(dmID, sMEView, sSourceID, 1);
+
+# Measure
+SubsetCreate(dmMEMeas, sMEView);
+SubsetElementInsert(dmMEMeas, sMEView, sSourceMeas, 1);
+
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbME, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmHLYear, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmScenario, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmRE, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmSPP, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmMA, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmProg, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmItem, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmAcc, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmID, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmJur, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmPer, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmMEMeas, sMEView);
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbME, sMEView, 1);
+ViewSuppressZeroesSet(cbME, sMEView, 1);
+ViewExtractSkipCalcsSet(cbME, sMEView, 1);
+ViewExtractSkipRuleValuesSet (cbME, sMEView, 1);
+
+#DATASOURCETYPE = 'VIEW';
+#DATASOURCECUBEVIEW = sMEView;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+sTargetItem = '-';
+
+IF (CELLISUPDATEABLE (cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, sTargetItem, vsAcc, sTargetID, vsJur, vsPer, sTargetRptMeas) =1);
+	ASCIIOUTPUT ('mefile.txt', psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, sTargetItem, vsAcc, sTargetID, vsJur, vsPer, sTargetRptMeas);
+	nOldValue = CELLGETN (cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, sTargetItem, vsAcc, sTargetID, vsJur, vsPer, sTargetRptMeas);
+	CELLPUTN (nOldValue + vnValue, cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, sTargetItem, vsAcc, sTargetID, vsJur, vsPer, sTargetRptMeas);
+ENDIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbME, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+SUBSETDESTROY (dmRE, sMEView);
+SUBSETDESTROY (dmSPP, sMEView);
+SUBSETDESTROY (dmMA, sMEView);
+SUBSETDESTROY (dmProg, sMEView);
+SUBSETDESTROY (dmItem, sMEView);
+SUBSETDESTROY (dmAcc, sMEView);
+SUBSETDESTROY (dmID, sMEView);
+SUBSETDESTROY (dmJur, sMEView);
+SUBSETDESTROY (dmPer, sMEView);
+SUBSETDESTROY (dmMEMeas, sMEView);
+#endregion

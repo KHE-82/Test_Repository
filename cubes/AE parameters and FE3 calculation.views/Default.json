@@ -1,0 +1,226 @@
+{
+	"@type":"NativeView",
+	"Name":"Default",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('AE parameters and FE3 calculation measure')/Hierarchies('AE parameters and FE3 calculation measure')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('AE parameters and FE3 calculation measure')/Hierarchies('AE parameters and FE3 calculation measure')/Elements('original value')"
+					},
+					{
+						"@id":"Dimensions('AE parameters and FE3 calculation measure')/Hierarchies('AE parameters and FE3 calculation measure')/Elements('parameter value')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('period')/Hierarchies('period')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2018-2019')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2019-2020')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2020-2021')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2021-2022')"
+					},
+					{
+						"@id":"Dimensions('period')/Hierarchies('period')/Elements('2022-2023')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('programme')/Hierarchies('programme')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('Administered Programmes')"
+					},
+					{
+						"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('Departmental Programmes')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('account')/Hierarchies('account')"
+				},
+				"Alias":"code and description",
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('1000001')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('2000000')"
+					},
+					{
+						"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('movement account')/Hierarchies('movement account')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('Total movement')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('id')/Hierarchies('id')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('id')/Hierarchies('id')/Elements('Total IDs')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('id')/Hierarchies('id')/Elements('Total IDs')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('measure code')/Hierarchies('measure code')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('Total Measures')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('Total Measures')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('Total approp item')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('Total approp item')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')"
+				},
+				"Alias":"Code and Description",
+				"Expression":"TM1SubsetAll([jurisdiction])"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('Total jurisdictions')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('related entity')/Hierarchies('related entity')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('Total related entity')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('Total related entity')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('spp')/Hierarchies('spp')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('Total SPP')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('Total SPP')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":true,
+	"SuppressEmptyRows":true,
+	"FormatString":"0.#########"
+}

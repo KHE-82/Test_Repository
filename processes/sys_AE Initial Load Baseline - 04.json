@@ -1,0 +1,39 @@
+{
+	"@type":"Process",
+	"Name":"sys_AE Initial Load Baseline - 04",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_AE Initial Load Baseline - 04.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psHLYear",
+			"Prompt":"",
+			"Value":"HL2021-2022",
+			"Type":"String"
+		},
+		{
+			"Name":"psScenario",
+			"Prompt":"",
+			"Value":"CBMS-R FBO",
+			"Type":"String"
+		},
+		{
+			"Name":"psID",
+			"Prompt":"",
+			"Value":"0000A",
+			"Type":"String"
+		},
+		{
+			"Name":"psFirstYear",
+			"Prompt":"",
+			"Value":"2020-2021",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

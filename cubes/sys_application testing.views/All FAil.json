@@ -1,0 +1,110 @@
+{
+	"@type":"NativeView",
+	"Name":"All FAil",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Test Number')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Tested By')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Test Date')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Status')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Fixed By')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Fix Date')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Retest By')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('ReTest Date')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Number of tests')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Passed')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Failed')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Fixed')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('ReTested')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Not Completed')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_application')/Hierarchies('sys_application')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Other Reports - Measure Financials')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Measures - Measure List')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - New Adj 04 - Copy')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Analytical Reports - Validations and Reconciliation')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Admin RDS Mapping - MA Mapping')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Test ID')/Hierarchies('Test ID')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('Test ID')/Hierarchies('Test ID')/Elements('Total IDs')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":[],
+	"SuppressEmptyColumns":false,
+	"SuppressEmptyRows":false,
+	"FormatString":"0.#########"
+}

@@ -1,0 +1,49 @@
+#---------------------------------------------------------------------------------------------------------------------------
+#-- ME PRIMUS VALIDATIONS
+#---------------------------------------------------------------------------------------------------------------------------
+
+# RULE 001 : Total Assets balances with total Liabilities and Equity
+# TEST A - check that Account 4000000 = Account 5000000 - Account 3000000
+['Current',{'Departmental programmes','Administered programmes'},'M001'] = C:
+IF(
+Roundp(DB('ME reporting',!headline year,!scenario,'Total related entity','Total SPP','Total movement',!programme, 'Total approp item', '4000000', !id,'Total jurisdictions',!period, 'value') -
+DB('ME reporting',!headline year,!scenario,'Total related entity','Total SPP','Total movement',!programme, 'Total approp item', '5000000', !id,'Total jurisdictions',!period, 'value') +
+DB('ME reporting',!headline year,!scenario,'Total related entity','Total SPP','Total movement',!programme, 'Total approp item', '3000000', !id,'Total jurisdictions',!period, 'value'),0)=0,
+# TRUEPART A
+0,
+# FALSEPART A - populate with one
+1);
+
+['Current','M001'] = N:
+# TEST A - check that Account 4000000 = Account 5000000 - Account 3000000
+IF(
+Roundp(DB('ME reporting',!headline year,!scenario,'Total related entity','Total SPP','Total movement',!programme, 'Total approp item', '4000000', !id,'Total jurisdictions',!period, 'value') -
+DB('ME reporting',!headline year,!scenario,'Total related entity','Total SPP','Total movement',!programme, 'Total approp item', '5000000', !id,'Total jurisdictions',!period, 'value') +
+DB('ME reporting',!headline year,!scenario,'Total related entity','Total SPP','Total movement',!programme, 'Total approp item', '3000000', !id,'Total jurisdictions',!period, 'value'),0)=0,
+# TRUEPART A
+0,
+# FALSEPART A - populate with one
+1);
+
+# RULE 002 : BUILDING DEPRECIATION MATCH NFA DEPRECIATION
+['Current',{'Departmental programmes','Administered programmes'},'M002'] = C:
+# TEST A - check that Account 2241002 = Account 5311002 (7153/7353)
+IF(
+ROUNDP(DB('ME reporting',!headline year,!scenario,'Total related entity','Total SPP','Total movement',!programme, 'Total approp item', '2240000', !id,'Total jurisdictions',!period, 'value'),0) =
+ROUNDP((DB('ME reporting',!headline year,!scenario,'Total related entity','Total SPP','7153',!programme, 'Total approp item', '5310000', !id,'Total jurisdictions',!period, 'value') +
+DB('ME reporting',!headline year,!scenario,'Total related entity','Total SPP','7353',!programme, 'Total approp item', '5310000', !id,'Total jurisdictions',!period, 'value')),0),
+# TRUEPART A
+0,
+# FALSEPART A - populate with one
+1);
+
+['Current','M002'] = N:
+# TEST A - check that Account 2241002 = Account 5311002 (7153/7353)
+IF(
+ROUNDP(DB('ME reporting',!headline year,!scenario,'Total related entity','Total SPP','Total movement',!programme, 'Total approp item', '2240000', !id,'Total jurisdictions',!period, 'value'),0) =
+ROUNDP((DB('ME reporting',!headline year,!scenario,'Total related entity','Total SPP','7153',!programme, 'Total approp item', '5310000', !id,'Total jurisdictions',!period, 'value') +
+DB('ME reporting',!headline year,!scenario,'Total related entity','Total SPP','7353',!programme, 'Total approp item', '5310000', !id,'Total jurisdictions',!period, 'value')),0),
+# TRUEPART A
+0,
+# FALSEPART A - populate with one
+1);

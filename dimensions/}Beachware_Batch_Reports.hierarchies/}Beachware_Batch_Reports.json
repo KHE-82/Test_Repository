@@ -1,0 +1,20 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}Beachware_Batch_Reports",
+	"Elements":
+	[
+		{
+			"Name":"Batch Name",
+			"Type":"String"
+		},
+		{
+			"Name":"Report Name",
+			"Type":"String"
+		},
+		{
+			"Name":"Sheet Name",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

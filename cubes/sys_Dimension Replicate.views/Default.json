@@ -1,0 +1,1238 @@
+{
+	"@type":"NativeView",
+	"Name":"Default",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_Dimension Replicate Measure')/Hierarchies('sys_Dimension Replicate Measure')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_Dimension Replicate Measure')/Hierarchies('sys_Dimension Replicate Measure')/Elements('Replicate')"
+					},
+					{
+						"@id":"Dimensions('sys_Dimension Replicate Measure')/Hierarchies('sys_Dimension Replicate Measure')/Elements('Attributes')"
+					},
+					{
+						"@id":"Dimensions('sys_Dimension Replicate Measure')/Hierarchies('sys_Dimension Replicate Measure')/Elements('Name')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('account')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('account_bs')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('account_cf')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('account_other')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('account template')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('account template measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('account template record type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('account type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('AE adjustments measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('AE FE3 calculation measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('AE note register measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('AE parameters and FE3 calculation measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('AE reporting measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('appropriation item')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('appropriation type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('balance sheet measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('cash flow measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('Control Type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('favourites_id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('favourites_measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('function')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('group adjustment measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('headline year')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('id measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('id row')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('index')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('index measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('jurisdiction')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('mapping')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('measure code')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('measure details')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('measure fund type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('measure id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('measure type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('ME phasing method')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('ME phasing method measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('ME reporting measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('movement account')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('nominal')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('outcome')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('period')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('programme')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('programme2')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('programme measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('reason')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('register id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('register status')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('related entity')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('reporting stage')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('row id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('scenario')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('spp')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('status')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_account approp mapping measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_account template status display')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_ae reporting stage measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_agency')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_application')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_application measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_application testing measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_cash flow')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_CDM extract ID')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_CDM publication extract measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_CDM row')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_client favourite application measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_client preference')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_client preference measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_Database')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_day')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_Dimension Replicate Measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_extract row id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_favourite mapping measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_favourite template measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_FBO process mapping measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_flatfile measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_flatfile scenario')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_id filter')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_logging measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_mapping measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_ME_extract row id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_ME display')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_ME mapping measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_ME variable')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_ME variable measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_month')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_parameter and FE3 ID')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_period display')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_process administration measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_process measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_process return codes')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_push pumpkin measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_report display')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_report extract measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_report extract type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_set default account measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_spp adjustment measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_spp agency mapping measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_year')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('sys_YesNo')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('Test ID')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('Test object type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('tmp_ID_Khristian')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('tmp_ID_tmp')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('validation id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('variables')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ApplicationEntries')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Beachware')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Beachware_Batch_Report_Items')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Beachware_Batch_Reports')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}BeachwareClients')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}CAMAssociatedGroups')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Chores')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ClientProperties')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Clients')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ClientSettings')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ConnectionProperties')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Connections')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Cube Functions')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}CubeProperties')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Cubes')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}CubeSecurityProperties')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Cultures')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}DimensionFormatAttributes')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}DimensionFormatItems')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}DimensionProperties')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Dimensions')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_account')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_account_bs')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_account_cf')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_account_other')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_account template')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_account template measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_AE note register measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_AE parameters and FE3 calculation measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_appropriation item')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_appropriation type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_cash flow measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_Control Type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_favourites_id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_favourites_measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_function')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_headline year')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_id measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_index measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_jurisdiction')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_measure code')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_measure details')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_ME phasing method')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_ME reporting measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_movement account')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_nominal')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_outcome')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_period')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_programme')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_programme2')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_programme measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_reason')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_related entity')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_reporting stage')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_scenario')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_spp')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_status')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_sys_ae reporting stage measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_sys_agency')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_sys_application')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_sys_application testing measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_sys_CDM extract ID')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_sys_client favourite application measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_sys_client preference')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_sys_process administration measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_sys_process return codes')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_sys_report extract type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_sys_set default account measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_tmp_ID_Khristian')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_tmp_ID_tmp')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_validation id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_variables')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_}Clients')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_}Cultures')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_}Dimensions')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_}ElementAttributes_function')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_}Groups')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_}movement account mapping')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_}Processes')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_}tmp_ID_tmp Admin')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_}tp_config')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementAttributes_}tp_system_config')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}ElementProperties')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Features')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Groups')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_account')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_account_bs')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_account_cf')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_account_other')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_account template')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_account template measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_account template record type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_account type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_AE adjustments measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_AE FE3 calculation measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_AE note register measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_AE parameters and FE3 calculation measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_AE reporting measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_appropriation item')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_appropriation type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_balance sheet measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_cash flow measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_Control Type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_favourites_id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_favourites_measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_function')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_group adjustment measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_headline year')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_id measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_id row')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_index')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_index measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_jurisdiction')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_mapping')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_measure code')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_measure details')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_measure fund type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_measure id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_measure type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_ME phasing method')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_ME phasing method measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_ME reporting measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_movement account')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_nominal')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_outcome')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_period')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_programme')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_programme2')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_programme measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_reason')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_register id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_register status')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_related entity')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_reporting stage')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_row id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_scenario')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_spp')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_status')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_account approp mapping measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_account template status display')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_ae reporting stage measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_agency')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_application')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_application measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_application testing measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_cash flow')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_CDM extract ID')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_CDM publication extract measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_CDM row')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_client favourite application measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_client preference')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_client preference measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_Database')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_day')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_Dimension Replicate Measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_extract row id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_favourite mapping measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_favourite template measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_FBO process mapping measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_flatfile measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_flatfile scenario')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_id filter')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_logging measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_mapping measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_ME_extract row id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_ME display')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_ME mapping measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_ME variable')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_ME variable measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_month')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_parameter and FE3 ID')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_period display')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_process administration measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_process measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_process return codes')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_push pumpkin measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_report display')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_report extract measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_report extract type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_set default account measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_spp adjustment measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_spp agency mapping measure')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_year')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_sys_YesNo')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_Test ID')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_Test object type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_tmp_ID_Khristian')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_tmp_ID_tmp')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_validation id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Hierarchies_variables')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}HierarchyProperties')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}LineNumber')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}movement account mapping')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}PerfClients')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}PerfCubes')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Permissions')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}PickList')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Processes')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}RuleStats')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}SecurityOverlay')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}StatsByProcess')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}StatsStatsByClient')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}StatsStatsByCube')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}StatsStatsByCubeByClient')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}StatsStatsForServer')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_account')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_account template')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_appropriation item')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_appropriation type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_Control Type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_function')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_headline year')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_id')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_jurisdiction')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_measure code')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_movement account')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_outcome')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_period')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_programme')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_reason')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_related entity')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_scenario')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_spp')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_status')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_sys_application')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_Test object type')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_}ElementAttributes_measure code')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_}movement account mapping')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_}tp_applications')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_}tp_permissions')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Subsets_}tp_root_permissions')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}TI_Queue')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}TimeIntervals')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}tmp_ID_tmp Admin')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}tp_app_user_preference')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}tp_applications')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}tp_config')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}tp_intermediate_security_applications')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}tp_intermediate_security_measures')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}tp_job_info')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}tp_jobs')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}tp_node_info')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}tp_permissions')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}tp_process_error_measures')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}tp_process_errors_localization')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}tp_process_guids')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}tp_root_permissions')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}tp_system_config')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}tp_task_navigations')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}tp_workflow_action_TI_measures')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}tp_workflow_actions')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_AE account template')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_AE account template mapping')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_AE adjustments')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_AE cash flow')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_AE cash flow derivation')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_AE group adjustment entry')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_AE id details')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_AE parameters and FE3 calculation')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_AE validations')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_government measures')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_government measures details')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_index')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_ME balance sheet')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_ME phasing method')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_ME validations')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_programme details')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_sys_application')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_sys_application testing')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_sys_CDM publication extract')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_sys_client favourite application')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_sys_client preference')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_sys_favourite mapping')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_sys_favourites')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_sys_favourite template')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_sys_movement account mapping')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_sys_set default account')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_sys_spp agency mapping')"
+					},
+					{
+						"@id":"Dimensions('}Dimensions')/Hierarchies('}Dimensions')/Elements('}Views_}ElementAttributes_measure code')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_Database')/Hierarchies('sys_Database')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_Database')/Hierarchies('sys_Database')/Elements('geus')"
+					},
+					{
+						"@id":"Dimensions('sys_Database')/Hierarchies('sys_Database')/Elements('Import')"
+					},
+					{
+						"@id":"Dimensions('sys_Database')/Hierarchies('sys_Database')/Elements('Costings')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('sys_Database')/Hierarchies('sys_Database')/Elements('Costings')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":true,
+	"SuppressEmptyRows":true,
+	"FormatString":"0.#########"
+}

@@ -1,0 +1,49 @@
+{
+	"@type":"Process",
+	"Name":"sys_export dimension generic",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_export dimension generic.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"VarType=32€ColType=827€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForClient":"programme",
+		"dataSourceNameForServer":"programme",
+		"subset":"All"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psDimName",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psExportFile",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psAttributes",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"sElement",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		}
+	]
+}

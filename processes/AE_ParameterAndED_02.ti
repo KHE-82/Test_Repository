@@ -1,0 +1,253 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_ParameterAndED_02
+#**** DESCRIPTION:       This process will create a view for the parameters and efficiency dividend adjustments
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 28/04/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#**** DECLARE AE CUBES & DIMENSIONS ****#
+snProg = 'programme';
+dmProg = snProg;
+cbAE = 'AE adjustments';
+cbProg = snProg | ' details';
+cbID = 'AE id details';
+sScenario = 'current';
+dmTmpID = 'tmp_ID_tmp';
+sCheckID='';
+
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+cpAdjType = 'Generated';
+
+
+#**** Set the next few variables based on the Adjustment Type parameter ("Parameter" or "Efficiency")
+IF (psAdjType @= 'Parameter');
+      sNewReason = ATTRS ('variables', 'parameter reason code', 'value');
+      sTitle = 'Parameter adjustment';
+      sIDMeasure = 'parameter adjustment generated';
+ELSE;
+      sNewReason = ATTRS ('variables', 'efficiency dividend reason code', 'value');
+      sTitle = 'Efficiency dividend';
+      sIDMeasure = 'efficiency dividend adjustment generated';
+ENDIF;
+
+DatasourceASCIIDecimalSeparator='.';
+DatasourceASCIIThousandSeparator='';
+
+#**** Build a dimension to store IDs so we don't keep getting new ones
+
+IF (DIMENSIONEXISTS (dmTmpID) = 1);
+ DimensionDestroy (dmTmpID);
+ENDIF;
+
+DimensionCreate (dmTmpID);
+AttrInsert (dmTmpID, '', 'ID', 'S');
+
+#*** DECLARE SUBSETS AND VIEWS ***#
+IF (psUser @= '');
+     sUser = TM1User();
+ELSE;
+     sUser = psUser;
+ENDIF;
+
+sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+lScan = SCAN('\',sUser) + 1;
+sUser = TRIM(SUBST(sUser, lScan, 100));
+
+#sAEView = sUser | '_$parameters';
+
+sAEView ='$parameters';
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sAEView;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#** FIND NEXT AVAILABLE ID (IF REQUIRED)
+
+#*** ACTIVATE THESE LINE OF CODES IF YOU WANT TO CREATE PARAMETERS ADJ BY MEASURE CODE ***#
+#sIDProg = vsID|vsProg|vsType|vsFunc|vsMeasCode;
+
+#*** ACTIVATE THESE LINE OF CODES IF YOU WANT TO JUST HAVE A CONSOLIDATION OF ALL MEASURES INTO 1 ADJ
+sIDProg = vsID|vsProg|vsType|vsFunc;
+
+#IF (DIMIX (dmTmpID, vsID | vsProg) = 0);
+#      DIMENSIONELEMENTINSERT (dmTmpID, '', vsID | vsProg, 'N');
+#ENDIF;
+
+
+IF (DIMIX (dmTmpID, sIDProg) = 0);
+    DIMENSIONELEMENTINSERT (dmTmpID, '', sIDProg, 'N');
+ #    lCounter = lCounter + 1;
+ENDIF;
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#**** TEST IF WE NEED TO RUN THIS ONE
+IF (CellGetS (cbID, vsHLYear, curScenario, vsID, sIDMeasure) @= 'Y');
+      ItemSkip;
+ENDIF;
+
+#** FIND NEXT AVAILABLE ID (IF REQUIRED)
+#*** ACTIVATE THESE LINE OF CODES IF YOU WANT TO CREATE PARAMETERS ADJ BY MEASURE CODE ***#
+#sIDProg = vsID|vsProg|vsType|vsFunc|vsMeasCode;
+sPostMeasCode = vsMeasCode;
+
+#*** ACTIVATE THESE LINE OF CODES IF YOU WANT TO JUST HAVE A CONSOLIDATION OF ALL MEASURES INTO 1 ADJ
+sIDProg = vsID|vsProg|vsType|vsFunc;
+sPostMeasCode = 'M00000';
+
+IF(Dimix(dmTmpID,sIDProg)=0);
+     itemskip;
+Endif;
+
+sNewID = ATTRS (dmTmpID, sIDProg, 'ID');
+
+
+#**** TEST IF WE NEED A NEW ID
+IF (sNewID @= '');
+
+     # GET A NEW ID
+      sNewID = '00000' | TRIM(STR(CELLGETN (cbID, curHLYear, curScenario, 'Total IDs', 'Used') + 1, 5, 0));
+      sNewID = SUBST (sNewID, LONG (sNewID) - 4, 5);
+      ATTRPUTS (sNewID, 'tmp_ID_tmp', sIDProg, 'ID');
+
+     #**** GET THE ADJUSTMENT TITLE AND DESCRIPTION (BOTH THE SAME)
+
+     # LOCK IN THE ID
+     CELLPUTN(1,cbID, curHLYear, curScenario, sNewID, 'used');
+
+
+     # POPULATE ID DETAILS CUBE
+     vsProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, vsProg);
+     CellPutS (vsProg, cbID, curHLYear, curScenario, sNewID, snProg | ' code');
+     sProgDesc = ATTRS (dmProg, vsProg, 'code and description');
+     CELLPUTS(sProgDesc, cbID, curHLYear, curScenario, sNewID, snProg | ' description');
+
+     # GET THE INDEXATION FACTOR #
+     sFactor = CELLGETS (cbProg,  curHLYear, curScenario, vsProg, 'parameter');
+     
+     IF (psAdjType @= 'Parameter');
+          sNewTitle = vsProg | ' - ' | sTitle | ' - ' | sFactor;
+     ELSE;
+          sNewTitle = vsProg | ' - ' | sTitle;
+     ENDIF;
+
+     CELLPUTS (sNewTitle, cbID, curHLYear, curScenario, sNewID, 'title');
+     CELLPUTS ('(' | sNewID | ')' | ' ' | sNewTitle, cbID, curHLYear, curScenario, sNewID, 'description');
+
+     CELLPUTS('unauthorised',cbID, curHLYear, curScenario, sNewID, 'status');
+     CELLPUTS(vsID,cbID, curHLYear, curScenario, sNewID, 'ID reference');
+     CELLPUTS(sNewReason,cbID, curHLYear, curScenario, sNewID, 'reason');
+     CELLPUTS(vsOC,cbID, curHLYear, curScenario, sNewID, 'outcome');
+#     CELLPUTS(CellGetS (cbID, curHLYear, curScenario, vsID, 'measure'),cbID, curHLYear, curScenario, sNewID, 'measure');
+#     CELLPUTS(vsMeasCode ,cbID, curHLYear, curScenario, sNewID, 'measure');
+     CELLPUTS(sPostMeasCode ,cbID, curHLYear, curScenario, sNewID, 'measure');
+     CELLPUTS (vsFunc, cbID, curHLYear, curScenario, sNewID, 'function');
+     CELLPUTS (vsSPP, cbID, curHLYear, curScenario, sNewID, 'spp');
+     CELLPUTS (vsItem, cbID, curHLYear, curScenario, sNewID, 'appropriation item');
+     CELLPUTS (vsType, cbID, curHLYear, curScenario, sNewID, 'appropriation type');
+     CELLPUTS ('ongoing', cbID, curHLYear, curScenario, sNewID, 'funding life');
+
+     #*** USER ID ***#
+     sCurUser = TM1User();
+     sCurUser = ATTRS(dmClients, sCurUser, '}TM1_DefaultDisplayValue');
+
+     CELLPUTS (sCurUser, cbID, curHLYear, curScenario, sNewID, 'created by');
+
+     # **** GET DATE VALUES ***#
+     sDNow = TimST( Now, '\D'); 
+     sMNow = TimST( Now, '\m'); 
+     sYNow = TimST( Now, '\Y'); 
+
+     sDay = TRIM(SUBST(sDNow, 1,2));
+
+     IF (LONG (sDay) = 1);
+          sDay = '0' | sDay;
+     ELSE;
+          sDay = sDay;
+     ENDIF;
+
+     sMonth = TRIM(SUBST(sMNow, 1,2));
+
+     IF (LONG (sMonth) = 1);
+          sMonth = '0' | sMonth;
+     ELSE;
+          sMonth = sMonth;
+     ENDIF;
+
+     sYear = TRIM(SUBST(sYNow, 1,4));
+
+     sNow = sDay | '/' | sMonth | '/' | sYear;
+     CELLPUTS(sNow, cbID, curHLYear, curScenario, sNewID, 'created date');
+
+    #******
+
+     cpControlType = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'control type');
+     CELLPUTS(cpControlType, cbID, curHLYear, curScenario, sNewID, 'Control Type');
+
+     CELLPUTS(cpAdjType, cbID, curHLYear, curScenario, sNewID, 'Adjustment Type');
+
+     # MARK THE OLD ID AS PROCESSED
+     CellPutS ('temp', cbID, curHLYear, curScenario, vsID, sIDMeasure);
+
+     # MARK THE NEW ID SO IT DOESN'T GET PROCESSED AGAIN
+     CellPutS ('Y', cbID, curHLYear, curScenario, sNewID, sIDMeasure);
+
+     #**** POPULATE PROGRAMME DETAILS CUBE WITH GENERATED DETAILS ***#
+     IF (psAdjType @= 'Parameter');
+          CELLPUTS (sNow, cbProg, curHLYear, curScenario, vsProg, 'WCI Generated Date');
+          CELLPUTS (sCurUser, cbProg, curHLYear, curScenario, vsProg, 'WCI Generated By');
+     ELSE;
+          CELLPUTS (sNow, cbProg, curHLYear, curScenario, vsProg, 'EC Generated Date');
+          CELLPUTS (sCurUser, cbProg, curHLYear, curScenario, vsProg, 'EC Generated By');
+     ENDIF;
+
+ENDIF;
+
+#**** Insert the row of data
+#IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, vsStatus, vsOC, vsRE, vsFunc, sNewReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sNewID, vsJur, vsPer) = 1);
+IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, vsStatus, vsOC, vsRE, vsFunc, sNewReason, vsSPP, sPostMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sNewID, vsJur, vsPer) = 1);
+
+     IF (SUBST(vsAcc, 1, 1) @<> '6');
+          #*** ONLY ADD ADJUSTMENTS FOR NON-CASH FLOW ACCOUNTS, SET SYSTEM DERIVED ACCOUNTS ***#
+#          CELLPUTN (Value, cbAE, curHLYear, curScenario, vsStatus, vsOC, vsRE, vsFunc, sNewReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sNewID, vsJur, vsPer);
+          CELLPUTN (Value, cbAE, curHLYear, curScenario, vsStatus, vsOC, vsRE, vsFunc, sNewReason, vsSPP, sPostMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sNewID, vsJur, vsPer);
+     ENDIF;
+ENDIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+DimensionDestroy (dmTmpID);
+
+#endregion

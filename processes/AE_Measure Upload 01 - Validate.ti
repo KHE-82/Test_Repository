@@ -1,0 +1,485 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#***************************************************************************************************************************************************
+#***** PROCESS : 			AE_Measure Upload 01 - Validate
+#***** DESCRIPTION:		THIS TI PROCESS IS TO LOAD NEW MEASURES VIA FLATFILE
+#*****				
+#*****
+#***** MODIFICATION HISTORY :	
+#***** 
+#*****
+#***** DATE		INITIALS		COMMENTS
+#***** =====		=======		==========
+#***** 20/06/2014		KG		Updated Version
+#***** 04/01/2016		KG		Updated metadata checks
+#***** 2019		KG		Updated for NEW GEUS
+#***** 2020		KG		Added additional validations and checks
+#************************************************************************************************************************************************* 
+
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#*****************************************************************************
+#*** DECLARE CUBES AND DIMENSIONS***#
+#*****************************************************************************
+cbMeas = 'government measures details';
+cbEAMeasCode = '}ElementAttributes_measure code';
+dmMeasCode = 'measure code';
+dmMeasType = 'measure type';
+dmMeasFundLife = 'measure fund type';
+dmDay = 'sys_day';
+dmMonth = 'sys_month';
+dmYear = 'sys_year';
+dmPeriod = 'period';
+sParent = 'Total Measures';
+
+#*****************************************************************************
+#*** DECLARE SYSTEM VARIABLES
+#*****************************************************************************
+dmVar = 'variables'; 
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+#sImpFilePath = ATTRS(dmVar, 'sys_Costings Import Directory', ' value');
+sFilePath = ATTRS (dmVar, 'sys_upload directory', 'value');
+#sFileName = sFilePath | '\' | psFileName;
+sFileName = sFilePath | psFileName;
+
+sImpFilePath = ATTRS(dmVar, 'sys_ImpFileExceptionLogs', ' value');
+
+sStatus = 'draft';
+
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+ATTRPUTS ('PASS', dmVar, 'sys_ImpFileValidation', 'value');
+
+# **** GET DATE VALUES ***#
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+sHNow = TimST (Now, '\h');
+sMinNow = TimST (Now, '\i');
+sSNow = TimST (Now, '\s');
+ 
+sDay = TRIM(SUBST(sDNow, 1,2));
+ 
+IF (LONG (sDay) = 1);
+	sDay = '0' | sDay;
+ELSE;
+     	sDay = sDay;
+ENDIF;
+ 
+sMonth = TRIM(SUBST(sMNow, 1,2));
+ 
+IF (LONG (sMonth) = 1);
+     	sMonth = '0' | sMonth;
+ELSE;
+     	sMonth = sMonth;
+ENDIF;
+ 
+sYear = TRIM(SUBST(sYNow, 1,4));
+sNow = sYear | sMonth | sDay | sHNow | sMinNow | sSNow ;
+ 
+ 
+sOutputFile = 'geus measure upload file failed' | sUser | ' ' | sNow | '.csv';
+
+#*****************************************************************************
+#***** COUNTERS USED
+#*****************************************************************************
+lHeaderCount = 0;
+nLine = 2;
+nValid = 0;
+nTotalValid = 0;
+
+#*****************************************************************************
+#***** DATASOURCE VARIABLES
+#*****************************************************************************
+DATASOURCENAMEFORSERVER = sFileName;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*****************************************************************************
+#*** PERFORM A VALIDATION TEST ***#
+#*****************************************************************************
+nMeasValid = 0;
+nTitleValid = 0;
+nDescValid = 0;
+nFundLifeValid = 0;
+nEndDayValid = 0;
+nEndMonthValid = 0;
+nEndYearValid = 0;
+nTermYearValid = 0;
+nMeasTypeValid = 0;
+
+sErrMeas = '';
+sErrTitle = '';
+sErrDesc = '';
+sErrFundLife = '';
+sErrEndDay = '';
+sErrEndMonth = '';
+sErrEndYear = '';
+sErrTermYear = '';
+sErrMeasType = '';
+
+#*****************************************************************************
+#**** DEFAULT VALUES
+#*****************************************************************************
+IF (LONG (vsEndDay) = 1);
+	vsEndDay = '0' | vsEndDay;
+ENDIF;
+
+IF (LONG (vsEndMonth) = 1);
+	vsEndMonth = '0' | vsEndMonth;
+ENDIF;
+
+
+
+#*****************************************************************************
+#**** VALIDATION CHECKS 
+#*****************************************************************************
+#--------------------------------------------------------------------------------
+#*** Measure
+#--------------------------------------------------------------------------------
+IF (DIMIX (dmMeasCode, vsCBMSCode) <> 0);
+	sExistMeasCode = DIMENSIONELEMENTPRINCIPALNAME (dmMeasCode, vsCBMSCode);
+	sErrMeas = 'Measure code ' | vsCBMSCode | ' already exist in GEUS against system ID ' | sExistMeasCode | '.';
+	nMeasValid = nMeasValid + 1;
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check Title
+#--------------------------------------------------------------------------------
+IF (vsTitle @= '');
+	sErrTItle = 'Measure title can not be blank';
+	nTitleValid = nTitleValid + 1;
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check Description
+#--------------------------------------------------------------------------------
+IF (vsDesc @= '');
+	sErrDesc = 'Measure description can not be blank';
+	nDescValid = nDescValid + 1;
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check End Day /  End Month / End Year Only if Fundlife is TERMINATING
+#--------------------------------------------------------------------------------
+IF (UPPER(vsFundLife) @= 'TERMINATING');
+	IF (DIMIX (dmDay, vsEndDay) = 0);
+		sErrEndDay = 'End Day is not valid. Please select a vaid Day (DD)';
+		nEndDayValid = nEndDayValid + 1;
+	ENDIF;
+
+	IF (DIMIX (dmMonth, vsEndMonth) = 0);
+		sErrEndMonth = 'End Month is not valid. Please select a valid Month (MM or MMM)';
+		nEndMonthValid = nEndMonthValid + 1;
+	ENDIF;
+
+	IF (DIMIX (dmYear, vsEndYear) = 0);
+		sErrEndYear = 'End Year is not valid. Please select a valid Year (YYYY)';
+		nEndYearValid = nEndYearValid + 1;
+	ENDIF;
+
+	IF (DIMIX (dmPeriod, vsTerminatingYear) = 0);
+		sErrTermYear = 'Terminating Year is not valid. Please select a valid Financial Year (YYYY-YYYY)';
+		nTermYearValid = nTermYearValid + 1;
+	ENDIF;
+
+ENDIF;
+
+
+#--------------------------------------------------------------------------------
+#*** Check Funding LIfe
+#--------------------------------------------------------------------------------
+IF (DIMIX (dmMeasFundLife, vsFundLife) = 0);
+#IF (vsFundLIfe @= '');
+	sErrFundLife = 'Please select a valid Funding Life (ongoing/terminating)';
+	nFundLilfeValid = nFundLifeValid + 1;
+ELSE;
+	IF (UPPER(vsFundLife) @= 'TERMINATING' & (vsEndDay @= '' % vsEndMonth @= '' % vsEndYear @= '' % vsTerminatingYear @= ''));
+		sErrFundLife = 'Please ensure that the end day, end month, end year and terminating year are populated';
+		nFundLifeValid = nFundLifeValid + 1;
+	ENDIF;
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check Measure Type
+#--------------------------------------------------------------------------------
+IF (DIMIX (dmMeasType, vsMeasType) = 0);
+	sErrMeasType = 'Please select a valid Funding Type (Expenses/Revenue/Capital)';
+	nMeasTypeValid = nMeasTypeValid + 1;
+ENDIF;
+
+#**************************************************************************************************************************************#
+#*****************************************************************************
+#**** CALCULATE VALIDATION AND OUTPUTFILES
+#*****************************************************************************
+
+nValid = nMeasValid + nTitleValid + nDescValid + nEndDayValid + nEndMonthValid + nEndYearValid + nTermYearValid + nFundLifeValid + nMeasTypeValid;
+nTotalValid = nTotalValid + nValid;
+
+IF (nValid > 0);
+     
+	#*****************************************************************************
+     	#*** PUT A HEADER ON THE FILE 
+     	#*****************************************************************************
+     	IF (lHeaderCount = 0);
+               		ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Error Description', 'Line Number', 'Entered Value', 'Comments', 'Other Details/Assumed Values');
+     	ENDIF;
+
+
+     	#*****************************************************************************
+     	#**** VALIDATION FAILED
+     	#*****************************************************************************
+	IF (nMeasValid > 0);
+		ASCIIOUTPUT (sImpFilePath | sOutputFile, sErrMeas | ' Measure Code error on line ', NUMBERTOSTRING(nLine), vsCBMSCode);
+	ENDIF;
+
+	IF (nTitleValid > 0);
+		ASCIIOUTPUT (sImpFilePath | sOutputFile, sErrTitle | ' Measure Code Title error on line ', NUMBERTOSTRING(nLine), 'TITLE IS BLANK');
+	ENDIF;
+
+	IF (nDescValid > 0);
+		ASCIIOUTPUT (sImpFilePath | sOutputFile, sErrDesc | ' Measure Code Description error on line ', NUMBERTOSTRING(nLine), 'DESCRIPTION IS BLANK');
+	ENDIF;
+
+
+	IF (nFundLifeValid > 0);
+		ASCIIOUTPUT (sImpFilePath | sOutputFile, sErrFundLife | ' Funding Life error on line ', NUMBERTOSTRING(nLine), vsFundLife);
+	ENDIF;
+
+	IF (nEndDayValid > 0);
+		ASCIIOUTPUT (sImpFilePath | sOutputFile, sErrEndDay | ' End Day error on line ', NUMBERTOSTRING(nLine), vsEndDay);
+	ENDIF;
+
+	IF (nEndMonthValid > 0);
+		ASCIIOUTPUT (sImpFilePath | sOutputFile, sErrEndMonth | ' End Month error on line ', NUMBERTOSTRING(nLine), vsEndMonth);
+	ENDIF;
+
+	IF (nEndYearValid > 0);
+		ASCIIOUTPUT (sImpFilePath | sOutputFile, sErrEndYear | ' End Year error on line ', NUMBERTOSTRING(nLine), vsEndYear);
+	ENDIF;
+
+	IF (nTermYearValid > 0);
+		ASCIIOUTPUT (sImpFilePath | sOutputFile, sErrTermYear | ' Terminating Year error on line ', NUMBERTOSTRING(nLine), vsTerminatingYear);
+	ENDIF;
+
+	IF (nMeasTypeValid > 0);
+		ASCIIOUTPUT (sImpFilePath | sOutputFile, sErrMeasType | ' Measure Type error on line ', NUMBERTOSTRING(nLine), vsMeasType);
+	ENDIF;
+
+
+ELSE;
+	#***********************************************************************************************************
+	#*** VALIDATION PASSED ****#
+	#***********************************************************************************************************
+	# Do Nothing
+
+
+ENDIF;
+
+
+#*** DISABLE HEADER LINE ***#
+lHeaderCount = lHeaderCount + 1;
+
+#*** ADD LINE NUMBER
+nLine = nLine + 1;
+
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*****************************************************************************
+#**** SKIP LINE IF DIMENSIONS ARENT VALID 
+#*****************************************************************************
+IF (nTotalValid > 0);
+	ATTRPUTS ('FAIL', dmVar, 'sys_ImpFileValidation', 'value');
+	CELLPUTS ('FAIL', cbClient, sUser,  'sys_ImpFileValidation', 'value');
+     	PROCESSQUIT;
+ELSE;
+     	ATTRPUTS ('PASS', dmVar, 'sys_ImpFileValidation', 'value');
+	CELLPUTS ('PASS', cbClient, sUser,  'sys_ImpFileValidation', 'value');
+
+ENDIF;
+
+#***********************************************************************************************************
+#*** STEP 1 - IDENTIFY DEFAULT FIELDS
+#***********************************************************************************************************
+#------------------------------------------
+#--- CBMS Code
+#------------------------------------------
+IF (vsCBMSCode @= '' % vsCBMSCode @= 'TBA');
+	sCBMSCode = '';
+ELSE;
+	sCBMSCode = vsCBMSCode;
+ENDIF;
+
+#------------------------------------------
+#--- Published Title
+#------------------------------------------
+IF (vsPubTitle @= '');
+	sPubTitle = vsTitle;
+ELSE;
+	sPubTitle = vsPubTitle;
+ENDIF;
+
+#------------------------------------------
+#--- END DAY AND MONTH
+#------------------------------------------
+IF (LONG (vsEndDay) = 1);
+	sEndDay = '0' | vsEndDay;
+ELSE;
+	sEndDay = vsEndDay;
+ENDIF;
+
+IF (LONG (vsEndMonth) = 1);
+	sEndMonth = '0' | vsEndMonth;
+ELSE;
+	sEndMonth = vsEndMonth;
+ENDIF;
+
+
+#***********************************************************************************************************
+#*** STEP 2 - GET NEW ID NUMBER ***#
+#***********************************************************************************************************
+nNewID = CELLGETN(cbMeas, curHLYear, curScenario, sParent, 'used') + 1;
+sNewID = NUMBERTOSTRING(nNewID);
+
+IF (LONG(sNewID) = 1);
+	sNewID = 'M0000' | sNewID;
+ENDIF;
+
+IF (LONG(sNewID) = 2);
+	sNewID = 'M000' | sNewID;
+ENDIF;
+
+IF (LONG(sNewID) = 3);
+	sNewID = 'M00' | sNewID;
+ENDIF;
+
+IF (LONG(sNewID) = 4);
+	sNewID = 'M0' | sNewID;
+ENDIF;
+	
+IF (LONG(sNewID) = 5);
+	sNewID = 'M' | sNewID;
+ENDIF;
+
+#----------------------------------------------------------------------------------------------------------------
+# IF THE SELECTED ID DOES NOT EXISTS, DO CREATE NEW
+#----------------------------------------------------------------------------------------------------------------
+IF (DIMIX (dmMeasCode, sNewID) = 0);
+
+	#----------------------------------------------------------------------------------------------------------------
+	#--- CALL PROCESS DO CREATE NEW MEASURE CODE
+	#---------------------------------------------------------------------------------------------------------------
+	sProcess = 'AE_Measure Upload 02 - Create New Measure Code';
+	EXECUTEPROCESS (sProcess, 'psUser', sUser, 
+		'psNewID', sNewID,
+		'psCBMSCode', sCBMSCode,
+		'psTitle', vsTitle,
+		'psDesc', vsDesc,
+		'psPubTitle', vsPubTitle,
+		'psFundLife', vsFundLife, 
+		'psEndDay', sEndDay,
+		'psEndMonth', sEndMonth,
+		'psEndYear', vsEndYear,
+		'psTerminatingYear', vsTerminatingYear,
+		'psGovtDec', vsGovtDec,
+		'psDecDate', vsDecDate,
+		'psNotForPublication', vsNotForPublication,
+		'psMeasType', vsMeasType,
+		'psCostingID', vsCostingID, 
+		'psPolicyEntity', vsPolicyEntity,
+		'psProg', vsProg,
+		'psPubRound', vsPubRound,
+		'psPubYear', vsPubYear);
+
+ELSE;
+
+	#----------------------------------------------------------------------------------------------------------------
+	#--- CALL PROCESS DO CREATE NEW MEASURE CODE
+	#---------------------------------------------------------------------------------------------------------------
+	sProcess = 'AE_Measure Upload 03 - Update Data Fields';
+	EXECUTEPROCESS (sProcess, 'psUser', sUser, 
+		'psNewID', sNewID,
+		'psCBMSCode', sCBMSCode,
+		'psTitle', vsTitle,
+		'psDesc', vsDesc,
+		'psPubTitle', vsPubTitle,
+		'psFundLife', vsFundLife, 
+		'psEndDay', sEndDay,
+		'psEndMonth', sEndMonth,
+		'psEndYear', vsEndYear,
+		'psTerminatingYear', vsTerminatingYear,
+		'psGovtDec', vsGovtDec,
+		'psDecDate', vsDecDate,
+		'psNotForPublication', vsNotForPublication,
+		'psMeasType', vsMeasType,
+		'psCostingID', vsCostingID, 
+		'psPolicyEntity', vsPolicyEntity,
+		'psProg', vsProg,
+		'psPubRound', vsPubRound,
+		'psPubYear', vsPubYear);
+
+
+ENDIF;
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*****************************************************************************
+#**** SKIP LINE IF DIMENSIONS ARENT VALID 
+#*****************************************************************************
+IF (nTotalValid > 0);
+	ATTRPUTS ('FAIL', dmVar, 'sys_ImpFileValidation', 'value');
+	CELLPUTS ('FAIL', cbClient, sUser,  'sys_ImpFileValidation', 'value');
+     	PROCESSQUIT;
+ELSE;
+     	ATTRPUTS ('PASS', dmVar, 'sys_ImpFileValidation', 'value');
+	CELLPUTS ('PASS', cbClient, sUser,  'sys_ImpFileValidation', 'value');
+
+ENDIF;
+
+#endregion

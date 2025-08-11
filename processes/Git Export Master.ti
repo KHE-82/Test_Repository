@@ -1,0 +1,42 @@
+#region Prolog
+sDim = '}Dimensions';
+sPrefix = '}ElementAttributes_';
+nPrefixLong = Long(sPrefix);
+nTemp = 1;
+sObj = '}git' | NumberToString(rand());
+
+sDir = './model_upload/git/attribute/';
+sPrc = 'Git Export Attributes';
+
+
+sMDX = '{[' | sDim | '].members}';
+SubsetCreatebyMDX( sObj, sMDx, 1 );
+
+nSiz = SubsetGetSize( sDim, sObj);
+nCounter = 1;
+While (nCounter<=nSiz);
+    sEL = SubsetGetElementName( sDim, sObj, nCounter );
+
+    if(SCAN( sPrefix, sEL )=1);
+        nLong = LONG( sEL );
+        sRealDim = Trim(SUBST( sEL, nPrefixLong+1, 100 ));
+
+        if(CubeExists( sEL )=1 & ElementCount( sEL, sEL )>0 & ElementCount( sRealDim, sRealDim )>0 );
+            #asciioutput(sDir | 'dimlist.csv', sRealDim);
+            ExecuteProcess( sPrc, 'psDir', sDir,'psDim',sRealDim);
+
+        endif;
+    endif;
+
+
+    if (nCounter = 500);
+        Break;
+    endif;
+        
+    nCounter = nCounter +1; 
+End;
+
+
+
+
+#endregion

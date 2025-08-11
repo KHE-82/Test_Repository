@@ -1,0 +1,31 @@
+{
+	"@type":"Cube",
+	"Name":"government measures bulk processing",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('}Clients')"
+		},
+		{
+			"@id":"Dimensions('headline year')"
+		},
+		{
+			"@id":"Dimensions('scenario')"
+		},
+		{
+			"@id":"Dimensions('measure code')"
+		},
+		{
+			"@id":"Dimensions('measure details')"
+		}
+	],
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('measure details')"
+	},
+	"TimeDimension":
+	{
+		"@id":"Dimensions('headline year')"
+	},
+	"Views@Code.links":[]
+}

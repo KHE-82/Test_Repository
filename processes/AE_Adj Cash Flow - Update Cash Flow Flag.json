@@ -1,0 +1,45 @@
+{
+	"@type":"Process",
+	"Name":"AE_Adj Cash Flow - Update Cash Flow Flag",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_Adj Cash Flow - Update Cash Flow Flag.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"Admin",
+			"Type":"String"
+		},
+		{
+			"Name":"psHLYear",
+			"Prompt":"",
+			"Value":"HL2018-2019",
+			"Type":"String"
+		},
+		{
+			"Name":"psScenario",
+			"Prompt":"",
+			"Value":"current",
+			"Type":"String"
+		},
+		{
+			"Name":"psID",
+			"Prompt":"",
+			"Value":"00357",
+			"Type":"String"
+		},
+		{
+			"Name":"psCFFlag",
+			"Prompt":"",
+			"Value":"System Derived",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

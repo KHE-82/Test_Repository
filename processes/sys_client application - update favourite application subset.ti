@@ -1,0 +1,181 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_client application - update favourite application subset
+#**** DESCRIPTION:       This process will 
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date	Initials	Comments
+#****  ====              ======    =========
+#**** 21/02/2019    KG           Initial Revision
+#***********************************************************************************************************************
+
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT GROUPS CUBE
+#******************************************************************************************************************
+cbGroups = '}ClientGroups';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYS CLIENT FAVOURITE APPLICATION CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbFavApp = 'sys_client favourite application';
+dmApp = 'sys_application';
+dmFavAppMeas = 'sys_client favourite application measure';
+
+#--------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#--------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+sObject  = sUser | '_$FavApp';
+sView = sUser | '_$FavApp';
+
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - DESTROY CLIENTS FAVOURITE APPLICATION SUBSETS
+#*****************************************************************************************************************************************************
+sFavSubset = 'sys_favourite application_' | sUser;
+IF (SUBSETEXISTS (dmApp, sFavSubset) = 1);
+	SUBSETDESTROY (dmApp, sFavSubset);
+	SUBSETCREATE (dmApp, sFavSubset);
+ELSE;
+	SUBSETCREATE (dmApp, sFavSubset);
+ENDIF;
+
+
+SUBSETALIASSET (dmApp, sFavSubset, 'Navigation Search');
+nCounter = 1;
+
+#------------------------------------------------------------------------
+#--- Update client preference picklist
+#------------------------------------------------------------------------
+sClientMeas = 'favapp_application picklist';
+sPickList = 'static';
+CELLPUTS (sPickList, cbClient, sUser, sClientMeas, 'value');
+
+
+#*****************************************************************************************************************************************************
+#*** STEP 2 - CREATE SOURCE VIEW ***#
+#*****************************************************************************************************************************************************
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbFavApp, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmApp, sView);
+SUBSETDESTROY (dmFavAppMeas, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+# }Clients
+SubsetCreate(dmClient, sView);
+SubsetElementInsert(dmClient, sView, psUser, 1);
+
+# sys_application
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmApp | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# sys_client favourite application measure
+SubsetCreate(dmFavAppMeas, sView);
+SubsetElementInsert(dmFavAppMeas, sView, 'flag', 1);
+
+#-------------------------------------------------------------------------------------------------------------
+#*** BUILD VIEW
+#-------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbFavApp, sView);
+VIEWSUBSETASSIGN (cbFavApp, sView, dmClient, sView);
+VIEWSUBSETASSIGN (cbFavApp, sView, dmApp, sView);
+VIEWSUBSETASSIGN (cbFavApp, sView, dmFavAppMeas, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+# *** DEFINE VIEW EXTRACT
+#-------------------------------------------------------------------------------------------------------------
+ViewExtractSkipZeroesSet(cbFavApp, sView, 1);
+ViewExtractSkipRuleValuesSet(cbFavApp, sView, 1);
+ViewExtractSkipCalcsSet(cbFavApp, sView, 1);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#-------------------------------------------------------------------------------------------------------------
+#--- ADD ELEMENTS T SUBSET
+#-------------------------------------------------------------------------------------------------------------
+SUBSETELEMENTINSERT (dmApp, sFavSubset, vsApp, nCounter);
+nCounter = nCounter + 1;
+
+#-------------------------------------------------------------------------------------------------------------
+#--- ADD PICKLIST
+#-------------------------------------------------------------------------------------------------------------
+sAppDesc = ATTRS (dmApp, vsApp, 'Navigation Search');
+IF (sAppDesc @= '');
+	sAppDesc = vsApp;
+ENDIF;
+
+sPickList = sPickList | ':' |  sAppDesc;
+
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbFavApp, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmApp, sView);
+SUBSETDESTROY (dmFavAppMeas, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+#*** UPDATE CLIENT PREFERENCE PICKLIST
+#-------------------------------------------------------------------------------------------------------------
+CELLPUTS (sPickList, cbClient, sUser, sClientMeas, 'value');
+#endregion

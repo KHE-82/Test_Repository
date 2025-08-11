@@ -1,0 +1,269 @@
+FEEDSTRINGS;
+SKIPCHECK;
+# Rule 0000
+# Set used element to zero for zero IDs
+['0000A', 'used'] = N: 0;
+['0000B', 'used'] = N: 0;
+['00FBO', 'used'] = N: 0;
+
+## Rule 00001
+# Set Measure Code to be description of measure
+['CBMS measure code'] = S:
+# TEST PART A - See if ID is 0000A/00FBO/0000B
+IF ((!id @= '0000A' & !id @<> '00FBO' & !id @<> '0000B'),
+# TRUE PART A - STET
+STET,
+# FALSE PART A - DO ANOTHER CHECK TO SEE IF MEASURE IS NOT BLANK
+# TEST PART B - SEE IF MEASURE IS NOT BLANK
+IF(DB('AE id details', !headline year, !scenario, !id, 'measure') @<> '',
+# TRUE PART B - MEASURE IS NOT BLANK, DERIVE VALUES FROM ATTRIBUTES
+# TEST PART C - SEE IF MEASURE EXISTS
+IF (DIMIX ('measure code', DB('AE id details', !headline year, !scenario, !id, 'measure')) <> 0,
+# TRUE PART C - GET ATTRIBUTE
+ATTRS ('measure code', DB('AE id details', !headline year, !scenario, !id, 'measure'), 'CBMS'),
+# FALSE PART C - STET
+DB('AE id details', !headline year, !scenario, !id, 'measure')),
+# FALSE PART B - STET
+STET));
+
+## Rule 00002
+# Set reason coe description
+['reason description'] = S:
+# TEST PART A - See if ID is 0000A/00FBO/0000B
+IF ((!id @= '0000A' & !id @<> '00FBO' & !id @<> '0000B'),
+# TRUE PART A - STET
+STET,
+# FALSE PART A - DO ANOTHER CHECK TO SEE IF reason IS NOT BLANK
+# TEST PART B - SEE IF reason IS NOT BLANK
+IF(DB('AE id details', !headline year, !scenario, !id, 'reason') @<> '',
+# TRUE PART B - REASON IS NOT BLANK, DERIVE VALUES FROM ATTRIBUTES
+# TEST PART C - SEE IF REASON EXISTS
+IF (DIMIX ('reason', DB('AE id details', !headline year, !scenario, !id, 'reason')) <> 0,
+# TRUE PART C - GET ATTRIBUTE
+ATTRS ('reason', DB('AE id details', !headline year, !scenario, !id, 'reason'), 'CBMS'),
+# FALSE PART C - STET
+DB('AE id details', !headline year, !scenario, !id, 'reason')),
+# FALSE PART B - STET
+STET));
+
+## Rule 00003
+# Set APPROPRIATION TYPE description
+['appropriation type description'] = S:
+# TEST PART A - See if ID is 0000A/00FBO/0000B
+IF ((!id @= '0000A' & !id @<> '00FBO' & !id @<> '0000B'),
+# TRUE PART A - STET
+STET,
+# FALSE PART A - DO ANOTHER CHECK TO SEE IF APPROPRIATION TYPE IS NOT BLANK
+# TEST PART B - SEE IF APPROPRIATION TYPE IS NOT BLANK
+IF(DB('AE id details', !headline year, !scenario, !id, 'appropriation type') @<> '',
+# TRUE PART B - APPROPRIATION TYPE IS NOT BLANK, DERIVE VALUES FROM ATTRIBUTES
+# TEST PART C - SEE IF APPROPRIATION TYPE EXISTS
+IF (DIMIX ('appropriation type', DB('AE id details', !headline year, !scenario, !id, 'appropriation type')) <> 0,
+# TRUE PART C - GET ATTRIBUTE
+ATTRS ('appropriation type', DB('AE id details', !headline year, !scenario, !id, 'appropriation type'), 'description'),
+# FALSE PART C - STET
+DB('AE id details', !headline year, !scenario, !id, 'appropriation tye')),
+# FALSE PART B - STET
+STET));
+
+## Rule 00004
+# Set APPROPRIATION TYPE description
+['appropriation item description'] = S:
+# TEST PART A - See if ID is 0000A/00FBO/0000B
+IF ((!id @= '0000A' & !id @<> '00FBO' & !id @<> '0000B'),
+# TRUE PART A - STET
+STET,
+# FALSE PART A - DO ANOTHER CHECK TO SEE IF appropriation item IS NOT BLANK
+# TEST PART B - SEE IF appropriation item IS NOT BLANK
+IF(DB('AE id details', !headline year, !scenario, !id, 'appropriation item') @<> '',
+# TRUE PART B - appropriation item IS NOT BLANK, DERIVE VALUES FROM ATTRIBUTES
+# TEST PART C - SEE IF appropriation item EXISTS
+IF (DIMIX ('appropriation item', DB('AE id details', !headline year, !scenario, !id, 'appropriation item')) <> 0,
+# TRUE PART C - GET ATTRIBUTE
+ATTRS ('appropriation item', DB('AE id details', !headline year, !scenario, !id, 'appropriation item'), 'code and description'),
+# FALSE PART C - STET
+DB('AE id details', !headline year, !scenario, !id, 'appropriation tye')),
+# FALSE PART B - STET
+STET));
+
+##### REQUIRED FOR NEW GEUS - 2019
+# Rule 0001
+['sys_headline year'] = S: IF (DB('AE id details', !headline year, !scenario, !id, 'used') <> 0, !headline year, STET);
+['sys_scenario'] = S: IF (DB('AE id details', !headline year, !scenario, !id, 'used') <> 0, !scenario, STET);
+['sys_ID'] = S: IF (DB('AE id details', !headline year, !scenario, !id, 'used') <> 0, !id, STET);
+
+# Rule 0002
+['sys_programme code'] = S: IF (DB('AE id details', !headline year, !scenario, !id, 'programme code') @<> '',
+# TRUE PART A - sys_programme code value derives from programme code
+DB('AE id details', !headline year, !scenario, !id, 'programme code'),
+# FALSE PART A - STET
+STET);
+
+# Rule 0003
+['sys_programme description'] = S: IF (DB('AE id details', !headline year, !scenario, !id, 'programme description') @<> '',
+# TRUE PART A - sys_programme description value derives from programme description
+DB('AE id details', !headline year, !scenario, !id, 'programme description'),
+# FALSE PART A - STET
+STET);
+
+# Rule 0004
+['sys_title'] = S: IF (DB('AE id details', !headline year, !scenario, !id, 'title') @<> '',
+# TRUE PART A - sys_title value derives from title
+DB('AE id details', !headline year, !scenario, !id, 'title'),
+# FALSE PART A - STET
+STET);
+
+# Rule 0005
+['sys_description'] = S: IF (DB('AE id details', !headline year, !scenario, !id, 'description') @<> '',
+# TRUE PART A - sys_description value derives from description
+DB('AE id details', !headline year, !scenario, !id, 'description'),
+# FALSE PART A - STET
+STET);
+
+# Rule 0006
+['sys_status'] = S: IF (DB('AE id details', !headline year, !scenario, !id, 'status') @<> '',
+# TRUE PART A - sys_status value derives from status
+DB('AE id details', !headline year, !scenario, !id, 'status'),
+# FALSE PART A - STET
+STET);
+
+# Rule 0007
+['sys_reason'] = S: IF (DB('AE id details', !headline year, !scenario, !id, 'reason') @<> '',
+# TRUE PART A - sys_reason value derives from reason
+DB('}ElementAttributes_reason',DB('AE id details', !headline year, !scenario, !id, 'reason'),'CBMS code and description'),
+# FALSE PART A - STET
+STET);
+
+# Rule 0008
+['sys_outcome'] = S: IF (DB('AE id details', !headline year, !scenario, !id, 'outcome') @<> '',
+# TRUE PART A - sys_outcome value derives from outcome
+DB('AE id details', !headline year, !scenario, !id, 'outcome'),
+# FALSE PART A - STET
+STET);
+
+# Rule 0009
+['sys_measure'] = S: IF (DB('AE id details', !headline year, !scenario, !id, 'measure') @<> '',
+# TRUE PART A - sys_measure value derives from measure
+DB('AE id details', !headline year, !scenario, !id, 'measure'),
+# FALSE PART A - STET
+STET);
+
+# Rule 0010
+['sys_CBMS measure code'] = S: IF (DB('AE id details', !headline year, !scenario, !id, 'CBMS measure code') @<> '',
+# TRUE PART A - sys_CBMS measure code value derives from CBMS measure code
+DB('AE id details', !headline year, !scenario, !id, 'CBMS measure code'),
+# FALSE PART A - STET
+STET);
+
+# Rule 0011
+['sys_function'] = S: IF (DB('AE id details', !headline year, !scenario, !id, 'function') @<> '',
+# TRUE PART A - sys_function value derives from function
+DB('AE id details', !headline year, !scenario, !id, 'function'),
+# FALSE PART A - STET
+STET);
+
+# Rule 0012
+['sys_spp'] = S: IF (DB('AE id details', !headline year, !scenario, !id, 'spp') @<> '',
+# TRUE PART A - sys_spp value derives from spp
+DB('AE id details', !headline year, !scenario, !id, 'spp'),
+# FALSE PART A - STET
+STET);
+
+# Rule 0013
+['sys_appropriation item'] = S: IF (DB('AE id details', !headline year, !scenario, !id, 'appropriation item') @<> '',
+# TRUE PART A - sys_appropriation item value derives from appropriation item
+DB('AE id details', !headline year, !scenario, !id, 'appropriation item'),
+# FALSE PART A - STET
+STET);
+
+# Rule 0014
+['sys_appropriation type'] = S: IF (DB('AE id details', !headline year, !scenario, !id, 'appropriation type') @<> '',
+# TRUE PART A - sys_appropriation type value derives from appropriation type
+DB('AE id details', !headline year, !scenario, !id, 'appropriation type'),
+# FALSE PART A - STET
+STET);
+
+# Rule 0015
+['sys_adjustment type'] = S: IF (DB('AE id details', !headline year, !scenario, !id, 'adjustment type') @<> '',
+# TRUE PART A - sys_appropriation type value derives from appropriation type
+DB('AE id details', !headline year, !scenario, !id, 'adjustment type'),
+# FALSE PART A - STET
+STET);
+
+# Rule 0016
+['sys_control type'] = S: IF (DB('AE id details', !headline year, !scenario, !id, 'control type') @<> '',
+# TRUE PART A - sys_appropriation type value derives from appropriation type
+DB('AE id details', !headline year, !scenario, !id, 'control type'),
+# FALSE PART A - STET
+STET);
+
+
+
+FEEDERS;
+# Feeder rule 0000
+# no feeder required
+
+## Rule 00001
+['measure'] => ['CBMS measure code'];
+
+## Rule 00003
+['reason'] => ['reason description'];
+
+## Rule 00004
+['appropriation type'] => ['appropriation type description'];
+
+
+## Rule 00005
+['appropriation item'] => ['appropriation item description'];
+
+
+# NEW GEUS FEEDERS
+# Rule 0001
+['used'] => ['sys_headline year'];
+['used'] => ['sys_scenario'];
+['used'] => ['sys_id'];
+
+# Rule 0002
+['programme code'] => ['sys_programme code'];
+
+# Rule 0003
+['programme description'] => ['sys_programme description'];
+
+# Rule 0004
+['title'] => ['sys_scenario'];
+
+# Rule 0005
+['description'] => ['sys_description'];
+
+# Rule 0006
+['status'] => ['sys_status'];
+
+# Rule 0007
+['reason'] => ['sys_reason'];
+
+# Rule 0008
+['outcome'] => ['sys_outcome'];
+
+# Rule 0009
+['measure'] => ['sys_measure'];
+
+# Rule 0010
+['CBMS measure code'] => ['sys_CBMS measure code'];
+
+# Rule 0011
+['function'] => ['sys_function'];
+
+# Rule 0012
+['spp'] => ['sys_spp'];
+
+# Rule 0013
+['appropriation item'] => ['sys_appropriation item'];
+
+# Rule 0014
+['appropriation type'] => ['sys_appropriation type'];
+
+# Rule 0015
+['adjustment type'] => ['sys_adjustment type'];
+
+# Rule 0016
+['control type'] => ['sys_control type'];

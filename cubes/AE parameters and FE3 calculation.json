@@ -1,0 +1,55 @@
+{
+	"@type":"Cube",
+	"Name":"AE parameters and FE3 calculation",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('programme')"
+		},
+		{
+			"@id":"Dimensions('spp')"
+		},
+		{
+			"@id":"Dimensions('account')"
+		},
+		{
+			"@id":"Dimensions('movement account')"
+		},
+		{
+			"@id":"Dimensions('related entity')"
+		},
+		{
+			"@id":"Dimensions('jurisdiction')"
+		},
+		{
+			"@id":"Dimensions('appropriation item')"
+		},
+		{
+			"@id":"Dimensions('measure code')"
+		},
+		{
+			"@id":"Dimensions('id')"
+		},
+		{
+			"@id":"Dimensions('period')"
+		},
+		{
+			"@id":"Dimensions('AE parameters and FE3 calculation measure')"
+		}
+	],
+	"Rules@Code.link":"AE parameters and FE3 calculation.rules",
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('AE parameters and FE3 calculation measure')"
+	},
+	"TimeDimension":
+	{
+		"@id":"Dimensions('period')"
+	},
+	"Views@Code.links":
+	[
+		"AE parameters and FE3 calculation.views/Default.json",
+		"AE parameters and FE3 calculation.views/Feeder Check.json",
+		"AE parameters and FE3 calculation.views/n level view.json"
+	]
+}

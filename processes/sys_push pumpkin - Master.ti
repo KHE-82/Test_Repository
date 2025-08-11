@@ -1,0 +1,43 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_push pumpkin - Master
+#**** DESCRIPTION:       This process extracts AE Adjustment to sys_pumpkin cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2020                  KG             Initial Revision
+
+#***********************************************************************************************************************
+sAccGrp = 'Exp';
+sPrc = 'sys_push pumpkin - generic';
+ExecuteProcess( sPrc, 'psHLyear', psHLYear, 'psScenario', psScenario, 'psProg', psProg, 'psAccGrp',sAccGrp );
+
+sAccGrp = 'CF';
+sPrc = 'sys_push pumpkin - generic';
+ExecuteProcess( sPrc, 'psHLyear', psHLYear, 'psScenario', psScenario, 'psProg', psProg, 'psAccGrp',sAccGrp );
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

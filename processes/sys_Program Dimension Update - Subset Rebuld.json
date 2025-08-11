@@ -1,0 +1,43 @@
+{
+	"@type":"Process",
+	"Name":"sys_Program Dimension Update - Subset Rebuld",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Program Dimension Update - Subset Rebuld.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"VarType=32€ColType=827€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForClient":"programme2",
+		"dataSourceNameForServer":"programme2",
+		"subset":"$ArchiveDimension"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psTopEL",
+			"Prompt":"",
+			"Value":"total programmes",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vsElement",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		}
+	]
+}

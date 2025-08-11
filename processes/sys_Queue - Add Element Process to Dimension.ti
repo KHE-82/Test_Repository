@@ -1,0 +1,71 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               	sys_Queue - Add Element Process to Dimension
+#**** DESCRIPTION:       	This process will will be called by other processes to queue up TIs
+#****	                                 It can be used to stop specific processes starting before the previous 
+#****	                                 one has completed. 
+#****
+#****	                                  e.g. to call the process "test proc" with the parameters psID and psYear:
+#****
+#**** PARAMETERS:               psTI          - The name of the process to call
+#****                                          psParams  - The list of parameterf of the called process in the format:
+#****                                                               param1;value1|param2;value2
+#****                                          psAll          - 'Y' means wait behind all processes in the queue
+#****                                                              otherwise just wait behind instances of this same process.
+#****
+#****                                          sQProc = 'sys_Queue - Add Process to Queue';
+#****                                          sProc = 'test proc';
+#****                                          sID = 'psID';
+#****                                          sYear = 'psYear';
+#****                                          
+#****                                          ExecuteProcess (sQProc,
+#****                                                                     'psTI', sProc,
+#****                                                                     'psParams', 'psID;' | sID | '|psYear;' | sYear);
+#****                                           
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 14/06/2015    MJM          Initial Revision
+#***********************************************************************************************************************
+
+#--- Dimensions
+#-----------------------
+dmQ = '}TI_Queue';
+
+#--- Other variables
+#----------------------------
+sUser = TM1User ();
+#sQID = TimSt (Now (), '\y\m\d\h\i\s') | '_' | psTI | '_' | sUser;
+sParamSep = '|';
+sSplitSep = ';';
+
+#--- Add ID to Queue
+#-------------------------------
+sLast = DimNm (dmQ, DimSiz (dmQ));
+DimensionElementInsertDirect (dmQ, sLast, psQID, 'N');
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#endregion

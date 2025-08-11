@@ -1,0 +1,371 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_spp adjustments upload
+#**** DESCRIPTION:       This process will create subsets in the account template for program
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    KG             Initial Revision
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#******************************************************************************************************************
+#*** DECLARE SYS_SPP AGENCY MAPPING CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbSppAg='sys_spp agency mapping';
+dmHLyear = 'headline year';
+dmScenario = 'scenario';
+dmSpp = 'spp';
+dmSysAg = 'sys_agency';
+dmSppAgMeas = ' sys_spp agency mapping measure';
+
+#******************************************************************************************************************
+#*** DECLARE SYS_SPP AGENCY MAPPING CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbSppAdj = 'sys_spp adjustment';
+dmAccTyp = 'Account Type';
+dmSppAdjMeas = cbSppAdj | ' measure';
+
+sMeas01 = 'Reason Code';
+sMeas02 = 'Measure Code';
+sMeas03 = 'adj description';
+sMeas04 = 'authority';
+sVal = 'value';
+
+sTyp = 'Total account groups';
+sPer = 'Total years';
+sJur = 'Total jurisdictions';
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+
+
+
+#--------------------------------------------------------------------------------------------------------------------------
+#*** DIMENSION ATTRIBUTES
+#--------------------------------------------------------------------------------------------------------------------------
+dmReasonAttr = '}ElementAttributes_reason';
+dmAccAttr = '}ElementAttributes_account';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+cbID = 'AE id details';
+#---------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+cbProg = snProg | ' details';
+#---------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE EXTRACT CUBE
+cbProg = snProg | ' details';
+#---------------------------------------------------------------------------------------------------------------------------
+cbExtract = 'sys_push pumpkin';
+dmRowID = 'sys_extract row id';
+dmExtractMeas = cbExtract | ' measure';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+dmProg = ATTRS(dmVar, 'program dimension name', 'value');
+
+#******************************************************************************************************************
+#*** DECLARE AE ACCOUNT TEMPLATE MAPPING
+#******************************************************************************************************************
+cbAccTempMap = 'AE account template mapping';
+dmAccTemp = 'account template';
+IF (dmProg @= '');
+	dmProg = 'programme';
+ENDIF;
+dmAccTempMapMeas = 'account template measure';
+
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT GROUPS CUBE
+#******************************************************************************************************************
+cbGroups = '}ClientGroups';
+dmGroups = '}Groups';
+
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED
+#******************************************************************************************************************
+sPro = GETProcessName();
+sView = sUser | '_' | sPro;
+
+#******************************************************************************************************************
+#*** DERIVED VALUE
+#******************************************************************************************************************
+sSPP = ATTRS(dmSpp,psSpp,'code and description');
+sProg = ATTRS(dmProg, psSPP,'Treasury level 3 program');
+sSysAg = ATTRS(dmSysAg, psSysAg, 'description');
+sAgPBS = ATTRS(dmSPP, psSPP, 'agency PBS program');
+sName =  ATTRS(dmSysAg, psSysAg, 'agency contact'); 
+sNumber = ATTRS(dmSysAg,  psSysAg, 'contact number'); 
+sEmail = ATTRS(dmSysAg,  psSysAg, 'contact email');
+
+nRow = 1;
+
+#******************************************************************************************************************
+#*** CLEAR TARGET VIEW
+#******************************************************************************************************************
+VIEWDESTROY(cbSppAdj, sView);
+SUBSETDESTROY(dmClient,sView);
+
+SUBSETCREATE(dmClient, sView);
+SUBSETELEMENTINSERT(dmClient, sView, sUser, 1);
+
+VIEWCREATE(cbSppAdj,sView);
+VIEWSUBSETASSIGN(cbSppAdj,sView,dmClient, sView);
+
+ViewExtractSkipZeroesSet (cbSppAdj, sView, 1);
+ViewExtractSkipCalcsSet (cbSppAdj, sView, 1);
+ViewExtractSkipRuleValuesSet (cbSppAdj, sView, 1);
+
+VIEWZEROOUT(cbSppAdj,sView);
+
+VIEWDESTROY(cbSppAdj, sView);
+SUBSETDESTROY(dmClient,sView);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#******FIRST ROW OF UPLOAD FILE******#
+IF( nRow = 1);
+	sProg = DimensionElementPrincipalName(dmProg,SUBST(vsReason,1,6));
+	sSPP = DimensionElementPrincipalName(dmSPP,vsReason);
+ENDIF; 
+
+
+#******TITLE ROW OF UPLOAD FILE******#
+IF( nRow = 11);
+	sYr01 = vsYr01;
+	sYr02 = vsYr02;
+	sYr03 = vsYr03;
+	sYr04 = vsYr04;
+	sYr05 = vsYr05;
+	sYr06 = vsYr06;
+	sYr07 = vsYr07;
+	sYr08 = vsYr08;
+	sYr09 = vsYr09;
+	sYr10 = vsYr10;
+	sYr11 = vsYr11;
+	sYr12 = vsYr12;
+	sYr13 = vsYr13;
+	sYr14 = vsYr14;
+	sYr15 = vsYr15;
+
+
+ENDIF;
+
+
+
+#IF( nRow = 12);
+#asciioutput('per.txt', sYr01,vsYr01);
+#ENDIF;
+
+
+#******DATA ROW OF UPLOAD FILE******#
+IF(nRow >=13);
+	nYr01 = ROUND(StringToNumberEx(vsYr01, '.', ','));
+	nYr02 = ROUND(StringToNumberEx(vsYr02, '.', ','));
+	nYr03 = ROUND(StringToNumberEx(vsYr03, '.', ','));
+	nYr04 = ROUND(StringToNumberEx(vsYr04, '.', ','));
+	nYr05 = ROUND(StringToNumberEx(vsYr05, '.', ','));
+	nYr06 = ROUND(StringToNumberEx(vsYr06, '.', ','));
+	nYr07 = ROUND(StringToNumberEx(vsYr07, '.', ','));
+	nYr08 = ROUND(StringToNumberEx(vsYr08, '.', ','));
+	nYr09 = ROUND(StringToNumberEx(vsYr09, '.', ','));
+	nYr10 = ROUND(StringToNumberEx(vsYr10, '.', ','));
+	nYr11 = ROUND(StringToNumberEx(vsYr11, '.', ','));
+	nYr12 = ROUND(StringToNumberEx(vsYr12, '.', ','));
+	nYr13 = ROUND(StringToNumberEx(vsYr13, '.', ','));
+	nYr14 = ROUND(StringToNumberEx(vsYr14, '.', ','));
+	nYr15 = ROUND(StringToNumberEx(vsYr15, '.', ','));
+
+	IF(SCAN('ADJ',vsAdj)>0);
+		sID = '000' | SUBST(vsAdj,5,2);
+	ELSE;
+		nRow = nRow +1;
+		ITEMSKIP;
+	ENDIF;
+
+	IF(vsReason @<>'' % vsMeasCode @<>'' ) ;
+	#******LOAD METADATA FOR EACH ADJUSTMENT******#
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,sJur,sTyp,sId,sPer,sMeas01)=1);
+		CELLPUTS(vsReason,cbSppAdj,sUser,sProg,sSpp,sJur,sTyp,sId,sPer,sMeas01);
+
+	ENDIF;
+
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,sJur,sTyp,sId,sPer,sMeas02)=1);
+		CELLPUTS(vsMeasCode,cbSppAdj,sUser,sProg,sSpp,sJur,sTyp,sId,sPer,sMeas02);
+	ENDIF;
+
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,sJur,sTyp,sId,sPer,sMeas03)=1);
+		CELLPUTS(vsDescription,cbSppAdj,sUser,sProg,sSpp,sJur,sTyp,sId,sPer,sMeas03);
+	ENDIF;
+
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,sJur,sTyp,sId,sPer,sMeas04)=1);
+		CELLPUTS(vsAuth,cbSppAdj,sUser,sProg,sSpp,sJur,sTyp,sId,sPer,sMeas04);
+	ENDIF;
+
+	#******LOAD FINDATA FOR EACH ADJUSTMENT******#
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr01,sVal)=1);
+		CELLPUTN(nYr01,cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr01,sVal);
+	ENDIF;
+
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr02,sVal)=1);
+		CELLPUTN(nYr02,cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr02,sVal);
+	ENDIF;
+
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr03,sVal)=1);
+		CELLPUTN(nYr03,cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr03,sVal);
+	ENDIF;
+
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr04,sVal)=1);
+		CELLPUTN(nYr04,cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr04,sVal);
+	ENDIF;
+
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr05,sVal)=1);
+		CELLPUTN(nYr05,cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr05,sVal);
+	ENDIF;
+
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr06,sVal)=1);
+		CELLPUTN(nYr06,cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr06,sVal);
+	ENDIF;
+
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr07,sVal)=1);
+		CELLPUTN(nYr07,cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr07,sVal);
+	ENDIF;
+
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr08,sVal)=1);
+		CELLPUTN(nYr08,cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr08,sVal);
+	ENDIF;
+
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr09,sVal)=1);
+		CELLPUTN(nYr09,cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr09,sVal);
+	ENDIF;
+
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr10,sVal)=1);
+		CELLPUTN(nYr10,cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr10,sVal);
+	ENDIF;
+
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr11,sVal)=1);
+		CELLPUTN(nYr11,cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr11,sVal);
+	ENDIF;
+
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr12,sVal)=1);
+		CELLPUTN(nYr12,cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr12,sVal);
+	ENDIF;
+
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr13,sVal)=1);
+		CELLPUTN(nYr13,cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr13,sVal);
+	ENDIF;
+
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr14,sVal)=1);
+		CELLPUTN(nYr14,cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr14,sVal);
+	ENDIF;
+
+	IF(CELLISUPDATEABLE(cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr15,sVal)=1);
+		CELLPUTN(nYr15,cbSppAdj,sUser,sProg,sSpp,vsJur,vsAccTyp,sId,sYr15,sVal);
+	ENDIF;
+	ENDIF;
+
+ENDIF;
+
+
+nRow = nRow +1;
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#******UPLOAD TO AE CUBES******#
+sPrc = 'sys_spp adjustments 01 - create AE view';
+ExecuteProcess(sPrc, 'psUser', sUser,'psHLYear',curHLYear,'psScenario',curScenario);
+#endregion

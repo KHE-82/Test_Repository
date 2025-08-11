@@ -1,0 +1,169 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#======================================================================================================
+#**** PROCESS:               	sys_Export Program Details
+#****
+#**** DESCRIPTION:       	This process exports the Program Details cube
+#****
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 07/06/2022    RJR          Initial Revision
+#****
+#======================================================================================================
+
+#---------------------------------------------------------------------------------------
+#    CUBES
+#---------------------------------------------------------------------------------------
+cbProgDetails = 'programme details';
+#cbMEVar = 'sys_ME variable';
+cbVar = '}ElementAttributes_variables';
+
+#---------------------------------------------------------------------------------------
+#      DIMENSIONS
+#---------------------------------------------------------------------------------------
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmProgram = 'programme';
+dmProgDetails = 'programme measure';
+dmClient = '}Clients';
+
+#---------------------------------------------------------------------------------------
+#    OTHER PARAMETERS
+#---------------------------------------------------------------------------------------
+sUser = TM1USER ();
+IF (SUBST (sUser, 1, 2) @= 'R*');
+                sUser = 'Admin';
+ELSE;
+            #    sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                sUser = ATTRS(dmClient, sUser, 'GEUS User Name');
+ENDIF;
+Object = '$ProgramDetailsExtract';
+sDB = 'Costings';
+gsExpDir = CELLGETS (cbVar, 'sys_Export Directory ' | sDB, 'Value');
+gsExpFil = gsExpDir | 'Program Details.cma';
+sHLYear = CELLGETS(cbVar, 'headline year', 'Value');
+sScenario = 'current';
+nCount = 0;
+
+#---------------------------------------------------------------------------------------
+#    DELETE FILE IF IT EXISTS
+#---------------------------------------------------------------------------------------
+IF (FILEEXISTS (gsExpFil) = 1);
+	ASCIIDELETE (gsExpFil);
+ENDIF;
+
+#---------------------------------------------------------------------------------------
+#    CREATE SOURCE VIEW FOR PROCESSING
+#---------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+# ---- COUNT THE DIMENSIONS IN THE CUBE
+#-----------------------------------------------------------------------------
+nIdx = 1;
+WHILE (TABDIM (cbProgDetails, nIdx) @<> '');
+	nIdx = nIdx + 1;
+END;
+nDimCount = nIdx -1;
+
+
+#-----------------------------------------------------------------------------
+#   DELETE ANY VIEWS AND SUBSETS
+#-----------------------------------------------------------------------------
+VIEWDESTROY(cbProgDetails, Object);
+nCounter = 1;
+WHILE(nCounter <= nDimCount);
+	sDim = TABDIM (cbProgDetails, nCounter);
+	SUBSETDESTROY(sDim, Object);
+	nCounter = nCounter + 1;
+END;
+
+
+
+# ---- CREATE REQUIRED SUBSETS
+
+# ---- Headline Year
+sDim = dmHLYear;
+sEl = sHLYear;
+
+SUBSETCREATE(sDim, Object, 1);
+SUBSETELEMENTINSERT(sDim, Object, sEl, 1);
+
+# ---- Scenario
+sDim = dmScenario;
+sEl = sScenario;
+
+SUBSETCREATE(sDim, Object, 1);
+SUBSETELEMENTINSERT(sDim, Object, sEl, 1);
+
+# ---- CREATE SOURCE VIEW
+
+VIEWCREATE(cbProgDetails, Object, 1);
+VIEWSUBSETASSIGN(cbProgDetails, Object, dmHLYear, Object);
+VIEWSUBSETASSIGN(cbProgDetails, Object, dmScenario, Object);
+
+VIEWSUPPRESSZEROESSET(cbProgDetails, Object, 1);
+VIEWEXTRACTSKIPRULEVALUESSET(cbProgDetails, Object, 0);
+VIEWEXTRACTSKIPCALCSSET(cbProgDetails, Object, 0);
+
+#--------------------------------------------------------------------------------
+#    SET DATASOURCE
+#--------------------------------------------------------------------------------
+DATASOURCENAMEFORSERVER = cbProgDetails;
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = Object;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------
+#    PRINT HEADER RECORD
+#---------------------------------------------------------------------------------------
+IF(nCount = 0);
+	ASCIIOUTPUT(gsExpFil, 'Headline Year', 'Scenario', 'Program', 'Measure', 'Value', 'Type');
+	nCount = 1;
+ENDIF;
+
+#---------------------------------------------------------------------------------------
+#    EXPORT VIEW
+#---------------------------------------------------------------------------------------
+sMeasureType = DTYPE(dmProgDetails, vsMeasure);
+ASCIIOUTPUT(gsExpFil, vsHLYear, vsScenario, vsProgram, vsMeasure, vsValue, sMeasureType);
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#-----------------------------------------------------------------------------
+# ---- COUNT THE DIMENSIONS IN THE CUBE
+#-----------------------------------------------------------------------------
+nIdx = 1;
+WHILE (TABDIM (cbProgDetails, nIdx) @<> '');
+	nIdx = nIdx + 1;
+END;
+nDimCount = nIdx -1;
+
+
+#-----------------------------------------------------------------------------
+#   DELETE ANY VIEWS AND SUBSETS
+#-----------------------------------------------------------------------------
+VIEWDESTROY(cbProgDetails, Object);
+nCounter = 1;
+WHILE(nCounter <= nDimCount);
+	sDim = TABDIM (cbProgDetails, nCounter);
+	SUBSETDESTROY(sDim, Object);
+	nCounter = nCounter + 1;
+END;
+#endregion

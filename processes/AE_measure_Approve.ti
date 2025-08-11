@@ -1,0 +1,80 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:              AE_measure_Approve
+#**** DESCRIPTION:       This process approves the selected measure by the user
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 05/05/2014    KG             Initial Revision
+#**** 2019	KG	  NEW FOR GEUS PRIMUS 
+#***********************************************************************************************************************
+
+#*** DECLARE CUBES & DIMENSIONS ***#
+cbMeasID = 'government measures details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmMeasID = 'measure code';
+dmMeasDetails = 'measure details';
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#*** DECLARE VARIABLES ***#
+curHLYear = ATTRS(dmVar, 'headline year', 'value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+# *** IDENTIFY CURRENT USER ***#
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+IF (psStatus @= 'approved');
+     CELLPUTS ('approved', cbMeasID, curHLYear, curScenario, psMeasCode, 'status');
+     CELLPUTS (sUser, cbMeasID, curHLYear, curScenario, psMeasCode, 'authorised by');
+ENDIF;
+
+IF (psStatus @= 'draft');
+     CELLPUTS ('draft', cbMeasID, curHLYear, curScenario, psMeasCode, 'status');
+     CELLPUTS (sUser, cbMeasID, curHLYear, curScenario, psMeasCode, 'rejected by');
+
+     CELLPUTS ('', cbMeasID, curHLYear, curScenario, psMeasCode, 'authorised by');
+     CELLPUTS ('', cbMeasID, curHLYear, curScenario, psMeasCode, 'authorised date');
+
+
+ENDIF;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

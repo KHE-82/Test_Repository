@@ -1,0 +1,112 @@
+Skipcheck;
+#DB('ME adjustments',!headline year,!scenario,!status,!related entity,!function,!movement account,!programme,!account,!id,!jurisdiction,!period)
+# DB('cash flow',!headline year,!scenario,!movement account,!id,!account_cf,!account_other,!cash flow measure,!period)
+# DB('ME adjustments',!headline year,!scenario,!status,!related entity,!function,!movement account,!programme,!account,!id,!jurisdiction,!period)
+# LAST UPDATED 00:00 SATURDAY 00 JANUARY 1900
+# Rule 0010
+# The following IDs will not be used in monthly estimates, so are forced to be populated with zero values
+#['data', id:'0000A'] = N: 0;   - use this to store the data from the adjustments cube
+
+# Rule 0001
+# this ID uses agency profiles for Jul-May and uses Jun as the balancing period so Jun YTD equals annual estimates
+['current',  '7131', '0000B', 'value'] = N: ['current',  '7131', ID:'0000A', 'value'];
+['current',  '7161', '0000B', 'value'] = N: ['current',  '7161', ID:'0000A', 'value'];
+['current',  '7211', '0000B', 'value'] = N: ['current',  '7211', ID:'0000A', 'value'];
+['current',  '5234101', '0000B', 'value'] = N: ['current',  '5234101', ID:'0000A', 'value'];
+['current',  '0000B', 'Jun', 'value'] = N: ['current',  ID:'0000A', 'Jun', 'value'] - ['current',  ID:'00001', 'May YTD', 'value'];
+#['current',  ID:'00001', 'P00', 'value'] = N: ['current',  ID:'0000A', 'P00', 'value'];
+['current',  ID:'00001', 'P0', 'value'] = N: ['current',  ID:'0000A', 'P0', 'value'];
+['current',  '0000B', 'value'] = N: IF (!period @= 'P0', ['current',  ID:'0000A', 'value'],['current',  ID:'0000A', 'value'] + ['current',  ID:'00001', 'value']);
+['Actual', 'P0', 'value'] = N: ['current','P0','value'];
+
+
+
+
+
+# Rule 0002
+# total accumulated results - operating result and extraordinary items after tax
+[relatedentity:'-', '7201', '4100001', jurisdiction:'-', 'value'] = N: roundp(
+# TEST A - If scenario equals "current"
+IF(ATTRS('scenario', !scenario, 'no rules')  @<> 'Y',
+# TRUEPART A -
+['total related entity', movementaccount:'-', '9000110', 'total jurisdictions', 'value'],
+# FALSEPART A - allow data entry
+STET), 0);
+
+
+
+# Rule 0003A
+# ID 00001 - JUN AS BALANCING MONTH
+# Jun
+['current', id:'00001', 'Jun', 'value'] = N: ROUNDP(
+['current', ID:'0000A', 'Jun YTD', 'value'] - ['current',  id:'00001', 'May YTD', 'value'],
+0);
+
+# Rule 0003
+# ID 00001 - monthly actuals
+['current', id:'00001', 'value'] = N:
+# TEST A - if HL YEAR is the same as the MA HL YEAR specified in the variables dimension
+# Headline Year governs if it is the Budget Round or MYEFO round.  TRUE its MYEFO FALSE its Budget
+IF(!headline year @= DB('sys_ME variable','ME_headline year','value'),
+# MYEFO Round
+# TRUEPART A - TEST B - if period is less than or equal to MA period in variables dimension
+# Is the period close NB as soon as the headline year matches then P0 will come through
+IF(DIMIX('period', !period) <= DIMIX('period', DB('sys_ME variable', 'ME Actuals Period', 'value')),
+# TRUEPART B - TEST C - If programme is departmental
+# Departmental Programmes have a template that uses Ids 003 and 004 to calculate
+IF(ELISANC('programme', 'Total programmes', !programme) = 1,
+# TRUEPART C its Departmental - get departmental actuals from MA adjustments cube
+roundp( DB('ME reporting', !headline year, 'Actual', !related entity, !spp, !movement account, !programme, !appropriation item, !account, '0000A', !jurisdiction, !period, 'value'),0),
+# FALSEPART C - TEST D - for administered programmes, if account is not cash flow (manually populated)
+IF ((SUBST(!account, 1, 1) @<> '6'),
+# TRUEPART D - get data from MA adjustments cube
+roundp(DB('ME reporting', !headline year, 'Actual', !related entity, !spp, !movement account, !programme, !appropriation item, !account, '0000A', !jurisdiction, !period, 'value'),0),
+# FALSEPART D - allow data entry
+STET)),
+STET),
+STET);
+
+
+# Rule 0004 sys_value
+['sys_value']=N:['value'];
+
+
+
+
+
+
+
+
+
+Feeders;
+# INTERNAL FEEDERS
+# Feeder - rule 0010
+# no feeder required
+
+# Feeder - rule 0001
+['current', ID:'0000A', 'Jun', 'value'] => ['current', '0000B', 'Jun', 'value'];
+['current',  ID:'00001', 'May YTD', 'value'] => ['current',  '0000B', 'Jun', 'value'];
+['current',  ID:'00001', 'value'] => ['current',  '0000B', 'value'];
+['current',  ID:'0000A', 'value'] => ['current',  '0000B', 'value'];
+['current',  '7131', ID:'0000A', 'value'] => ['current',  '7131', '0000B', 'value'];
+['current',  '7161', ID:'0000A', 'value'] => ['current',  '7161', '0000B', 'value'];
+['current',  '7211', ID:'0000A', 'value'] => ['current',  '7211', '0000B', 'value'];
+['current',  '5234101', ID:'0000A', 'value'] => ['current',  '5234101', '0000B', 'value'];
+['current',  ID:'0000A', 'value'] => ['current',  ID:'00001', 'value'];
+['current','P0', 'value'] => ['actual','P0', 'value'];
+['current', ID:'00001', 'May YTD', 'value'] => ['current', ID:'00001', 'Jun', 'value'];
+
+
+# Feeder - rule 0002
+['total related entity', movementaccount:'-', '9000110', 'total jurisdictions', 'value'] => [relatedentity:'-', '7201', '4100001', jurisdiction:'-', 'value'];
+
+
+# Feeder - rule 000
+['Actual', ID:'0000A', 'value'] => ['current', ID:'00001', 'value'];
+
+
+
+
+#Feeder  -  Rule 0004 sys_value
+
+['value']=>['sys_value'];

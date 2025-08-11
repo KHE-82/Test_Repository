@@ -1,0 +1,97 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_Logging - update
+#**** DESCRIPTION:       This process updates the logging cube with Exception error message & comments
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date		Initials	Comments
+#****  ====		======	=========
+#**** 2024   	BL	Initial Revision
+#***********************************************************************************************************************
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+cbLog = 'sys_logging';
+dmProc = '}Clients';
+dmRowID = 'row ID';
+dmSysLogMeas = 'sys_logging measure';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+cbProc = 'sys_process administration';
+dmProc = '}Processes';
+dmProcMeas = 'sys_process administration measure';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+dmClient = '}Clients';
+
+
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, 'GEUS User Name');
+                IF (sUser @= '');
+                          PROCESSQUIT;
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+
+#-------------------------------------------------------------
+#--- ORIGINATING PROCESS COMPLETED WITH ERRORS
+#-------------------------------------------------------------
+#ASCIIOUTPUT('sysLoggingEpilog.txt',  psUser, psProcName, psErrorMsg, psCmt ); 
+
+#*** STEP 1 - GET NEW ID NUMBER ***#
+lCountID = 1;
+#sNewID = '000' | TRIM(NumberToString(CELLGETN (cbLog, psUser, 'Total Rows', 'Used') + lCountID));
+#sNewID = SUBST (sNewID, LONG (sNewID) - 2, 3);
+
+sNewID = NumberToString(CELLGETN (cbLog, psUser, 'Total Rows', 'Used') + 1);
+sNewID = Fill('0',4-Long(sNewID)) | sNewID;
+
+
+CELLPUTN (1, cbLog, psUser, sNewID, 'Used');
+
+
+#*** STEP 2 POST DETAILS TO SYS LOGGING CUBE***#	
+CELLPUTN (1, cbLog, psUser, sNewID, 'Used');
+CELLPUTS (PsProcName, cbLog, psUser, sNewID, 'process name');
+CELLPUTS (psErrorMsg, cbLog, psUser, sNewID, 'error message');
+CELLPUTS (psCmt, cbLog, psUSer, sNewID, 'Comments');
+
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

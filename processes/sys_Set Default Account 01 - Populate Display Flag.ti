@@ -1,0 +1,272 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_Set Default Account 01 - Populate Display Flag
+#**** DESCRIPTION:       This process will populate flags for Accounts that require the movement account in sys_display measure of sys_SetDefaultAcc cube.
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 06/11/2018    KH             Initial Revision
+#**** 2020	KG	  Updated for ROU Accounts
+#**** 09/12/2020	KG 	  Since some agencies movement account hierarchy is different, have to change the starting position for NFA
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE SetDefaultAcc CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+
+cbSDA = 'sys_set default account';
+dmMA = 'movement account';
+dmAcc = 'account';
+dmMeas='sys_set default account measure';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE }ElementAttributes_account CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+cbAcc = '}ElementAttributes_Account';
+dmElAcc = '}ElementAttributes_Account';
+
+ #--------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#--------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+sAEView = sUser | '_SetDefaultAcc';
+sSubset = sAEView;
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CLEAR TARGET VIEW ***#
+#*****************************************************************************************************************************************************
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbAcc, sAEView);
+VIEWDESTROY (cbSDA, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmMeas, sAEView);
+
+SUBSETDESTROY (dmELAcc, sAEView);
+
+
+#-------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+
+# Account
+MDX = '{ EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}, { [' | dmAcc | '].[9000701], [' | dmAcc | '].[9000702]}) }';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Movement Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Set Default Account Measure
+SubsetCreate(dmMeas, sAEView);
+SubsetElementInsert(dmMeas, sAEView, 'sys_display flag', 1);
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** BUILD VIEW
+#-------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbSDA, sAEView);
+VIEWSUBSETASSIGN (cbSDA, sAEView, dmAcc, sAEView);
+VIEWSUBSETASSIGN (cbSDA, sAEView, dmMA, sAEView);
+VIEWSUBSETASSIGN (cbSDA, sAEView, dmMeas, sAEView);
+
+#-------------------------------------------------------------------------------------------------------------
+# *** DEFINE VIEW EXTRACT
+#-------------------------------------------------------------------------------------------------------------
+ViewExtractSkipZeroesSet(cbSDA, sAEView, 0);
+ViewSuppressZeroesSet(cbSDA, sAEView, 0);
+ViewExtractSkipCalcsSet(cbSDA, sAEView, 0);
+
+ViewZeroOut(cbSDA,sAEView);
+
+
+VIEWDESTROY (cbSDA, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmMeas, sAEView);
+
+#*****************************************************************************************************************************************************
+#*** STEP 2 - CREATE SOURCE VIEW ***#
+#*****************************************************************************************************************************************************
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbAcc, sAEView);
+SUBSETDESTROY (dmELAcc, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+
+
+#-------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+#}ElementAttributes_Account
+SubsetCreate(dmElAcc, sAEView);
+SubsetElementInsert(dmElAcc, sAEView, 'movement account required', 1);
+
+#-------------------------------------------------------------------------------------------------------------
+#*** BUILD VIEW
+#-------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbAcc, sAEView);
+VIEWSUBSETASSIGN (cbAcc, sAEView, dmELAcc, sAEView);
+VIEWSUBSETASSIGN (cbAcc, sAEView, dmAcc, sAEView);
+
+
+
+#-------------------------------------------------------------------------------------------------------------
+# *** DEFINE VIEW EXTRACT
+#-------------------------------------------------------------------------------------------------------------
+ViewExtractSkipZeroesSet(cbAcc, sAEView, 0);
+ViewSuppressZeroesSet(cbAcc, sAEView, 0);
+ViewExtractSkipCalcsSet(cbAcc, sAEView, 0);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sAEView;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#-------------------------------------------------------------------------------
+#--- Find account codes if it has the word (Annual Only)
+#-------------------------------------------------------------------------------
+sAccDesc = ATTRS (dmAcc, vsAcc, 'description');
+nSCAN = SCAN('Annual Only', sAccDesc);
+IF (nSCAN > 0);
+	ITEMSKIP;
+ENDIF;
+
+sMeas = 'sys_display flag';
+
+#-------------------------------------------------------------------------------
+#--- Find account codes if it requires MA
+#-------------------------------------------------------------------------------
+
+IF(vsValue @='Y');
+
+#-----------------------------------1-------------------------------------------
+#---  Set default movment account for Equities
+#-------------------------------------------------------------------------------
+
+	IF(ELISANC(dmAcc, '4100000', vsACC)=1);
+
+		ICounter=1;
+		sNewMA= DIMNM(dmMA, DIMIX(dmMA,'7200')+ICounter);
+		ILastCounter=DIMIX(dmMA, '7251');
+		nNewMAIndex= DIMIX( dmMA,sNewMA);
+
+		WHILE(nNewMAIndex <= ILastcounter);
+			IF (ELISANC (dmMA, '7299', sNewMA) = 1); 
+				IF(ATTRS(dmMA,sNewMA,'editable') @<> 'N');
+					IF(CellIsUpdateable(cbSDA, vsAcc,sNewMA, sMeas)=1);
+						CellPutN(1,cbSDA, vsAcc, sNewMA,sMeas);
+					EndIf;
+				EndIf;
+			ENDIF;
+
+			sNewMA=DIMNM(dmMA,DIMIX(dmMA,sNewMA)+ICounter);
+			nNewMAIndex= DIMIX(dmMA,sNewMA);
+		
+		End;
+		
+	EndIf;
+
+
+#-------------------------------------------------------------------------------
+#---  Set default movment account for Non-financial Assets
+#-------------------------------------------------------------------------------
+
+	IF(ELISANC(dmAcc, '5300000', vsAcc)=1);
+
+		ICounter=1;
+		sNewMA= DIMNM(dmMA, DIMIX(dmMA,'7121')+ICounter);
+		ILastCounter=DIMIX(dmMA, '7369');
+		nNewMAIndex= DIMIX( dmMA,sNewMA);
+
+		WHILE(nNewMAIndex <= ILastcounter);
+			IF (ELISANC (dmMA, '7110', sNewMA) = 1); 
+				IF(ATTRS(dmMA,sNewMA,'editable') @<> 'N');
+					IF(CellIsUpdateable(cbSDA, vsAcc,sNewMA, sMeas)=1);
+						CellPutN(1,cbSDA, vsAcc, sNewMA,sMeas);
+					EndIf;
+				EndIf;
+			ENDIF;
+			
+			sNewMA=DIMNM(dmMA,DIMIX(dmMA,sNewMA)+ICounter);
+			nNewMAIndex= DIMIX(dmMA,sNewMA);
+		
+		End;
+		
+	EndIf;
+ELSE;
+
+#-------------------------------------------------------------------------------
+#--- Set nil movement account for Other acounts
+#-------------------------------------------------------------------------------
+	
+	IF(CellIsUpdateable(cbSDA, vsAcc,'-', sMeas)=1);
+		CellPutN(1,cbSDA,vsACC,'-',sMeas);
+
+	EndIF;
+EndIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbAcc, sAEView);
+SUBSETDESTROY (dmELAcc, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+#endregion

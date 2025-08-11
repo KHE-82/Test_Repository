@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_spp agency mapping measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_spp agency mapping measure.hierarchies/sys_spp agency mapping measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_spp agency mapping measure')/Hierarchies('sys_spp agency mapping measure')"
+	}
+}

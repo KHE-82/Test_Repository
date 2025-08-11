@@ -1,0 +1,73 @@
+{
+	"@type":"Process",
+	"Name":"sys_Program Dimension Update - Unwind Archive",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Program Dimension Update - Unwind Archive.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"VarType=32€ColType=827€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForClient":"programme2",
+		"dataSourceNameForServer":"programme2",
+		"subset":"$ArchiveDimension"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psSrcEL",
+			"Prompt":"",
+			"Value":"total programmes",
+			"Type":"String"
+		},
+		{
+			"Name":"psSrcPar",
+			"Prompt":"",
+			"Value":"Not Required",
+			"Type":"String"
+		},
+		{
+			"Name":"psSrcSuffix",
+			"Prompt":"",
+			"Value":"Archive 1",
+			"Type":"String"
+		},
+		{
+			"Name":"psTarEL",
+			"Prompt":"",
+			"Value":"Not Required",
+			"Type":"String"
+		},
+		{
+			"Name":"psTarPar",
+			"Prompt":"",
+			"Value":"Not Required",
+			"Type":"String"
+		},
+		{
+			"Name":"psMethod",
+			"Prompt":"",
+			"Value":"Archive",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vsElement",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		}
+	]
+}

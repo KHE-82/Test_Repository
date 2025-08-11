@@ -1,0 +1,17 @@
+#region Prolog
+sDir_attr = './model_upload/git/attribute/';
+sPrc = 'Git Import Attributes';
+
+vFile = WildcardFileSearch( sDir_attr | '*', '' );
+
+While( vFile @<>'');
+    ExecuteProcess( sPrc, 'pFile', vFile,'pDir',sDir_attr );
+    vFile = WildcardFileSearch(  sDir_attr | '*', vFile );
+End;
+
+
+
+
+
+
+#endregion

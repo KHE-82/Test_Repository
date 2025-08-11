@@ -1,0 +1,53 @@
+{
+	"@type":"Process",
+	"Name":"sys_Set Default Account 02 - Update GEUS Account Subset",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Set Default Account 02 - Update GEUS Account Subset.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€",
+		"VarType=33€ColType=827€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForClient":"sys_set default account",
+		"dataSourceNameForServer":"sys_set default account",
+		"view":"Admin_SetDefaultAcc02"
+	},
+	"Parameters":[],
+	"Variables":
+	[
+		{
+			"Name":"vsAcc",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsMA",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsMeas",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vnValue",
+			"Type":"Numeric",
+			"Position":4,
+			"StartByte":0,
+			"EndByte":0
+		}
+	]
+}

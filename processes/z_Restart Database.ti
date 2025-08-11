@@ -1,0 +1,33 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+sLF = char(13) | char(10);
+sOutputCharacterSet = 'TM1CS_UTF16ESC';
+#sBatchFile = '..\Scripts\Restart.bat';
+sBatchFile = 'Restart.bat';
+sBatchCommand = sLF | 'net stop "IBM Cognos TM1 Server - SData" > nul' | sLF |
+'ping -n 61 127.0.0.1> nul' | sLF |
+#'ping 1.1.1.1 -n 1 -w 10000 > nul' | sLF |
+'net start "IBM Cognos TM1 Server - SData" > nul' | sLF;
+SetOutputCharacterSet(sbatchfile,sOutputCharacterSet);
+textoutput(sBatchFile,sBatchCommand);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+ExecuteCommand(sBatchFile,0);
+#endregion

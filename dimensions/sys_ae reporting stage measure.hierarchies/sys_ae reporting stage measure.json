@@ -1,0 +1,24 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_ae reporting stage measure",
+	"Elements":
+	[
+		{
+			"Name":"Headline year",
+			"Type":"String"
+		},
+		{
+			"Name":"Scenario",
+			"Type":"String"
+		},
+		{
+			"Name":"Description",
+			"Type":"String"
+		},
+		{
+			"Name":"Validation",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

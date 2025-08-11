@@ -1,0 +1,408 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}Beachware_Batch_Report_Items",
+	"Elements":
+	[
+		{
+			"Name":"Item 001",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 002",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 003",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 004",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 005",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 006",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 007",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 008",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 009",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 010",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 011",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 012",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 013",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 014",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 015",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 016",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 017",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 018",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 019",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 020",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 021",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 022",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 023",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 024",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 025",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 026",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 027",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 028",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 029",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 030",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 031",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 032",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 033",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 034",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 035",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 036",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 037",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 038",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 039",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 040",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 041",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 042",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 043",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 044",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 045",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 046",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 047",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 048",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 049",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 050",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 051",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 052",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 053",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 054",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 055",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 056",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 057",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 058",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 059",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 060",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 061",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 062",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 063",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 064",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 065",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 066",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 067",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 068",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 069",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 070",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 071",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 072",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 073",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 074",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 075",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 076",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 077",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 078",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 079",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 080",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 081",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 082",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 083",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 084",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 085",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 086",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 087",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 088",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 089",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 090",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 091",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 092",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 093",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 094",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 095",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 096",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 097",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 098",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 099",
+			"Type":"String"
+		},
+		{
+			"Name":"Item 100",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

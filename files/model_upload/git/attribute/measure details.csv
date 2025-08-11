@@ -1,0 +1,5 @@
+"funding life","AS","picklist","subset:measure fund type:sys_all-n"
+"control type","AS","picklist","static:Administered:Departmental"
+"measure type","AS","picklist","subset:measure type:sys_all-n"
+"bulk processing flag","AS","picklist","static:Y"
+"publication round","AS","picklist","static:PBS:PAES:PSAES:MYEFO"
