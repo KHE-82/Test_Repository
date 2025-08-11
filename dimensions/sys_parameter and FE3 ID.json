@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_parameter and FE3 ID",
+	"Hierarchies@Code.links":
+	[
+		"sys_parameter and FE3 ID.hierarchies/sys_parameter and FE3 ID.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_parameter and FE3 ID')/Hierarchies('sys_parameter and FE3 ID')"
+	}
+}

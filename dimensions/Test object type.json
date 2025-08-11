@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"Test object type",
+	"Hierarchies@Code.links":
+	[
+		"Test object type.hierarchies/Test object type.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('Test object type')/Hierarchies('Test object type')"
+	}
+}

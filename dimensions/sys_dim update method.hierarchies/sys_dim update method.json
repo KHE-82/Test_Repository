@@ -1,0 +1,24 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_dim update method",
+	"Elements":
+	[
+		{
+			"Name":"dim_update_method01",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"dim_update_method02",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"dim_update_method03",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"dim_update_method04",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

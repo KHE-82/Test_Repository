@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_account template status display",
+	"Hierarchies@Code.links":
+	[
+		"sys_account template status display.hierarchies/sys_account template status display.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_account template status display')/Hierarchies('sys_account template status display')"
+	}
+}

@@ -1,0 +1,33 @@
+{
+	"@type":"Hierarchy",
+	"Name":"register status",
+	"Elements":
+	[
+		{
+			"Name":"All",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Open",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Complete",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"All",
+			"ComponentName":"Open",
+			"Weight":1
+		},
+		{
+			"ParentName":"All",
+			"ComponentName":"Complete",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":[]
+}

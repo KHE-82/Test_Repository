@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_process return codes",
+	"Hierarchies@Code.links":
+	[
+		"sys_process return codes.hierarchies/sys_process return codes.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_process return codes')/Hierarchies('sys_process return codes')"
+	}
+}

@@ -1,0 +1,8 @@
+"dim_update_method01","AA","name_01","Copy"
+"dim_update_method01","AA","name_02","*Insert Source Element into Target Element."
+"dim_update_method02","AA","name_01","Cut"
+"dim_update_method02","AA","name_02","*Remove Source Element from selected Parent and Insert it into the Target Parent Element."
+"dim_update_method03","AA","name_01","Archive"
+"dim_update_method03","AA","name_02","*Based on the selected Hierarchy, Create a new Hierarchy with specified suffix."
+"dim_update_method04","AA","name_01","Delete"
+"dim_update_method04","AA","name_02","*Delete one Archiving Hierarchy as selected."

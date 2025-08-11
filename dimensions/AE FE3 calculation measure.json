@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"AE FE3 calculation measure",
+	"Hierarchies@Code.links":
+	[
+		"AE FE3 calculation measure.hierarchies/AE FE3 calculation measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('AE FE3 calculation measure')/Hierarchies('AE FE3 calculation measure')"
+	}
+}
