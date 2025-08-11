@@ -1,0 +1,8 @@
+"0","AA","description","0 - ProcessExitNormal"
+"5","AA","description","5 - ProcessExitWithMessage"
+"6","AA","description","6 - ProcessExitMinorError"
+"7","AA","description","7 - ProcessExitByBreak"
+"8","AA","description","8 - ProcessExitByQuit"
+"10","AA","description","10 - ProcessExitSeriousError"
+"11","AA","description","11 - ProcessExitOnInit"
+"16","AA","description","16 - ProcessExitByChoresQuit"

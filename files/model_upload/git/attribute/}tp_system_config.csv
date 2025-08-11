@@ -1,0 +1,4 @@
+"IntegratedSecurityMode","AS","ConfigValue","5"
+"AdminHost","AS","ConfigValue","data"
+"ServerCAMURI","AS","ConfigValue","pacam-prod-syd.ca.analytics.ibm.com;https://pacam-prod-syd.ca.analytics.ibm.com/p2pd/servlet/dispatch"
+"ClientCAMURI","AS","ConfigValue","https://dcceew.planning-analytics.cloud.ibm.com/ibmcognos/bi/v1/disp"
