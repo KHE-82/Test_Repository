@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_Parameters Reason",
+	"Alias":"CBMS code and description",
+	"Expression":"{TM1DRILLDOWNMEMBER( {[reason].[sys_Rep Parameters and FE3]}, ALL, RECURSIVE )}"
+}

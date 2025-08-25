@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_report extract measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_report extract measure.hierarchies/sys_report extract measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_report extract measure')/Hierarchies('sys_report extract measure')"
+	}
+}

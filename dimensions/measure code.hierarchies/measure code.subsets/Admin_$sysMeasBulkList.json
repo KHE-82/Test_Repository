@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"Admin_$sysMeasBulkList",
+	"Expression":"{{FILTER({TM1SORT({FILTER( {{FILTER( {[measure code].[Total Measures].Children}, INSTR( [government measures details].([Headline Year].[HL2025-2026],[scenario].[current],[measure details].[sys_status]), \"approved\" ) >=1) }}, INSTR( [government measures details].([Headline Year].[HL2025-2026],[scenario].[current],[measure details].[sys_CBMS Measure Code]), \"\" ) >=1)}, DESC)},[measure code].[current] = \"Y\")},[measure code].[M00000]}"
+}

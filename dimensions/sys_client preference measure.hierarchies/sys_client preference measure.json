@@ -1,0 +1,20 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_client preference measure",
+	"Elements":
+	[
+		{
+			"Name":"old value",
+			"Type":"String"
+		},
+		{
+			"Name":"value",
+			"Type":"String"
+		},
+		{
+			"Name":"validate",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

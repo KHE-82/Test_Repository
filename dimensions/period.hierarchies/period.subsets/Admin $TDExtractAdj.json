@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"Admin $TDExtractAdj",
+	"Expression":"{{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [period] )}, 0)}, [period].[type] = \"annual\")},[0000-0000]}"
+}

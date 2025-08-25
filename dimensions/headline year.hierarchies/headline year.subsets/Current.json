@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"Current",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('headline year')/Hierarchies('headline year')/Elements('HL2025-2026')"
+		}
+	]
+}

@@ -1,0 +1,107 @@
+{
+	"@type":"Hierarchy",
+	"Name":"spp",
+	"Elements":
+	[
+		{
+			"Name":"Total SPP",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"-",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Specific Purpose Payments",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"INT001",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"INT002",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"REP001",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"REP002",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Total SPP",
+			"ComponentName":"-",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total SPP",
+			"ComponentName":"Specific Purpose Payments",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"INT001",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"INT002",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"REP001",
+			"Weight":1
+		},
+		{
+			"ParentName":"Specific Purpose Payments",
+			"ComponentName":"REP002",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"spp.subsets/Admin $TDExtractAdj.json",
+		"spp.subsets/all-n.json",
+		"spp.subsets/sys_ACMA.json",
+		"spp.subsets/sys_adj No SPP.json",
+		"spp.subsets/sys_AGD.json",
+		"spp.subsets/sys_all-n.json",
+		"spp.subsets/sys_Austrade.json",
+		"spp.subsets/sys_DAWE.json",
+		"spp.subsets/sys_Defence.json",
+		"spp.subsets/sys_DESE.json",
+		"spp.subsets/sys_DISER.json",
+		"spp.subsets/sys_DITRDC.json",
+		"spp.subsets/sys_DVA.json",
+		"spp.subsets/sys_Finance.json",
+		"spp.subsets/sys_Health.json",
+		"spp.subsets/sys_Homeaffairs.json",
+		"spp.subsets/sys_NIAA.json",
+		"spp.subsets/sys_NRRA.json",
+		"spp.subsets/sys_PMC.json",
+		"spp.subsets/sys_print.json",
+		"spp.subsets/sys_Social Services.json",
+		"spp.subsets/sys_Treasury_ASIC.json",
+		"spp.subsets/sys_Treasury_CDRD.json",
+		"spp.subsets/sys_Treasury_FHOB.json",
+		"spp.subsets/sys_Treasury_FSD.json",
+		"spp.subsets/sys_Treasury_GRA.json",
+		"spp.subsets/sys_Treasury_GST.json",
+		"spp.subsets/sys_Treasury_INFRA.json",
+		"spp.subsets/sys_Treasury_JHardieLoan.json",
+		"spp.subsets/sys_Treasury_LMPD.json",
+		"spp.subsets/sys_Treasury_NSPPs.json",
+		"spp.subsets/sys_Treasury_OtherGRA.json",
+		"spp.subsets/sys_Treasury_RIPD.json",
+		"spp.subsets/sys_Treasury_SPD.json",
+		"spp.subsets/sys_Treasury_SPP685.json",
+		"spp.subsets/sys_Treasury_SRG.json"
+	]
+}

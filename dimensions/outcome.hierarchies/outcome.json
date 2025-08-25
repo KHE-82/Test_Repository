@@ -1,0 +1,48 @@
+{
+	"@type":"Hierarchy",
+	"Name":"outcome",
+	"Elements":
+	[
+		{
+			"Name":"Total outcomes",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"12385",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"12386",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"12504",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Total outcomes",
+			"ComponentName":"12385",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total outcomes",
+			"ComponentName":"12386",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total outcomes",
+			"ComponentName":"12504",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"outcome.subsets/Admin $TDExtractAdj.json",
+		"outcome.subsets/all-n.json",
+		"outcome.subsets/sys_all-n.json",
+		"outcome.subsets/sys_print.json"
+	]
+}

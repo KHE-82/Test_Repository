@@ -1,0 +1,16 @@
+{
+	"@type":"Subset",
+	"Name":"Default",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('Total Programmes')"
+		},
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('Administered Programmes')"
+		},
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('Departmental Programmes')"
+		}
+	]
+}

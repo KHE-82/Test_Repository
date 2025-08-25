@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"Admin $TDExtractAdj",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('Departmental Programmes')"
+		}
+	]
+}

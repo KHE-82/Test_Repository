@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_ME_extract row id",
+	"Hierarchies@Code.links":
+	[
+		"sys_ME_extract row id.hierarchies/sys_ME_extract row id.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_ME_extract row id')/Hierarchies('sys_ME_extract row id')"
+	}
+}

@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"Admin_sys_meas_list",
+	"Expression":"{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [ measure code] )}, 0)}, [ measure code ].[Non-Measure] = \"\")}"
+}

@@ -1,0 +1,40 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_application measure",
+	"Elements":
+	[
+		{
+			"Name":"Caption Name",
+			"Type":"String"
+		},
+		{
+			"Name":"Caption",
+			"Type":"String"
+		},
+		{
+			"Name":"Workbook Name",
+			"Type":"String"
+		},
+		{
+			"Name":"Workbook",
+			"Type":"String"
+		},
+		{
+			"Name":"Worksheet Name",
+			"Type":"String"
+		},
+		{
+			"Name":"Worksheet",
+			"Type":"String"
+		},
+		{
+			"Name":"Key Words",
+			"Type":"String"
+		},
+		{
+			"Name":"Worksheet description",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

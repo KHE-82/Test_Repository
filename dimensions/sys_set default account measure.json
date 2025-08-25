@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_set default account measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_set default account measure.hierarchies/sys_set default account measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_set default account measure')/Hierarchies('sys_set default account measure')"
+	}
+}

@@ -1,0 +1,20 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_Database",
+	"Elements":
+	[
+		{
+			"Name":"geus",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Import",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Costings",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

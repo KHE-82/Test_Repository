@@ -1,0 +1,74 @@
+{
+	"@type":"Cube",
+	"Name":"AE adjustments",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('headline year')"
+		},
+		{
+			"@id":"Dimensions('scenario')"
+		},
+		{
+			"@id":"Dimensions('status')"
+		},
+		{
+			"@id":"Dimensions('outcome')"
+		},
+		{
+			"@id":"Dimensions('related entity')"
+		},
+		{
+			"@id":"Dimensions('function')"
+		},
+		{
+			"@id":"Dimensions('reason')"
+		},
+		{
+			"@id":"Dimensions('spp')"
+		},
+		{
+			"@id":"Dimensions('measure code')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')"
+		},
+		{
+			"@id":"Dimensions('movement account')"
+		},
+		{
+			"@id":"Dimensions('appropriation item')"
+		},
+		{
+			"@id":"Dimensions('programme')"
+		},
+		{
+			"@id":"Dimensions('account')"
+		},
+		{
+			"@id":"Dimensions('id')"
+		},
+		{
+			"@id":"Dimensions('jurisdiction')"
+		},
+		{
+			"@id":"Dimensions('period')"
+		}
+	],
+	"Rules@Code.link":"AE adjustments.rules",
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('period')"
+	},
+	"TimeDimension":
+	{
+		"@id":"Dimensions('headline year')"
+	},
+	"Views@Code.links":
+	[
+		"AE adjustments.views/Admin $TDExtractAdj.json",
+		"AE adjustments.views/Default.json",
+		"AE adjustments.views/sys_baseline_load.json",
+		"AE adjustments.views/sys_baseline_load_reco.json"
+	]
+}

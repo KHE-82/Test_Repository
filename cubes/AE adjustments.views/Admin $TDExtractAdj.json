@@ -1,0 +1,178 @@
+{
+	"@type":"NativeView",
+	"Name":"Admin $TDExtractAdj",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('period')/Hierarchies('period')/Subsets('Admin $TDExtractAdj')"
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Subsets('Admin $TDExtractAdj')"
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('headline year')/Hierarchies('headline year')/Subsets('Admin $TDExtractAdj')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('headline year')/Hierarchies('headline year')/Elements('HL2025-2026')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('scenario')/Hierarchies('scenario')/Subsets('Admin $TDExtractAdj')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('current')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('status')/Hierarchies('status')/Subsets('Admin $TDExtractAdj')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('status')/Hierarchies('status')/Elements('Total approved')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('outcome')/Hierarchies('outcome')/Subsets('Admin $TDExtractAdj')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('outcome')/Hierarchies('outcome')/Elements('Total outcomes')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('related entity')/Hierarchies('related entity')/Subsets('Admin $TDExtractAdj')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('Total related entity')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('function')/Hierarchies('function')/Subsets('Admin $TDExtractAdj')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('function')/Hierarchies('function')/Elements('Total functions')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('reason')/Hierarchies('reason')/Subsets('Admin $TDExtractAdj')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Total reason')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('spp')/Hierarchies('spp')/Subsets('Admin $TDExtractAdj')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('Total SPP')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('measure code')/Hierarchies('measure code')/Subsets('Admin $TDExtractAdj')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('Total Measures')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Subsets('Admin $TDExtractAdj')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Total approp types')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('movement account')/Hierarchies('movement account')/Subsets('Admin $TDExtractAdj')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('Total movement')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Subsets('Admin $TDExtractAdj')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('Total approp item')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('programme')/Hierarchies('programme')/Subsets('Admin $TDExtractAdj')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('Departmental Programmes')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('account')/Hierarchies('account')/Subsets('Admin $TDExtractAdj')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('account')/Hierarchies('account')/Elements('1111001')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('id')/Hierarchies('id')/Subsets('Admin $TDExtractAdj')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('id')/Hierarchies('id')/Elements('Total IDs')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":false,
+	"SuppressEmptyRows":false,
+	"FormatString":"0.00"
+}

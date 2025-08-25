@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"Admin $TDExtractAdj",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('function')/Hierarchies('function')/Elements('Total functions')"
+		}
+	]
+}

@@ -1,0 +1,32 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_client favourite application measure",
+	"Elements":
+	[
+		{
+			"Name":"flag",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Caption Name",
+			"Type":"String"
+		},
+		{
+			"Name":"Worksheet description",
+			"Type":"String"
+		},
+		{
+			"Name":"Caption",
+			"Type":"String"
+		},
+		{
+			"Name":"Workbook",
+			"Type":"String"
+		},
+		{
+			"Name":"Worksheet",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}
