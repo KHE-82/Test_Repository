@@ -1,0 +1,24 @@
+{
+	"@type":"Cube",
+	"Name":"sys_favourite mapping",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('favourites_id')"
+		},
+		{
+			"@id":"Dimensions('programme')"
+		},
+		{
+			"@id":"Dimensions('sys_favourite mapping measure')"
+		}
+	],
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('sys_favourite mapping measure')"
+	},
+	"Views@Code.links":
+	[
+		"sys_favourite mapping.views/Default.json"
+	]
+}

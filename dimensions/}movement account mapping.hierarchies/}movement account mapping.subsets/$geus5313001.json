@@ -1,0 +1,22 @@
+{
+	"@type":"Subset",
+	"Name":"$geus5313001",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7121')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7125')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7132')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7153')"
+		},
+		{
+			"@id":"Dimensions('}movement account mapping')/Hierarchies('}movement account mapping')/Elements('7156')"
+		}
+	]
+}

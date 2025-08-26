@@ -1,0 +1,29 @@
+{
+	"@type":"Subset",
+	"Name":"sys_Rep Measure Resourcing",
+	"Alias":"code and description",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('sys_Meas Movement Account')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('-')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7206')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7209')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7593')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7597')"
+		},
+		{
+			"@id":"Dimensions('movement account')/Hierarchies('movement account')/Elements('7599')"
+		}
+	]
+}

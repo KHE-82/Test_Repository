@@ -1,0 +1,211 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE Auth Adj - Authorise Adjustment
+#**** DESCRIPTION:        This process will change the status of the selected adjustment
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    KG             Initial Revision
+#**** 2020	KG	  Added approved non-flatfile - unbalanced
+#**** 2020	KG	Updated process to include group adjustments to send data
+#***********************************************************************************************************************
+
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT GROUPS CUBE
+#******************************************************************************************************************
+cbGroups = '}ClientGroups';
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS
+#******************************************************************************************************************
+cbID = 'AE id details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmID = 'id';
+dmIDMeas = 'id measure';
+
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+# **** GET DATE VALUES AND POST USER AND DATE STAMP
+#******************************************************************************************************************
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+
+sDay = TRIM(SUBST(sDNow, 1,2));
+
+IF (LONG (sDay) = 1);
+	sDay = '0' | sDay;
+ELSE;
+	sDay = sDay;
+ENDIF;
+
+sMonth = TRIM(SUBST(sMNow, 1,2));
+
+IF (LONG (sMonth) = 1);
+	sMonth = '0' | sMonth;
+ELSE;
+	sMonth = sMonth;
+ENDIF;
+
+sYear = TRIM(SUBST(sYNow, 1,4));
+sNow = sDay | '/' | sMonth | '/' | sYear;
+
+#******************************************************************************************************************
+#*** POPULATE ID DETAILS WITH UPDATED STATUS
+#******************************************************************************************************************
+sOldComment = CELLGETS(cbID, curHLYear, curScenario, psID, 'approver comments');
+
+IF (psComment @<> '');
+	psComment = sUser | ' ' | sNow | ' - ' | psComment;
+	sComment = sOldComment | ' ; ' | psComment;
+ELSE;
+	sComment = sOldComment;
+ENDIF;
+
+IF (psStatus @= 'unauthorised');
+	CELLPUTS ('unauthorised', cbID, curHLYear, curScenario, psID, 'status');
+
+ENDIF;
+
+
+IF (psStatus @= 'draft');
+	CELLPUTS ('draft', cbID, curHLYear, curScenario, psID, 'status');
+	CELLPUTS (sUser, cbID, curHLYear, curScenario, psID, 'Submitted By');
+	CELLPUTS (sNow, cbID, curHLYear, curScenario, psID, 'submitted date');
+
+	CELLPUTS ('', cbID, curHLYear, curScenario, psID, 'authorised by');
+	CELLPUTS ('', cbID, curHLYear, curScenario, psID, 'authorised date');
+ENDIF;
+
+IF (psStatus @= 'submitted');
+	CELLPUTS ('submitted', cbID, curHLYear, curScenario, psID, 'status');
+	CELLPUTS (sUser, cbID, curHLYear, curScenario, psID, 'Submitted By');
+	CELLPUTS (sNow, cbID, curHLYear, curScenario, psID, 'submitted date');
+ENDIF;
+
+
+IF (psStatus @= 'approved');
+	CELLPUTS ('approved', cbID, curHLYear, curScenario, psID, 'status');
+	CELLPUTS (sUser, cbID, curHLYear, curScenario, psID, 'Authorised By');
+	CELLPUTS (sNow, cbID, curHLYear, curScenario, psID, 'authorised date');
+ENDIF;
+
+IF (psStatus @= 'approved non-flat file');
+	CELLPUTS ('approved non-flat file', cbID, curHLYear, curScenario, psID, 'status');
+	CELLPUTS (sUser, cbID, curHLYear, curScenario, psID, 'Authorised By');
+	CELLPUTS (sNow, cbID, curHLYear, curScenario, psID, 'authorised date');
+ENDIF;
+
+IF (psStatus @= 'CBMS');
+	CELLPUTS ('CBMS', cbID, curHLYear, curScenario, psID, 'status');
+	CELLPUTS (sUser, cbID, curHLYear, curScenario, psID, 'Authorised By');
+	CELLPUTS (sNow, cbID, curHLYear, curScenario, psID, 'authorised date');
+ENDIF;
+
+IF (psStatus @= 'approved - unbalanced');
+	CELLPUTS ('approved', cbID, curHLYear, curScenario, psID, 'status');
+	CELLPUTS (sUser, cbID, curHLYear, curScenario, psID, 'Authorised By');
+	CELLPUTS (sNow, cbID, curHLYear, curScenario, psID, 'authorised date');
+ENDIF;
+
+
+IF (psStatus @= 'approved non-flat file - unbalanced');
+	CELLPUTS ('approved non-flat file', cbID, curHLYear, curScenario, psID, 'status');
+	CELLPUTS (sUser, cbID, curHLYear, curScenario, psID, 'Authorised By');
+	CELLPUTS (sNow, cbID, curHLYear, curScenario, psID, 'authorised date');
+ENDIF;
+
+
+
+IF (psStatus @= 'unbalanced');
+	CELLPUTS ('unbalanced', cbID, curHLYear, curScenario, psID, 'status');
+	CELLPUTS (sUser, cbID, curHLYear, curScenario, psID, 'Submitted By');
+	CELLPUTS (sNow, cbID, curHLYear, curScenario, psID, 'submitted date');
+
+	CELLPUTS ('', cbID, curHLYear, curScenario, psID, 'authorised by');
+	CELLPUTS ('', cbID, curHLYear, curScenario, psID, 'authorised date');
+ENDIF;
+
+CELLPUTS (sComment, cbID, curHLYear, curScenario, psID, 'approver comments');
+
+ sAdjType = CELLGETS (cbID, curHLYear, curScenario, psID, 'Adjustment Type');
+IF (sAdjType @= 'Group');
+	IF (psHLYear @= curHLYear & psScenario @= curScenario);
+		IF (psStatus @= 'draft' % psStatus @= 'unauthorised' % psStatus @= 'submitted' % psStatus @= 'unbalanced');
+			sProcess = 'AE_GrpAdj_SendtoAdj';
+			EXECUTEPROCESS (sProcess, 'psUser', psUser, 'psHLYear', psHLYear, 'psScenario', psScenario, 'psID', psID);
+		ENDIF;
+	ENDIF;
+ENDIF;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

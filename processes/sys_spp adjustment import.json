@@ -1,0 +1,39 @@
+{
+	"@type":"Process",
+	"Name":"sys_spp adjustment import",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_spp adjustment import.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"Admin",
+			"Type":"String"
+		},
+		{
+			"Name":"psSysAg",
+			"Prompt":"",
+			"Value":"DESE",
+			"Type":"String"
+		},
+		{
+			"Name":"psSPP",
+			"Prompt":"",
+			"Value":"SPP502",
+			"Type":"String"
+		},
+		{
+			"Name":"ps1stYr",
+			"Prompt":"",
+			"Value":"2021-2022",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561009150009"
+}

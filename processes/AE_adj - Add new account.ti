@@ -1,0 +1,110 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_adj - Add new account
+#**** DESCRIPTION:       This process will add new accounts to the current adjustment screen
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 02/06/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** DECLARE VARIABLES CURRENT CUBE ***#
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmstatus = 'status';
+dmRA = 'related entity';
+dmReas = 'reason';
+dmMeasCode = 'measure code';
+dmSPP = 'spp';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+dmVar = 'variables';
+dmClients = '}Clients';
+
+cbID = 'AE id details';
+
+dmMAMap = '}movement account mapping';
+
+#*** DECLARE VARIABLES ***#
+curHLYear = ATTRS(dmVar, 'headline year', 'value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sUser = TM1User();
+sStatus = 'data';
+sNewID = ATTRS(dmClients, sUser, 'geus_id');
+
+
+#*** GET PRINCIPAL NAME OF ELEMENT ***#
+psAcc = DIMENSIONELEMENTPRINCIPALNAME (dmAcc, psAcc);
+psRE = DIMENSIONELEMENTPRINCIPALNAME (dmRA, psRE);
+
+sDefaultJur = ATTRS(dmVar, 'No Jur', 'value');
+sDefaultMA = ATTRS(dmVar, 'No MA', 'value');
+sMASubset = '$geus' | psAcc;
+
+#*** DECLARE VARIABLES USED TO POPULATE ID IN AE CUBE ***#
+sProg = CELLGETS (cbID, curHLYear, curScenario, sNewID, snProg | ' code');
+sReason = CELLGETS (cbID, curHLYear, curScenario, sNewID, 'reason');
+sMeasure = CELLGETS (cbID, curHLYear, curScenario, sNewID, 'measure');
+IF (sMeasure @= '');
+     #*** NO MEASURE CODE ***#
+     sMeasure= 'M00000';
+ENDIF;
+sOutcome = CELLGETS (cbID, curHLYear, curScenario, sNewID, 'outcome');
+sFunc = CELLGETS (cbID, curHLYear, curScenario, sNewID, 'function');
+sItem = CELLGETS (cbID, curHLYear, curScenario, sNewID, 'appropriation item');
+sType = CELLGETS (cbID, curHLYear, curScenario, sNewID, 'appropriation type');
+sSPP = CELLGETS (cbID, curHLYear, curScenario, sNewID, 'spp');
+sPeriod = '0000-0000';
+
+#**************************************
+
+#IF (psValidation @='FAIL');
+#     PROCESSQUIT;
+#ENDIF;
+
+
+#*** VALIDATION CHECKS ***#
+IF (DIMIX(dmJur, psJur) = 0);
+    # PROCESSQUIT;
+ENDIF;
+
+ASCIIOUTPUT ('hhh.txt', psID, psAcc, psMA, psRE, psJur);
+IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, sStatus, sOutcome,  psRE,  sFunc, sReason,sSPP, sMeasure,  sType, psMA, sItem, sProg, psAcc, sNewID, psJur, sPeriod) = 1);
+     CELLPUTN (1, cbAE, curHLYear, curScenario, sStatus, sOutcome, psRE, sFunc, sReason, sSPP, sMeasure,  sType, psMA, sItem, sProg, psAcc, sNewID, psJur, sPeriod);
+ASCIIOUTPUT ('hhaaah.txt', psID, psAcc, psMA, psRE, psJur);
+ENDIF;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

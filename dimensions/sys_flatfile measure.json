@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_flatfile measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_flatfile measure.hierarchies/sys_flatfile measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_flatfile measure')/Hierarchies('sys_flatfile measure')"
+	}
+}

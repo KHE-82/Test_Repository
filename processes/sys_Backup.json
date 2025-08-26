@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"sys_Backup",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Backup.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pwait",
+			"Prompt":"",
+			"Value":0,
+			"Type":"Numeric"
+		}
+	],
+	"Variables":[],
+	"UID": "175610087000014"
+}

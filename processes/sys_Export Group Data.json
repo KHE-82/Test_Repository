@@ -1,0 +1,39 @@
+{
+	"@type":"Process",
+	"Name":"sys_Export Group Data",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Export Group Data.ti",
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForServer":"}ClientGroups",
+		"dataSourceNameForClient":"}ClientGroups",
+		"view":"}segd_src"
+	},
+	"Parameters":[],
+	"Variables":
+	[
+		{
+			"Name":"vsClient",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsGroup",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsValue",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "175610087500016"
+}

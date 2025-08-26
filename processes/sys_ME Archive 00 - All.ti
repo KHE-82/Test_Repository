@@ -1,0 +1,87 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_ME Archive 00 - All
+#**** DESCRIPTION:       This process is used to archive the Monthly Estimates Profiles
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 23/05/2018    KG             Initial Revision
+#***********************************************************************************************************************
+
+sUser = TM1User();
+textoutput('para.txt', psSourceHLYear, psTargetHLYear, psSourceScenario,psTargetScenario);
+
+#--------------------------------------------------------------------------------------------------
+#--- CHECK IF SOURCE AND TARGET ARE SAME
+#--------------------------------------------------------------------------------------------------
+sSource = psSourceHLYear | psSourceScenario;
+sTarget = psTargetHLYear | psTargetScenario;
+
+IF (sSource @= sTarget);
+	PROCESSERROR;
+ELSE;
+
+	#--------------------------------------------------------------------------
+	#--- Archive ME Reporting Cube
+	#--------------------------------------------------------------------------
+	sProcess = 'sys_ME Archive 01 - Archive ME Reporting Cube';
+	EXECUTEPROCESS (sProcess, 
+		'psUser', sUser,
+		'psSourceHLYear', psSourceHLYear,
+		'psSourceScenario', psSourceScenario,
+		'psTargetHLYear', psTargetHLYear,
+		'psTargetScenario', psTargetScenario);
+
+	#--------------------------------------------------------------------------
+	#--- Clear 'CURRENT' scenario for ME Reporting CUbe
+	#--------------------------------------------------------------------------
+	sProcess = 'sys_ME Archive 02 - Clear Current ME Reporting Cube';
+	EXECUTEPROCESS (sProcess, 
+		'psUser', sUser,
+		'psSourceHLYear', psSourceHLYear,
+		'psSourceScenario', psSourceScenario,
+		'psTargetHLYear', psTargetHLYear,
+		'psTargetScenario', psTargetScenario);
+
+	#--------------------------------------------------------------------------
+	#--- Archive ME BALANCE SHEET CUBE
+	#--------------------------------------------------------------------------
+	sProcess = 'sys_ME Archive 03 - Archive ME Balance Sheet Cube';
+	EXECUTEPROCESS (sProcess, 
+		'psUser', sUser,
+		'psSourceHLYear', psSourceHLYear,
+		'psSourceScenario', psSourceScenario,
+		'psTargetHLYear', psTargetHLYear,
+		'psTargetScenario', psTargetScenario);
+
+
+ENDIF;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

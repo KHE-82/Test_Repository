@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"sys_ae favourites - create temp account id",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_ae favourites - create temp account id.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561008630006"
+}

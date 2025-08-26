@@ -1,0 +1,109 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              sys_AE_Parameters 00 - Start
+#**** DESCRIPTION:       This process runs all processes associated to FE3 and indexation
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 12/05/2014    KG             Initial Revision
+#**** 2019	KG	Update for NEW GEUS
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** PROCESS 01 - Transfer AE Adj to Calculation Cube
+#---------------------------------------------------------------------------------------------------------------------------
+sProcess = 'sys_AE_Parameters 01 - Transfer to Calculation Cube';
+EXECUTEPROCESS (sProcess, 
+	'psUser', psUser,
+	'psProg', psProg,
+	'psFE2Year', psFE2Year,
+	'psFE3Year', psFE3Year,
+	'psID', psID);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** PROCESS 02 - Copy FE2 Data
+#---------------------------------------------------------------------------------------------------------------------------
+sProcess = 'sys_AE_Parameters 02 - FE3 Step 01 - Copy FE2';
+EXECUTEPROCESS (sProcess, 
+	'psUser', psUser,
+	'psProg', psProg,
+	'psFE2Year', psFE2Year,
+	'psFE3Year', psFE3Year);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** PROCESS 03 - Reverse Any Terminating Measures
+#---------------------------------------------------------------------------------------------------------------------------
+sProcess = 'sys_AE_Parameters 03 - FE3 Step 02 - Reverse Terminating Measures';
+EXECUTEPROCESS (sProcess, 
+	'psUser', psUser,
+	'psProg', psProg,
+	'psFE2Year', psFE2Year,
+	'psFE3Year', psFE3Year);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** PROCESS 04 - Update Existing FE3 value
+#---------------------------------------------------------------------------------------------------------------------------
+sProcess = 'sys_AE_Parameters 04 - FE3 Step 03 - Update Existing FE3';
+EXECUTEPROCESS (sProcess, 
+	'psUser', psUser,
+	'psProg', psProg,
+	'psFE2Year', psFE2Year,
+	'psFE3Year', psFE3Year);
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

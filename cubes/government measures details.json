@@ -1,0 +1,32 @@
+{
+	"@type":"Cube",
+	"Name":"government measures details",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('headline year')"
+		},
+		{
+			"@id":"Dimensions('scenario')"
+		},
+		{
+			"@id":"Dimensions('measure code')"
+		},
+		{
+			"@id":"Dimensions('measure details')"
+		}
+	],
+	"Rules@Code.link":"government measures details.rules",
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('measure details')"
+	},
+	"TimeDimension":
+	{
+		"@id":"Dimensions('headline year')"
+	},
+	"Views@Code.links":
+	[
+		"government measures details.views/Default.json"
+	]
+}

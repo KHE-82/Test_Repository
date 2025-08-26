@@ -1,0 +1,307 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_GrpAdj_CopyExpToCash
+#**** DESCRIPTION:       This process will clear out all the cash payment data and populate it with the expense values
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 20/06/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+snProg = 'programme';
+cbAE = 'AE group adjustment entry';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmRE = 'related entity';
+dmMeasCode = 'measure code';
+dmProg = snProg;
+dmAccType = 'account type';
+dmAccTemp = 'account template';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+dmGrpMeas = 'group adjustment measure';
+
+#*** DECLARE ACCOUNT TEMPLATE CUBE
+cbAccTemp = 'AE account template';
+dmAccTempRecType = 'account template record type';
+dmAcc = 'account';
+dmMA = 'movement account';
+dmAccTempMeas = 'account template measure';
+
+
+#*** OTHER DIMENSIONS ***#
+dmOC = 'outcome';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmAcc = 'account';
+
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+cbProg = snProg | ' details';
+
+#*** DECLARE ID DETAILS CUBE DIMENSIONS
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+# *** IDENTIFY CURRENT USER ***#
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sUser) + 1;
+     sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+     sUser = TM1User();
+ENDIF;
+
+sObject  = sUser | '_$EditView';
+sAEView = sUser | '_$EditView';
+
+#*** RETRIEVE ID DETAILS ***#
+sOutcome = CellGetS(cbID, psHLYear, psScenario, psID, 'outcome');
+sFunction = CellGetS(cbID, psHLYear, psScenario, psID, 'function');
+sReason = CellGetS(cbID, psHLYear, psScenario, psID, 'reason');
+sSPP = CellGetS(cbID, psHLYear, psScenario, psID, 'SPP');
+sAppropType = CellGetS(cbID, psHLYear, psScenario, psID, 'appropriation type');
+sAppropItem = CellGetS(cbID, psHLYear, psScenario, psID, 'appropriation item');
+sProg = CellGetS(cbID, psHLYear, psScenario, psID, snProg | ' code');
+sMeasureCode = CellGetS(cbID, psHLYear, psScenario, psID, 'measure');
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CREATE TARGET VIEW TO CLEAR CASH DATA ***#
+
+sCashAccType = 'Cash Payment';
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmAccType, sAEView);
+SUBSETDESTROY (dmAccTemp, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+SUBSETDESTROY (dmGrpMeas, sAEView);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sAEView);
+SubsetElementInsert(dmHLYear, sAEView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sAEView);
+SubsetElementInsert(dmScenario, sAEView, psScenario, 1);
+
+# Status
+SubsetCreate(dmStatus, sAEView);
+SubsetElementInsert(dmStatus, sAEView, 'data', 1);
+
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Measure Code
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Account Type
+SubsetCreate(dmAccType, sAEView);
+SubsetElementInsert(dmAccType, sAEView, sCashAccType, 1);
+
+# Account Template
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAccTemp | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# ID
+SubsetCreate(dmID, sAEView);
+SubsetElementInsert(dmID, sAEView, psID, 1);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Period
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}, [' | dmPer | '].[type] = "annual")}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Group Adjustment Measure
+SubsetCreate(dmGrpMeas, sAEView);
+SubsetElementInsert(dmGrpMeas, sAEView, 'value', 1);
+
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbAE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmHLYear, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmScenario, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmStatus, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmRE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMeasCode, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmProg, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmAccType, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmAccTemp, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmID, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmJur, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmPer, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmGrpMeas, sAEView);
+
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmHLYear);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmScenario);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmStatus);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmID);
+
+VIEWCOLUMNDIMENSIONSET (cbAE, sAEView, dmPer, 1);
+
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmStatus, 1);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmProg, 2);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmMeasCode, 3);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmAccType, 4);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmAccTemp, 5);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmRE, 6);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmJur, 7);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmGrpMeas, 7);
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbAE, sAEView, 1);
+ViewSuppressZeroesSet(cbAE, sAEView, 1);
+ViewExtractSkipCalcsSet(cbAE, sAEView, 1);
+
+VIEWZEROOUT (cbAE, sAEView);
+
+#*****************************************************************************************************************************************************
+#*** STEP 2 - CREATE SOURCE VIEW ***#
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmAccType, sAEView);
+
+#*** CREATE SUBSETS ***#
+# Account Type
+SubsetCreate(dmAccType, sAEView);
+SubsetElementInsert(dmAccType, sAEView, 'Expense', 1);
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbAE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmHLYear, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmScenario, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmStatus, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmRE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMeasCode, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmProg, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmAccType, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmAccTemp, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmID, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmJur, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmPer, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmGrpMeas, sAEView);
+
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmHLYear);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmScenario);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmStatus);
+VIEWTITLEDIMENSIONSET (cbAE, sAEView, dmID);
+
+VIEWCOLUMNDIMENSIONSET (cbAE, sAEView, dmPer, 1);
+
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmStatus, 1);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmProg, 2);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmMeasCode, 3);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmAccType, 4);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmAccTemp, 5);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmRE, 6);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmJur, 7);
+VIEWROWDIMENSIONSET (cbAE, sAEView, dmGrpMeas, 7);
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbAE, sAEView, 1);
+ViewSuppressZeroesSet(cbAE, sAEView, 1);
+ViewExtractSkipCalcsSet(cbAE, sAEView, 1);
+
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sAEView;
+
+#*****************************************************************************************************************************************************
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#** FIRST CHECK IF THE ACCOUNT TEMPLATE SELECTED CAN HAVE CASH DATA ENTRY ***#
+
+nCFDataEntryCheck = CELLGETN( cbAccTemp, vsAccTemp, 'data entry', sCashAccType, 'account template', '-', 'flag');
+
+IF (nCFDataEntryCheck = 1);
+	#*****************************************************************************************************************
+	#**** COPY VALUES INTO AE GROUP ADJUSTMENT CUBE 
+	IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, sCashAccType, vsAccTemp, vsID, vsJur, vsPer, vsGrpMeas) = 1);
+	     CELLPUTN (Value, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, sCashAccType, vsAccTemp, vsID, vsJur, vsPer, vsGrpMeas);
+
+	     #*** FLAG THIS LINE
+	     CELLPUTN ( 1, cbAE, vsHLYear, vsScenario, 'data', vsRE, vsMeasCode, vsProg, sCashAccType, vsAccTemp, vsID, vsJur, '0000-0000', 'flag');
+	ENDIF;
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmAccType, sAEView);
+SUBSETDESTROY (dmAccTemp, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+SUBSETDESTROY (dmGrpMeas, sAEView);
+
+#endregion

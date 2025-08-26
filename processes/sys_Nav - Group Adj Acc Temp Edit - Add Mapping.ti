@@ -1,0 +1,110 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_Nav - Group Adj Copy Exp To Cash
+#**** DESCRIPTION:       This process is used for TM1 Web to navigate from Group Adj and Copy Exp To Cash
+#****
+#****		          
+#****                                
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    KG             Initial Revision
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+dmProg = ATTRS(dmVar, 'program dimension name', 'value');
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** STOP PROCESS IF ACCOUNT TEMPLATE IS BLANK
+#******************************************************************************************************************
+IF (psAccTemp @= '');
+	
+	PROCESSQUIT;
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** CHECK IF VALIDATION HAS PASSED
+#******************************************************************************************************************
+IF (psValidationCheck @= 'PASS');
+	sProcess = 'AE_acc_add account mapping to template';
+	EXECUTEPROCESS (sProcess,
+		'psUser', psUser,
+		'psAccTemp', psAccTemp,
+		'psRecType', psRecType,
+		'psAccType', psAccType,
+		'psDRAcc', psDRAcc,
+		'psDRMA', psDRMA,
+		'pnDRFactor', pnDRFactor,
+		'psCRAcc', psCRAcc,
+		'psCRMA', psCRMA,
+		'pnCRFactor', pnCRFactor);
+
+ENDIF;
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

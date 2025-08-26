@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"AE_Generate FE3 Adj 99 - Clear Flags",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_Generate FE3 Adj 99 - Clear Flags.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[],
+	"UID": "17561008410002"
+}

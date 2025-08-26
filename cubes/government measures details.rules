@@ -1,0 +1,175 @@
+FEEDSTRINGS;
+SKIPCHECK;
+# Rule 0000
+# Set used element to zero for zero IDs
+['M00000', 'used'] = N: 0;
+['M00000'] = S: STET;
+
+# Rule 0001 - Populate System Fields
+# STATUS
+['sys_status'] = S: IF (DB('government measures details', !headline year, !scenario, !measure code, 'status') @<> '',
+# TRUE PART A - sys_status derives from status
+DB('government measures details', !headline year, !scenario, !measure code, 'status'),
+# FALSE PART A - STET
+STET);
+
+# Active Status
+['sys_active status'] = S: IF (ATTRS('measure code', !measure code, 'Active') @= 'Y' % ATTRS('measure code', !measure code, 'Active') @= 'y',
+# TRUE PART A - sys_status derives from status
+'ACTIVE',
+# FALSE PART A - STET
+'INACTIVE');
+
+#  sys start date
+['sys_start date'] =S: IF (DB('government measures details', !headline year, !scenario, !measure code, 'start date') @<> '',
+DB('government measures details', !headline year, !scenario, !measure code, 'start date'),
+IF ((DB('government measures details', !headline year, !scenario, !measure code, 'sys_start day') @<> '' % DB('government measures details', !headline year, !scenario, !measure code, 'sys_start month') @<> '' % DB('government measures details', !headline
+year, !scenario, !measure code, 'sys_start year') @<> ''),
+DB('government measures details', !headline year, !scenario, !measure code, 'sys_start day') | '/' | DB('government measures details', !headline year, !scenario, !measure code, 'sys_start month') | '/' | DB('government measures details', !headline year, !
+scenario, !measure code, 'sys_start year'),
+STET));
+
+
+#  sys end date
+['sys_end date'] =S: IF (DB('government measures details', !headline year, !scenario, !measure code, 'end date') @<> '',
+DB('government measures details', !headline year, !scenario, !measure code, 'end date'),
+IF ((DB('government measures details', !headline year, !scenario, !measure code, 'sys_end day') @<> '' % DB('government measures details', !headline year, !scenario, !measure code, 'sys_end month') @<> '' % DB('government measures details', !headline year
+, !scenario, !measure code, 'sys_end year')@<> ''),
+DB('government measures details', !headline year, !scenario, !measure code, 'sys_end day') | '/' | DB('government measures details', !headline year, !scenario, !measure code, 'sys_end month') | '/' | DB('government measures details', !headline year, !scen
+ario, !measure code, 'sys_end year'),
+STET));
+
+# measure type
+['sys_measure type'] = S: IF (DB('government measures details', !headline year, !scenario, !measure code, 'measure type') @<> '',
+# TRUE PART A - sys_status derives from measure type
+DB('government measures details', !headline year, !scenario, !measure code, 'measure type'),
+# FALSE PART A - STET
+STET);
+
+# measure title
+['sys_measure title'] = S: IF (DB('government measures details', !headline year, !scenario, !measure code, 'measure title') @<> '',
+# TRUE PART A - sys_status derives from measure title
+DB('government measures details', !headline year, !scenario, !measure code, 'measure title'),
+# FALSE PART A - STET
+STET);
+
+# measure description
+['sys_measure description'] = S: IF (DB('government measures details', !headline year, !scenario, !measure code, 'measure description') @<> '',
+# TRUE PART A - sys_status derives from measure description
+DB('government measures details', !headline year, !scenario, !measure code, 'measure description'),
+# FALSE PART A - STET
+STET);
+
+# election commitment
+['sys_election commitment'] = S: IF (DB('government measures details', !headline year, !scenario, !measure code, 'election commitment') @<> '',
+# TRUE PART A - sys_status derives from election commitment
+DB('government measures details', !headline year, !scenario, !measure code, 'election commitment'),
+# FALSE PART A - STET
+STET);
+
+# funding life
+['sys_funding life'] = S: IF (DB('government measures details', !headline year, !scenario, !measure code, 'funding life') @<> '',
+# TRUE PART A - sys_status derives from funding life
+DB('government measures details', !headline year, !scenario, !measure code, 'funding life'),
+# FALSE PART A - STET
+STET);
+
+# funding end date
+['sys_funding end date'] = S: IF (DB('government measures details', !headline year, !scenario, !measure code, 'end date') @<> '',
+# TRUE PART A - sys_status derives from end date
+DB('government measures details', !headline year, !scenario, !measure code, 'end date'),
+# FALSE PART A - STET
+STET);
+
+# policy entity
+['sys_policy entity'] = S: IF (DB('government measures details', !headline year, !scenario, !measure code, 'policy entity') @<> '',
+# TRUE PART A - sys_status derives from end date
+DB('government measures details', !headline year, !scenario, !measure code, 'policy entity'),
+# FALSE PART A - STET
+STET);
+
+# sys_current measure flag
+['sys_current measure flag'] = S: IF (DB('government measures details', !headline year, !scenario, !measure code, 'measure title') @<> '', 'Y',STET);
+
+# sys_current measure counter
+['sys_current measure counter'] = N: IF (DB('government measures details', !headline year, !scenario, !measure code, 'sys_counter measure flag') @<> '', STET,1);
+
+
+# sys_measure code
+['sys_measure code'] = S: IF (DB('government measures details', !headline year, !scenario, !measure code, 'measure title') @<>'', !measure code, STET);
+
+# sys_CBMS measure code
+['sys_CBMS Measure Code'] = S: IF (DB('government measures details', !headline year, !scenario, !measure code, 'CBMS Measure Code') @<> '',
+# TRUE PART A - sys_status derives from end date
+DB('government measures details', !headline year, !scenario, !measure code, 'CBMS Measure Code'),
+# FALSE PART A - STET
+STET);
+
+
+# sys_government decision
+['sys_government decision'] = S: IF (DB('government measures details', !headline year, !scenario, !measure code, 'government decision') @<> '',
+# TRUE PART A - sys_status derives from end date
+DB('government measures details', !headline year, !scenario, !measure code, 'government decision'),
+# FALSE PART A - STET
+STET);
+
+# sys_publication book
+['sys_publication book'] = S: DB('government measures details', !headline year, !scenario, !measure code, 'publication round') | ' ' | DB('government measures details', !headline year, !scenario, !measure code, 'publication year');
+
+# sys_display terminating year
+['sys_display terminating year'] = S: IF (DB('government measures details', !headline year, !scenario, !measure code, 'termination year') @<> '',
+# TRUE PART A - sys_status derives from end date
+DB('government measures details', !headline year, !scenario, !measure code, 'termination year'),
+# FALSE PART A - STET
+STET);
+
+# sys_end day
+['sys_end day'] = S: IF (DB('government measures details', !headline year, !scenario, !measure code, 'end date') @<> '',
+# TRUE PART A - sys_status derives from end date
+SUBST(DB('government measures details', !headline year, !scenario, !measure code, 'end date'),1,2),
+# FALSE PART A - STET
+STET);
+
+# sys_end month
+['sys_end month'] = S: IF (DB('government measures details', !headline year, !scenario, !measure code, 'end date') @<> '',
+# TRUE PART A - sys_status derives from end date
+SUBST(DB('government measures details', !headline year, !scenario, !measure code, 'end date'),4,2),
+# FALSE PART A - STET
+STET);
+
+# sys_end year
+['sys_end year'] = S: IF (DB('government measures details', !headline year, !scenario, !measure code, 'end date') @<> '',
+# TRUE PART A - sys_status derives from end date
+SUBST(DB('government measures details', !headline year, !scenario, !measure code, 'end date'),7,4),
+# FALSE PART A - STET
+STET);
+
+FEEDERS;
+# Rule 0001 - Populate System Fields
+['status'] => ['sys_status'];
+['status'] => ['sys_active status'];
+['measure title'] => ['sys_measure title'];
+['measure description'] => ['sys_measure description'];
+['election commitment'] => ['sys_election commitment'];
+['funding life'] => ['sys_funding life'];
+['policy entity'] => ['sys_policy entity'];
+['end date'] => ['sys_funding end date'];
+['measure title'] => ['sys_current measure flag'];
+['measure title'] => ['sys_current measure counter'];
+['measure title'] => ['sys_measure code'];
+['government decision'] => ['sys_government decision'];
+['CBMS Measure Code'] => ['sys_CBMS Measure Code'];
+['publication round'] => ['sys_publication book'];
+['publication year'] => ['sys_publication book'];
+['termination year']=>['sys_display terminating year'];
+['end date'] => ['sys_end day'];
+['end date'] => ['sys_end month'];
+['end date'] => ['sys_end year'];
+
+['end date'] => ['sys_end date'];
+['sys_start day'] => ['sys_start date'];
+['sys_start month'] => ['sys_start date'];
+['sys_start year'] => ['sys_start date'];
+['sys_end day'] => ['sys_end date'];
+['sys_end month'] => ['sys_end date'];
+['sys_end year'] => ['sys_end date'];

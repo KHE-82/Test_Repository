@@ -1,0 +1,25 @@
+{
+	"@type":"Process",
+	"Name":"AE_Load FF Using Account Template 02 - Send data to AE Adj",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_Load FF Using Account Template 02 - Send data to AE Adj.ti",
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForServer":"tmpID",
+		"dataSourceNameForClient":"tmpID",
+		"subset":"All"
+	},
+	"Parameters":[],
+	"Variables":
+	[
+		{
+			"Name":"vsID",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "17561008460001"
+}

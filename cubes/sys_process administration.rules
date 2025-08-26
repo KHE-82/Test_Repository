@@ -1,0 +1,9 @@
+# SKIPCHECK;
+
+# Populate Status Flag
+['status flag'] = S:
+IF (DB ('sys_process administration', !}Processes, 'active flag') = 1,
+IF (DB ('sys_process administration', !}Processes, 'completed flag') = 0,
+'FAILED',
+STET),
+STET);

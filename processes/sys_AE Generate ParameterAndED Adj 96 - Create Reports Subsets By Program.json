@@ -1,0 +1,33 @@
+{
+	"@type":"Process",
+	"Name":"sys_AE Generate ParameterAndED Adj 96 - Create Reports Subsets By Program",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_AE Generate ParameterAndED Adj 96 - Create Reports Subsets By Program.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"Admin",
+			"Type":"String"
+		},
+		{
+			"Name":"psProg",
+			"Prompt":"",
+			"Value":"Administered Programmes",
+			"Type":"String"
+		},
+		{
+			"Name":"psAdjType",
+			"Prompt":"",
+			"Value":"parameter",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561008640003"
+}

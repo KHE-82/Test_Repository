@@ -1,0 +1,17 @@
+#region Prolog
+cbEAVar = '}ElementAttributes_variables';
+
+sUpDir = CellGetS(cbEAVar, 'sys_upload directory','value');
+
+sExDir =CellGetS(cbEAVar, 'sys_ImpFileExceptionLogs','value');
+
+sFile = sUpDir | psFile;
+
+
+DatasourceNameForServer = sFile;
+
+
+#endregion
+#region Metadata
+ASCIIOutput( sExDir |'export_file.csv',v1,v2 );
+#endregion

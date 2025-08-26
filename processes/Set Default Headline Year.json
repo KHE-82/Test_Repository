@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"Set Default Headline Year",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"Set Default Headline Year.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[],
+	"UID": "17561008630001"
+}

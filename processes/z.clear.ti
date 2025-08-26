@@ -1,0 +1,7 @@
+#region Prolog
+ViewCreate( psCube, 'temp', 1 );
+
+
+ViewZeroOut( psCube,'temp' );
+
+#endregion

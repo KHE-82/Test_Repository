@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"sys_Create AE Fast Entry Adjustments Cube",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Create AE Fast Entry Adjustments Cube.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[],
+	"UID": "17561008750007"
+}

@@ -1,0 +1,43 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF(FileExists(pOutputDir) = 0);
+  ItemReject('The path has not been found: ' | pOutputDir);
+ENDIF;
+
+ExecuteProcess('}src_cube_export_all', 'pIncludeControlObjects', 1, 'pIncludeSecurity', 1, 'pOutputDir', pOutputDir);
+ExecuteProcess('}src_dim_export_all', 'pIncludeControlObjects', 1, 'pIncludeSecurity', 1, 'pOutputDir', pOutputDir);
+ExecuteProcess('}src_stats_export', 'pOutputDir', pOutputDir);
+ExecuteProcess('}src_clients_export', 'pOutputDir', pOutputDir);
+
+
+
+
+
+
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+TEXTOUTPUT(pOutputDir | 'Done', TODAY(1) | TIME);
+
+#endregion

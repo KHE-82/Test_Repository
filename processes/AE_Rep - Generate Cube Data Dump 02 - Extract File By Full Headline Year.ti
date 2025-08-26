@@ -1,0 +1,685 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Rep - Generate Cube Data Dump 02 - Extract File By Full Headline Year
+#**** DESCRIPTION:       This process creates a view and creates an extract of the cube data dump
+#****			
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 20/09/2017    KG             Initial Revision
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#******************************************************************************************************************
+# **** GET DATE VALUES AND POST USER AND DATE STAMP
+#******************************************************************************************************************
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+sHNow = TimST( Now, '\h'); 
+sMinNow = TimST( Now, '\i'); 
+sSecNow = TimST( Now, '\s'); 
+
+sSeconds = TRIM(SUBST(sSecNow, 1,2));
+IF (LONG (sSeconds) = 1);
+	sSeconds = '0' | sSeconds;
+ELSE;
+	sSeconds = sSeconds;
+ENDIF;
+
+sMins = TRIM(SUBST(sMinNow, 1,2));
+IF (LONG (sMins) = 1);
+	sMins = '0' | sMins;
+ELSE;
+	sMins = sMins;
+ENDIF;
+
+sHour = TRIM(SUBST(sHNow, 1,2));
+IF (LONG (sHour) = 1);
+	sHour = '0' | sHour;
+ELSE;
+	sHour = sHour;
+ENDIF;
+
+sDay = TRIM(SUBST(sDNow, 1,2));
+
+IF (LONG (sDay) = 1);
+	sDay = '0' | sDay;
+ELSE;
+	sDay = sDay;
+ENDIF;
+
+sMonth = TRIM(SUBST(sMNow, 1,2));
+
+IF (LONG (sMonth) = 1);
+	sMonth = '0' | sMonth;
+ELSE;
+	sMonth = sMonth;
+ENDIF;
+
+sYear = TRIM(SUBST(sYNow, 1,4));
+
+sNow = sYear | sMonth | sDay | sHour | sMins | sSeconds;
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE VARIABLES USED FOR VIEWS
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+
+sView = sUser | ' $CubeExtract';
+sSubset = sView;
+
+sOC = 'Total outcomes';
+sRE = 'Total related entity';
+sFunc = 'Total functions';
+sReason = 'Total reason';
+sSPP = 'Total SPP';
+sMeasCode = 'Total Measures';
+sType = 'Total approp types';
+sMA = 'Total movement';
+sItem = 'Total approp item';
+sID = 'Total IDs';
+sJur = 'Total jurisdictions';
+sProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, psProg);
+
+
+#******************************************************************************************************************
+#***** EXPORT FLAT FILE VARIABLES
+#******************************************************************************************************************
+IF (psScenario @= 'current');
+	sSelStage = ATTRS(dmVar, 'current budget round', 'value');
+ELSE;
+	sSelStage = psScenario;
+ENDIF;
+
+IF (sSelStage @= '');
+	sSelStage = psScenario;
+ENDIF;
+
+MetadataCounter = 0;
+DataCounter = 0;
+lCounter = 0;
+
+sExpDirectory = ATTRS(dmVar, 'save location', 'value');
+#sExpDirectory = '';
+sFileName = sExpDirectory | sUser | ' ' | sProg | ' ' | ' Cube Data Extract ' | psHLYear | ' '  | sNow | '.csv';
+
+
+#***********************************************************************************************************************
+#**** STEP 1 - CREATE SOURCE VIEW
+#**** THIS PROCESS WILL CREATE A SOURCE VIEW
+#***********************************************************************************************************************
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbAE, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmStatus, sSubset);
+SUBSETDESTROY (dmOC, sSubset);
+SUBSETDESTROY (dmRE, sSubset);
+SUBSETDESTROY (dmFunc, sSubset);
+SUBSETDESTROY (dmReason, sSubset);
+SUBSETDESTROY (dmSPP, sSubset);
+SUBSETDESTROY (dmMeasCode, sSubset);
+SUBSETDESTROY (dmType, sSubset);
+SUBSETDESTROY (dmMA, sSubset);
+SUBSETDESTROY (dmItem, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmAcc, sSubset);
+SUBSETDESTROY (dmID, sSubset);
+SUBSETDESTROY (dmJur, sSubset);
+SUBSETDESTROY (dmPer, sSubset);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+# Headline Year
+SUBSETCREATE (dmHLYear, sSubset);
+SUBSETELEMENTINSERT (dmHLYear, sSubset, psHLYear, 1);
+
+# Scenario
+IF (psScenario @<> 'sys_BudgetRound');
+	SUBSETCREATE (dmScenario, sView);
+	SUBSETELEMENTINSERT (dmScenario, sSubset, psScenario, 1);
+ELSE;
+	MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmScenario | '].[' | psScenario | ']}, ALL, RECURSIVE )}, 0)}';
+	SUBSETCREATEBYMDX (sSubset, MDX);
+ENDIF;
+
+
+# Status
+SUBSETCREATE (dmStatus, sSubset);
+SUBSETELEMENTINSERT (dmStatus, sSubset, 'data', 1);
+
+
+# Outcome
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmOC | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Function
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmFunc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Reason
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmReason | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Measure Code
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Appropriation Type
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmType | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Movement account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Appropriation item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Programme
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmProg | '].[' | psProg | ']}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# ID
+IF (psExtractType @= 'Starting Base and Adjustments');
+	IF (psScenario @<> 'sys_BudgetRound');
+		MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmID | '] )}, 0)}';
+		SUBSETCREATEBYMDX (sSubset, MDX);
+	ELSE;
+		MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmID | '] )}, 0)}';
+	#	MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmID | '].[New Adjustments]}, ALL, RECURSIVE )}, 0)}';
+		SUBSETCREATEBYMDX (sSubset, MDX);
+	ENDIF;
+
+ELSE;
+	SUBSETCREATE (dmID, sView);
+	SUBSETELEMENTINSERT (dmID, sSubset, sID, 1);
+ENDIF;
+
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+
+# Period
+SUBSETCREATE (dmPer, sView);
+SUBSETELEMENTINSERT (dmPer, sSubset, '0000-0000', 1);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****BUILD VIEW
+#---------------------------------------------------------------------------------------------------------------------------
+ViewCreate(cbAE, sView);
+
+ViewSubsetAssign(cbAE, sView, dmHLYear, sSubset);
+ViewSubsetAssign(cbAE, sView, dmScenario, sSubset);
+ViewSubsetAssign(cbAE, sView, dmStatus, sSubset);
+ViewSubsetAssign(cbAE, sView, dmOC, sSubset);
+ViewSubsetAssign(cbAE, sView, dmRE, sSubset);
+ViewSubsetAssign(cbAE, sView, dmFunc, sSubset);
+ViewSubsetAssign(cbAE, sView, dmReason, sSubset);
+ViewSubsetAssign(cbAE, sView, dmSPP, sSubset);
+ViewSubsetAssign(cbAE, sView, dmMeasCode, sSubset);
+ViewSubsetAssign(cbAE, sView, dmType, sSubset);
+ViewSubsetAssign(cbAE, sView, dmMA, sSubset);
+ViewSubsetAssign(cbAE, sView, dmItem, sSubset);
+ViewSubsetAssign(cbAE, sView, dmProg, sSubset);
+ViewSubsetAssign(cbAE, sView, dmAcc, sSubset);
+ViewSubsetAssign(cbAE, sView, dmID, sSubset);
+ViewSubsetAssign(cbAE, sView, dmJur, sSubset);
+ViewSubsetAssign(cbAE, sView, dmPer, sSubset);
+
+ViewExtractSkipZeroesSet (cbAE, sView, 1);
+ViewExtractSkipCalcsSet (cbAE, sView, 0);
+ViewExtractSkipRuleValuesSet (cbAE, sView, 0);
+
+
+lHeaderCounter = 0;
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- DEFINE DATA SOURCE
+#---------------------------------------------------------------------------------------------------------------------------
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+asciioutput ('check,txt', vsHLYear);
+#******************************************************************************************************************
+#*** EXTRACT REQUIREMENTS
+
+
+#*** sCol0A = Headline Year
+#*** sCol0B = Stage/Scenario
+#*** sCol0C = ID
+#*** sCol01 = Status
+#*** sCol02 = Outcome
+#*** sCol03 = Related Entity
+#*** sCol04 = Function
+#*** sCol05 = Reason
+#*** sCol06 = Reason Description
+#*** sCol07 = SPP
+#*** sCol08 = Measure Code
+#*** sCol09 = Measure Title
+#*** sCol10 = Appropriation Type
+#*** sCol11 = Movement Account
+#*** sCol12 = Movement Account Description
+#*** sCol13 = Appropriation Item
+#*** sCol14 = Appropriation Item Description
+#*** sCol15 = Programme Code 
+#*** sCol16 = Programme Description
+#*** sCol17 = Account 
+#*** sCol18 = Account Description
+#*** sCol19 = Jurisdiction
+#*** sCol20 = EA
+#*** sCol21 = RB
+#*** sCol22 = NB
+#*** sCol23 = FE1
+#*** sCol24 = FE2
+#*** sCol25 = FE3
+#*** sCol26 = FE4
+#*** sCol27 = FE5
+#*** sCol28 = FE6
+#*** sCol29 = FE7
+#*** sCol30 = FE8
+#*** sCol31 = FE9
+#*** sCol32 = FE10
+#*** sCol33 = FE11
+#*** sCol34 = FE12
+#*** sCol35 = FE13
+#*** sCol36 = Title
+#******************************************************************************************************************
+
+#******************************************************************************************************************
+#*** GET PERIODS
+#******************************************************************************************************************
+
+sHeadlineYearPeriod = SUBST(psHLYear, 3, 9);
+sPer00 = DIMNM(dmPer, DIMIX(dmPer, sHeadlineYearPeriod) -2);
+sPer01 = DIMNM(dmPer, DIMIX(dmPer, sHeadlineYearPeriod) -1);
+sPer02 = sHeadlineYearPeriod;
+sPer03 = DNEXT (dmPer, sPer02);
+sPer04 = DNEXT (dmPer, sPer03);
+sPer05 = DNEXT (dmPer, sPer04);
+sPer06 = DNEXT (dmPer, sPer05);
+sPer07 = DNEXT (dmPer, sPer06);
+sPer08 = DNEXT (dmPer, sPer07);
+sPer09 = DNEXT (dmPer, sPer08);
+sPer10 = DNEXT (dmPer, sPer09);
+sPer11 = DNEXT (dmPer, sPer10);
+sPer12 = DNEXT (dmPer, sPer11);
+sPer13 = DNEXT (dmPer, sPer12);
+sPer14 = DNEXT (dmPer, sPer13);
+sPer15 = DNEXT (dmPer, sPer14);
+sPer16 = DNEXT (dmPer, sPer15);
+
+
+#******************************************************************************************************************
+#*** GET HEADING
+#******************************************************************************************************************
+
+sColHead0A = 'Headline Year';
+sColHead0B = 'Stage';
+sColHead0C = 'ID';
+sColHead01 = 'Status';
+
+
+sColHead02 = 'Outcome';
+sColHead03 = 'Related Entity';
+sColHead04 = 'Function';
+sColHead05 = 'Reason';
+sColHead06 = 'Reason Description';
+sColHead07 = 'SPP';
+sColHead08 = 'Measure Code';
+sColHead09 = 'Measure Title';
+sColHead10 = 'Appropriation Type';
+sColHead11 = 'Movement Account';
+sColHead12 = 'Movement Account Description';
+sColHead13 = 'Appropriation Item';
+sColHead14 = 'Appropriation Item Description';
+sColHead15 = 'Programme Code';
+sColHead16 = 'Programme Description';
+sColHead17 = 'Account';
+sColHead18 = 'Account Description';
+sColHead19 = 'Jurisdiction';
+sColHead20 = sPer00;
+sColHead21 = sPer01;
+sColHead22 = sPer02;
+sColHead23 = sPer03;
+sColHead24 = sPer04;
+sColHead25 = sPer05;
+sColHead26 = sPer06;
+sColHead27 = sPer07;
+sColHead28 = sPer08;
+sColHead29 = sPer09;
+sColHead30 = sPer10;
+sColHead31 = sPer11;
+sColHead32 = sPer12;
+sColHead33 = sPer13;
+sColHead34 = sPer14;
+sColHead35 = sPer15;
+sColHead36 = 'Title';
+
+
+#******************************************************************************************************************
+#*** GET REQUIRED COLUMNS DATA
+#******************************************************************************************************************
+
+#----------------------------------------------
+#---- Column 0A = Headline Year
+#----------------------------------------------
+sCol0A = vsHLYear;
+
+#----------------------------------------------
+#---- Column 0B = Scenario/Stage
+#----------------------------------------------
+IF (vsScenario @= 'current');
+	sCol0B = ATTRS(dmVar, 'current budget round', 'value');
+ELSE;
+	sCol0B = vsScenario;
+ENDIF;
+
+#----------------------------------------------
+#---- Column 0C = ID
+#----------------------------------------------
+sCol0C = '''' | vsID;
+
+#----------------------------------------------
+#---- Column 1
+#----------------------------------------------
+sCol01 = vsStatus;
+
+#----------------------------------------------
+#---- Column 2
+#----------------------------------------------
+sCol02 = vsOC;
+
+#----------------------------------------------
+#---- Column 3
+#----------------------------------------------
+sCol03 = vsRE;
+
+#----------------------------------------------
+#---- Column 4
+#----------------------------------------------
+sCol04 = vsFunc;
+
+#----------------------------------------------
+#---- Column 5
+#----------------------------------------------
+sCol05 = ATTRS (dmReason, vsReason, 'CBMS reason code');
+
+#----------------------------------------------
+#---- Column 6
+#----------------------------------------------
+sCol06 = ATTRS (dmReason, vsReason, 'CBMS');
+
+#----------------------------------------------
+#---- Column 7
+#----------------------------------------------
+sCol07 = vsSPP;
+
+#----------------------------------------------
+#---- Column 8
+#----------------------------------------------
+sCol08 = vsMeasCode;
+
+#----------------------------------------------
+#---- Column 9
+#----------------------------------------------
+sCol09 = ATTRS (dmMeasCode, vsMeasCode, 'CBMS code and description');
+
+#----------------------------------------------
+#---- Column 10
+#----------------------------------------------
+sCol10 = vsType;
+
+#----------------------------------------------
+#---- Column 11
+#----------------------------------------------
+sCol11 = vsMA;
+
+#----------------------------------------------
+#---- Column 12
+#----------------------------------------------
+sCol12 = ATTRS (dmMA, vsMA, 'description');
+
+#----------------------------------------------
+#---- Column 13
+#----------------------------------------------
+sCol13 = vsItem;
+
+#----------------------------------------------
+#---- Column 14
+#----------------------------------------------
+sCol14 = ATTRS (dmItem, vsItem, 'description');
+
+#----------------------------------------------
+#---- Column 15
+#----------------------------------------------
+sCol15 = vsProg;
+
+#----------------------------------------------
+#---- Column 16
+#----------------------------------------------
+sCol16 = ATTRS (dmProg, vsProg, 'description');
+
+#----------------------------------------------
+#---- Column 17
+#----------------------------------------------
+sCol17 = vsAcc;
+
+#----------------------------------------------
+#---- Column 18
+#----------------------------------------------
+sCol18 = ATTRS (dmAcc, vsAcc, 'description');
+
+#----------------------------------------------
+#---- Column 19
+#----------------------------------------------
+sCol19 = vsJur;
+
+#----------------------------------------------
+#---- Column 20  to 35
+#---- EA to FE13 data
+#---- Change statue to psStatus instead of vsStatus
+#--- Change measure to AEMeas rather than vsMeas
+#----------------------------------------------
+
+nValueP00 = ROUNDP(CELLGETN(cbAE, vsHLYear, vsScenario, psStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer00),0);
+nValueP01 = ROUNDP(CELLGETN(cbAE, vsHLYear, vsScenario, psStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer01),0);
+nValueP02 = ROUNDP(CELLGETN(cbAE, vsHLYear, vsScenario, psStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer02),0);
+nValueP03 = ROUNDP(CELLGETN(cbAE, vsHLYear, vsScenario, psStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer03),0);
+nValueP04 = ROUNDP(CELLGETN(cbAE, vsHLYear, vsScenario, psStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer04),0);
+nValueP05 = ROUNDP(CELLGETN(cbAE, vsHLYear, vsScenario, psStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer05),0);
+nValueP06 = ROUNDP(CELLGETN(cbAE, vsHLYear, vsScenario, psStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer06),0);
+nValueP07 = ROUNDP(CELLGETN(cbAE, vsHLYear, vsScenario, psStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer07),0);
+nValueP08 = ROUNDP(CELLGETN(cbAE, vsHLYear, vsScenario, psStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer08),0);
+nValueP09 = ROUNDP(CELLGETN(cbAE, vsHLYear, vsScenario, psStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer09),0);
+nValueP10 = ROUNDP(CELLGETN(cbAE, vsHLYear, vsScenario, psStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer10),0);
+nValueP11 = ROUNDP(CELLGETN(cbAE, vsHLYear, vsScenario, psStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer11),0);
+nValueP12 = ROUNDP(CELLGETN(cbAE, vsHLYear, vsScenario, psStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer12),0);
+nValueP13 = ROUNDP(CELLGETN(cbAE, vsHLYear, vsScenario, psStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer13),0);
+nValueP14 = ROUNDP(CELLGETN(cbAE, vsHLYear, vsScenario, psStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer14),0);
+nValueP15 = ROUNDP(CELLGETN(cbAE, vsHLYear, vsScenario, psStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer15),0);
+nValueP16 = ROUNDP(CELLGETN(cbAE, vsHLYear, vsScenario, psStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer16),0);
+
+IF(ABS(nValueP00) + ABS(nValueP01) + ABS(nValueP02) + ABS(nValueP03) + ABS(nValueP04) + ABS(nValueP05) + ABS(nValueP06) + ABS(nValueP07) + ABS(nValueP08) + ABS(nValueP09) + ABS(nValueP10) +ABS(nValueP11) + ABS(nValueP12) + ABS(nValueP13) + ABS(nValueP14) + ABS(nValueP15) + ABS(nValueP16) = 0);
+#	Itemskip;
+ENDIF; 
+
+
+
+sCol20 = NUMBERTOSTRING (nValueP00);
+sCol21 = NUMBERTOSTRING (nValueP01);
+sCol22 = NUMBERTOSTRING (nValueP02);
+sCol23 = NUMBERTOSTRING (nValueP03);
+sCol24 = NUMBERTOSTRING (nValueP04);
+sCol25 = NUMBERTOSTRING (nValueP05);
+sCol26 = NUMBERTOSTRING (nValueP06);
+sCol27 = NUMBERTOSTRING (nValueP07);
+sCol28 = NUMBERTOSTRING (nValueP08);
+sCol29 = NUMBERTOSTRING (nValueP09);
+sCol30 = NUMBERTOSTRING (nValueP10);
+sCol31 = NUMBERTOSTRING (nValueP11);
+sCol32 = NUMBERTOSTRING (nValueP12);
+sCol33 = NUMBERTOSTRING (nValueP13);
+sCol34 = NUMBERTOSTRING (nValueP14);
+sCol35 = NUMBERTOSTRING (nValueP15);
+
+#----------------------------------------------
+#---- Column 36
+#----------------------------------------------
+IF (vsID @= 'Total IDs');
+	sCol36 = 'Adjusted base';
+ELSE;
+	sCol36 = CELLGETS (cbID, vsHLYear, vsScenario, vsID, 'title');
+ENDIF;
+
+
+#----------------------------------------------
+#---- DO HEADING EXTRACT
+#----------------------------------------------
+IF (lHeaderCounter = 0);
+	ASCIIOUTPUT (sFileName,sColHead0A, sColHead0B, sColHead0C, sColHead01, sColHead02, sColHead03, sColHead04, sColHead05, sColHead06, sColHead07, sColHead08, sColHead09, sColHead10, sColHead11, sColHead12, sColHead13, sColHead14, sColHead15, sColHead16, sColHead17, sColHead18, sColHead19, sColHead20, sColHead21, sColHead22, sColHead23, sColHead24, sColHead25, sColHead26, sColHead27, sColHead28, sColHead29,
+	sColHead30, sColHead31, sColHead32, sColHead33, sColHead34, sColHead35, sColHead36);
+ENDIF;
+
+#----------------------------------------------
+#---- Extract Data
+#----------------------------------------------
+ASCIIOUTPUT (sFileName, sCol0A, sCol0B, sCol0C, sCol01, sCol02, sCol03, sCol04, sCol05, sCol06, sCol07, sCol08, sCol09, sCol10, sCol11, sCol12, sCol13, sCol14, sCol15, sCol16, sCol17, sCol18, sCol19, sCol20, sCol21, sCol22, sCol23, sCol24, sCol25, sCol26, sCol27, sCol28, sCol29,
+sCol30, sCol31, sCol32, sCol33, sCol34, sCol35, sCol36);
+
+lHeaderCounter = lHeaderCounter + 1;
+
+
+
+
+
+
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+IF (1= 1);
+VIEWDESTROY (cbAE, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmStatus, sSubset);
+SUBSETDESTROY (dmOC, sSubset);
+SUBSETDESTROY (dmRE, sSubset);
+SUBSETDESTROY (dmFunc, sSubset);
+SUBSETDESTROY (dmReason, sSubset);
+SUBSETDESTROY (dmSPP, sSubset);
+SUBSETDESTROY (dmMeasCode, sSubset);
+SUBSETDESTROY (dmType, sSubset);
+SUBSETDESTROY (dmMA, sSubset);
+SUBSETDESTROY (dmItem, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmAcc, sSubset);
+SUBSETDESTROY (dmID, sSubset);
+SUBSETDESTROY (dmJur, sSubset);
+SUBSETDESTROY (dmPer, sSubset);
+
+ENDIF;
+
+#endregion

@@ -1,0 +1,15 @@
+FEEDSTRINGS;
+
+#['ME_headline year','value'] =S:
+#''HL' | ATTRS('variables','ME year','value');
+
+
+#['ME year','value'] =S:
+#'ATTRS('variables','ME year','value');
+
+
+#['ME_period','value'] =S:
+#'ATTRS('variables','ME year','value');
+
+
+FEEDERS;

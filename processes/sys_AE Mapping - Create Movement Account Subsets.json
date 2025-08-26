@@ -1,0 +1,46 @@
+{
+	"@type":"Process",
+	"Name":"sys_AE Mapping - Create Movement Account Subsets",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_AE Mapping - Create Movement Account Subsets.ti",
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForServer":"sys_movement account mapping",
+		"dataSourceNameForClient":"sys_movement account mapping",
+		"view":"Admin $sys_MAMap"
+	},
+	"Parameters":[],
+	"Variables":
+	[
+		{
+			"Name":"vsAcc",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsMA",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsFlag",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vnValue",
+			"Type":"Numeric",
+			"Position":4,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "17561008670001"
+}

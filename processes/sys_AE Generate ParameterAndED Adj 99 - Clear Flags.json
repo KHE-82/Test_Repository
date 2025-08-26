@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"sys_AE Generate ParameterAndED Adj 99 - Clear Flags",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_AE Generate ParameterAndED Adj 99 - Clear Flags.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psAdjType",
+			"Prompt":"",
+			"Value":"parameter",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561008640006"
+}

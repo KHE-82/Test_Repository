@@ -1,0 +1,78 @@
+{
+	"@type":"Process",
+	"Name":"sys_Favourite Mapping - Copy Programme Mapping",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Favourite Mapping - Copy Programme Mapping.ti",
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForServer":"sys_favourite mapping",
+		"dataSourceNameForClient":"sys_favourite mapping",
+		"view":"Admin_$CopyFavMapView"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psSourceProg",
+			"Prompt":"",
+			"Value":"8015.04",
+			"Type":"String"
+		},
+		{
+			"Name":"psSourceFavID",
+			"Prompt":"",
+			"Value":"Total IDs",
+			"Type":"String"
+		},
+		{
+			"Name":"psTargetProg",
+			"Prompt":"",
+			"Value":"8301.01",
+			"Type":"String"
+		},
+		{
+			"Name":"psTargetFavID",
+			"Prompt":"",
+			"Value":"Total IDs",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vsFavID",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsProg",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsMeas",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vnValue",
+			"Type":"Numeric",
+			"Position":4,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "175610087500018"
+}

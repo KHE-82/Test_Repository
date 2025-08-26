@@ -1,0 +1,74 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               geus_sync generic dimension import all
+#**** DESCRIPTION:       This is a generic process to import a dimension structure from a flat file for
+#****                                  use with the GEUS project dimension replication.  It loads the dimension
+#****                                  from a flat file that was created by "geus_sync generic dimension import".
+#****                                  It takes the following parameters:
+#****
+#****                                        psDimName : The dimension to be exported
+#****                                        psExportFile : The file to export it to
+#****                                        psAttributes : 'Y' or 'N', to export attributes as well
+#****
+#**** AUTHOR:                Khristian Gimenal (Excelerated Consulting)
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 16/04/2019      KG       Initial Revision
+#****
+#***********************************************************************************************************************
+
+sDir = '\\actdc01tm104v\TM1_Common\TM1_FIN\finance\';
+
+#---------------------------------------------------------------------------
+#--- IMPORT GL CODE
+#---------------------------------------------------------------------------
+sDim = 'finance GL Code';
+sImportFile = sDir | 'gl code.cma';
+sAttributes = 'Y';
+
+sProcess = 'geus_sync generic dimension import';
+EXECUTEPROCESS (sProcess,
+	'psDimName', sDim,
+	'psImportFile', sImportFile,
+	'psAttributes', sAttributes);
+
+
+#---------------------------------------------------------------------------
+#--- IMPORT COST CENTRE 
+#---------------------------------------------------------------------------
+sDim = 'finance cost centre';
+sImportFile = sDir | 'cost centre.cma';
+sAttributes = 'Y';
+
+sProcess = 'geus_sync generic dimension import';
+EXECUTEPROCESS (sProcess,
+	'psDimName', sDim,
+	'psImportFile', sImportFile,
+	'psAttributes', sAttributes);
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

@@ -1,0 +1,265 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_ae favourites - Update flag
+#**** DESCRIPTION:       This process will create a temporary id for the account selected by the user
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 15/01/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** DECLARE CUBES & DIMENSIONS ***#
+cbFav = 'sys_account selection entry';
+dmFavID = 'favourites_id';
+dmIDRow = 'id row';
+dmAcc = 'account';
+dmFavMeas = 'favourites_measure';
+
+#dmAccTemp = 'account template';
+#dmAccTempMeas = 'account template measure';
+
+dmMA = 'movement account';
+dmJur = 'jurisdiction';
+dmRA = 'related entity';
+dmMAMap = '}movement account mapping';
+dmClients = '}Clients';
+
+sElFavMeas = 'flag';
+
+sUserAttr = 'geus_temp_acc_id';
+
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sUser) + 1;
+     sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+     sUser = TM1User();
+ENDIF;
+
+sID = sUser | '_Accounts';
+sSubset = sUser | '_$geuspvt';
+
+#*** CLEAR FAVOURITES DATA ENTRY CUBE ***#
+sView = sUser | '_Clear';
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy (cbFav, sView);
+SubsetDestroy (dmFavID, sView);
+
+#****CREATE SUBSETS****#
+# Favourite ID
+SubsetCreate(dmFavID, sView);
+SubsetElementInsert(dmFavID, sView, sID, 1);
+
+#****BUILD VIEW****#
+ViewCreate (cbFav, sView);
+ViewSubsetAssign (cbFav, sView, dmFavID, sView);
+ViewZeroOut (cbFav, sView);
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy (cbFav, sView);
+SubsetDestroy (dmFavID, sView);
+
+#*** DECLARE DATA SOURCE ***#
+DATASOURCETYPE = 'SUBSET';
+DATASOURCENAMEFORSERVER = dmAcc;
+DATASOURCEDIMENSIONSUBSET = sSubset;
+
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#sRECheck
+#sRE
+#sMA
+#sJur
+
+# CBMS R - Account Code attributes #
+#sRECheck = ATTRS (dmAcc, vsElement, 'Related Entity Enabled /Required');
+#sRE = ATTRS (dmAcc, vsElement, 'Assumed Agency');
+#sMA = ATTRS (dmAcc, vsElement, 'Movement Acct Required');
+
+sRECheck = ATTRS (dmAcc, vsElement, 'related entity enabled');
+sRE = ATTRS (dmAcc, vsElement, 'assumed related entity');
+sMA = ATTRS (dmAcc, vsElement, 'movement account required');
+
+sMASubset = '$geus' | vsElement;
+
+
+IF (sRE @= '');
+     sRE = 'No Related Entity';
+ELSE;
+     sRE = sRE;
+ENDIF;
+
+IF (sMA @=  '');
+     sMA = '-';
+ELSE;
+     sMA = sMA;
+ENDIF;
+
+
+#*** GET PRINCIPAL NAME OF MOVMENMENT ACCOUNT ELEMENT ***#
+psAcc = DIMENSIONELEMENTPRINCIPALNAME (dmAcc, vsElement);
+psRA = DIMENSIONELEMENTPRINCIPALNAME (dmRA, sRE);
+psRA = ATTRS (dmRA, sRE, 'code and description');
+
+IF (SUBST (psAcc, 1, 1) @= '4' % SUBST (psAcc, 1, 1) @= '5' % SUBST (psAcc, 1, 1) @= '8' % SUBST (psAcc, 1, 1) @= '9');
+     IF (sMA @<> '');
+
+          #*** CHECK IF SUBSET EXISTS ***#
+               IF (SUBSETEXISTS(dmMAMap, sMASubset) = 1);
+                    nSubCounter = SUBSETGETSIZE (dmMAMap, sMASubset);
+	    nIndex = 1;
+                    WHILE (nSubCounter > 0);
+
+     		nRowID = CELLGETN(cbFav, sID, 'All Rows', vsElement, sElFavMeas) + 1;
+		sRowID = NUMBERTOSTRING(nRowID);
+
+		IF (LONG(sRowID) = 1);
+		     sRowID = 'IR000' | sRowID;
+		ENDIF;
+
+		IF (LONG(sRowID) = 2);
+		     sRowID = 'IR00' | sRowID;
+		ENDIF;
+
+		IF (LONG(sRowID) = 3);
+		     sRowID = 'IR0' | sRowID;
+		ENDIF;
+
+		IF (LONG(sRowID) = 4);
+		     sRowID = 'IR' | sRowID;
+		ENDIF;
+
+	    sMAEl = SUBSETGETELEMENTNAME (dmMAMap, sMASubset, nIndex);
+                         sMAAR = ATTRS (dmMA, sMAEl, 'assumed related entity');
+                         IF (sMAAR @= '');
+                              sMAAR = 'No Related Entity';
+                         ELSE;
+                              sMAAR =  sMAAR;
+                         ENDIF;
+                         #sMAAR = DIMENSIONELEMENTPRINCIPALNAME (dmRA, sMAAR);
+                         
+                         sMAEl = ATTRS (dmMA, sMAEl, 'code and description');
+                         sMAAR = ATTRS (dmRA, sMAAR, 'code and description');
+                         
+                         CELLPUTN (1, cbFav, sID, sRowID, vsElement, sElFavMeas);
+                         IF (CELLISUPDATEABLE (cbFav, sID, sRowID, vsElement, 'movement account mapping' ) = 1);
+                              CELLPUTS (sMAEl, cbFav, sID, sRowID, vsElement, 'movement account mapping' );
+                         ENDIF;
+
+                         IF (CELLISUPDATEABLE (cbFav, sID, sRowID, vsElement, 'related entity mapping' ) = 1);
+                              CELLPUTS (sMAAR, cbFav, sID, sRowID, vsElement, 'related entity mapping' );
+                         ENDIF;
+
+	    nIndex = nIndex + 1;
+	    nSubCounter = nSubCounter - 1;
+                    END;
+
+	ELSE;
+	     #**** MOVEMENT ACCOUNT MAPPING SUBSET DOES NOT EXIST ***#
+
+		nRowID = CELLGETN(cbFav, sID, 'All Rows', vsElement, sElFavMeas) + 1;
+		sRowID = NUMBERTOSTRING(nRowID);
+
+		IF (LONG(sRowID) = 1);
+     		     sRowID = 'IR000' | sRowID;
+		ENDIF;
+
+		IF (LONG(sRowID) = 2);
+		     sRowID = 'IR00' | sRowID;
+		ENDIF;
+
+		IF (LONG(sRowID) = 3);
+		     sRowID = 'IR0' | sRowID;
+		ENDIF;
+
+		IF (LONG(sRowID) = 4);
+		     sRowID = 'IR' | sRowID;
+		ENDIF;
+
+		IF (CELLISUPDATEABLE (cbFav, sID, sRowID, vsElement, sElFavMeas) = 1);
+		     CELLPUTN (1, cbFav, sID, sRowID, vsElement, sElFavMeas);
+		ENDIF;
+
+		IF (CELLISUPDATEABLE (cbFav, sID, sRowID, vsElement, 'movement account mapping' ) = 1);
+		     sMA = ATTRS (dmMA, sMA, 'code and description');
+		     CELLPUTS (sMA, cbFav, sID, sRowID, vsElement, 'movement account mapping' );
+		ENDIF;
+
+		IF (CELLISUPDATEABLE (cbFav, sID, sRowID, vsElement, 'related entity mapping' ) = 1);
+		     CELLPUTS (psRA, cbFav, sID, sRowID, vsElement, 'related entity mapping' );
+		ENDIF;
+	
+               ENDIF;
+     ENDIF;
+
+ELSE;
+
+     nRowID = CELLGETN(cbFav, sID, 'All Rows', vsElement, sElFavMeas) + 1;
+     sRowID = NUMBERTOSTRING(nRowID);
+
+     IF (LONG(sRowID) = 1);
+          sRowID = 'IR000' | sRowID;
+     ENDIF;
+
+     IF (LONG(sRowID) = 2);
+          sRowID = 'IR00' | sRowID;
+     ENDIF;
+
+     IF (LONG(sRowID) = 3);
+          sRowID = 'IR0' | sRowID;
+     ENDIF;
+
+     IF (LONG(sRowID) = 4);
+          sRowID = 'IR' | sRowID;
+     ENDIF;
+
+     IF (CELLISUPDATEABLE (cbFav, sID, sRowID, vsElement, sElFavMeas) = 1);
+          CELLPUTN (1, cbFav, sID, sRowID, vsElement, sElFavMeas);
+     ENDIF;
+
+     IF (CELLISUPDATEABLE (cbFav, sID, sRowID, vsElement, 'movement account mapping' ) = 1);
+          sMA = ATTRS (dmMA, sMA, 'code and description');
+          CELLPUTS (sMA, cbFav, sID, sRowID, vsElement, 'movement account mapping' );
+     ENDIF;
+
+     IF (CELLISUPDATEABLE (cbFav, sID, sRowID, vsElement, 'related entity mapping' ) = 1);
+          CELLPUTS (psRA, cbFav, sID, sRowID, vsElement, 'related entity mapping' );
+     ENDIF;
+ENDIF;
+
+
+
+
+	           
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

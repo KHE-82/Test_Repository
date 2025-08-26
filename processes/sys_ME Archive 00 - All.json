@@ -1,0 +1,45 @@
+{
+	"@type":"Process",
+	"Name":"sys_ME Archive 00 - All",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_ME Archive 00 - All.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"Admin",
+			"Type":"String"
+		},
+		{
+			"Name":"psSourceHLyear",
+			"Prompt":"",
+			"Value":"HL2018-2019",
+			"Type":"String"
+		},
+		{
+			"Name":"psSourceScenario",
+			"Prompt":"",
+			"Value":"Current",
+			"Type":"String"
+		},
+		{
+			"Name":"psTargetHLYear",
+			"Prompt":"",
+			"Value":"HL2018-2019",
+			"Type":"String"
+		},
+		{
+			"Name":"psTargetScenario",
+			"Prompt":"",
+			"Value":"Current",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561009040006"
+}

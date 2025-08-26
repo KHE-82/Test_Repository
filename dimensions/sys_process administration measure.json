@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_process administration measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_process administration measure.hierarchies/sys_process administration measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_process administration measure')/Hierarchies('sys_process administration measure')"
+	}
+}

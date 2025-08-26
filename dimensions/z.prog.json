@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"z.prog",
+	"Hierarchies@Code.links":
+	[
+		"z.prog.hierarchies/z.prog.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('z.prog')/Hierarchies('z.prog')"
+	}
+}

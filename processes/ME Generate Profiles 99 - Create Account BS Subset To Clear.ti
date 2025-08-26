@@ -1,0 +1,275 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               ME Generate Profiles 99 - Create Account BS Subset To Clear
+#**** DESCRIPTION:       This process creates subsets for the selected account template to clear
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 31/05/2022    KG             Initial Revision
+#***********************************************************************************************************************
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE MONTHLY ESTIMATES CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+cbME = 'ME reporting';
+dmMEMeas = 'ME reporting measure';
+
+#--------------------------------------------------------------------------------------------------------------------------
+#*** DIMENSION ATTRIBUTES
+#--------------------------------------------------------------------------------------------------------------------------
+dmReasonAttr = '}ElementAttributes_reason';
+dmAccAttr = '}ElementAttributes_account';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+dmProgMeas = snProg | ' measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE ME BALANCE SHEET CUBE (ACCOUNT TEMPLATE)
+#---------------------------------------------------------------------------------------------------------------------------
+cbMEBS = 'ME balance sheet';
+dmAccTemp = 'account template';
+dmAccBS = 'account_bs';
+dmMEBSMeas = 'balance sheet measure';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+	sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+	sUser = TM1User();
+ENDIF;
+
+sMEBSView = sUser | '_$MEBSGenProf99';
+sMEBSMeas = 'derivation weightings';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET PROGRAMME DEFAULE ME BALANCE SHEET TEMPLATE
+#---------------------------------------------------------------------------------------------------------------------------
+#sProgAccTemp = CELLGETS (cbProg, curHLYear, curScenario, psProg, 'ME balance sheet template');
+#sProgAccTemp = DIMENSIONELEMENTPRINCIPALNAME (dmAccTemp, sProgAccTemp);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DEFAULT VALUES
+#---------------------------------------------------------------------------------------------------------------------------
+sNoJur = '-';
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CREATE SOURCE VIEW (ME BALANCE SHEET)
+#*****************************************************************************************************************************************************
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbMEBS, sMEBSView);
+SUBSETDESTROY (dmHLYear, sMEBSView);
+SUBSETDESTROY (dmScenario, sMEBSView);
+SUBSETDESTROY (dmAccTemp, sMEBSView);
+SUBSETDESTROY (dmMA, sMEBSView);
+SUBSETDESTROY (dmID, sMEBSView);
+SUBSETDESTROY (dmAcc, sMEBSView);
+SUBSETDESTROY (dmProg, sMEBSView);
+SUBSETDESTROY (dmAccBS, sMEBSView);
+SUBSETDESTROY (dmRE, sMEBSView);
+SUBSETDESTROY (dmMEBSMeas, sMEBSView);
+SUBSETDESTROY (dmPer, sMEBSView);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sMEBSView);
+SubsetElementInsert(dmHLYear, sMEBSView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sMEBSView);
+SubsetElementInsert(dmScenario, sMEBSView, psScenario, 1);
+
+# Account Template
+#SubsetCreate(dmAccTemp, sMEBSView);
+#SubsetElementInsert(dmAccTemp, sMEBSView, sProgAccTemp, 1);
+
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAccTemp | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEBSView, MDX);
+
+# Movement Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEBSView, MDX);
+
+
+# ID
+SubsetCreate(dmID, sMEBSView);
+SubsetElementInsert(dmID, sMEBSView, 'cash flow', 1);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEBSView, MDX);
+
+# Programme
+SubsetCreate(dmProg, sMEBSView);
+SubsetElementInsert(dmProg, sMEBSView, 'cash flow', 1);
+
+# Account BS
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAccBS | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEBSView, MDX);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEBSView, MDX);
+
+
+# ME Balance Sheet Measure
+SubsetCreate(dmMEBSMeas, sMEBSView);
+SubsetElementInsert(dmMEBSMeas, sMEBSView, sMEBSMeas, 1);
+
+# Period
+SubsetCreate(dmPer, sMEBSView);
+SubsetElementInsert(dmPer, sMEBSView, 'cash flow', 1);
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbMEBS, sMEBSView);
+VIEWSUBSETASSIGN (cbMEBS, sMEBSView, dmHLYear, sMEBSView);
+VIEWSUBSETASSIGN (cbMEBS, sMEBSView, dmScenario, sMEBSView);
+VIEWSUBSETASSIGN (cbMEBS, sMEBSView, dmAccTemp, sMEBSView);
+VIEWSUBSETASSIGN (cbMEBS, sMEBSView, dmMA, sMEBSView);
+VIEWSUBSETASSIGN (cbMEBS, sMEBSView, dmID, sMEBSView);
+VIEWSUBSETASSIGN (cbMEBS, sMEBSView, dmAcc, sMEBSView);
+VIEWSUBSETASSIGN (cbMEBS, sMEBSView, dmProg, sMEBSView);
+VIEWSUBSETASSIGN (cbMEBS, sMEBSView, dmAccBS, sMEBSView);
+VIEWSUBSETASSIGN (cbMEBS, sMEBSView, dmRE, sMEBSView);
+VIEWSUBSETASSIGN (cbMEBS, sMEBSView, dmMEBSMeas, sMEBSView);
+VIEWSUBSETASSIGN (cbMEBS, sMEBSView, dmPer, sMEBSView);
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbMEBS, sMEBSView, 1);
+ViewSuppressZeroesSet(cbMEBS, sMEBSView, 1);
+ViewExtractSkipCalcsSet(cbMEBS, sMEBSView, 0);
+ViewExtractSkipRuleValuesSet (cbMEBS, sMEBSView, 0);
+
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sMEBSView;
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- CHECK IF SUBSET EXISTS
+#---------------------------------------------------------------------------------------------------------------------------
+sSubset = 'sys_ME ' | vsAccTemp;
+nCounter = 1;
+
+IF (SUBSETEXISTS (dmAcc, sSubset) = 0);
+	SUBSETCREATE (dmAcc, sSubset);
+ELSE;
+	SUBSETDELETEALLELEMENTS (dmAcc, sSubset);
+ENDIF;
+ 
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- CREATE SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+sSubset = 'sys_ME ' | vsAccTemp;
+nAccExist = SUBSETELEMENTEXISTS (dmAcc, sSubset, vsAccBS);
+IF (nAccExist = 0);
+	SUBSETELEMENTINSERT (dmAcc, sSubset, vsAccBS, 1);
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbMEBS, sMEBSView);
+SUBSETDESTROY (dmHLYear, sMEBSView);
+SUBSETDESTROY (dmScenario, sMEBSView);
+SUBSETDESTROY (dmAccTemp, sMEBSView);
+SUBSETDESTROY (dmMA, sMEBSView);
+SUBSETDESTROY (dmID, sMEBSView);
+SUBSETDESTROY (dmAcc, sMEBSView);
+SUBSETDESTROY (dmProg, sMEBSView);
+SUBSETDESTROY (dmAccBS, sMEBSView);
+SUBSETDESTROY (dmRE, sMEBSView);
+SUBSETDESTROY (dmMEBSMeas, sMEBSView);
+SUBSETDESTROY (dmPer, sMEBSView);
+
+#endregion

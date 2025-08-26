@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"AE adjustments measure",
+	"Hierarchies@Code.links":
+	[
+		"AE adjustments measure.hierarchies/AE adjustments measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('AE adjustments measure')/Hierarchies('AE adjustments measure')"
+	}
+}

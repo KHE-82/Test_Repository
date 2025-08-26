@@ -1,0 +1,45 @@
+{
+	"@type":"Process",
+	"Name":"sys_Dimension Replicate Export - Part 2",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Dimension Replicate Export - Part 2.ti",
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForServer":"related entity",
+		"dataSourceNameForClient":"related entity",
+		"subset":"All"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psDB",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psDim",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psAttr",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vsEl",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "175610087500011"
+}

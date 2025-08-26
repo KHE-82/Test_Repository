@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_all-n",
+	"Alias":"MEMBER_NAME",
+	"Expression":"{TM1FILTERBYLEVEL(TM1SUBSETALL([measure fund type].[measure fund type]) , 0)}"
+}

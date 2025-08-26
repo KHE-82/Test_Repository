@@ -1,0 +1,27 @@
+{
+	"@type":"Process",
+	"Name":"AE_Create Measure Code",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_Create Measure Code.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psID",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "1756100836000"
+}

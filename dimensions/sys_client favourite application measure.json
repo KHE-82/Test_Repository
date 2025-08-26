@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_client favourite application measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_client favourite application measure.hierarchies/sys_client favourite application measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_client favourite application measure')/Hierarchies('sys_client favourite application measure')"
+	}
+}

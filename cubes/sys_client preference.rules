@@ -1,0 +1,29 @@
+#Rules apply to login clients only
+[] = S: IF(!}Clients @= tm1user(), Continue, STET);
+
+#Rule 000 - Temp rule - dim_edit dimension name  ( for Programme dimension only)
+['dim_edit dimension name','value'] = S:  'programme';
+
+# Rule 0001 - Edit Dimension - Data entry
+#-------------------------------------------------------------------------------------------------------------
+# Method 1 - Copy (index 1)
+# Method 2 - Cut (index 2)
+# Method 3 - Archive ( index 3)
+# Method 4 - Delete ( index 4)
+#-------------------------------------------------------------------------------------------------------------
+
+['dim_edit dimension element_tar','value']= S: IF(DIMIX('sys_dim update method', DB('sys_client preference',!}Clients,'dim_edit dimension method',!sys_client preference measure)) =3, 'Not Applicable', Continue);
+
+['dim_edit dimension element_tar','value']= S: IF(DIMIX('sys_dim update method', DB('sys_client preference',!}Clients,'dim_edit dimension method',!sys_client preference measure)) =4, 'Not Applicable', STET);
+
+
+['dim_edit dimension element_suffix','value']= S: IF(DIMIX('sys_dim update method', DB('sys_client preference',!}Clients,'dim_edit dimension method',!sys_client preference measure)) =1 % DIMIX('sys_dim update method', DB('sys_client preference',!}Clients,'dim_edit dimension method',!sys_client preference measure)) =2, 'Not Applicable', STET);
+
+['dim_edit dimension element parent_src','value']= S: IF(DIMIX('sys_dim update method', DB('sys_client preference',!}Clients,'dim_edit dimension method',!sys_client preference measure)) =3 % DIMIX('sys_dim update method', DB('sys_client preference',!}Clients,'dim_edit dimension method',!sys_client preference measure)) =4, 'Not Applicable', CONTINUE);
+
+['dim_edit dimension element parent_src','value']= S: IF(ELPARN(DB('sys_client preference',!}Clients,'dim_edit dimension name',!sys_client preference measure),DB('sys_client preference',!}Clients,'dim_edit dimension element_src',!sys_client preference measure) ) = 0, 'Root Member', STET);
+
+
+Feeders;
+
+['dim_edit dimension method','value']=> ['dim_edit dimension element_tar','value'],['dim_edit dimension element_suffix','value'],['dim_edit dimension element parent_src','value'];

@@ -1,0 +1,42 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Generate FE3 Adj 01 - Clear Temporary Dimension
+#**** DESCRIPTION:       This process clears the temporary dimension to identify which programmes require fe3 creations
+#****
+#****                                  
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 14/05/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+DimensionDeleteAllElements('tmp_ID_tmp');
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#endregion

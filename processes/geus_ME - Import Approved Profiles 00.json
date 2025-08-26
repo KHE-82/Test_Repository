@@ -1,0 +1,27 @@
+{
+	"@type":"Process",
+	"Name":"geus_ME - Import Approved Profiles 00",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"geus_ME - Import Approved Profiles 00.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psYear",
+			"Prompt":"",
+			"Value":"2018-2019",
+			"Type":"String"
+		},
+		{
+			"Name":"psScenario",
+			"Prompt":"",
+			"Value":"Budget",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561008560000"
+}

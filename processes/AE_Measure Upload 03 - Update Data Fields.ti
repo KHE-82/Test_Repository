@@ -1,0 +1,226 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#***************************************************************************************************************************************************
+#***** PROCESS : 			AE_Measure Upload 03 - Update Data Fields
+#***** DESCRIPTION:		THIS TI PROCESS IS TO LOAD NEW MEASURES VIA FLATFILE
+#*****				
+#*****
+#***** MODIFICATION HISTORY :	
+#***** 
+#*****
+#***** DATE		INITIALS		COMMENTS
+#***** =====		=======		==========
+#***** 20/06/2014		KG		Updated Version
+#***** 04/01/2016		KG		Updated metadata checks
+#***** 2019		KG		Updated for NEW GEUS
+#***** 2020		KG		Added additional validations and checks
+#************************************************************************************************************************************************* 
+
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#*****************************************************************************
+#*** DECLARE CUBES AND DIMENSIONS***#
+#*****************************************************************************
+cbMeas = 'government measures details';
+cbEAMeasCode = '}ElementAttributes_measure code';
+dmMeasCode = 'measure code';
+dmDay = 'sys_day';
+dmMonth = 'sys_month';
+dmYear = 'sys_year';
+dmPeriod = 'period';
+
+sParent01 = 'Total Measures';
+sParent02 = 'sys_Measures Only';
+
+#*****************************************************************************
+#*** DECLARE SYSTEM VARIABLES
+#*****************************************************************************
+dmVar = 'variables'; 
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+#sImpFilePath = ATTRS(dmVar, 'sys_Costings Import Directory', ' value');
+sImpFilePath = ATTRS(dmVar, 'sys_ImpFileExceptionLogs', ' value');
+
+sStatus = 'draft';
+
+
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#***********************************************************************************************************
+#*** STEP 1 - UPDATE DATA FIELDS
+#***********************************************************************************************************
+
+sTBA = 'TBA';
+sNewID = psNewID;
+
+#***********************************************************************************************************
+#*** UPDATE MEASURE CODE ATTRIBUTE
+#***********************************************************************************************************
+CELLPUTS (curHLYear, cbEAMeasCode, sNewID, 'Budget Round Created');
+CELLPUTS (psTitle, cbEAMeasCode, sNewID, 'title');
+CELLPUTS (psCBMSCode, cbEAMeasCode, sNewID, 'CBMS');
+CELLPUTS ('Y', cbEAMeasCode, sNewID, 'Active');
+CELLPUTS (psFundLife, cbEAMeasCode, sNewID, 'funding life');
+
+
+IF (CELLISUPDATEABLE (cbEAMeasCode, sNewID,  'termination year') = 1);
+	CELLPUTS (psTerminatingYear, cbEAMeasCode, sNewID,  'termination year');
+ENDIF;
+
+
+#IF (CELLISUPDATEABLE (cbEAMeasCode, sNewID, 'terminating year') = 1);
+#	CELLPUTS (psTerminatingYear, cbEAMeasCode, sNewID,  'terminating year');
+#ENDIF;
+
+
+#***********************************************************************************************************
+#*** UPDATE GOVERNMENT MEASURE DETAILS CUBE
+#***********************************************************************************************************
+CELLPUTN (1, cbMeas, curHLYear, curScenario, sNewID, 'used');
+IF (psCBMSCode @= '');
+	CELLPUTS (sTBA, cbMeas, curHLYear, curScenario, sNewID, 'CBMS Measure Code');
+ELSE;
+	CELLPUTS (psCBMSCode, cbMeas, curHLYear, curScenario, sNewID, 'CBMS Measure Code');
+ENDIF;
+
+CELLPUTS (psTitle, cbMeas, curHLYear, curScenario, sNewID, 'measure title');
+CELLPUTS (psDesc, cbMeas, curHLYear, curScenario, sNewID, 'measure description');
+CELLPUTS (psPubTitle, cbMeas, curHLYear, curScenario, sNewID, 'measure published title');
+
+
+IF (psGovtDec @= '');
+	CELLPUTS (sTBA, cbMeas, curHLYear, curScenario, sNewID, 'government decision');
+ELSE;
+	CELLPUTS (psGovtDec, cbMeas, curHLYear, curScenario, sNewID, 'government decision');
+ENDIF;
+
+IF (psDecDate @= '');
+	CELLPUTS (sTBA, cbMeas, curHLYear, curScenario, sNewID, 'decision date');
+ELSE;
+	CELLPUTS (psDecDate, cbMeas, curHLYear, curScenario, sNewID, 'decision date');
+
+	sDecDay = SUBST (psDecDate, 1, 2);
+	sDecMonth = SUBST (psDecDate, 4, 2);
+	sDecYear = SUBST (psDecDate, 7,4);
+
+	CELLPUTS (sDecDay, cbMeas, curHLYear, curScenario, sNewID, 'sys_decision day');
+	CELLPUTS (sDecMonth, cbMeas, curHLYear, curScenario, sNewID, 'sys_decision month');
+	CELLPUTS (sDecYear, cbMeas, curHLYear, curScenario, sNewID, 'sys_decision year');
+	CELLPUTS (psDecDate, cbMeas, curHLYear, curScenario, sNewID, 'sys_decision date');
+ENDIF;
+
+
+
+
+IF (psFundLife @= '');
+	CELLPUTS ('ongoing', cbMeas, curHLYear, curScenario, sNewID, 'funding life');
+ELSE;
+	CELLPUTS (psFundLife, cbMeas, curHLYear, curScenario, sNewID, 'funding life');
+ENDIF;
+
+IF (psEndDay @='' & psEndMonth @='' & psEndYear @='');
+	CELLPUTS ('', cbMeas, curHLYear, curScenario, sNewID, 'end date');
+ELSE;
+	sNewEndDate = psEndDay | '/' | psEndMonth | '/' | psEndYear;
+	CELLPUTS (sNewEndDate, cbMeas, curHLYear, curScenario, sNewID, 'end date');
+ENDIF;
+
+CELLPUTS (psTerminatingYear, cbMeas, curHLYear, curScenario, sNewID, 'termination year');
+CELLPUTS ('draft', cbMeas, curHLYear, curScenario, sNewID, 'status');
+CELLPUTS (psNotForPublication, cbMeas, curHLYear, curScenario, sNewID, 'not for publication');
+CELLPUTS (psMeasType, cbMeas, curHLYear, curScenario, sNewID, 'measure type');
+CELLPUTS (psCostingID, cbMeas, curHLYear, curScenario, sNewID, 'costing ID');
+CELLPUTS (psPolicyEntity, cbMeas, curHLYear, curScenario, sNewID, 'policy entity');
+CELLPUTS (psProg, cbMeas, curHLYear, curScenario, sNewID, 'related programme code');
+CELLPUTS (psPubRound, cbMeas, curHLYear, curScenario, sNewID,  'publication round');
+CELLPUTS (psPubYear, cbMeas, curHLYear, curScenario, sNewID, 'publication year');
+
+#***********************************************************************************************************
+#--- IDENTIFY MEASURE AS CURRENTLY CREATED (BOTH ELEMENT ATTRIBUTES AND GMD CUBE
+#***********************************************************************************************************
+CELLPUTS ('Y', cbMeas, curHLYear, curScenario, sNewID, 'current');
+ATTRPUTS ('Y', dmMeasCode, sNewID, 'current');
+
+
+#******************************************************************************************************************
+# **** GET DATE VALUES AND POST USER AND DATE STAMP
+#******************************************************************************************************************
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+
+sDay = TRIM(SUBST(sDNow, 1,2));
+
+IF (LONG (sDay) = 1);
+	sDay = '0' | sDay;
+ELSE;
+	sDay = sDay;
+ENDIF;
+
+sMonth = TRIM(SUBST(sMNow, 1,2));
+
+IF (LONG (sMonth) = 1);
+	sMonth = '0' | sMonth;
+ELSE;
+	sMonth = sMonth;
+ENDIF;
+
+sYear = TRIM(SUBST(sYNow, 1,4));
+sNow = sDay | '/' | sMonth | '/' | sYear;
+
+CELLPUTS(sNow, cbMeas, curHLYear, curScenario, sNewID, 'created date');
+CELLPUTS(sUser, cbMeas, curHLYear, curScenario, sNewID, 'created by');
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

@@ -1,0 +1,79 @@
+Skipcheck;
+# DB('index', !headline year, !scenario, !index, !index measure, !period)
+# LAST UPDATED 09:05 THURSDAY 08 NOVEMBER 2007
+# RULE LOADED by Adam Douglas 29.06.2019 as per email from Khristian Gimena 24.06.2019
+# Rule 0005
+#  "Default" parameter always equals factor of 0.00
+['Default'] = N: 0;
+['Manual'] = N: 0;
+['index'] = N: STET;
+['previous index'] = N: STET;
+
+
+
+
+# Rule 0010
+#  Efficiency Dividend is a fixed adjustment factor - allow manual entry, and make index and cumulative index = zero
+[index:'efficiency dividend','adjustment factor'] = N:
+# TEST A - if scenario is CURRENT
+IF(!scenario @= 'current',
+# TRUEPART A - TEST B - if period is equal to the HL year
+IF ((ATTRS('period', !period, 'type') @= 'annual') & !period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1),
+# TRUEPART B -
+((1 - (['index'] \ 100)) \ (1 - (['previous index'] \ 100)) * 1) -1,
+# FALSEPART B - TEST C - if index of period is greater than or equal to index of HL year period
+IF ((ATTRS('period', !period, 'type') @= 'annual') & DIMIX('period', !period) >= DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)),
+# TRUEPART C - if index of period is greater than or equal to index of HL year period
+((1 - (['index'] \ 100)) \ (1 - (['previous index'] \ 100)) *
+(DB('index', !headline year, !scenario, !index, 'adjustment factor', DIMNM('period', DIMIX('period', !period) - 1)) +1)) -1,
+# FALSEPART C - allow data entry
+STET)),
+# FALSEPART A - allow data entry
+STET);
+
+
+
+
+
+# Rule 0015
+#  allow data entry
+['index'] = N: STET;
+['previous index'] = N: STET;
+
+# Rule 0030
+#  Calculate Adjustment Factor
+['adjustment factor'] = N:
+# TEST A - if scenario is CURRENT
+IF(!scenario @= 'current',
+# TRUEPART A - TEST B - if period is equal to the HL year
+IF ((ATTRS('period', !period, 'type') @= 'annual') & !period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1),
+# TRUEPART B -
+((1 + (['index'] \ 100)) \ (1 + (['previous index'] \ 100)) * 1) -1,
+# FALSEPART B - TEST C - if previous index = 0
+# TRUEPART C -
+IF ((ATTRS('period', !period, 'type') @= 'annual') & DIMIX('period', !period) >= DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) & ['previous index'] = 0,
+((['index'] \ 100)),
+
+# FALSEPART C - TEST D - if index of period is greater than or equal to index of HL year period
+IF ((ATTRS('period', !period, 'type') @= 'annual') & DIMIX('period', !period) >= DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)),
+# TRUEPART C - if index of period is greater than or equal to index of HL year period
+((1 + (['index'] \ 100)) \ (1 + (['previous index'] \ 100)) *
+(DB('index', !headline year, !scenario, !index, 'adjustment factor', DIMNM('period', DIMIX('period', !period) - 1)) +1)) -1,
+# FALSEPART C - allow data entry
+STET))),
+# FALSEPART A - allow data entry
+STET);
+
+Feeders;
+# Feeder - rule 0005
+# no feeder required
+
+# Feeder - rule 0010
+# no feeder required
+
+# Feeder - rule 0015
+# no feeder required
+
+# Feeder - rule 0030
+['index'] => ['adjustment factor'];
+['adjustment factor'] =>DB('index', !headline year, !scenario, !index, !index measure, DIMNM('period', DIMIX('period', !period) + 1));

@@ -1,0 +1,326 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_ME Archive 03 - Archive ME Balance Sheet Cube
+#**** DESCRIPTION:       This process is used to archive the Monthly Estimates Profiles
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 23/05/2018    KG             Initial Revision
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE ME CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbME = 'ME balance sheet';
+sCube = cbME;
+
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmAccTemp = 'account template';
+dmMA = 'movement account';
+dmID = 'id';
+dmAcc = 'account';
+dmProg = snProg;
+dmAccBS = 'account_bs';
+dmRE = 'related entity';
+dmBSMeas = 'balance sheet measure';
+dmPer = 'period';
+
+dmOC = 'outcome';
+dmSPP = 'spp';
+dmItem = 'appropriation item';
+dmJur = 'jurisdiction';
+dmMEMeas = 'ME reporting measure';
+dmVar = 'variables';
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 1 : CLEAR TARGET HEADLINE YEAR/SCENARIO
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE VIEWS
+#---------------------------------------------------------------------------------------------------------------------------
+sView = '$MEArchiveClear';
+sSubset = sView;
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+ViewDestroy(cbME, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmAccTemp, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmAccBS, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmBSMeas, sView);
+SUBSETDESTROY (dmPer, sView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS****#
+#---------------------------------------------------------------------------------------------------------------------------
+# headline year
+SubsetCreate(dmHLYear, sView);
+SubsetElementInsert(dmHLYear, sView, psTargetHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sView);
+SubsetElementInsert(dmScenario, sView, psTargetScenario, 1);
+
+# Acc Template
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAccTemp | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmAccTemp, sView, MDX);
+
+# Movement Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmMA, sView, MDX);
+
+# ID
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmID | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmID, sView, MDX);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmAcc, sView, MDX);
+
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmProg, sView, MDX);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAccBS | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmAccBS, sView, MDX);
+
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmRE, sView, MDX);
+
+# Balance Sheet Measure
+SubsetCreate(dmBSMeas, sView);
+SubsetElementInsert(dmBSMeas, sView, 'derivation weightings', 1);
+
+# Period
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmPer, sView, MDX);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****BUILD VIEW****#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbME, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmHLYear, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmScenario, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmAccTemp, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmMA, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmID, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmAcc, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmProg, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmAccBS, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmRE, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmBSMeas, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmPer, sView);
+
+ViewSetSkipZeroes(cbME, sView, 1);
+ViewSetSkipCalcs(cbME, sView, 1);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#**** VIEW ZERO OUT
+#---------------------------------------------------------------------------------------------------------------------------
+
+ViewZeroOut(cbME, sView);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+ViewDestroy(cbME, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmAccTemp, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmAccBS, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmBSMeas, sView);
+SUBSETDESTROY (dmPer, sView);
+
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 2 : CREATE SOURCE VIEW
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE DATA SOURCE VIEW
+#---------------------------------------------------------------------------------------------------------------------------
+sView = '$MEArchive';
+sSubset = sView;
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+ViewDestroy(cbME, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmAccTemp, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmAccBS, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmBSMeas, sView);
+SUBSETDESTROY (dmPer, sView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS****#
+#---------------------------------------------------------------------------------------------------------------------------
+# headline year
+SubsetCreate(dmHLYear, sView);
+SubsetElementInsert(dmHLYear, sView, psSourceHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sView);
+SubsetElementInsert(dmScenario, sView, psSourceScenario, 1);
+
+# Acc Template
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAccTemp | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmAccTemp, sView, MDX);
+
+# Movement Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmMA, sView, MDX);
+
+# ID
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmID | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmID, sView, MDX);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmAcc, sView, MDX);
+
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmProg, sView, MDX);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAccBS | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmAccBS, sView, MDX);
+
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmRE, sView, MDX);
+
+# Balance Sheet Measure
+SubsetCreate(dmBSMeas, sView);
+SubsetElementInsert(dmBSMeas, sView, 'derivation weightings', 1);
+
+# Period
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmPer, sView, MDX);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****BUILD VIEW****#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbME, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmHLYear, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmScenario, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmAccTemp, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmMA, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmID, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmAcc, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmProg, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmAccBS, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmRE, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmBSMeas, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmPer, sView);
+
+ViewSetSkipZeroes(cbME, sView, 1);
+ViewSetSkipCalcs(cbME, sView, 1);
+
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF (CELLISUPDATEABLE (cbME, psTargetHLYear, psTargetScenario, vsAccTemp, vsMA, vsID, vsAcc, vsProg, vsAccBS, vsRE, vsBSMeas, vsPeriod) = 1);
+	CELLPUTN (vnValue, cbME, psTargetHLYear, psTargetScenario, vsAccTemp, vsMA, vsID, vsAcc, vsProg, vsAccBS, vsRE, vsBSMeas, vsPeriod);
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE DATA SOURCE VIEW TO DELETE
+#---------------------------------------------------------------------------------------------------------------------------
+sView = '$MEArchive';
+sSubset = sView;
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+ViewDestroy(cbME, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmAccTemp, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmAccBS, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmBSMeas, sView);
+SUBSETDESTROY (dmPer, sView);
+
+#endregion

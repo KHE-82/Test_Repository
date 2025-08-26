@@ -1,0 +1,67 @@
+{
+	"@type":"Process",
+	"Name":"sys_AE Generate ParameterAndED Adj 98 - Populate Flags",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_AE Generate ParameterAndED Adj 98 - Populate Flags.ti",
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForServer":"programme details",
+		"dataSourceNameForClient":"programme details",
+		"view":"$CreateParamFlag"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psAdjType",
+			"Prompt":"",
+			"Value":"parameter",
+			"Type":"String"
+		},
+		{
+			"Name":"psProg",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vsHLYear",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsScenario",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsProg",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsMeas",
+			"Type":"String",
+			"Position":4,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsValue",
+			"Type":"String",
+			"Position":5,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "17561008640005"
+}

@@ -1,0 +1,321 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_ae favourites - populate AE adjustment
+#**** DESCRIPTION:       This process will save the selected accounts to the adjustments cube (not using favourites)
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 29/01/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmstatus = 'status';
+dmRA = 'related entity';
+dmReas = 'reason';
+dmMeasCode = 'measure code';
+dmSPP = 'spp';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#*** DECLARE FAVOURITES CUBES & DIMENSIONS ***#
+sCube = 'sys_favourites';
+cbFav = 'sys_account selection entry';
+dmFavID = 'favourites_id';
+dmFavMeas = 'favourites_measure';
+
+dmIDRow = 'id row';
+dmMAMap = '}movement account mapping';
+
+#*** DECLARE ID CUBES & DIMENSIONS
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#*** DECLARE VARIABLES ***#
+sDefaultJur = ATTRS(dmVar, 'No Jur', 'value');
+sDefaultMA = ATTRS(dmVar, 'No MA', 'value');
+
+#*** DECLARE SUBSETS AND VIEWS ***#
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sUser) + 1;
+     sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+     sUser = TM1User();
+ENDIF;
+
+sID = sUser | '_Accounts';
+sObject  = sUser | '_$SaveFavt';
+sAEView = sUser | '_$AEView';
+
+#*** DECLARE VARIABLES USED TO POPULATE ID IN AE CUBE ***#
+curHLYear = ATTRS(dmVar, 'headline year', 'value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sStatus = 'data';
+sCurUser = Tm1User();
+sNewID = ATTRS(dmClients, sCurUser , 'geus_id');
+
+sProg = CELLGETS (cbID, curHLYear, curScenario, sNewID, snProg | ' code');
+sReason = CELLGETS (cbID, curHLYear, curScenario, sNewID, 'reason');
+sMeasure = CELLGETS (cbID, curHLYear, curScenario, sNewID, 'measure');
+IF (sMeasure @= '');
+     #*** NO MEASURE CODE ***#
+     sMeasure= 'M00000';
+ENDIF;
+sOutcome = CELLGETS (cbID, curHLYear, curScenario, sNewID, 'outcome');
+sFunc = CELLGETS (cbID, curHLYear, curScenario, sNewID, 'function');
+sItem = CELLGETS (cbID, curHLYear, curScenario, sNewID, 'appropriation item');
+sType = CELLGETS (cbID, curHLYear, curScenario, sNewID, 'appropriation type');
+sSPP = CELLGETS (cbID, curHLYear, curScenario, sNewID, 'spp');
+sPeriod = '0000-0000';
+
+#*** STEP 1 - Clear Adjustments Cube***#
+#*** CLEAR ANY EXISTING MAPPING TO ACCOUNTS ON NEW ADJUSTMENT IF ANY
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+
+#*** CREATE SUBSETS ***#
+# Headline Year
+SUBSETCREATE (dmHLYear, sAEView);
+SUBSETELEMENTINSERT (dmHLYear, sAEView, curHLYear, 1);
+
+# SCENARIO
+SUBSETCREATE (dmScenario, sAEView);
+SUBSETELEMENTINSERT (dmScenario, sAEView, curScenario, 1);
+
+# ID
+SUBSETCREATE (dmID, sAEView);
+SUBSETELEMENTINSERT (dmID, sAEView, sNewID, 1);
+
+# Period
+SUBSETCREATE (dmPer, sAEView);
+SUBSETELEMENTINSERT (dmPer, sAEView, sPeriod, 1);
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbAE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmHLYear, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmScenario, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmID, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmPer, sAEView);
+VIEWZEROOUT (cbAE, sAEView);
+
+#*** DESTROY VIEW ***#
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+
+# *** STEP 2 - CREATE TEMPORARY VIEW OF SELECT ACCOUNTS TO SAVE TO NEW FAVOURITES ***#
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy (cbFav, sObject);
+SubsetDestroy (dmFavID, sObject);
+SubsetDestroy (dmIDRow, sObject);
+SubsetDestroy (dmAcc, sObject);
+SubsetDestroy (dmFavMeas, sObject);
+
+#****CREATE SUBSETS****#
+# Account Template
+SubsetCreate(dmFavID, sObject);
+SubsetElementInsert(dmFavID, sObject, sID, 1);
+
+# ID Row
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmIDRow | '])}, 0)}';
+SUBSETCREATEBYMDX (sObject, MDX);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '])}, 0)}';
+SUBSETCREATEBYMDX (sObject, MDX);
+
+# Favourites Measure
+SubsetCreate(dmFavMeas, sObject);
+SubsetElementInsert(dmFavMeas, sObject, 'flag', 1);
+
+#****BUILD VIEW****#
+ViewCreate (cbFav, sObject);
+ViewSubsetAssign (cbFav, sObject, dmFavID, sObject);
+ViewSubsetAssign (cbFav, sObject, dmIDRow, sObject);
+ViewSubsetAssign (cbFav, sObject, dmAcc, sObject);
+ViewSubsetAssign (cbFav, sObject, dmFavMeas, sObject);
+
+ViewSuppressZeroesSet (cbFav, sObject,1);
+ViewExtractSkipZeroesSet (cbFav, sObject, 1);
+ViewExtractSkipCalcsSet (cbFav, sObject, 1);
+ViewExtractSkipRuleValuesSet (cbFav, sObject, 1);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sObject;
+#DATASOURCENAMEFORSERVER = sObject;
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*** POPULATE FLAG ON FAVOURITES ***#
+
+#*** GET MAPPING DATA FROM STAGING CUBE
+sRE = CELLGETS (cbFav, vsFavID, vsRowID, vsAcc, 'related entity mapping');
+sMA = CELLGETS (cbFav, vsFavID, vsRowID, vsAcc, 'movement account mapping');
+
+IF (sRE @= '');
+    sRE = 'No Related Entity';
+ELSE;
+    sRE = sRE;
+ENDIF;
+
+IF (sMA @=  '');
+     sMA = '-';
+ELSE;
+     sMA = sMA;
+ENDIF;
+
+#*** CHECK IF ACCOUNT REQUIRES JURISDICTION ***#
+sJurCheck = ATTRS (dmAcc, vsAcc, 'jurisdiction required');
+
+
+
+#*** IF NO JURISDICTION REQUIRED, DEFAULT TO NO JURISDICTION ***#
+IF (sJurCheck @= '');
+     sJur = '-';
+     IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod) = 1);
+         CELLPUTN (1, cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod);
+     ENDIF;
+ELSE;
+     #*** ADD JURISDICTION ***#      
+     #*** ACT ***#
+     sJur = 'ACT';
+     IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod) = 1);
+         CELLPUTN (1, cbAE, curHLYear, curScenario, sStatus, sOutcome, sRe, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod);
+     ENDIF;
+
+     #*** NSW ***#
+     sJur = 'NSW';
+     IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod) = 1);
+         CELLPUTN (1, cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod);
+     ENDIF;
+
+     #*** QLD ***#
+     sJur = 'QLD';
+     IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod) = 1);
+         CELLPUTN (1, cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod);
+     ENDIF;
+
+     #*** VIC ***#
+     sJur = 'VIC';
+     IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod) = 1);
+         CELLPUTN (1, cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod);
+     ENDIF;
+
+     #*** NT ***#
+     sJur = 'NT';
+     IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod) = 1);
+         CELLPUTN (1, cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod);
+     ENDIF;
+
+     #*** WA ***#
+     sJur = 'WA';
+     IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod) = 1);
+         CELLPUTN (1, cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod);
+     ENDIF;
+
+     #*** SA ***#
+     sJur = 'SA';
+     IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod) = 1);
+         CELLPUTN (1, cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod);
+     ENDIF;
+
+     #*** TAS ***#
+     sJur = 'TAS';
+     IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod) = 1);
+         CELLPUTN (1, cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod);
+     ENDIF;
+
+ENDIF;
+
+#ASCIIOUTPUT('kgtest.txt', cbAE, curHLYear, curScenario, sStatus, sOutcome, sFunc, sReason, sRE, sSPP, sMeasure,  sType, sMA, sItem, sProg, vsAcc, sNewID, sJur, sPeriod);
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+# *** CLEAR OLD SUBSETS AND CLEAR VIEW ***#
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy (cbFav, sObject);
+SubsetDestroy (dmFaviD, sObject);
+SubsetDestroy (dmIDRow, sObject);
+SubsetDestroy (dmAcc, sObject);
+SubsetDestroy (dmFavMeas, sObject);
+
+#****CREATE SUBSETS****#
+# Favourite ID
+SubsetCreate(dmFavID, sObject);
+SubsetElementInsert(dmFavID, sObject, sID, 1);
+
+# ID Row
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmIDRow | '])}, 0)}';
+SUBSETCREATEBYMDX (sObject, MDX);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '])}, 0)}';
+SUBSETCREATEBYMDX (sObject, MDX);
+
+# Favourites Measure
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmFavMeas | '])}, 0)}';
+SUBSETCREATEBYMDX (sObject, MDX);
+
+
+#****BUILD VIEW****#
+ViewCreate (cbFav, sObject);
+ViewSubsetAssign (cbFav, sObject, dmFavID, sObject);
+ViewSubsetAssign (cbFav, sObject, dmIDRow, sObject);
+ViewSubsetAssign (cbFav, sObject, dmAcc, sObject);
+ViewSubsetAssign (cbFav, sObject, dmFavID, sObject);
+#ViewZeroOut (cbFav, sObject);
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy (cbFav, sObject);
+SubsetDestroy (dmFavID, sObject);
+SubsetDestroy (dmIDRow, sObject);
+SubsetDestroy (dmAcc, sObject);
+SubsetDestroy (dmFavMeas, sObject);
+
+#endregion

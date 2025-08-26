@@ -1,0 +1,17 @@
+{
+	"@type":"Cube",
+	"Name":"sys_logging",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('}Clients')"
+		},
+		{
+			"@id":"Dimensions('row id')"
+		},
+		{
+			"@id":"Dimensions('sys_logging measure')"
+		}
+	],
+	"Views@Code.links":[]
+}

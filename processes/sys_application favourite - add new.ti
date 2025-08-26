@@ -1,0 +1,105 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_application favourite - add new
+#**** DESCRIPTION:       This process adds the current application to the users favourite list
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date	Initials	Comments
+#****  ====              ======    =========
+#**** 2019	KG	Initial Revision
+#***********************************************************************************************************************
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS
+#-------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT GROUPS CUBE
+#******************************************************************************************************************
+cbGroups = '}ClientGroups';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sCurUser = TM1User();
+
+#--------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#--------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+cbAppFav = 'sys_client favourite application';
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - ADD FLAG TO CUBE
+#*****************************************************************************************************************************************************
+IF (CELLISUPDATEABLE (cbAppFav, psUser, psApp, 'flag') = 1);
+	CELLPUTN (1, cbAppFav, psUser, psApp, 'flag');
+ENDIF;
+
+
+#*****************************************************************************************************************************************************
+#*** STEP 2 - RUN PROCESS TO UPDATE FLAG (NO LONGER REQUIRED AS TEMPLATE NOW USES MDX)
+#*****************************************************************************************************************************************************
+sProcess = 'sys_client application - update favourite application subset';
+#EXECUTEPROCESS (sProcess, 'psUser', psUser);
+
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

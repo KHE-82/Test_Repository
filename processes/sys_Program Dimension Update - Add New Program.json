@@ -1,0 +1,87 @@
+{
+	"@type":"Process",
+	"Name":"sys_Program Dimension Update - Add New Program",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Program Dimension Update - Add New Program.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psHLYear",
+			"Prompt":"",
+			"Value":"HL2022-2023",
+			"Type":"String"
+		},
+		{
+			"Name":"psScenario",
+			"Prompt":"",
+			"Value":"current",
+			"Type":"String"
+		},
+		{
+			"Name":"psProgCode",
+			"Prompt":"",
+			"Value":"9999.01.05",
+			"Type":"String"
+		},
+		{
+			"Name":"psProgDesc",
+			"Prompt":"",
+			"Value":"New Program 05",
+			"Type":"String"
+		},
+		{
+			"Name":"psPar",
+			"Prompt":"",
+			"Value":"9999",
+			"Type":"String"
+		},
+		{
+			"Name":"psOC",
+			"Prompt":"",
+			"Value":"12049",
+			"Type":"String"
+		},
+		{
+			"Name":"psSPP",
+			"Prompt":"",
+			"Value":"-",
+			"Type":"String"
+		},
+		{
+			"Name":"psItem",
+			"Prompt":"",
+			"Value":"A001-00001-05000",
+			"Type":"String"
+		},
+		{
+			"Name":"psFunc",
+			"Prompt":"",
+			"Value":"1101",
+			"Type":"String"
+		},
+		{
+			"Name":"psCBMSProg",
+			"Prompt":"",
+			"Value":"7209",
+			"Type":"String"
+		},
+		{
+			"Name":"psProgType",
+			"Prompt":"Consolidated, Simple",
+			"Value":"N",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561009140001"
+}

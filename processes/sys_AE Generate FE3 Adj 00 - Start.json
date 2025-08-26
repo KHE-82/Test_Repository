@@ -1,0 +1,45 @@
+{
+	"@type":"Process",
+	"Name":"sys_AE Generate FE3 Adj 00 - Start",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_AE Generate FE3 Adj 00 - Start.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psProg",
+			"Prompt":"",
+			"Value":"8306",
+			"Type":"String"
+		},
+		{
+			"Name":"psFE2Year",
+			"Prompt":"",
+			"Value":"2020-2021",
+			"Type":"String"
+		},
+		{
+			"Name":"psFE3Year",
+			"Prompt":"",
+			"Value":"2021-2022",
+			"Type":"String"
+		},
+		{
+			"Name":"psCreateAdjByMeasures",
+			"Prompt":"",
+			"Value":"Y",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "175610086300010"
+}

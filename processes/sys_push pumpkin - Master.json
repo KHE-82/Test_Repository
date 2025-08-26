@@ -1,0 +1,33 @@
+{
+	"@type":"Process",
+	"Name":"sys_push pumpkin - Master",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_push pumpkin - Master.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psHLYear",
+			"Prompt":"",
+			"Value":"HL2018-2019",
+			"Type":"String"
+		},
+		{
+			"Name":"psScenario",
+			"Prompt":"",
+			"Value":"Current",
+			"Type":"String"
+		},
+		{
+			"Name":"psProg",
+			"Prompt":"",
+			"Value":"Administered Programmes",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "1756100915000"
+}

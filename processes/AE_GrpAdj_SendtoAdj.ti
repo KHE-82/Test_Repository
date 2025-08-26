@@ -1,0 +1,280 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_GrpAdj_SendtoAdj
+#**** DESCRIPTION:       This process will transfer the current data to the adjustments cube with mapping
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 06/05/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** DECLARE CUBES & DIMENSIONS ***#
+snProg = 'programme';
+
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#*** DECLARE GROUP ADJUSTMENT CUBE ***#
+cbGrp = 'AE group adjustment entry';
+dmGrpMeas = 'group adjustment measure';
+
+#*** DECLARE ACCOUNT TEMPLATE CUBE ***#
+cbAccTemp = 'AE account template';
+dmAccTemp = 'account template';
+dmAccTempRecType = 'account template record type';
+dmAccType = 'account type';
+dmAccTempMeas = 'account template measure';
+
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+cbProg = snProg | ' details';
+
+
+#*** DECLARE ID DETAILS CUBE DIMENSIONS
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#*** DECLARE SUBSETS AND VIEWS ***#
+nNUM = RAND;
+sNUM = NUMBERTOSTRING (nNUM);
+sNUM = SUBST(sNUM, 3, 6);
+
+#sObject  = sUser | '_$EditGrpView';
+#sAEView = sUser | '_$EditGrpView';
+
+sObject  = sNUM | '_$EditGrpView';
+sAEView = sNUM | '_$EditGrpView';
+
+#*** RETRIEVE ID DETAILS ***#
+sReason = CellGetS(cbID, psHLYear, psScenario, psID, 'reason');
+sMeasureCode = CellGetS(cbID, psHLYear, psScenario, psID, 'measure');
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CREATE SOURCE VIEW FROM GROUP ADJUSTMENT***#
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbGrp, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAccType, sAEView);
+SUBSETDESTROY (dmAccTemp, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+SUBSETDESTROY (dmGrpMeas, sAEView);
+
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sAEView);
+SubsetElementInsert(dmHLYear, sAEView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sAEView);
+SubsetElementInsert(dmScenario, sAEView, psScenario, 1);
+
+# Status
+SubsetCreate(dmStatus, sAEView);
+SubsetElementInsert(dmStatus, sAEView, 'data', 1);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Measure Code
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Account Type
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAccType | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Account Template
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAccTemp | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# ID
+SubsetCreate(dmID, sAEView);
+SubsetElementInsert(dmID, sAEView, psID, 1);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Period
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}, [' | dmPer | '].[type] = "annual")}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Groupe Adjustment Measure
+SubsetCreate(dmGrpMeas, sAEView);
+SubsetElementInsert(dmGrpMeas, sAEView, 'value', 1);
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbGrp, sAEView);
+VIEWSUBSETASSIGN (cbGrp, sAEView, dmHLYear, sAEView);
+VIEWSUBSETASSIGN (cbGrp, sAEView, dmScenario, sAEView);
+VIEWSUBSETASSIGN (cbGrp, sAEView, dmStatus, sAEView);
+VIEWSUBSETASSIGN (cbGrp, sAEView, dmRE, sAEView);
+VIEWSUBSETASSIGN (cbGrp, sAEView, dmMeasCode, sAEView);
+VIEWSUBSETASSIGN (cbGrp, sAEView, dmProg, sAEView);
+VIEWSUBSETASSIGN (cbGrp, sAEView, dmAccType, sAEView);
+VIEWSUBSETASSIGN (cbGrp, sAEView, dmAccTemp, sAEView);
+VIEWSUBSETASSIGN (cbGrp, sAEView, dmID, sAEView);
+VIEWSUBSETASSIGN (cbGrp, sAEView, dmJur, sAEView);
+VIEWSUBSETASSIGN (cbGrp, sAEView, dmPer, sAEView);
+VIEWSUBSETASSIGN (cbGrp, sAEView, dmGrpMeas, sAEView);
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbGrp, sAEView, 1);
+ViewSuppressZeroesSet(cbGrp, sAEView, 1);
+ViewExtractSkipCalcsSet(cbGrp, sAEView, 1);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sAEView;
+
+lCounter = 0;
+
+
+
+
+
+
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+     # *** RUN OTHER PROCESS TO GET MAPPING DATA AND POST TO ADJUSTMENTS CUBE ***#
+
+msUser = TM1User();
+sAdjType = CELLGETS (cbID, psHLYear, psScenario, psID, 'Adjustment Type');
+IF (sAdjType @= 'Group');
+     IF (vsMeas @= 'value');
+          EXECUTEPROCESS ('AE_GrpAdj_GetMappingData', 'psHLYear', vsHLYear, 'psScenario', vsScenario, 'psStatus', vsStatus, 'psRE', vsRE, 'psMeasCode', vsMeasCode, 'psProg', vsProg, 'psAccType', vsAccType, 'psAccTemp', vsAccTemp, 'psID', vsID, 'psJur', vsJur, 'psPer', vsPer, 'psMeas', vsMeas, 'pnValue', Value, 'psUser', msUser, 'pnCounter', lCounter);
+          lCounter = lCounter + 1;
+     ENDIF;
+ENDIF;
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbGrp, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAccType, sAEView);
+SUBSETDESTROY (dmAccTemp, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+SUBSETDESTROY (dmGrpMeas, sAEView);
+
+#***********************************************************************************************************************************************
+
+
+#*** IF THERE IS NO RECORDS, DELETE GEUS ADJUSTMENT IN AE ADJUSTMENTS CUBE ***#
+IF (lCounter = 0);
+
+     #*** DELETE EXISTING VIEWS AND SUBSETS ***#
+     VIEWDESTROY (cbAE, sAEView);
+     SUBSETDESTROY (dmHLYear, sAEView);
+     SUBSETDESTROY (dmScenario, sAEView);
+     SUBSETDESTROY (dmStatus, sAEView);
+     SUBSETDESTROY (dmID, sAEView);
+
+     #****CREATE SUBSETS****#
+     # headline year
+     SubsetCreate(dmHLYear, sAEView);
+     SubsetElementInsert(dmHLYear, sAEView, psHLYear, 1);
+
+     # Scenario
+     SubsetCreate(dmScenario, sAEView);
+     SubsetElementInsert(dmScenario, sAEView, psScenario, 1);
+
+     # Status
+     SubsetCreate(dmStatus, sAEView);
+     SubsetElementInsert(dmStatus, sAEView, 'data', 1);
+
+     # ID
+     SubsetCreate(dmID, sAEView);
+     SubsetElementInsert(dmID, sAEView, psID, 1);
+
+     #*** BUILD VIEW ***#
+     VIEWCREATE (cbAE, sAEView);
+     VIEWSUBSETASSIGN (cbAE, sAEView, dmHLYear, sAEView);
+     VIEWSUBSETASSIGN (cbAE, sAEView, dmScenario, sAEView);
+     VIEWSUBSETASSIGN (cbAE, sAEView, dmStatus, sAEView);
+     VIEWSUBSETASSIGN (cbAE, sAEView, dmID, sAEView);
+
+     #*** CLEAR VIEW
+     IF (lCounter = 0);
+          VIEWZEROOUT (cbAE, sAEView);
+     ENDIF;
+
+     #*** DELETE EXISTING VIEWS AND SUBSETS ***#
+     VIEWDESTROY (cbAE, sAEView);
+     SUBSETDESTROY (dmHLYear, sAEView);
+     SUBSETDESTROY (dmScenario, sAEView);
+     SUBSETDESTROY (dmStatus, sAEView);
+     SUBSETDESTROY (dmID, sAEView);
+ENDIF;
+
+#endregion

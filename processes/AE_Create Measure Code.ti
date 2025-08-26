@@ -1,0 +1,71 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Create Measure Code
+#**** DESCRIPTION:       This process creates a Measure Code element in the measure code dimension
+#****
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 09/05/2014    KG          Initial Revision
+#****
+#***********************************************************************************************************************
+
+### GLOBAL VARIABLES ###
+dmMeasCode = 'measure code';
+sParent = 'Total Measures';
+
+# Quit if the selected descrition already exists
+If (DimIx (dmMeasCode, psID) <> 0);
+	ProcessQuit;
+EndIf;
+
+# Determine the next available Measure Code (Mxxxxx)
+sPreFix = 'M';
+
+nELementID = 0;
+nCounter = 1;
+nMaxCounter = DIMSIZ (dmMeasCode);
+While (nCounter <= nMaxCounter);
+     sElementID = DIMNM (dmMeasCode, nCounter);
+          IF (SUBST (sElementID, 1, 1) @= sPreFix & LONG (sElementID) = 6);
+               nMeasCode = STRINGTONUMBER (SUBST(sElementID, 2, 5));
+               IF (nMeasCode > nElementID);
+                    nElementID = nMeasCode;
+               ENDIF;
+          ENDIF;
+          nCounter = nCounter + 1;
+END;
+
+nElementiD = nELementID + 1;
+sElementID = NUMBERTOSTRING (nELementID);
+sElementID = sPreFix | FILL ('0', 5 - Long(sElementID)) | sElementID;
+
+# Determine the full element name, and create in the dimension
+DimensionElementInsert (dmMeasCode, '', sElementID, 'N');
+DimensionElementComponentAdd (dmMeasCode, sParent, sElementID, 1);
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

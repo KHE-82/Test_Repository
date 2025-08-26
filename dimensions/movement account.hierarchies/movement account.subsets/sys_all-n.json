@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_all-n",
+	"Alias":"code and description",
+	"Expression":"{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [movement account] )}, 0)}, [movement account].[editable] = \"\")}"
+}

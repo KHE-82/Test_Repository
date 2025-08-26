@@ -1,0 +1,42 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+sCube1= 'ME validations';
+sCube2 = 'ME Dept validations';
+sCube3 = 'ME validations Prog';
+
+sDim1 = 'headline year';
+sDim2 = 'scenario';
+sDim3 = 'validation id';
+sDim4 = 'id';
+sDim5 = 'period';
+
+sDim6 = 'programme';
+
+CubeCreate(sCube1,sDim1,sDim2,sDim3,sDim4,sDim5);
+CubeCreate(sCube2,sDim1,sDim2,sDim3,sDim4,sDim5);
+CubeCreate(sCube3,sDim1,sDim2,sDim6,sDim3,sDim4,sDim5);
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

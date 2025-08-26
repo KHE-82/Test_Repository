@@ -1,0 +1,47 @@
+{
+	"@type":"Process",
+	"Name":"AE_FlatFile_UpdateStatus",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_FlatFile_UpdateStatus.ti",
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForServer":"AE adjustments",
+		"dataSourceNameForClient":"AE adjustments",
+		"view":"Admin_$FlatFile"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vsHLYear",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsScenario",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsID",
+			"Type":"String",
+			"Position":15,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "17561008400001"
+}

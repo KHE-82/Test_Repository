@@ -1,0 +1,31 @@
+{
+	"@type":"Subset",
+	"Name":"$Favourites1",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2300001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2300002')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('3340095')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('3345001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('5233009')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('6211007')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('6212005')"
+		}
+	]
+}

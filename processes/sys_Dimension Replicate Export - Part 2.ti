@@ -1,0 +1,193 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*************************************************************************************************************************************
+#**** PROCESS: 		sys_Dimension Replicate Export - Part 2
+#****
+#**** DESCRIPTION: 	This is a generic process to export a dimension structure to a flat file for use
+#**** 			within another TM1 database.  It copies the dimension as a flat file to a
+#**** 			common data directory, where it will be imported using
+#**** 			"sys_Dimension Replicate Import - Part 2".
+#****
+#**** 			It takes the following parameters:
+#**** 			psDB : The database the dimension is to be exported to
+#**** 			psDim : The dimension name to be exported
+#**** 			psAttr : 'Y' or 'N' to export attributes as well
+#****
+#**** AUTHOR: 		Standard Installation FIle (Excelerated Consulting)
+#****
+#**** MODIFICATION HISTORY:
+#****
+#**** Date Initials Comments
+#**** ==== ====== ==========
+#**** 14/04/2016 EC Standard Installation File
+#**** 29/04/2016 EC Updated to use the "Name" measure if populated, as external databases may have a different name of the dimension
+#****
+#*************************************************************************************************************************************
+
+
+#---------------------------------------------------------------------------------------
+#    CUBES
+#---------------------------------------------------------------------------------------
+cbAttr = '}ElementAttributes_' | psDim;
+cbDimRep = 'sys_Dimension Replicate';
+cbVar = '}ElementAttributes_variables';
+
+#---------------------------------------------------------------------------
+#    DIMENSIONS
+#---------------------------------------------------------------------------
+dmAttr = cbAttr;
+dmClts = '}Clients';
+dmProg = 'programme';
+
+#---------------------------------------------------------------------------
+#    OTHER PARAMETERS
+#---------------------------------------------------------------------------
+
+#gsAdmHost = CELLGETS (cbVar, 'sys_Admin Host', 'sValue');
+#gsAdmDir = CELLGETS (cbVar, 'sys_Database Directory', 'sValue');
+#gsTfrDir = gsAdmHost | CELLGETS (cbVar, 'sys_Transfer Directory', 'sValue');
+#gsExpDir = gsTfrDir | CELLGETS (cbVar, 'sys_Export Directory ' | psDB, 'sValue');
+gsExpDir = CELLGETS (cbVar, 'sys_Export Directory ' | psDB, 'Value');
+
+gsClt = TM1USER ();
+IF (SUBST (gsClt, 1, 2) @= 'R*');
+                gsClt = 'Admin';
+ELSE;
+                gsClt = ATTRS(dmClts, gsClt, '}TM1_DefaultDisplayValue');
+ENDIF;
+
+sExpNm = CELLGETS (cbDimRep, psDB, psDim, 'Name');
+IF (sExpNm @<> '');
+	gsExpFil = gsExpDir | sExpNm  | '.cma';
+ELSE;
+	gsExpFil = gsExpDir | psDim | '.cma';
+ENDIF;
+
+#---------------------------------------------------------------------------
+#    DELETE FILE IF IT EXISTS
+#---------------------------------------------------------------------------
+IF (FILEEXISTS (gsExpFil) = 1);
+	ASCIIDELETE (gsExpFil);
+ENDIF;
+
+#---------------------------------------------------------------------------
+#  IF THERE IS NO ATTRIBUTE CUBE, SET THE ATTRIBUTES FLAG TO FALSE
+#---------------------------------------------------------------------------
+IF (CUBEEXISTS (cbAttr) = 0);
+	psAttr = 'N';
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#    SET DATASOURCE
+#--------------------------------------------------------------------------------
+DATASOURCETYPE = 'SUBSET';
+DATASOURCENAMEFORSERVER = psDim;
+DATASOURCEDIMENSIONSUBSET = 'All';
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------------------------
+#    SET VARIABLES
+#---------------------------------------------------------------------------------------------------------
+sElTyp = DTYPE (psDim, vsEl);
+sAttrLst = '';
+
+#---------------------------------------------------------------------------------------------------------
+#    BUILD A LIST OF THE ATTRIBUTES TO BE EXPORTED
+#---------------------------------------------------------------------------------------------------------
+IF (psAttr @= 'Y');
+	nCtr = 1;
+	nMaxCtr = DIMSIZ (dmAttr);
+
+	WHILE (nCtr <= nMaxCtr);
+		sAttr = DIMNM (dmAttr, nCtr);
+		IF(sAttr @<> 'Program Information');
+			sAttrTyp = SUBST (DTYPE (dmAttr, sAttr), 2, 1);
+			IF (sAttrTyp @= 'N');
+				sAttrVal = NUMBERTOSTRING (CELLGETN (cbAttr, vsEl, sAttr));
+			ELSE;
+				sAttrVal = CELLGETS (cbAttr, vsEl, sAttr);
+				# Remove any pipes '|' from attributes (these occur in formats)
+				nPipIdx = SCAN ('|', sAttrVal);
+
+				WHILE (nPipIdx > 0);
+					sAttrVal = SUBST (sAttrVal, 1, nPipIdx - 1) | '##PIPE$$' | SUBST (sAttrVal, nPipIdx + 1, LONG (sAttrVal) - nPipIdx);
+					nPipIdx = SCAN ('|', sAttrVal);
+				END;
+			ENDIF;
+			sAttrLst =sAttrLst | sAttr | '|' | sAttrTyp | '|' | sAttrVal | '|';
+		ENDIF;
+
+		nCtr = nCtr + 1;
+	END;
+
+	sAttrLst = SUBST (sAttrLst, 1, LONG (sAttrLst) -1);
+
+ENDIF;
+
+#---------------------------------------------------------------------------------------------------------
+#    LOOP THROUGH THE CHILDREN AND EXPORT THE DATA
+#---------------------------------------------------------------------------------------------------------
+nCtr = 1;
+nMaxCtr = ELCOMPN (psDim, vsEl);
+WHILE (nCtr <= nMaxCtr);
+
+	sElCh = ELCOMP (psDim, vsEl, nCtr);
+	sElChTyp = DTYPE (psDim, sElCh);
+
+	IF (psDim @= dmProg);
+		IF (vsEl @= 'Total Programmes');
+			sEl = 'Total Programs';
+		ELSEIF (vsEl @= 'Administered Programmes');
+			sEl = 'Administered Programs';
+		ELSEIF (vsEl @= 'Departmental Programmes');
+			sEl = 'Departmental Programs';
+		ELSE;
+			sEl = vsEl;
+		ENDIF;
+
+		IF (sElCh @= 'Total Programmes');
+			sElCh = 'Total Programs';
+		ELSEIF (sElCh @= 'Administered Programmes');
+			sElCh = 'Administered Programs';
+		ELSEIF (sElCh @= 'Departmental Programmes');
+			sElCh = 'Departmental Programs';
+		ELSE;
+			sElCh = sElCh;
+		ENDIF;
+
+	ELSE;
+		sEl  = vsEl;
+		sElCh = sElCh;
+	ENDIF;
+
+	ASCIIOUTPUT (gsExpFil, sEl, sElTyp, sElCh, sElChTyp, NUMBERTOSTRING (ELWEIGHT (psDim, vsEl, sElCh)), sAttrLst);
+	nCtr = nCtr + 1;
+
+END;
+
+# This Element has no Children, so just print it out to get the Attributes
+IF (nMaxCtr = 0);
+	ASCIIOUTPUT (gsExpFil, vsEl, sElTyp, '', '', '', sAttrLst);
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

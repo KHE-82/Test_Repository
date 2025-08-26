@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"sys_create validation cubes",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_create validation cubes.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[],
+	"UID": "17561008750008"
+}

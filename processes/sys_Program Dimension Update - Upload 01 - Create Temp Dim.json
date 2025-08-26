@@ -1,0 +1,70 @@
+{
+	"@type":"Process",
+	"Name":"sys_Program Dimension Update - Upload 01 - Create Temp Dim",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Program Dimension Update - Upload 01 - Create Temp Dim.ti",
+	"DataSource":
+	{
+		"Type":"ASCII",
+		"dataSourceNameForServer":"C:/tm1_Common/generic_geus/program.csv",
+		"dataSourceNameForClient":"C:\\tm1_Common\\generic_geus\\program.csv",
+		"asciiHeaderRecords":0,
+		"asciiQuoteCharacter":"\"",
+		"asciiDecimalSeparator":".",
+		"asciiThousandSeparator":",",
+		"asciiDelimiterType":"Character",
+		"asciiDelimiterChar":","
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"admin",
+			"Type":"String"
+		},
+		{
+			"Name":"psDim",
+			"Prompt":"",
+			"Value":"programme",
+			"Type":"String"
+		},
+		{
+			"Name":"psConsol",
+			"Prompt":"",
+			"Value":"total programmes",
+			"Type":"String"
+		},
+		{
+			"Name":"psFile",
+			"Prompt":"",
+			"Value":"program.csv",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vsType",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsEL",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vnWeight",
+			"Type":"Numeric",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "17561009140009"
+}

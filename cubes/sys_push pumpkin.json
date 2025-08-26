@@ -1,0 +1,23 @@
+{
+	"@type":"Cube",
+	"Name":"sys_push pumpkin",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('}Clients')"
+		},
+		{
+			"@id":"Dimensions('outcome')"
+		},
+		{
+			"@id":"Dimensions('programme')"
+		},
+		{
+			"@id":"Dimensions('sys_extract row id')"
+		},
+		{
+			"@id":"Dimensions('sys_push pumpkin measure')"
+		}
+	],
+	"Views@Code.links":[]
+}

@@ -1,0 +1,33 @@
+{
+	"@type":"Process",
+	"Name":"sys_Client - Update Client Prefrence Picklists",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Client - Update Client Prefrence Picklists.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"Admin",
+			"Type":"String"
+		},
+		{
+			"Name":"psHLYear",
+			"Prompt":"",
+			"Value":"HL2018-2019",
+			"Type":"String"
+		},
+		{
+			"Name":"psScenario",
+			"Prompt":"",
+			"Value":"current",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561008750002"
+}

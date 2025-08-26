@@ -1,0 +1,540 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Adj - Add Account To Adjustment 
+#**** DESCRIPTION:       This process will add new accounts to the current adjustment screen
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    KG             Initial Revision
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES CURRENT CUBE ***#
+#******************************************************************************************************************
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmstatus = 'status';
+dmRE = 'related entity';
+dmReas = 'reason';
+dmMeasCode = 'measure code';
+dmSPP = 'spp';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+dmVar = 'variables';
+dmClients = '}Clients';
+
+cbID = 'AE id details';
+
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM MOVEMENT ACCOUNT MAPPING
+#******************************************************************************************************************
+dmMAMap = '}movement account mapping';
+cbMAMap = 'sys_movement account mapping';
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM ACCOUNT APPROP MAPPING
+#******************************************************************************************************************
+cbAccAppropMap = 'sys_account approp mapping';
+
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES ***#
+#******************************************************************************************************************
+curHLYear = ATTRS(dmVar, 'headline year', 'value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sUser = TM1User();
+sStatus = 'data';
+sNewID = ATTRS(dmClients, sUser, 'geus_id');
+
+
+sPeriod = '0000-0000';
+
+
+ASCIIOUTPUT ('testaddaccount.txt', psID, psAcc, psMA, psRE, psJur, psItem, psSPP, psByPass);
+
+#******************************************************************************************************************
+#*** GET PRINCIPAL NAME OF ELEMENT ***#
+#******************************************************************************************************************
+psAcc = DIMENSIONELEMENTPRINCIPALNAME (dmAcc, psAcc);
+psRE = DIMENSIONELEMENTPRINCIPALNAME (dmRE, psRE);
+
+sNoJur = ATTRS(dmVar, 'No Jur', 'value');
+sNoJur = DIMENSIONELEMENTPRINCIPALNAME (dmJur, sNoJur);
+
+sNoMA = ATTRS(dmVar, 'No MA', 'value');
+sNoMA = DIMENSIONELEMENTPRINCIPALNAME (dmMA, sNoMA);
+
+#sNoSPP = ATTRS(dmVar, 'No SPP', 'value');
+sNoSPP = '-';
+
+
+sNoRE = ATTRS(dmVar, 'No RE', 'value');
+sNoRE = DIMENSIONELEMENTPRINCIPALNAME (dmRE, sNoRE);
+
+sMASubset = '$geus' | psAcc;
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED TO POPULATE ID IN AE CUBE ***#
+#******************************************************************************************************************
+sProg = CELLGETS (cbID, curHLYear, curScenario, psID, snProg | ' code');
+sReason = CELLGETS (cbID, curHLYear, curScenario, psID, 'reason');
+sMeasure = CELLGETS (cbID, curHLYear, curScenario, psID, 'measure');
+IF (sMeasure @= '');
+	#*** NO MEASURE CODE ***#
+	sMeasure= 'M00000';
+ENDIF;
+sOutcome = CELLGETS (cbID, curHLYear, curScenario, psID, 'outcome');
+sFunc = CELLGETS (cbID, curHLYear, curScenario, psID, 'function');
+
+#-----------------------------------------------------------------------------
+# Appropriation Item
+#-----------------------------------------------------------------------------
+IF (DIMIX (dmItem, psItem) = 0);
+	sItem = CELLGETS (cbID, curHLYear, curScenario, psID, 'appropriation item');	
+ELSE;
+	sItem = psItem;
+ENDIF;
+
+#-----------------------------------------------------------------------------
+# Appropriation Type
+#-----------------------------------------------------------------------------
+sOldItem = 'CBMS 1 appropriation item';
+IF (ELISANC (dmItem, sOldItem, sItem) = 0 & sItem @<> '-');
+	sType = SUBST (sItem, 1, 4);
+ELSE;
+	sType = 'Appropriation Type - Unallocated';
+ENDIF;
+
+#-----------------------------------------------------------------------------
+# SPP
+#-----------------------------------------------------------------------------
+IF (DIMIX (dmSPP, psSPP) = 0);
+	sSPP = CELLGETS (cbID, curHLYear, curScenario, psID, 'spp');
+ELSE;
+	sSPP = psSPP;
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** VALIDATION CHECK RESETS
+#*** These validation checks are set to 0, to reset. 
+#*** 0 means valid, Greater than 0, means it is invalid
+#******************************************************************************************************************
+sErrAcc = '';
+sErrMA = '';
+sErrRE = '';
+sErrJur = '';
+sErrItem = '';
+sErrSPP = '';
+
+nAccValid = 0;
+nMAValid = 0;
+nREValid = 0;
+nJurValid = 0;
+nItemValid = 0;
+nSPPValid = 0;
+
+nCheck = 0;
+
+
+#*** Clear validate rules
+CELLPUTS (sErrAcc, cbClient, sUser, 'adj_account', 'validate');
+CELLPUTS (sErrMA, cbClient, sUser, 'adj_movement account', 'validate');
+CELLPUTS (sErrRE, cbClient, sUser, 'adj_related entity', 'validate');
+CELLPUTS (sErrJur, cbClient, sUser, 'adj_jurisdiction', 'validate');
+CELLPUTS (sErrItem, cbClient, sUser, 'adj_appropriation item', 'validate');
+CELLPUTS (sErrSPP, cbClient, sUser, 'adj_spp', 'validate');
+
+#*****************************************************************************************************************************************************
+#**** STEP 1 - VALIDATE SELECTED ACCOUNTS
+#*****************************************************************************************************************************************************
+#------------------------------------------------------
+#--- Account
+#------------------------------------------------------
+IF (DIMIX (dmAcc, psAcc) = 0);
+	nAccValid = nAccValid + 1;
+	nCheck = nCheck + 1;
+	sErrAcc = 'Please select a valid account';
+	CELLPUTS (sErrAcc, cbClient, sUser, 'adj_account', 'validate');
+	
+ENDIF;
+
+ASCIIOUTPUT ('checkacc.txt', psAcc);
+
+#------------------------------------------------------
+#--- Movement Account
+#------------------------------------------------------
+IF (DIMIX (dmMA, psMA) = 0);
+	nMAValid = nMAValid + 1;
+	nCheck = nCheck + 1;
+	sErrMA = 'Please select a valid movement account';
+	CELLPUTS (sErrMA, cbClient, sUser, 'adj_movement account', 'validate');
+ENDIF;
+
+#------------------------------------------------------
+#--- Related Entity
+#------------------------------------------------------
+IF (DIMIX (dmRE, psRE) = 0);
+	nREValid = nREValid + 1;
+	nCheck = nCheck + 1;
+	sErrRE = 'Please select a valid related entity';
+	CELLPUTS (sErrRE, cbClient, sUser, 'adj_related entity', 'validate');
+ENDIF;
+
+#------------------------------------------------------
+#--- Jurisdiction
+#------------------------------------------------------
+IF (DIMIX (dmJur, psJur) = 0);
+	nJurValid = nJurValid + 1;
+	nCheck = nCheck + 1;
+	sErrJur = 'Please select a valid jurisdiction';
+	CELLPUTS (sErrJur, cbClient, sUser, 'adj_jurisdiction', 'validate');
+ENDIF;
+
+#------------------------------------------------------
+#--- Appropriation Item
+#------------------------------------------------------
+IF (DIMIX (dmItem, psItem) = 0);
+	nItemValid = nItemValid + 1;
+	nCheck = nCheck + 1;
+	sErrItem = 'Please select a valid apprpropriation item';
+	CELLPUTS (sErrItem, cbClient, sUser, 'adj_appropriation item', 'validate');
+ENDIF;
+
+
+#------------------------------------------------------
+#--- SPP
+#------------------------------------------------------
+IF (DIMIX (dmSPP, psSPP) = 0);
+	nSPPValid = nSPPValid + 1;
+	nCheck = nCheck + 1;
+	sErrSPP = 'Please select a valid SPP';
+	CELLPUTS (sErrSPP, cbClient, sUser, 'adj_spp', 'validate');
+ENDIF;
+
+IF (psHLYear @<> curHLYear & psScenario @<> curScenario);
+	nCheck = nCheck + 1;
+ENDIF;
+
+
+#***********************************************************************************************************************
+#*** STATUS CHECK
+#*** ADDED FUNCTIONALITY 20160323
+#*** ONLY CERTAIN ACCESS CAN ADD ACCOUNTS BASED ON STATUS OF ADJUSTMENT
+#***********************************************************************************************************************
+sIDStatus = CELLGETS(cbID, psHLYear, psScenario, psID, 'status');
+#IF (sIDStatus @<> 'unauthorised' & sIDStatus @<> 'unbalanced' & sIDStatus @<> 'draft');
+IF (ELISANC (dmStatus, 'Total approved', sIDStatus) = 1);
+	nCheck = nCheck + 1;
+
+	sErrAcc = 'Adjustment is not editable';
+	CELLPUTS (sErrAcc, cbClient, sUser, 'adj_account', 'validate');
+
+	sErrMA = 'Adjustment is not editable';
+	CELLPUTS (sErrMA, cbClient, sUser, 'adj_movement account', 'validate');
+
+	sErrRE = 'Adjustment is not editable';
+	CELLPUTS (sErrRE, cbClient, sUser, 'adj_related entity', 'validate');
+
+	sErrJur =  'Adjustment is not editable';
+	CELLPUTS (sErrJur, cbClient, sUser, 'adj_jurisdiction', 'validate');
+
+	sErrItem =  'Adjustment is not editable';
+	CELLPUTS (sErrItem, cbClient, sUser, 'adj_appropriation item', 'validate');
+
+	sErrSPP =  'Adjustment is not editable';
+	CELLPUTS (sErrSPP, cbClient, sUser, 'adj_spp', 'validate');
+
+	PROCESSBREAK;
+
+ENDIF;
+
+
+
+#***********************************************************************************************************************
+#*** DO A CHECK IF THE SELECTED HLYEAR AND SCENARIO ARE CURRENT
+#*** IF NOT CURRENT, CANCEL THE PROCESS
+#***********************************************************************************************************************
+
+IF (nCheck > 0);
+
+	PROCESSBREAK;
+
+ELSE;
+
+	#******************************************************************************************************************
+	#*** SELECTED HLYEAR AND SCENARIO ARE CURRENT AND ALL OTHER FIELDS ARE OK
+	#*** DO VALIDATION CHECKS
+	#******************************************************************************************************************
+
+	#******************************************************************************************************************
+	#*** GET PRINCIPAL NAME OF SELECTED NAMES
+	#******************************************************************************************************************
+	sAcc = DIMENSIONELEMENTPRINCIPALNAME (dmAcc, psAcc);
+	sMA = DIMENSIONELEMENTPRINCIPALNAME (dmMA, psMA);
+	sRE = DIMENSIONELEMENTPRINCIPALNAME (dmRE, psRE);
+	sJur = DIMENSIONELEMENTPRINCIPALNAME (dmJur, psJur);
+	sItem = DIMENSIONELEMENTPRINCIPALNAME (dmItem, psItem);
+	sSPP = DIMENSIONELEMENTPRINCIPALNAME (dmSPP, psSPP);
+
+	sJurCheck =  ATTRS( dmAcc, sAcc, 'jurisdiction required');
+	sSPPCheck =  ATTRS( dmAcc, sAcc, 'SPP required');
+	sRECheck = ATTRS( dmAcc, sAcc, 'related entity enabled');
+	sAssumedRE = ATTRS( dmAcc, sAcc, 'assumed related entity');
+   	sMACheck = ATTRS( dmAcc, sAcc, 'movement account required');
+	sItemCheck = ATTRS (dmAcc, sAcc, 'appropriation type required');
+	sMAItemCheck = ATTRS (dmMA, sMA, 'appropriation type required');
+
+
+	IF (psByPass @= 'N');
+
+		#******************************************************************************************************************
+		#*** ACCOUNT HAS MOVEMENT ACCOUNT ENABLED
+		#******************************************************************************************************************
+		IF (sMACheck @= 'Y');
+
+			#******************************************************************************************************************
+			#*** CHECK IF MOVEMENT ACCOUNT IS BLANK OR NO MOVEMENT IS SELECTED
+			#******************************************************************************************************************
+			IF (sMA @= sNoMA);	
+				sErrMA = 'Invalid movement account code selected.';
+				CELLPUTS (sErrMA, cbClient, sUser, 'adj_movement account', 'validate');
+				PROCESSBREAK;
+			ELSE;
+
+				#******************************************************************************************************************
+				#*** NOW CHECK IF MOVEMENT ACCOUNT IS CORRECT FOR CURRENT ACCOUNT CODE
+				#*** CHECKS THE SYS_MOVEMENT ACCOUNT MAPPING CUBE
+				#******************************************************************************************************************	
+			
+				nMAMapCheck = CELLGETN (cbMAMap, sAcc, sMA,'flag');
+				IF (nMAMapCheck = 1);
+
+					#******************************************************************************************************************
+					#*** CORRECT MOVEMENT ACCOUNT, BUT NOW CHECK IF RELATED ENTITY IS CORRECT
+					#******************************************************************************************************************
+					sMARECheck = ATTRS (dmMA, sMA, 'related entity enabled');
+					sMAAssumedRE = ATTRS (dmMA, sMA, 'assumed related entity');
+
+					IF (sMARECheck @= 'Y');
+
+						#******************************************************************************************************************
+						#*** MOVEMENT ACCOUNT HAS RELATED ENTITY ENABLED
+						#******************************************************************************************************************
+						IF (sMAAssumedRE @= '');
+
+							#******************************************************************************************************************
+							#*** IF NO ASSUMED RE USE OTHER INT TRADE
+							#******************************************************************************************************************
+							IF (sRE @= '');
+								sErrMA = 'Invalid movement account code and related entity selected.';
+								CELLPUTS (sErrMA, cbClient, sUser, 'adj_movement account', 'validate');
+								PROCESSBREAK;
+							ENDIF;
+						ELSE;
+							#******************************************************************************************************************
+							#*** MA HAS ASSUMED RELATED ENTITY, SO USE SYSTEM ASSUMED RE
+							#******************************************************************************************************************
+							IF(sRE @<> sMAAssumedRE);
+								#sRE = sMAAssumedRE;
+								sErrRE = 'WARN : Related entity does not match assumed related entity.';
+								CELLPUTS (sErrRE, cbClient, sUser, 'adj_related entity', 'validate');
+								PROCESSBREAK;
+							ENDIF;
+						ENDIF;	
+					ELSE;
+						#******************************************************************************************************************
+						#*** SOMETIMES EVEN WITHOUT RE ENABLED, THIS MA SHOULD HAVE A RE
+						#******************************************************************************************************************
+               						sMAAssumedRE = ATTRS (dmMA, sMA, 'assumed related entity');
+						IF (sMAAssumedRE @<> '');
+							IF (sRE @<> sMAAssumedRE);
+								#sRE = sMAAssumedRE;
+								sErrRE = 'WARN : Related entity does not match assumed related entity.';
+								CELLPUTS (sErrRE, cbClient, sUser, 'adj_related entity', 'validate');
+							ENDIF;
+						ENDIF;	
+					ENDIF;
+				ELSE;
+					#******************************************************************************************************************
+					#*** SELECTED MOVEMENT ACCOUNT DOES NOT MAP TO ACCOUNT CODE
+					#******************************************************************************************************************	
+					sErrMA = 'Invalid movement account code selected.';
+					CELLPUTS (sErrMA, cbClient, sUser, 'adj_movement account', 'validate');
+					PROCESSBREAK;
+				ENDIF;
+
+				#******************************************************************************************************************
+				#*** ACCOUNT HAS APPROPRIATION ITEM REQUIRED
+				#*** SO FAR APPROP MAPPING IS DISABLED AS TO IDENTIY HOW TO LOAD MAPPINGS
+				#******************************************************************************************************************	
+				IF (sMAItemCheck @= 'Y');
+					nItemCheck = CELLGETN (cbAccAppropMap, sAcc, sMA, sItem, 'flag');
+					#IF (nItemCheck = 0);
+					IF (sItem @= '-' % ELISANC (dmItem, 'CBMS 1 appropriation item', sItem) = 1);
+						sErrItem = 'Invalid Appropriation Item selected.';
+						CELLPUTS (sErrItem, cbClient, sUser, 'adj_appropriation item', 'validate');
+						PROCESSBREAK;
+					ENDIF;
+	
+				ENDIF;
+
+			ENDIF;
+		ELSE;
+
+			#******************************************************************************************************************
+			#*** ACCOUNT HAS NO MOVEMENT ACCOUNT
+			#*** CHECK IF MOVEMENT ACCOUNT IS BLANK OR NO MOVEMENT IS SELECTED
+			#******************************************************************************************************************
+			IF (sMA @<> sNoMA);	
+				sErrMA = sMA | ' Invalid movement account code selected.';
+				CELLPUTS (sErrMA, cbClient, sUser, 'adj_movement account', 'validate');
+				PROCESSBREAK;
+
+			ELSE;
+				#******************************************************************************************************************
+				#*** ACCOUNT HAS RELATED ENTITY ENABLED
+				#******************************************************************************************************************
+				IF (sRECheck @= 'Y');
+					#******************************************************************************************************************
+					#*** CHECK IF assumed RE is not blank, otherwise just use another RE
+					#******************************************************************************************************************
+					IF (sAssumedRE @= '');
+						#******************************************************************************************************************
+						#*** IF NO ASSUMED RE, USE OTHER RE
+						#******************************************************************************************************************
+						IF (sRE @= '');
+							sErrRE = 'Invalid Related Entity selected.';
+							CELLPUTS (sErrRE, cbClient, sUser, 'adj_related entity', 'validate');
+							PROCESSBREAK;
+						ENDIF;
+					ELSE;
+						#******************************************************************************************************************
+						#*** CHECK IF ASSUMED INTERNAL TRADE IS DIFFERENT TO USER SELECTION 
+						#******************************************************************************************************************
+						IF (sRE @<> sAssumedRE);
+							sErrRE = 'WARN : Related entity does not match assumed related entity.';
+							CELLPUTS (sErrRE, cbClient, sUser, 'adj_related entity', 'validate');
+							PROCESSBREAK;
+						ENDIF;
+					ENDIF;
+				ELSE;
+
+					#******************************************************************************************************************
+					#*** SOMETIMES EVEN WITHOUT INTERNAL TRADING SEGMENT ENABLED, THIS ACCOUNT SHOULD HAVE A RELATED ENTITY ***#
+					#******************************************************************************************************************
+					IF (sAssumedRE @<> '');
+						sRE = sAssumedRE;
+					ENDIF;
+				ENDIF;
+			ENDIF;
+
+			#******************************************************************************************************************
+			#*** ACCOUNT HAS APPROPRIATION ITEM REQUIRED
+			#*** SO FAR APPROP MAPPING IS DISABLED AS TO IDENTIY HOW TO LOAD MAPPINGS
+			#******************************************************************************************************************	
+			IF (sItemCheck @= 'Y');
+				nItemCheck = CELLGETN (cbAccAppropMap, sAcc, sMA, sItem, 'flag');
+				#IF (nItemCheck = 0);
+				IF (sItem @= '-' % ELISANC (dmItem, 'CBMS 1 appropriation item', sItem) = 1);
+					sErrItem = 'Invalid Appropriation Item selected.';
+					CELLPUTS (sErrItem, cbClient, sUser, 'adj_appropriation item', 'validate');
+					PROCESSBREAK;
+				ENDIF;
+
+			ENDIF;
+		ENDIF;
+
+
+		#******************************************************************************************************************
+		#*** ACCOUNT HAS SPP REQUIRED
+		#******************************************************************************************************************
+		IF (sSPPCheck @= 'Y');
+			IF (sSPP @= '');
+				sErrSPP = 'Invalid SPP selected. Account requires an SPP code.';
+				CELLPUTS (sErrSPP, cbClient, sUser, 'adj_SPP', 'validate');
+				PROCESSBREAK;
+			ENDIF;
+		ENDIF;
+
+		#******************************************************************************************************************
+		#*** ACCOUNT HAS JURISDICTION REQUIRED
+		#******************************************************************************************************************
+		IF (sJurCheck @= 'Y');
+			IF (sJur @= '');
+				sErrJur = 'Invalid Jurisdiction selected. Account requires a Jurisdiction code.';
+				CELLPUTS (sErrJur, cbClient, sUser, 'adj_jurisdiction', 'validate');
+				PROCESSBREAK;
+			ENDIF;
+		ENDIF;
+
+		IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, sStatus, sOutcome,  sRE,  sFunc, sReason,sSPP, sMeasure,  sType, sMA, sItem, sProg, sAcc, psID, sJur, sPeriod) = 1);
+			CELLPUTN (1, cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, sAcc, psID, sJur, sPeriod);
+	
+		ENDIF;
+
+	ELSE;
+
+		#------------------------------------------------------------------------------------------------------
+		#--- BY PASS VALIDATION - ADD ACCOUNT REGARDLESS OF COMBINATION
+		#------------------------------------------------------------------------------------------------------
+		IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, sStatus, sOutcome,  sRE,  sFunc, sReason,sSPP, sMeasure,  sType, sMA, sItem, sProg, sAcc, psID, sJur, sPeriod) = 1);
+			CELLPUTN (1, cbAE, curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, sAcc, psID, sJur, sPeriod);
+	
+		ENDIF;
+		
+	ENDIF;
+ENDIF;
+
+#******************************************************************************************************************
+#*** REINSTATE BYPASS FLAG TO N
+#******************************************************************************************************************
+CELLPUTS ('N', cbClient, sUser, 'adj_bypass account validation', 'value');
+
+#ASCIIOUTPUT ('checkadd.txt',   curHLYear, curScenario, sStatus, sOutcome, sRE, sFunc, sReason, sSPP, sMeasure,  sType, sMA, sItem, sProg, sAcc, psID, sJur, sPeriod);
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

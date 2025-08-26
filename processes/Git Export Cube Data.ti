@@ -1,0 +1,78 @@
+#region Prolog
+
+sObj = '}Git_' | NumberToString(RAND());
+sExportFile = psDir | psCb | '.csv';
+nTemp =1;
+sCb = psCb;
+
+nDim = CubeDimensionCountGet( psCb );
+nCtr = 1;
+
+ViewCreate( sCb, sObj, nTemp );
+
+While(nCtr<=nDim);
+    sDim = TABDIM( sCb, nCtr );
+
+    sMdx = '[' | sDim | '].members';
+    SubsetCreatebyMDX( sObj, sMdx, nTemp );
+    ViewSubsetAssign( sCb, sObj, sDim, sObj );
+    nCtr = nCtr +1;
+End;
+
+
+ViewExtractSkipZeroesSet( sCb, sObj, 1 );
+ViewExtractSkipCalcsSet( sCb, sObj, 1 );
+ViewExtractSkipRuleValuesSet( sCb, sObj, 1 );
+
+DataSourceType = 'View';
+DatasourceNameForServer = sCb;
+DatasourceCubeview = sObj;
+
+
+if(FileExists( sExportFile )=1);
+    ASCIIDelete( sExportFile );
+endif;
+
+
+#endregion
+#region Data
+IF (nDim = 2);
+    ASCIIOutput(sExportFile, v1, v2, v3);
+ELSEIF (nDim = 3);
+    ASCIIOutput(sExportFile, v1, v2, v3, v4);
+ELSEIF (nDim = 4);
+    ASCIIOutput(sExportFile, v1, v2, v3, v4, v5);
+ELSEIF (nDim = 5);
+    ASCIIOutput(sExportFile, v1, v2, v3, v4, v5, v6);
+ELSEIF (nDim = 6);
+    ASCIIOutput(sExportFile, v1, v2, v3, v4, v5, v6, v7);
+ELSEIF (nDim = 7);
+    ASCIIOutput(sExportFile, v1, v2, v3, v4, v5, v6, v7, v8);
+ELSEIF (nDim = 8);
+    ASCIIOutput(sExportFile, v1, v2, v3, v4, v5, v6, v7, v8, v9);
+ELSEIF (nDim = 9);
+    ASCIIOutput(sExportFile, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10);
+ELSEIF (nDim = 10);
+    ASCIIOutput(sExportFile, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11);
+ELSEIF (nDim = 11);
+    ASCIIOutput(sExportFile, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12);
+ELSEIF (nDim = 12);
+    ASCIIOutput(sExportFile, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13);
+ELSEIF (nDim = 13);
+    ASCIIOutput(sExportFile, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14);
+ELSEIF (nDim = 14);
+    ASCIIOutput(sExportFile, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15);
+ELSEIF (nDim = 15);
+    ASCIIOutput(sExportFile, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16);
+ELSEIF (nDim = 16);
+    ASCIIOutput(sExportFile, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17);
+ELSEIF (nDim = 17);
+    ASCIIOutput(sExportFile, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16, v17, v18);
+ENDIF;
+
+
+
+
+
+
+#endregion

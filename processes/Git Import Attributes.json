@@ -1,0 +1,65 @@
+{
+	"@type":"Process",
+	"Name":"Git Import Attributes",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"Git Import Attributes.ti",
+	"DataSource":
+	{
+		"Type":"ASCII",
+		"dataSourceNameForServer":"model_upload/git/attribute/function.csv",
+		"dataSourceNameForClient":"../Contents('Files')/Contents('model_upload')/Contents('git')/Contents('attribute')/Contents('function.csv')",
+		"asciiHeaderRecords":0,
+		"asciiQuoteCharacter":"\"",
+		"asciiDecimalSeparator":".",
+		"asciiThousandSeparator":",",
+		"asciiDelimiterType":"Character",
+		"asciiDelimiterChar":","
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pFile",
+			"Prompt":"",
+			"Value":"function.csv",
+			"Type":"String"
+		},
+		{
+			"Name":"pDir",
+			"Prompt":"",
+			"Value":"./model_upload/git/attribute/",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"v1",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"v2",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"v3",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"v4",
+			"Type":"String",
+			"Position":4,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "17561008610002"
+}

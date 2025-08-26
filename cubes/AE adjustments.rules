@@ -1,0 +1,1060 @@
+#DB('AE adjustments',!status, !outcome, !function, !reason, !related entity,!spp,!measure code,!appropriation type,!movement account,!appropriation item,!programme,!account,!id,!jurisdiction,!period)
+# DB('AE cash flow',!movement account,!id,!account_cf,!programme,!account_other,!related entity,!period, !cash flow measure)
+SKIPCHECK;
+# Rule 0000
+# Allow data entry
+[{'0000-0000','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'P0'}] = N: STET;
+['Actual'] = N: STET;
+
+# RULE 001
+# Parameter
+# Approp revenue for departmental programmes equals expense calculation
+['parameter', 'data', '49800', '1280004', jurisdiction:'-'] = N:  roundp(
+# TEST A - if account is to have parameter applied
+IF(ELISANC('programme', 'Departmental programmes', !programme) = 1,
+# TRUEPART A - data from the CURRENT scenario, multiplied by adjustment factor
+# TEST B - if period is equal to the HL year
+IF ((ATTRS('period', !period, 'type') @= 'annual') & !period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1),
+# TRUEPART B
+0,
+# TESTPART C - IF ID is not applied parameters
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details', !headline year, 'current', !id, 'apply parameters') @= 'Y'),
+# TRUE PART C - IF ID has parameters applied
+['current', 'data', 'total related entity', movementaccount:'-', '1280004'] *
+DB('index', !headline year, 'current', DB('programme details',!headline year,'current',!programme, 'parameter'), 'adjustment factor', !period),
+# FALSE PART C - IF ID has parameters applied
+0)),
+# FALSEPART A - populate with zero
+0), 0);
+
+# Approp revenue for administered programmes equals expense calculation
+['parameter', 'data', appropriationtype:'A001',appropriationitem:'A001-00001-05000','49800', '7593', '4100001'] = N:  roundp(
+# TEST A - if account is to have parameter applied
+IF(ELISANC('programme', 'Administered programmes', !programme) = 1,
+# TRUEPART A - data from the CURRENT scenario, multiplied by adjustment factor
+# TEST B - if period is equal to the HL year
+IF ((ATTRS('period', !period, 'type') @= 'annual') & !period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1),
+# TRUEPART B
+0,
+# TESTPART C - IF ID is not applied parameters
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details', !headline year, 'current', !id, 'apply parameters') @= 'Y'),
+# TRUE PART C - IF ID has parameters applied
+['current', 'data', '49800', movementaccount:'7593', '4100001'] *
+DB('index', !headline year, 'current', DB('programme details',!headline year,'current',!programme, 'parameter'), 'adjustment factor', !period),
+# FALSE PART C - IF ID has parameters applied
+0)),
+# FALSEPART A - populate with zero
+0), 0);
+
+# Appropriation Bill 1 Expense calculation
+[appropriationtype:'A001',appropriationitem:'A001-00001-05000','parameter', 'data'] = N:  roundp(
+# TEST A -  if period is equal to the HL year
+IF ((ATTRS('period', !period, 'type') @= 'annual') & !period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1),
+# TRUEPART A - Current Period is same as headline year
+0,
+# FALSE PART A - Not current period, so apply parameters
+# TEST B - if account and ID is to have parameter applied and is an expense account and is within Administered Programmes
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details', !headline year, 'current', !id, 'apply parameters') @= 'Y') & (!account @=  DB('programme details', !headline year, 'current', !programme, 'parameter account')) & (!movement a
+ccount @=  DB('programme details', !headline year, 'current', !programme, 'parameter movement account')) & (!related entity @= '-') & (ELISANC('programme', 'Administered programmes', !programme) = 1),
+# TRUEPART B - Apply parameters on Administered Programmes
+['parameter', 'data', movementaccount:'7593', '49800', '4100001', jurisdiction:'-'],
+# FALSE PART B - Not Administered Programmes
+# TEST C - if account and ID is to have parameter applied and is an expense account and is within Departmental Programmes
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details', !headline year, 'current', !id, 'apply parameters') @= 'Y') & (!account @=  DB('programme details', !headline year, 'current', !programme, 'parameter account')) & (!movement a
+ccount @=  DB('programme details', !headline year, 'current', !programme, 'parameter movement account')) &  (!related entity @= '-') & ELISANC('programme', 'Departmental programmes', !programme) = 1,
+# TRUEPART C - Programme is administered, copy from appropriations
+['parameter', 'data', '49800', '1280004', jurisdiction:'-'],
+# FALSEPART A - allow data entry
+0))), 0);
+
+# Capital Budget Expense calculation
+['parameter', 'data', relatedentity:'-', movementaccount:'-', '9170000', jurisdiction:'-'] = N:  roundp(
+# TEST A - if period is equal to the HL year
+IF ((ATTRS('period', !period, 'type') @= 'annual') & !period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1),
+# TRUE PART A - Leave Zero (0)
+0,
+# FALSE PART A
+# TESTPART B - IF ID is not applied parameters
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details', !headline year, 'current', !id, 'apply parameters') @= 'Y'),
+# TRUE PART B - IF ID has parameters applied
+['current', 'data', relatedentity:'-', movementaccount:'-', '9170000'] *
+DB('index', !headline year, 'current', DB('programme details',!headline year,'current',!programme, 'parameter'), 'adjustment factor', !period),
+# FALSEPART B - populate with zero
+0)), 0);
+
+
+# Appropriation DCB Bill 1 Expense calculation
+[appropriationtype:'A001',appropriationitem:'A001-00001-05000','parameter', 'data'] = N:  roundp(
+# TEST A -  if period is equal to the HL year
+IF ((ATTRS('period', !period, 'type') @= 'annual') & !period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1),
+# TRUEPART A - Current Period is same as headline year
+0,
+# FALSE PART A - Not current period, so apply parameters
+# TEST B - if account and ID is to have parameter applied and is an expense account and is within Administered Programmes
+IF((DB('AE id details', !headline year, 'current', !id, 'apply parameters') @= 'Y') & (!account @=  DB('programme details', !headline year, 'current', !programme, 'parameter DCB account')) & (!related entity @= '-') & (!movement account @=  DB('programme 
+details', !headline year, 'current', !programme, 'parameter DCB movement account')),
+# TRUEPART B - Apply parameters on Administered Programmes
+['parameter', 'data', movementaccount:'-', relatedentity:'-', '9170000', jurisdiction:'-'],
+# FALSEPART A - allow data entry
+0)), 0);
+
+
+# RULE 002
+# Efficiency Dividend
+['efficiency dividend', 'data', '49800', '1280004', jurisdiction:'-'] = N:  roundp(
+# TEST 0 - Check if its Departmental
+IF(ELISANC('programme', 'Departmental programmes', !programme) = 1,
+# TEST A - data from the CURRENT scenario, multiplied by adjustment factor
+IF ((ATTRS('period', !period, 'type') @= 'annual') & !period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1),
+# TRUE PART A - if period is equal to the HL year
+0,
+# TEST B - if account is to have parameter applied
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' &(DB('AE id details', !headline year, 'current', !id, 'apply parameters') @= 'Y') & DB('programme details', !headline year, 'current', !programme, 'efficiency dividend') @= 'Y',
+# TRUEPART B - data from the CURRENT scenario, multiplied by adjustment factor
+['current', 'data'] *
+DB('index', !headline year, 'current', 'efficiency dividend', 'adjustment factor', !period),
+# FALSEPART B - allow data entry
+0)), 0),0);
+
+
+# Appropriation Bill 1 Expense calculation
+[appropriationtype:'A001',appropriationitem:'A001-00001-05000','efficiency dividend', 'data'] = N:  roundp(
+# TEST A -  if period is equal to the HL year
+IF ((ATTRS('period', !period, 'type') @= 'annual') & !period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1),
+# TRUEPART A - Current Period is same as headline year
+0,
+# FALSE PART A - Not current period, so apply parameters
+# TEST B - if account and ID is to have parameter applied and is an expense account and is within Administered Programmes
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details', !headline year, 'current', !id, 'apply parameters') @= 'Y') & (ELISANC('programme', 'Administered programmes', !programme) = 1) & DB('programme details', !headline year, 'curr
+ent', !programme, 'efficiency dividend') @= 'Y',
+# TRUEPART B - Apply parameters on Administered Programmes
+['current', 'data'] *
+DB('index', !headline year, 'current', 'efficiency dividend', 'adjustment factor', !period),
+# FALSE PART B - Not Administered Programmes
+# TEST C - if account and ID is to have parameter applied and is an expense account and is within Departmental Programmes
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details', !headline year, 'current', !id, 'apply parameters') @= 'Y') & (!account @=  DB('programme details', !headline year, 'current', !programme, 'parameter account')) & (!movement a
+ccount @=  DB('programme details', !headline year, 'current', !programme, 'parameter movement account')) & (!related entity @= '-') & ELISANC('programme', 'Departmental programmes', !programme) = 1 & DB('programme details', !headline year, 'current', !pro
+gramme, 'efficiency dividend') @= 'Y',
+# TRUEPART C - Programme is administered, copy from appropriations
+['efficiency dividend', 'data', '49800', '1280004', jurisdiction:'-'],
+# FALSEPART A - allow data entry
+0))), 0);
+
+# Capital Budget Expense calculation
+# Efficiency Dividend
+['efficiency dividend', 'data', relatedentity:'-', movementaccount:'-', '9170000', jurisdiction:'-'] = N:  roundp(
+# TEST A - if period is equal to the HL year
+IF ((ATTRS('period', !period, 'type') @= 'annual') & !period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1),
+# TRUE PART A - Leave Zero (0)
+0,
+# FALSE PART A
+# TESTPART B - IF ID is not applied parameters
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details', !headline year, 'current', !id, 'apply parameters') @= 'Y'),
+# TRUE PART B - IF ID has parameters applied
+['current', 'data', relatedentity:'-', movementaccount:'-', '9170000'] *
+DB('index', !headline year, 'current', 'efficiency dividend', 'adjustment factor', !period),
+# FALSEPART B - populate with zero
+0)), 0);
+
+
+# Appropriation DCB Bill 1 Expense calculation
+[appropriationtype:'A001',appropriationitem:'A001-00001-05001','efficiency dividend', 'data'] = N:  roundp(
+# TEST A -  if period is equal to the HL year
+IF ((ATTRS('period', !period, 'type') @= 'annual') & !period @= DIMNM('period', DIMIX('period', SUBST(ATTRS('variables', 'headline year', 'value'), 3, 9)) -1),
+# TRUEPART A - Current Period is same as headline year
+0,
+# FALSE PART A - Not current period, so apply parameters
+# TEST B - if account and ID is to have parameter applied and is an expense account and is within Administered Programmes
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details', !headline year, 'current', !id, 'apply parameters') @= 'Y') & (!account @=  DB('programme details', !headline year, 'current', !programme, 'parameter DCB account')) &(!movemen
+t account @=  DB('programme details', !headline year, 'current', !programme, 'parameter DCB movement account')) & (!related entity @= '-') & ELISANC('programme', 'Departmental programmes', !programme) = 1 & DB('programme details', !headline year, 'current
+', !programme, 'efficiency dividend') @= 'Y',
+# TRUEPART B - Apply parameters on Administered Programmes
+['efficiency dividend', 'data', movementaccount:'-', 'Total approp item', relatedentity:'-', '9170000', jurisdiction:'-'],
+# FALSEPART B -
+# TEST C - if account and ID is to have parameter applied and has a DCB Account 2
+IF(ATTRS('account', !account, 'apply parameter') @<> 'N' & (DB('AE id details', !headline year, 'current', !id, 'apply parameters') @= 'Y') & (!account @=  DB('programme details', !headline year, 'current', !programme, 'parameter DCB 2 account')) &(!movem
+ent account @=  DB('programme details', !headline year, 'current', !programme, 'parameter DCB 2 movement account')) & (!related entity @= '-') & ELISANC('programme', 'Departmental programmes', !programme) = 1 & DB('programme details', !headline year, 'cur
+rent', !programme, 'efficiency dividend') @= 'Y',
+# TRUEPART B - Apply parameters on Administered Programmes
+['efficiency dividend', 'data', movementaccount:'-', 'Total approp item', relatedentity:'-', '9170000', jurisdiction:'-'],
+# FALSEPART B -
+0))), 0);
+
+
+
+
+# RULE 003
+# Allow data entry
+['data', id:'0000A'] = N: STET;
+['data', id:'00FBO'] = N: STET;
+['data', id:'01BAL'] = N: STET;
+['data', id:'02BAL'] = N: STET;
+['data', id:'03BAL'] = N: STET;
+['data', id:'04BAL'] = N: STET;
+['data', id:'05BAL'] = N: STET;
+['data', id:'06BAL'] = N: STET;
+['data', id:'07BAL'] = N: STET;
+['data', id:'08BAL'] = N: STET;
+['data', id:'09BAL'] = N: STET;
+['data', id:'10BAL'] = N: STET;
+['data', id:'11BAL'] = N: STET;
+['data', id:'12BAL'] = N: STET;
+['data', id:'13BAL'] = N: STET;
+['data', id:'14BAL'] = N: STET;
+['data', id:'15BAL'] = N: STET;
+['data', id:'16BAL'] = N: STET;
+['data', id:'17BAL'] = N: STET;
+['data', id:'18BAL'] = N: STET;
+['data', id:'19BAL'] = N: STET;
+['data', id:'20BAL'] = N: STET;
+['data', id:'XXBAL'] = N: STET;
+
+
+
+# RULE 004
+# populate balance sheet values for ID 0000B
+[{'current', 'parameter', 'efficiency dividend'}, '0000B'] = N: roundp(
+# TEST A - If period is not the first element in the dimension AND account is a bal sheet account that doesn't hold movement data
+IF((DIMIX('period', !period) <> 1) & (ATTRS('account', !account, 'B/M') @= 'M'),
+# TRUEPART A - get data from All IDs consolidation from the previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme,
+!account, 'Total IDs', !jurisdiction, DIMNM('period', DIMIX('period', !period)-1)) -
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme,
+!account, '0BASE', !jurisdiction, DIMNM('period', DIMIX('period', !period)-1)),
+#DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme,
+#!account, '0000A', !jurisdiction, DIMNM('period', DIMIX('period', !period)-1)) -
+#DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme,
+#!account, '01BAL', !jurisdiction, DIMNM('period', DIMIX('period', !period)-1)) -
+#DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme,
+#!account, '02BAL', !jurisdiction, DIMNM('period', DIMIX('period', !period)-1)) -
+#DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme,
+#!account, '03BAL', !jurisdiction, DIMNM('period', DIMIX('period', !period)-1)) -
+#DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme,
+#!account, '00FBO', !jurisdiction, DIMNM('period', DIMIX('period', !period)-1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+['0000B'] = N: STET;
+
+# RULE 004A
+# populate balance sheet values for ALL IDS (NEW FOR GEUS 2020)
+[{'current', 'parameter', 'efficiency dividend'}, 'balance sheet data'] = N: roundp(
+# TEST A - If period is not the first element in the dimension AND account is a bal sheet account that doesn't hold movement data
+IF((DIMIX('period', !period) <> 1) & (ATTRS('account', !account, 'B/M') @= 'M'  & ELISANC ('id', '0BASE', !ID) = 0),
+# TRUEPART A - get data from All IDs consolidation from the previous period
+DB('AE adjustments', !headline year, !scenario, 'data', !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme,
+!account, !id, !jurisdiction, DIMNM('period', DIMIX('period', !period)-1))+
+DB('AE adjustments', !headline year, !scenario, 'balance sheet data', !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme,
+!account, !id, !jurisdiction, DIMNM('period', DIMIX('period', !period)-1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+
+
+# RULE 005
+# replicate "data" status element against status element indicated against each ID in the ID details cube
+[scenario:'CBMS', 'Finance validated'] = N: [scenario:'CBMS', 'data'];
+
+
+['unbalanced'] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'status') @= 'unbalanced',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['draft'] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'status') @= 'draft',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['submitted'] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'status') @= 'submitted',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['business unit authorised'] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'status') @= 'business unit authorised',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['approved'] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'status') @= 'approved',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['approved non-flat file'] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'status') @= 'approved non-flat file',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+[status:'CBMS'] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'status') @= 'cbms',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['agency authorised'] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'status') @= 'agency authorised',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['Finance validated'] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'status') @= 'Finance validated',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+# RULE 006
+# Grants - ABS View - Allocates all grants to Current or Capital
+# Capital
+[{'current', 'parameter', 'efficiency dividend'}, relatedentity:'No Related Entity', '2330008', jurisdiction:'-'] = N: roundp(
+# TEST A - don't apply rule to ID 0000A
+IF((ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - TEST B - If grant allocation attribute on program dimension is capital
+IF(DB('programme details', !headline year, !scenario, !programme, 'grant allocation') @= 'Capital',
+# TRUEPART B - populate with total grants for capital programs
+['Total related entity', '2331000', 'Total jurisdictions'],
+# FALSEPART B - populate with zero
+0),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# Current
+[{'current', 'parameter', 'efficiency dividend'}, relatedentity:'No Related Entity', '2330009', jurisdiction:'-'] = N: roundp(
+# TEST A - don't apply rule to ID 0000A
+IF((ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - TEST B - If grant allocation attribute on program dimension is current
+IF(DB('programme details', !headline year, !scenario, !programme, 'grant allocation') @= 'Current',
+# TRUEPART B - populate with total grants for current programs
+['Total related entity', '2331000', 'Total jurisdictions'],
+# FALSEPART B - populate with zero
+0),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# RULE 007
+# opening balances - loans to state and territory governments
+[{'current', 'parameter', 'efficiency dividend'}, '5234101'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((DIMIX('period', !period) <> 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - take closing balance of Total IDs from previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account,
+!appropriation item, !programme, '5232200', !id, !jurisdiction, DIMNM('period', DIMIX('period', !period) - 1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# opening balances - student loans
+[{'current', 'parameter', 'efficiency dividend'}, '5232301'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((DIMIX('period', !period) <> 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - take closing balance of Total IDs from previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account,
+!appropriation item, !programme, '5232300', !id, !jurisdiction, DIMNM('period', DIMIX('period', !period) - 1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# opening balances - loans and advances
+[{'current', 'parameter', 'efficiency dividend'}, '5232101'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((DIMIX('period', !period) <> 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - take closing balance of Total IDs from previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account,
+!appropriation item, !programme, '5232100', !id, !jurisdiction, DIMNM('period', DIMIX('period', !period) - 1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# opening balances - loans to other government agencies
+[{'current', 'parameter', 'efficiency dividend'}, '5232501'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((DIMIX('period', !period) <> 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - take closing balance of Total IDs from previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account,
+!appropriation item, !programme, '5232500', !id, !jurisdiction, DIMNM('period', DIMIX('period', !period) - 1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+
+
+# opening balances - Lease liabilities
+[{'current', 'parameter', 'efficiency dividend'}, '3240101'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((DIMIX('period', !period) <> 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - take closing balance of Total IDs from previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account,
+!appropriation item, !programme, '3240100', !id, !jurisdiction, DIMNM('period', DIMIX('period', !period) - 1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+
+
+
+# RULE 008
+# opening balances - special accounts
+[{'current', 'parameter', 'efficiency dividend'}, '9000862'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((DIMIX('period', !period) <> 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - take closing balance from previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme, '9000860', !id, !jurisdiction, DIMNM('period', DIMIX('per
+iod', !period)-1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# RULE 009
+# opening balances - assets in trust
+[{'current', 'parameter', 'efficiency dividend'}, '9000902'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((DIMIX('period', !period) <> 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - take closing balance from previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme, '9000900', !id, !jurisdiction, DIMNM('period', DIMIX('per
+iod', !period)-1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# RULE 0010
+# opening balances - entity accounts
+# 4100001
+[{'current', 'parameter', 'efficiency dividend'}, relatedentity:'No Related Entity', spp:'-', '7211', '4100001'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((DIMIX('period', !period) <> 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - take closing balance from previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, 'Total related entity', !function, !reason, 'Total SPP', !measure code, !appropriation type, '7250', !appropriation item, !programme, '4100001', !id, !jurisdiction, DIMNM('period', DIMIX('
+period', !period)-1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# 4100011
+[{'current', 'parameter', 'efficiency dividend'}, relatedentity:'No Related Entity', spp:'-', '7211', '4100011'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((DIMIX('period', !period) <> 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - take closing balance from previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, 'Total related entity', !function, !reason, 'Total SPP', !measure code, !appropriation type, '7250', !appropriation item, !programme, '4100011', !id, !jurisdiction, DIMNM('period', DIMIX('
+period', !period)-1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# 4100012
+[{'current', 'parameter', 'efficiency dividend'}, relatedentity:'No Related Entity', spp:'-', '7211', '4100012'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((DIMIX('period', !period) <> 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - take closing balance from previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, 'Total related entity', !function, !reason, 'Total SPP', !measure code, !appropriation type, '7250', !appropriation item, !programme, '4100012', !id, !jurisdiction, DIMNM('period', DIMIX('
+period', !period)-1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# 4100013
+[{'current', 'parameter', 'efficiency dividend'}, relatedentity:'No Related Entity', spp:'-', '7211', '4100013'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((DIMIX('period', !period) <> 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - take closing balance from previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, 'Total related entity', !function, !reason, 'Total SPP', !measure code, !appropriation type, '7250', !appropriation item, !programme, '4100013', !id, !jurisdiction, DIMNM('period', DIMIX('
+period', !period)-1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# 4100015
+[{'current', 'parameter', 'efficiency dividend'}, relatedentity:'No Related Entity', spp:'-', '7211', '4100015'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((DIMIX('period', !period) <> 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - take closing balance from previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, 'Total related entity', !function, !reason, 'Total SPP', !measure code, !appropriation type, '7250', !appropriation item, !programme, '4100015', !id, !jurisdiction, DIMNM('period', DIMIX('
+period', !period)-1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# 4100016
+[{'current', 'parameter', 'efficiency dividend'}, relatedentity:'No Related Entity', spp:'-', '7211', '4100016'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((DIMIX('period', !period) <> 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - take closing balance from previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, 'Total related entity', !function, !reason, 'Total SPP', !measure code, !appropriation type, '7250', !appropriation item, !programme, '4100016', !id, !jurisdiction, DIMNM('period', DIMIX('
+period', !period)-1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# 4100003
+[{'current', 'parameter', 'efficiency dividend'}, relatedentity:'No Related Entity', spp:'-', '7211', '4100003'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND ID is not 0000A
+IF((DIMIX('period', !period) <> 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - take closing balance from previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, 'Total related entity', !function, !reason, 'Total SPP', !measure code, !appropriation type, '7250', !appropriation item, !programme, '4100003', !id, !jurisdiction, DIMNM('period', DIMIX('
+period', !period)-1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# RULE 0011
+# opening balances - non-financial asset accounts
+[{'current', 'parameter', 'efficiency dividend'}, '7131'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND account is a child of 5310000 and ID is not 0000A
+IF((DIMIX('period', !period) <> 1) & (ELISANC('account', '5310000', !account) = 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - take closing balance from previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, '7120', !appropriation item, !programme, !account, !id, !jurisdiction, DIMNM('period', DIMIX('period', !perio
+d)-1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+[{'current', 'parameter', 'efficiency dividend'}, '7161'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND account is a child of 5310000 and ID is not 0000A
+IF((DIMIX('period', !period) <> 1) & (ELISANC('account', '5310000', !account) = 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - take closing balance from previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, '7150', !appropriation item, !programme, !account, !id, !jurisdiction, DIMNM('period', DIMIX('period', !perio
+d)-1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+# opening balances - non-financial asset accounts
+[{'current', 'parameter', 'efficiency dividend'}, '7331'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND account is a child of 5310000 and ID is not 0000A
+IF((DIMIX('period', !period) <> 1) & (ELISANC('account', '5310000', !account) = 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - take closing balance from previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, '7320', !appropriation item, !programme, !account, !id, !jurisdiction, DIMNM('period', DIMIX('period', !perio
+d)-1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+[{'current', 'parameter', 'efficiency dividend'}, '7361'] = N: roundp(
+# TEST A - If period is not the first in the dimension AND account is a child of 5310000 and ID is not 0000A
+IF((DIMIX('period', !period) <> 1) & (ELISANC('account', '5310000', !account) = 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A - take closing balance from previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, '7350', !appropriation item, !programme, !account, !id, !jurisdiction, DIMNM('period', DIMIX('period', !perio
+d)-1)),
+# FALSEPART A - allow data entry
+STET), 0);
+
+
+# RULE 0012
+# total accumulated results - operating result and extraordinary items after tax
+[{'current', 'parameter', 'efficiency dividend'}, relatedentity:'No Related Entity', spp:'-', '7201', '4100001'] = N: roundp(
+# TEST A - If ID is not 0000A
+IF((ELISANC('id', '0BASE', !ID) = 0),
+# TRUEPART A -
+['total related entity', 'total spp', movementaccount:'-', '9000110'],
+# FALSEPART A - allow data entry
+STET), 0);
+
+# RULE 0013
+# Cash at beginning of year
+[{'current', 'parameter', 'efficiency dividend'}, movementaccount:'-', '6100001'] = N: roundp(
+# TEST B - If period is not the first in the dimension ? AND ID is not 0000A AND related entity is a dash
+IF((DIMIX('period', !period) <> 1) & (ELISANC('id', '0BASE', !ID) = 0),
+# TEST B TRUE PART - take the closing balance from the previous period
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !SPP, !measure code, !appropriation type, 'total movement', !appropriation item, !programme, '6000000', !id, !jurisdiction, DIMNM('period', DIMIX('peri
+od', !period)-1)),
+# TEST B FALSE PART - allow data entry
+STET), 0);
+
+# RULE 0014
+# Populate underlying cash account with data from cash flow cube
+[{'current', 'parameter', 'efficiency dividend'}, status:'cash flow', spp:'-',movementaccount:'-', '9000701', jurisdiction:'-'] = N:
+# TEST AA - If ID is to use NEW CF Derivation Cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'use new cash flow derivation') @= 'Y',
+# TEST A - if account is a cash flow account and related entity is a dash
+IF(!related entity @= '-'  & !outcome @= DIMNM('outcome', DIMIX('outcome', DB('AE id details', !headline year, !scenario, !id, 'outcome'))) &
+# AND all other elements equal the ID details cube
+!appropriation type @=  'A010' &
+!reason @= DIMNM('reason', DIMIX('reason', DB('AE id details', !headline year, !scenario, !id, 'reason'))) &
+!function @= DIMNM('function', DIMIX('function', DB('AE id details', !headline year, !scenario, !id, 'function'))) &
+!programme @= DIMNM('programme', DIMIX('programme', DB('AE id details', !headline year, !scenario, !id, 'programme code'))) &
+!measure code @= DIMNM('measure code', DIMIX('measure code', DB('AE id details', !headline year, !scenario, !id, 'measure'))) &
+!appropriation item @= 'A010-00014-01436',
+# TEST A - populate with data from the cash flow cube
+DB('AE cash flow derivation', !headline year, !scenario, 'cash flow movement', !id, '9000701',!programme, 'Total', 'Total approp item', !related entity, !period, 'PL and BS data'),
+# FALSE PART A - TEST PART B - Check if the adjustments are multiple (group) and ID is not any opening balance adjustments
+IF ((DB('AE id details', !headline year, !scenario, !id, 'programme code') @= 'multiple' & (ELISANC('id', '00000', !ID) = 0)),
+# TRUE PART B - populate with data from the cash flow cube
+DB('AE cash flow derivation', !headline year, !scenario, 'cash flow movement', !id, '9000701',!programme, 'Total', !appropriation item, !related entity, !period, 'PL and BS data'),
+# FALSEPART B - allow data entry
+STET)),
+IF(!related entity @= '-'  & !outcome @= DIMNM('outcome', DIMIX('outcome', DB('AE id details', !headline year, !scenario, !id, 'outcome'))) &
+# AND all other elements equal the ID details cube
+!appropriation type @=  'A010' &
+!reason @= DIMNM('reason', DIMIX('reason', DB('AE id details', !headline year, !scenario, !id, 'reason'))) &
+!function @= DIMNM('function', DIMIX('function', DB('AE id details', !headline year, !scenario, !id, 'function'))) &
+!programme @= DIMNM('programme', DIMIX('programme', DB('AE id details', !headline year, !scenario, !id, 'programme code'))) &
+!measure code @= DIMNM('measure code', DIMIX('measure code', DB('AE id details', !headline year, !scenario, !id, 'measure'))) &
+!appropriation item @= 'A010-00014-01436',
+# TEST A - populate with data from the cash flow cube
+DB('AE cash flow', !headline year, !scenario, 'cash flow movement', !id, '9000701',!programme, 'Total', !related entity,'PL and BS data', !period),
+# FALSE PART A - TEST PART B - Check if the adjustments are multiple (group) and ID is not any opening balance adjustments
+IF ((DB('AE id details', !headline year, !scenario, !id, 'programme code') @= 'multiple' & (ELISANC('id', '00000', !ID) = 0)) ,
+# TRUE PART B - populate with data from the cash flow cube
+DB('AE cash flow', !headline year, !scenario, 'cash flow movement', !id, '9000701',!programme, 'Total',!related entity, 'PL and BS data', !period),
+# FALSEPART B - allow data entry
+STET)));
+
+# RULE 0015
+# Populate fiscal balance account with data from cash flow cube
+[{'current', 'parameter', 'efficiency dividend'}, status:'cash flow', spp:'-',movementaccount:'-', '9000702', jurisdiction:'-'] = N:
+# TEST AA - If ID is to use NEW CF Derivation Cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'use new cash flow derivation') @= 'Y',
+# TEST A - if account is a cash flow account and related entity is a dash
+IF(!related entity @= '-'  & !outcome @= DIMNM('outcome', DIMIX('outcome', DB('AE id details', !headline year, !scenario, !id, 'outcome'))) &
+# AND all other elements equal the ID details cube
+!appropriation type @=  'A010' &
+!reason @= DIMNM('reason', DIMIX('reason', DB('AE id details', !headline year, !scenario, !id, 'reason'))) &
+!function @= DIMNM('function', DIMIX('function', DB('AE id details', !headline year, !scenario, !id, 'function'))) &
+!programme @= DIMNM('programme', DIMIX('programme', DB('AE id details', !headline year, !scenario, !id, 'programme code'))) &
+!measure code @= DIMNM('measure code', DIMIX('measure code', DB('AE id details', !headline year, !scenario, !id, 'measure'))) &
+!appropriation item @= 'A010-00014-01436',
+# TEST A - populate with data from the cash flow cube
+DB('AE cash flow derivation', !headline year, !scenario, 'cash flow movement', !id, '9000702',!programme, 'Total', 'Total approp item', !related entity, !period, 'PL and BS data'),
+# FALSE PART A - TEST PART B - Check if the adjustments are multiple (group) and ID is not any opening balance adjustments
+IF ((DB('AE id details', !headline year, !scenario, !id, 'programme code') @= 'multiple' & (ELISANC('id', '00000', !ID) = 0)),
+# TRUE PART B - populate with data from the cash flow cube
+DB('AE cash flow derivation', !headline year, !scenario, 'cash flow movement', !id, '9000702',!programme, 'Total', !appropriation item, !related entity, !period, 'PL and BS data'),
+# FALSEPART B - allow data entry
+STET)),
+# TEST A - if account is a cash flow account and related entity is a dash
+IF(!related entity @= '-'  & !outcome @= DIMNM('outcome', DIMIX('outcome', DB('AE id details', !headline year, !scenario, !id, 'outcome'))) &
+# AND all other elements equal the ID details cube
+!appropriation type @=  'A010' &
+!reason @= DIMNM('reason', DIMIX('reason', DB('AE id details', !headline year, !scenario, !id, 'reason'))) &
+!function @= DIMNM('function', DIMIX('function', DB('AE id details', !headline year, !scenario, !id, 'function'))) &
+!programme @= DIMNM('programme', DIMIX('programme', DB('AE id details', !headline year, !scenario, !id, 'programme code'))) &
+!measure code @= DIMNM('measure code', DIMIX('measure code', DB('AE id details', !headline year, !scenario, !id, 'measure'))) &
+!appropriation item @= 'A010-00014-01436',
+# TEST A - populate with data from the cash flow cube
+DB('AE cash flow', !headline year, !scenario, 'cash flow movement', !id, '9000702',!programme, 'Total',!related entity, 'PL and BS data', !period),
+# FALSE PART A - TEST PART B - Check if the adjustments are multiple (group) and ID is not any opening balance adjustments
+IF ((DB('AE id details', !headline year, !scenario, !id, 'programme code') @= 'multiple' & (ELISANC('id', '00000', !ID) = 0)) ,
+# TRUE PART B - populate with data from the cash flow cube
+DB('AE cash flow', !headline year, !scenario, 'cash flow movement', !id, '9000702',!programme, 'Total',!related entity, 'PL and BS data', !period),
+# FALSEPART B - allow data entry
+STET)));
+
+# RULE 0016
+# Populate cash flow status with data from cash flow cube
+[{'current', 'parameter', 'efficiency dividend'}, status:'cash flow', spp:'-', movementaccount:'-', jurisdiction:'-'] = N:
+# TEST AA - If ID is to use NEW CF Derivation Cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'use new cash flow derivation') @= 'Y',
+# TEST A - if account is a cash flow account and related entity is a dash
+IF(SUBST(!account, 1, 1) @= '6' & !outcome @= DIMNM('outcome', DIMIX('outcome', DB('AE id details', !headline year, !scenario, !id, 'outcome')))&
+# AND all other elements equal the ID details cube
+!reason @= DIMNM('reason', DIMIX('reason', DB('AE id details', !headline year, !scenario, !id, 'reason'))) &
+!function @= DIMNM('function', DIMIX('function', DB('AE id details', !headline year, !scenario, !id, 'function'))) &
+!programme @= DIMNM('programme', DIMIX('programme', DB('AE id details', !headline year, !scenario, !id, 'programme code'))) &
+!measure code @= DIMNM('measure code', DIMIX('measure code', DB('AE id details', !headline year, !scenario, !id, 'measure'))),
+# TEST A - populate with data from the cash flow cube
+DB('AE cash flow derivation', !headline year, !scenario, 'cash flow movement', !id, !account,!programme, 'Total', !appropriation item, !related entity, !period,'PL and BS data'),
+# FALSEPART A - allow data entry
+STET),
+IF(SUBST(!account, 1, 1) @= '6' & !outcome @= DIMNM('outcome', DIMIX('outcome', DB('AE id details', !headline year, !scenario, !id, 'outcome')))&
+# AND all other elements equal the ID details cube
+!appropriation type @= DIMNM('appropriation type', DIMIX('appropriation type', DB('AE id details', !headline year, !scenario, !id, 'appropriation type')))&
+!reason @= DIMNM('reason', DIMIX('reason', DB('AE id details', !headline year, !scenario, !id, 'reason'))) &
+!function @= DIMNM('function', DIMIX('function', DB('AE id details', !headline year, !scenario, !id, 'function'))) &
+!programme @= DIMNM('programme', DIMIX('programme', DB('AE id details', !headline year, !scenario, !id, 'programme code'))) &
+!measure code @= DIMNM('measure code', DIMIX('measure code', DB('AE id details', !headline year, !scenario, !id, 'measure'))) &
+!appropriation item @= DIMNM('appropriation item', DIMIX('appropriation item', DB('AE id details', !headline year, !scenario, !id, 'appropriation item'))),
+# TEST A - populate with data from the cash flow cube
+DB('AE cash flow', !headline year, !scenario, 'cash flow movement', !id, !account,!programme, 'Total', !related entity,'PL and BS data', !period),
+# FALSEPART A - allow data entry
+STET));
+
+# RULE 0017
+# Populate programme allocation accounts - Gross Cash Payments
+[{'current', 'parameter', 'efficiency dividend'}, status:'data', relatedentity:'-', spp:'-', movementaccount:'-','9000510', jurisdiction:'-'] = N:
+# Calculate programme cash from cash flow accounts
+['Total related entity', 'Total movement', '6212000', 'Total jurisdictions'] +
+['Total related entity', 'Total movement', '6221200', 'Total jurisdictions'] +
+['Total related entity', 'Total movement', '6232000', 'Total jurisdictions'] -
+['Total related entity', 'Total movement', '6212008', 'Total jurisdictions'];
+
+# RULE 0018
+# Populate programme allocation accounts - Gross Cash Receipts
+[{'current', 'parameter', 'efficiency dividend'}, status:'data', relatedentity:'-', spp:'-', movementaccount:'-','9000515', jurisdiction:'-'] = N:
+# Calculate programme cash from cash flow accounts
+['Total related entity', 'Total movement', '6211000', 'Total jurisdictions'] +
+['Total related entity', 'Total movement', '6221000', 'Total jurisdictions'] +
+['Total related entity', 'Total movement', '6231000', 'Total jurisdictions'] -
+#['Total related entity', 'Total movement', '6231010', 'Total jurisdictions'] -
+['Total related entity', 'Total movement', '6211006', 'Total jurisdictions'] -
+['Total related entity', 'Total movement', '6211007', 'Total jurisdictions'];
+
+# RULE 0019
+# Populate programme allocation accounts - Gross Expenses
+[relatedentity:'-', movementaccount:'-', '9000520', jurisdiction:'-'] = N:
+['Total related entity', 'Total movement', '2000000', 'Total jurisdictions'];
+
+# RULE 0020
+# Populate programme allocation accounts - Gross Revenue
+[relatedentity:'-', movementaccount:'-', '9000525', jurisdiction:'-'] = N:
+['Total related entity', 'Total movement', '1000001', 'Total jurisdictions'] -
+['Total related entity', 'Total movement', '1280004', 'Total jurisdictions'];
+
+# NEW FOR GEUS PRIMUS - 2019
+# RULE 001
+# Populate cash flow status with data from cash flow cube
+[{'current'}, status:'sys_cash flow derived', spp:'-', movementaccount:'-', jurisdiction:'-', appropriationtype:'Appropriation Type - Unallocated',appropriationitem:'-'] = N:
+# TEST AA - If ID is to use NEW CF Derivation Cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'use new cash flow derivation') @<> 'Y',
+# TEST A - if account is a cash flow account and related entity is a dash
+IF(SUBST(!account, 1, 1) @= '6' & !outcome @= DIMNM('outcome', DIMIX('outcome', DB('AE id details', !headline year, !scenario, !id, 'outcome')))&
+# AND all other elements equal the ID details cube
+!reason @= DIMNM('reason', DIMIX('reason', DB('AE id details', !headline year, !scenario, !id, 'reason'))) &
+!function @= DIMNM('function', DIMIX('function', DB('AE id details', !headline year, !scenario, !id, 'function'))) &
+!programme @= DIMNM('programme', DIMIX('programme', DB('AE id details', !headline year, !scenario, !id, 'programme code'))) &
+!measure code @= DIMNM('measure code', DIMIX('measure code', DB('AE id details', !headline year, !scenario, !id, 'measure'))),
+# TEST A - populate with data from the cash flow cube
+DB('AE cash flow', !headline year, !scenario, 'cash flow movement', !id, !account,!programme, 'Total', !related entity,'system derived', !period),
+# FALSEPART A - allow data entry
+STET),
+# TEST A - if account is a cash flow account and related entity is a dash
+IF(SUBST(!account, 1, 1) @= '6' & !outcome @= DIMNM('outcome', DIMIX('outcome', DB('AE id details', !headline year, !scenario, !id, 'outcome')))&
+# AND all other elements equal the ID details cube
+!reason @= DIMNM('reason', DIMIX('reason', DB('AE id details', !headline year, !scenario, !id, 'reason'))) &
+!function @= DIMNM('function', DIMIX('function', DB('AE id details', !headline year, !scenario, !id, 'function'))) &
+!programme @= DIMNM('programme', DIMIX('programme', DB('AE id details', !headline year, !scenario, !id, 'programme code'))) &
+!measure code @= DIMNM('measure code', DIMIX('measure code', DB('AE id details', !headline year, !scenario, !id, 'measure'))),
+# TEST A - populate with data from the cash flow cube
+DB('AE cash flow derivation', !headline year, !scenario, 'cash flow movement', !id, !account,!programme, 'Total', 'Total approp item', !related entity, !period, 'system derived'),
+# FALSEPART A - allow data entry
+STET));
+
+# RULE 002
+# Populate cash flow status with data from cash flow cube
+[{'current'}, status:'sys_user entered cash flow', spp:'-',movementaccount:'-', jurisdiction:'-', appropriationtype:'Appropriation Type - Unallocated',appropriationitem:'-'] = N:
+# TEST A - if account is a cash flow account and related entity is a dash
+IF(SUBST(!account, 1, 1) @= '6' & DB('AE id details', !headline year, !scenario, !id, 'disagree cashflow') @= 'Y' &
+# AND all other elements equal the ID details cube
+!outcome @= DIMNM('outcome', DIMIX('outcome', DB('AE id details', !headline year, !scenario, !id, 'outcome'))) &
+!reason @= DIMNM('reason', DIMIX('reason', DB('AE id details', !headline year, !scenario, !id, 'reason'))) &
+!function @= DIMNM('function', DIMIX('function', DB('AE id details', !headline year, !scenario, !id, 'function'))) &
+!programme @= DIMNM('programme', DIMIX('programme', DB('AE id details', !headline year, !scenario, !id, 'programme code'))) &
+!measure code @= DIMNM('measure code', DIMIX('measure code', DB('AE id details', !headline year, !scenario, !id, 'measure'))),
+# TEST A - populate with data from the cash flow cube
+DB('AE adjustments', !headline year, !scenario, 'data', !outcome, !related entity, !function, !reason, !SPP, !measure code, 'Total approp types', 'total movement', 'Total approp item', !programme, !account, !id, 'total jurisdictions', !period),
+# FALSEPART A - allow data entry
+STET);
+
+# RULE 0999
+# allow data entry to the following elements (placed here deliberately for rule order)
+['data'] = N: STET;
+
+FEEDERS;
+# Internal Feeders
+# RULE 001
+# Parameter
+['current', 'data'] => ['parameter', 'data'];
+['parameter', 'data', '49800', '1280004'] => ['parameter', 'data', relatedentity:'-', '2230002'];
+['parameter', 'data', 'total related entity', movementaccount:'-', '2000000', 'total jurisdictions'] => ['parameter', 'data', '49800', '7593', '4100001', jurisdiction:'-'];
+['parameter', 'data', 'total related entity', movementaccount:'-', '2000000', 'total jurisdictions'] => ['parameter', 'data', relatedentity:'-', movementaccount:'-',  '1270030', jurisdiction:'-'];
+
+# RULE 002
+# Efficiency Dividend
+['current', 'data'] => ['efficiency dividend', 'data'];
+
+# RULE 003
+# Allow data entry
+# no feeder required
+
+# RULE 004
+# populate balance sheet values for ID 0000B
+[{'current', 'parameter', 'efficiency dividend'}, 'Total IDs'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme,
+!account, '0000B', !jurisdiction, DIMNM('period', DIMIX('period', !period)+1));
+
+# RULE 004A
+# populate balance sheet values for all IDS
+[{'current', 'parameter', 'efficiency dividend'}, 'New Adjustments', 'data'] =>
+DB('AE adjustments', !headline year, !scenario, 'balance sheet data', !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme,
+!account, !id, !jurisdiction, DIMNM('period', DIMIX('period', !period)+1));
+
+[{'current', 'parameter', 'efficiency dividend'}, 'New Adjustments', 'balance sheet data'] =>
+DB('AE adjustments', !headline year, !scenario, 'balance sheet data', !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme,
+!account, !id, !jurisdiction, DIMNM('period', DIMIX('period', !period)+1));
+
+
+
+
+
+
+
+
+
+
+# RULE 005
+# replicate "data" status element against status element indicated against each ID in the ID details cube
+[scenario:'CBMS', 'data'] => [scenario:'CBMS', 'finance validated'];
+[{'data', 'cash flow'}] =>
+['unbalanced'],
+['draft'],
+['submitted'],
+['business unit authorised'],
+['approved'],
+['approved non-flat file'],
+[status:'cbms'],
+['agency authorised'],
+['finance validated'];
+
+# RULE 006
+# Grants - ABS View - Allocates all grants to Current or Capital
+[{'current', 'parameter', 'efficiency dividend'}, 'Total related entity', '2331000', 'Total jurisdictions'] =>
+[relatedentity:'No Related Entity', '2330008', jurisdiction:'-'], [relatedentity:'No Related Entity', '2330009', jurisdiction:'-'];
+
+# RULE 007
+# opening balances - loans to state and territory governments
+[{'current', 'parameter', 'efficiency dividend'}, '5232200'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme, '5234101', !id, !jurisdiction, DIMNM('period', DIMIX('per
+iod', !period)+1));
+
+# opening balances - student loans
+[{'current', 'parameter', 'efficiency dividend'}, '5232300'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme, '5232301', !id, !jurisdiction, DIMNM('period', DIMIX('per
+iod', !period)+1));
+
+# opening balances - loans and advances
+[{'current', 'parameter', 'efficiency dividend'}, '5232100'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme, '5232101', !id, !jurisdiction, DIMNM('period', DIMIX('per
+iod', !period)+1));
+
+# opening balances - loans to other government agencies
+[{'current', 'parameter', 'efficiency dividend'}, '5232500'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme, '5232501', !id, !jurisdiction, DIMNM('period', DIMIX('per
+iod', !period)+1));
+
+# opening balances - Lease liabilities
+[{'current', 'parameter', 'efficiency dividend'}, '3240100'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme, '3240101', !id, !jurisdiction, DIMNM('period', DIMIX('per
+iod', !period)+1));
+
+
+
+# RULE 008
+# opening balances - special accounts
+[{'current', 'parameter', 'efficiency dividend'}, '9000860'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme, '9000862', !id, !jurisdiction, DIMNM('period', DIMIX('per
+iod', !period)+1));
+
+# RULE 009
+# opening balances - assets in trust
+[{'current', 'parameter', 'efficiency dividend'}, '9000900'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, !movement account, !appropriation item, !programme, '9000902', !id, !jurisdiction, DIMNM('period', DIMIX('per
+iod', !period)+1));
+
+# RULE 0010
+# opening balances - entity accounts
+[{'current', 'parameter', 'efficiency dividend'}, 'Total related entity', 'Total SPP', '7250', '4100001'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, 'No Related Entity', !function, !reason, '-', !measure code, !appropriation type, '7211', !appropriation item, !programme, '4100001',  !id, !jurisdiction, DIMNM('period', DIMIX('period', !
+period)+1));
+
+[{'current', 'parameter', 'efficiency dividend'}, 'Total related entity', 'Total SPP', '7250', '4100011'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, 'No Related Entity', !function, !reason, '-', !measure code, !appropriation type, '7211', !appropriation item, !programme, '4100011',  !id, !jurisdiction, DIMNM('period', DIMIX('period', !
+period)+1));
+
+[{'current', 'parameter', 'efficiency dividend'}, 'Total related entity', 'Total SPP', '7250', '4100012'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, 'No Related Entity', !function, !reason, '-', !measure code, !appropriation type, '7211', !appropriation item, !programme, '4100012',  !id, !jurisdiction, DIMNM('period', DIMIX('period', !
+period)+1));
+
+[{'current', 'parameter', 'efficiency dividend'}, 'Total related entity', 'Total SPP', '7250', '4100013'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, 'No Related Entity', !function, !reason, '-', !measure code, !appropriation type, '7211', !appropriation item, !programme, '4100013',  !id, !jurisdiction, DIMNM('period', DIMIX('period', !
+period)+1));
+
+[{'current', 'parameter', 'efficiency dividend'}, 'Total related entity', 'Total SPP', '7250', '4100015'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, 'No Related Entity', !function, !reason, '-', !measure code,  !appropriation type, '7211', !appropriation item, !programme, '4100015', !id, !jurisdiction, DIMNM('period', DIMIX('period', !
+period)+1));
+
+[{'current', 'parameter', 'efficiency dividend'}, 'Total related entity', 'Total SPP', '7250', '4100016'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, 'No Related Entity', !function, !reason, '-', !measure code,  !appropriation type, '7211', !appropriation item, !programme, '4100016', !id, !jurisdiction, DIMNM('period', DIMIX('period', !
+period)+1));
+
+[{'current', 'parameter', 'efficiency dividend'}, 'Total related entity', 'Total SPP', '7250', '4100003'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, 'No Related Entity', !function, !reason, '-', !measure code, !appropriation type, '7211', !appropriation item, !programme, '4100003', !id, !jurisdiction, DIMNM('period', DIMIX('period', !p
+eriod)+1));
+
+# RULE 0011
+# opening balances - non-financial asset accounts
+[{'current', 'parameter', 'efficiency dividend'}, '7120', '5310000'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, '7131', !appropriation item, !programme, !account, !id, !jurisdiction, DIMNM('period', DIMIX('period', !perio
+d)+1));
+
+[{'current', 'parameter', 'efficiency dividend'}, '7150', '5310000'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code,  !appropriation type, '7161', !appropriation item, !programme, !account, !id, !jurisdiction, DIMNM('period', DIMIX('period', !peri
+od)+1));
+
+# opening balances - non-financial asset accounts - ROU
+[{'current', 'parameter', 'efficiency dividend'}, '7320', '5310000'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, '7331', !appropriation item, !programme, !account, !id, !jurisdiction, DIMNM('period', DIMIX('period', !perio
+d)+1));
+
+[{'current', 'parameter', 'efficiency dividend'}, '7350', '5310000'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code,  !appropriation type, '7361', !appropriation item, !programme, !account, !id, !jurisdiction, DIMNM('period', DIMIX('period', !peri
+od)+1));
+
+
+# RULE 0012
+# total accumulated results - operating result and extraordinary items after tax
+[{'current', 'parameter', 'efficiency dividend'}, 'total related entity', 'total spp', movementaccount:'-', '9000110'] =>
+['No Related Entity', spp:'-', '7201', '4100001'];
+
+# RULE 0013
+# Cash at beginning of year
+[{'current', 'parameter', 'efficiency dividend'}, 'Total related entity', 'Total movement', '6000000'] =>
+DB('AE adjustments', !headline year, !scenario, !status, !outcome, !related entity, !function, !reason, !spp, !measure code, !appropriation type, '-', !appropriation item, !programme, '6100001', !id, !jurisdiction, DIMNM('period', DIMIX('period', !period)
++1));
+
+# RULE 0014
+# Populate underlying cash account with data from cash flow cube
+[{'current', 'parameter', 'efficiency dividend'}, 'data', 'Total SPP', 'total related entity', 'cash flow movement', '9000130', 'Total jurisdictions'] =>
+DB('AE adjustments', !headline year, !scenario, 'cash flow', !outcome, !related entity, !function, !reason, '-', !measure code,  !appropriation type, '-', !appropriation item, !programme, '9000701', !id, '-', !period);
+
+[{'current', 'parameter', 'efficiency dividend'}, 'data', 'Total SPP', 'total related entity', 'cash flow movement', '3800001', 'Total jurisdictions'] =>
+DB('AE adjustments', !headline year, !scenario, 'cash flow', !outcome, !related entity, !function, !reason, '-', !measure code,  !appropriation type, '-', !appropriation item, !programme, '9000701', !id, '-', !period);
+
+# RULE 0015
+# Populate fiscal balance account with data from cash flow cube
+[{'current', 'parameter', 'efficiency dividend'}, 'data', 'Total SPP', 'total related entity', 'cash flow movement', '9000130', 'Total jurisdictions'] =>
+DB('AE adjustments', !headline year, !scenario, 'cash flow', !outcome, !related entity, !function, !reason, '-', !measure code, !appropriation type, '-', !appropriation item, !programme, '9000702', !id, '-', !period);
+
+[{'current', 'parameter', 'efficiency dividend'}, 'data', 'Total SPP', 'total related entity', 'cash flow movement', '3800001', 'Total jurisdictions'] =>
+DB('AE adjustments', !headline year, !scenario, 'cash flow', !outcome, !related entity, !function, !reason, '-', !measure code, !appropriation type, '-', !appropriation item, !programme, '9000702', !id, '-', !period);
+
+# RULE 0016
+# Populate cash flow status with data from cash flow cube
+[{'current', 'parameter', 'efficiency dividend'}, 'data', 'Total SPP', 'Total related entity', 'cash flow movement', '9000130', 'Total jurisdictions'] =>
+DB('AE adjustments', !headline year, !scenario, 'cash flow', !outcome, !related entity, !function, !reason, '-', !measure code, !appropriation type, '-', !appropriation item, !programme, ATTRS('account', !account, 'cash flow map'), !id, '-', !period);
+
+[{'current', 'parameter', 'efficiency dividend'}, 'data', 'Total SPP', 'Total related entity', 'cash flow movement', '9000130', 'Total jurisdictions'] =>
+DB('AE adjustments', !headline year, !scenario, 'cash flow', !outcome, !related entity, !function, !reason, '-', !measure code, !appropriation type, '-', !appropriation item, !programme, ATTRS('movement account', !movement account, 'cash flow map'), !id, 
+'-', !period);
+
+[{'current', 'parameter', 'efficiency dividend'}, 'data', 'Total SPP', 'Total related entity', 'cash flow movement', '3800001', 'Total jurisdictions'] =>
+DB('AE adjustments', !headline year, !scenario, 'cash flow', !outcome, !related entity, !function, !reason, '-', !measure code, !appropriation type, '-', !appropriation item, !programme, ATTRS('account', !account, 'cash flow map'), !id, '-', !period);
+
+[{'current', 'parameter', 'efficiency dividend'}, 'data', 'Total SPP', 'Total related entity', 'cash flow movement', '3800001', 'Total jurisdictions'] =>
+DB('AE adjustments', !headline year, !scenario, 'cash flow', !outcome, !related entity, !function, !reason, '-', !measure code, !appropriation type, '-', !appropriation item, !programme, ATTRS('movement account', !movement account, 'cash flow map'), !id, 
+'-', !period);
+
+
+# RULE 0017
+# Populate programme allocation accounts - Gross Cash Payments
+['Total related entity', 'Total movement', '6212000', 'Total Ids', 'Total jurisdictions'] => [relatedentity:'-', movementaccount:'-', '9000510', jurisdiction:'-'];
+['Total related entity', 'Total movement', '6221200', 'Total Ids', 'Total jurisdictions'] => [relatedentity:'-', movementaccount:'-', '9000510', jurisdiction:'-'];
+['Total related entity', 'Total movement', '6232000', 'Total Ids', 'Total jurisdictions'] => [relatedentity:'-', movementaccount:'-', '9000510', jurisdiction:'-'];
+['Total related entity', 'Total movement', '6212008', 'Total Ids', 'Total jurisdictions'] => [relatedentity:'-', movementaccount:'-', '9000510', jurisdiction:'-'];
+
+# RULE 0018
+# Populate programme allocation accounts - Gross Cash Receipts
+['Total related entity', 'Total movement', '6211000', 'Total Ids', 'Total jurisdictions'] => [relatedentity:'-', movementaccount:'-', '9000515', jurisdiction:'-'];
+['Total related entity', 'Total movement', '6221000', 'Total Ids', 'Total jurisdictions'] => [relatedentity:'-', movementaccount:'-', '9000515', jurisdiction:'-'];
+['Total related entity', 'Total movement', '6231000', 'Total Ids', 'Total jurisdictions'] => [relatedentity:'-', movementaccount:'-', '9000515', jurisdiction:'-'];
+['Total related entity', 'Total movement', '6211006', 'Total Ids', 'Total jurisdictions'] => [relatedentity:'-', movementaccount:'-', '9000515', jurisdiction:'-'];
+['Total related entity', 'Total movement', '6211007', 'Total Ids', 'Total jurisdictions'] => [relatedentity:'-', movementaccount:'-', '9000515', jurisdiction:'-'];
+['Total related entity', 'Total movement', '6231010', 'Total Ids', 'Total jurisdictions'] => [relatedentity:'-', movementaccount:'-', '9000515', jurisdiction:'-'];
+['9000510'] => ['9000515'];
+
+# RULE 0019
+# Populate programme allocation accounts - Gross Expenses
+['Total related entity', 'Total movement', '2000000', 'Total Ids', 'Total jurisdictions'] => [relatedentity:'-', movementaccount:'-', '9000520', jurisdiction:'-'];
+
+# RULE 0020
+# Populate programme allocation accounts - Gross Revenue
+['Total related entity', 'Total movement', '1000001', 'Total Ids', 'Total jurisdictions'] => [relatedentity:'-', movementaccount:'-', '9000525', jurisdiction:'-'];
+['Total related entity', 'Total movement', '1280004', 'Total Ids', 'Total jurisdictions'] => [relatedentity:'-', movementaccount:'-', '9000525', jurisdiction:'-'];
+
+
+# NEW FOR GEUS PRIMUS - 2019
+['current',{'data', 'cash flow'}, 'Total approp types', 'Total approp item'] =>
+['current','sys_cash flow derived',appropriationtype:'Appropriation Type - Unallocated', appropriationitem:'-'],
+['current','sys_user entered cash flow',appropriationtype:'Appropriation Type - Unallocated', appropriationitem:'-'];
+
+
+
+
+
+
+
+
+
+
+# RULE 0999
+# allow data entry to the following elements (placed here deliberately for rule order)
+# no feeder required
+
+# EXTERNAL FEEDERS;
+
+# Feeder - Government Measures Rule - Expenses
+['Total approved','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', 'Total approp types', 'Capital Measures', 'Total approp item', 'Departmental Programmes', '2000000', 'Total Ids', 'Total jurisdictions'] =>
+DB('government measures',!headline year, !scenario, 'data', 'Departmental', 'Total Fund Type', 'Expenses', !measure code, !period, 'value');
+
+['Total approved','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', 'Total approp types', 'Capital Measures', 'Total approp item', 'Administered Programmes', '2000000', 'Total Ids', 'Total jurisdictions'] =>
+DB('government measures',!headline year, !scenario, 'data', 'Administered', 'Total fund type', 'Expenses', !measure code, !period, 'value');
+
+# Feeder - Government Measures Rule - Revenue
+['Total approved','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', 'Total approp types', 'Capital Measures', 'Total approp item', 'Departmental Programmes', 'Total Income Less Approps', 'Total Ids', 'Total jurisdic
+tions'] =>
+DB('government measures',!headline year, !scenario, 'data', 'Departmental', 'Total fund type', 'Revenue', !measure code, !period, 'value');
+
+['Total approved','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', 'Total approp types', 'Capital Measures', 'Total approp item', 'Administered Programmes', 'Total Income Less Approps', 'Total Ids', 'Total jurisdic
+tions'] =>
+DB('government measures',!headline year, !scenario, 'data', 'Administered', 'Total fund type', 'Revenue', !measure code, !period, 'value');
+
+# Feeder - Government Measures Rule - Capital
+['Total approved','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP','Total approp types', 'Capital Measures', 'Total approp item', 'Departmental Programmes', '4100003', 'Total Ids', 'Total jurisdictions'] =>
+DB('government measures',!headline year, !scenario, 'data', 'Departmental', 'Total fund type', 'Capital', !measure code, !period, 'value');
+
+['Total approved','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', 'Total approp types', 'Capital Measures', 'Total approp item', 'Administered Programmes', '4100003', 'Total Ids', 'Total jurisdictions'] =>
+DB('government measures',!headline year, !scenario, 'data', 'Administered', 'Total fund type', 'Capital', !measure code, !period, 'value');
+
+# Feeder - cash flow cube - Rule 0010
+['data', 'Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', 'Total Measures', 'Total approp types', 'Total approp item', 'Total Programmes', 'Total jurisdictions'] =>
+DB('AE cash flow', !headline year, !scenario, !movement account, !id, IF(ATTRS('movement account', !movement account, 'cash flow map') @<> '', ATTRS('movement account', !movement account, 'cash flow map'),
+ATTRS('account', !account, 'cash flow map')), !programme, !account,  !related entity, 'PL and BS data', !period);
+
+# Feeder - cash flow cube - Rule 0004 - For SYSTEM DERIVED (NEW 2019)
+['data', 'Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', 'Total Measures', 'Total approp types', 'Total approp item', 'Total programmes', 'Total jurisdictions'] =>
+DB('AE cash flow', !headline year, !scenario, !movement account, !id, IF(ATTRS('movement account', !movement account, 'cash flow map') @<> '', ATTRS('movement account', !movement account, 'cash flow map'),
+ATTRS('account', !account, 'cash flow map')), !programme, !account,  !related entity, 'system derived', !period);
+
+# underlying cash
+['data','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', 'Total Measures', 'Total approp types', 'Total approp item', 'Total Programmes', 'Total jurisdictions'] =>
+DB('AE cash flow', !headline year, !scenario, !movement account, !id, '9000701',!programme, !account, !related entity, 'PL and BS data', !period);
+
+# fiscal balance
+['data','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', 'Total Measures', 'Total approp types', 'Total approp item', 'Total Programmes', 'Total jurisdictions'] =>
+DB('AE cash flow', !headline year, !scenario, !movement account, !id, '9000702', !programme, !account, !related entity, 'PL and BS data', !period);
+
+
+
+# NEW FOR GEUS PRIMUS - 2019 - AE CASH FLOW DERIVATION
+# Feeder - cash flow cube - Rule 0010
+['data', 'Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', 'Total Measures', 'Total approp types', 'Total approp item', 'Total Programmes', 'Total jurisdictions'] =>
+DB('AE cash flow derivation', !headline year, !scenario, !movement account, !id, IF(ATTRS('movement account', !movement account, 'cash flow map') @<> '', ATTRS('movement account', !movement account, 'cash flow map'),
+ATTRS('account', !account, 'cash flow map')), !programme, !account,  !appropriation item, !related entity,  !period, 'PL and BS data');
+
+# Feeder - cash flow cube - Rule 0004 - For SYSTEM DERIVED (NEW 2019)
+['data', 'Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', 'Total Measures', 'Total approp types', 'Total approp item', 'Total programmes', 'Total jurisdictions'] =>
+DB('AE cash flow derivation', !headline year, !scenario, !movement account, !id, IF(ATTRS('movement account', !movement account, 'cash flow map') @<> '', ATTRS('movement account', !movement account, 'cash flow map'),
+ATTRS('account', !account, 'cash flow map')), !programme, !account, !appropriation item, !related entity, !period, 'system derived');
+
+# underlying cash
+['data','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', 'Total Measures', 'Total approp types', 'Total approp item', 'Total Programmes', 'Total jurisdictions'] =>
+DB('AE cash flow derivation', !headline year, !scenario, !movement account, !id, '9000701',!programme, !account, !appropriation item, !related entity, !period, 'PL and BS data');
+
+# fiscal balance
+['data','Total outcomes', 'Total related entity', 'Total functions', 'Total reason', 'Total SPP', 'Total Measures', 'Total approp types', 'Total approp item', 'Total Programmes', 'Total jurisdictions'] =>
+DB('AE cash flow derivation', !headline year, !scenario, !movement account, !id, '9000702',!programme, !account, !appropriation item, !related entity, !period, 'PL and BS data');

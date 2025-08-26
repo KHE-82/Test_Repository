@@ -1,0 +1,27 @@
+{
+	"@type":"Process",
+	"Name":"sys_Update meas_list subset",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Update meas_list subset.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psMDX",
+			"Prompt":"",
+			"Value":"{{FILTER( {FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [measure code] )}, 0)}, [measure code].[Non-Measure] = \"\")}, INSTR( [government measures details].([Headline Year].[HL2013-2014],[scenario].[current],[measure details].[status]), \"approv\" ) >=1) }}",
+			"Type":"String"
+		},
+		{
+			"Name":"psFilter",
+			"Prompt":"",
+			"Value":"status",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561009160007"
+}

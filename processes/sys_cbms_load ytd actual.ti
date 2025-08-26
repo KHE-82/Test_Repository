@@ -1,0 +1,356 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_cbms_load ytd actuals
+#**** DESCRIPTION:       This process imports cbms flat files into the new CBMS Actuals cube
+#****                                  
+#****
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 07/02/2014    KG          Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** Declare Adjustments Cube Variables ***#
+cbCube = 'CBMS - Actual';
+dmHLYear = 'headline year';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = 'program';
+dmAcc = 'account';
+dmSPP = 'spp';
+dmJur = 'jurisdiction';
+dmPeriod = 'period';
+dmVar = 'variables';
+
+#*** Declare variables used for subsets 
+sObject = '$cbms_actuals clear';
+sCOMMSAgency = ATTRS (dmVar, 'agency code', 'value');
+sTUSMAAgency = ATTRS (dmVar, 'TUSMA agency code', 'value');
+
+
+sFileLocation = ATTRS(dmVar, 'save location', 'value');
+
+#*** STEP 1 : CLEAR OUT ADJUSTMENTS CUBE DATA OF SELECTED YEAR AND SCENARIO
+#*** ### CLEAR THE DATA ALREADY IN THE CUBE ###
+# Destroy the existing view and subsets
+# Destroy the existing view and subsets
+ViewDestroy (cbCube, sObject);
+SubsetDestroy (dmHLYear, sObject);
+
+# *** CREATE SUBSETS *** #
+# Headline Year
+SubsetCreate (dmHLYear, sObject);
+SubsetElementInsert (dmHLYear, sObject, psHLYear, 1);
+
+# Create the view which holds the data
+ViewCreate (cbCube, sObject);
+ViewSubsetAssign (cbCube, sObject, dmHLYear, sObject);
+
+# Clear out the data
+ViewZeroOut (cbCube, sObject);
+
+# Destroy the existing view and subsets
+ViewDestroy (cbCube, sObject);
+SubsetDestroy (dmHLYear, sObject);
+
+nProgValid = 0;
+nItemValid = 0;
+nREValid = 0;
+nFuncValid = 0;
+nMAValid = 0;
+
+#DatasourceNameForServer = psFileName;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+# *** SKIP ACCOUNTS 
+IF (vsAcc @= '3322001' % vsAcc @= '3322002');
+     ITEMSKIP;
+ENDIF;
+
+#*** DO A CHECK FOR PROGRAMS ***#
+IF (vsProg @= '');
+     IF (vsAgency @= sTUSMAAgency % vsAgency@= sCOMMSAgency);
+          IF (vsAgency@= sCOMMSAgency);
+               IF (vsControlType @= 'Administered');
+                    # *** POST TO OTHER ADMIN IMPLEMENTATION CONTROL ***#
+                    vsProg = 'ic5222';
+               ELSE;
+                    vsProg = '241:998-01';
+               ENDIF;
+          ELSE;
+               IF (vsControlType @= 'Administered');
+                    # *** POST TO OTHER ADMIN IMPLEMENTATION CONTROL ***#
+                    vsProg = '7885-02';
+               ELSE;
+                    vsProg = '7872-01';
+               ENDIF;
+          ENDIF;
+     ELSE;
+          vsProg = vsAgency | ' - ' | vsControlType;  
+          sElType = DTYPE(dmProg, vsProg);
+          WHILE (sElType @= 'C');
+               vsProg = ELCOMP(dmProg, vsProg, 1);
+               sElType = DTYPE(dmProg, vsProg);
+          END;
+     ENDIF;
+ELSE;
+# *** IF PROGAM IS AVAILABLE ***#
+     IF (vsAgency @= sTUSMAAgency % vsAgency@= sCOMMSAgency);
+          IF (vsAgency@= sCOMMSAgency);
+               vsProg = vsProg;
+          ELSE;
+               vsProg = 'ic' | vsProg;
+          ENDIF;
+     ELSE;
+          vsProg = vsProg;
+     ENDIF;
+ENDIF;
+
+
+IF (DIMIX (dmProg, vsProg) = 0);
+     asciioutput (sFileLocation | 'MA missing program.txt', vsProg);
+     nProgValid = nProgValid + 1;
+#     PROCESSQUIT;
+ENDIF;
+
+IF (vsAppropItem @= '' % vsAppropItem @= '0');
+     vsAppropItem = '-';
+ELSE;
+     vsAppropItem = vsAppropItem;
+ENDIF;
+
+IF (DIMIX (dmItem, vsAppropItem) = 0);
+     asciioutput (sFileLocation | 'MA missing appropriation item.txt', vsAppropItem);
+     nItemValid = nItemValid + 1;
+ #    PROCESSQUIT;
+ENDIF;
+
+# Get related entity element
+IF (vsRE @= '');
+     vsRE = '-';
+ELSE;
+     vsRE = vsRE;
+ENDIF;
+
+IF (DIMIX (dmRE, vsRE) = 0);
+     asciioutput (sFileLocation | 'MA missing Related Entity.txt', vsProg, vsRE);
+     nREValid = nREValid + 1;
+#     PROCESSQUIT;
+ENDIF;
+
+# Get function element
+IF (vsFunc @= '');
+     vsFunc = '9999';
+ELSE;
+     vsFunc = vsFunc;
+ENDIF;
+
+IF (DIMIX (dmFunc, vsFunc) = 0);
+     asciioutput (sFileLocation | 'MA missing Function.txt', vsFunc);
+     nFuncValid = nFuncValid + 1;
+#     PROCESSQUIT;
+ENDIF;
+
+# Get movement account element
+IF (vsMA @= '');
+     vsMA = '-';
+ELSE;
+     vsMA = vsMA;
+ENDIF;
+
+IF (DIMIX (dmMA, vsMA) = 0);
+     asciioutput (sFileLocation | 'MA missing Movement Account.txt', vsMA);
+     nMAValid = nMAValid + 1;
+#     PROCESSQUIT;
+ENDIF;
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*** CHECK IF IT PASSES VALIDATIONS ***#
+IF ( nProgValid > 0% nItemValid > 0 % nREValid > 0 %  nFuncValid > 0 %  nMAValid > 0);
+     asciioutput('validation failed.txt', vsProg);
+     PROCESSQUIT;
+ENDIF;
+
+# *** SKIP ACCOUNTS 
+IF (vsAcc @= '3322001' % vsAcc @= '3322002');
+     ITEMSKIP;
+ENDIF;
+
+#*** IDENTIFY PROGRAMS AND OTHER REQUIREMENTS ***#
+
+# Get programme element (deliberately at this position rather than at the beginning with the other elements)
+
+IF (vsProg @= '');
+     IF (vsAgency @= sTUSMAAgency % vsAgency@= sCOMMSAgency);
+          IF (vsAgency@= sCOMMSAgency);
+               IF (vsControlType @= 'Administered');
+                    # *** POST TO OTHER ADMIN IMPLEMENTATION CONTROL ***#
+                    vsProg = 'ic5222';
+               ELSE;
+                    vsProg = '241:998-01';
+               ENDIF;
+          ELSE;
+               IF (vsControlType @= 'Administered');
+                    # *** POST TO OTHER ADMIN IMPLEMENTATION CONTROL ***#
+                    vsProg = '7885-02';
+               ELSE;
+                    vsProg = '7872-01';
+               ENDIF;
+          ENDIF;
+     ELSE;
+          vsProg = vsAgency | ' - ' | vsControlType;  
+          sElType = DTYPE(dmProg, vsProg);
+          WHILE (sElType @= 'C');
+               vsProg = ELCOMP(dmProg, vsProg, 1);
+               sElType = DTYPE(dmProg, vsProg);
+          END;
+     ENDIF;
+ELSE;
+# *** IF PROGAM IS AVAILABLE ***#
+     IF (vsAgency @= sTUSMAAgency % vsAgency@= sCOMMSAgency);
+          IF (vsAgency@= sCOMMSAgency);
+               vsProg = vsProg;
+          ELSE;
+               vsProg = 'ic' | vsProg;
+          ENDIF;
+     ELSE;
+          vsProg = vsProg;
+     ENDIF;
+ENDIF;
+
+
+# Get movement account element
+IF (vsMA @= '');
+     vsMA = '-';
+ELSE;
+     vsMA = vsMA;
+ENDIF;
+
+# Get function element
+IF (vsFunc @= '');
+     vsFunc = '9999';
+ELSE;
+     vsFunc = vsFunc;
+ENDIF;
+
+# Get related entity element
+IF (vsRE @= '');
+     vsRE = '-';
+ELSE;
+     vsRE = vsRE;
+ENDIF;
+
+# Get SPP element
+IF (vsSPP @= '');
+     vsSPP = '-';
+ELSE;
+     vsSPP = vsSPP;
+ENDIF;
+
+# Get jurisdiction element
+IF (vsJur @= '');
+     vsJur = '-';
+ELSE;
+     vsJur = vsJur;
+ENDIF;
+
+# Get Appropriation Type element
+IF (vsAppropType@= '');
+     vsAppropType = 'Appropriation Bill 1';
+ELSE;
+     vsAppropType = vsAppropType;
+ENDIF;
+
+
+# Get Appropriation Item element
+IF (vsAppropItem @= '' % vsAppropItem @= '0');
+     vsAppropItem = '-';
+ELSE;
+     vsAppropItem = vsAppropItem;
+ENDIF;
+
+#*** GET OLD VALUES ***#
+nOldJul = CELLGETN (cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Jul');
+nOldAug = CELLGETN (cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Aug');
+nOldSep = CELLGETN (cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Sep');
+nOldOct = CELLGETN (cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Oct');
+nOldNov = CELLGETN (cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Nov');
+nOldDec = CELLGETN (cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Dec');
+nOldJan = CELLGETN (cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Jan');
+nOldFeb = CELLGETN (cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Feb');
+nOldMar = CELLGETN (cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Mar');
+nOldApr = CELLGETN (cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Apr');
+nOldMay = CELLGETN (cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'May');
+nOldJun = CELLGETN (cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Jun');
+
+# Convert signage on flat file value
+IF (vsMA @= '-');
+     X = ATTRS(dmAcc, vsAcc, 'DR/CR');
+ELSE;
+     X = ATTRS(dmMA, vsMA, 'DR/CR');
+ENDIF;
+
+IF (X @= 'CR');
+     iConversion = -1;
+ELSE;
+     iConversion = 1;
+ENDIF;
+
+#*** CONVERSION FROM CBMS ***#
+nJul = vnJul * iConversion;
+nAug = (vnAug - vnJul) * iConversion;
+nSep = (vnSep - vnAug) * iConversion;
+nOct = (vnOct - vnSep) * iConversion;
+nNov = (vnNov - vnOct) * iConversion;
+nDec = (vnDec - vnNov) * iConversion;
+nJan = (vnJan - vnDec) * iConversion;
+nFeb = (vnFeb - vnJan) * iConversion;
+nMar = (vnMar - vnFeb) * iConversion;
+nApr = (vnApr - vnMar) * iConversion;
+nMay = (vnMay - vnApr) * iConversion;
+nJun = (vnJun - vnMay) * iConversion;
+
+IF (CELLISUPDATEABLE (cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Jul') = 1);
+     CELLPUTN (nOldJul + nJul, cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Jul');
+     CELLPUTN (nOldAug + nAug, cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Aug');
+     CELLPUTN (nOldSep + nSep, cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Sep');
+     CELLPUTN (nOldOct + nOct, cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Oct');
+     CELLPUTN (nOldNov + nNov, cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Nov');
+     CELLPUTN (nOldDec + nDec, cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Dec');
+     CELLPUTN (nOldJan + nJan, cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Jan');
+     CELLPUTN (nOldFeb + nFeb, cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Feb');
+     CELLPUTN (nOldMar + nMar, cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Mar');
+     CELLPUTN (nOldApr + nApr, cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Apr');
+     CELLPUTN (nOldMay + nMay, cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'May');
+     CELLPUTN (nOldJun + nJun, cbCube, psHLYear, vsRE, vsFunc, vsAppropType, vsMA, vsAppropItem, vsProg, vsAcc, vsSPP, vsJur, 'Jun');
+ENDIF;
+
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

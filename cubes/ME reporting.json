@@ -1,0 +1,45 @@
+{
+	"@type":"Cube",
+	"Name":"ME reporting",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('headline year')"
+		},
+		{
+			"@id":"Dimensions('scenario')"
+		},
+		{
+			"@id":"Dimensions('related entity')"
+		},
+		{
+			"@id":"Dimensions('spp')"
+		},
+		{
+			"@id":"Dimensions('movement account')"
+		},
+		{
+			"@id":"Dimensions('programme')"
+		},
+		{
+			"@id":"Dimensions('appropriation item')"
+		},
+		{
+			"@id":"Dimensions('account')"
+		},
+		{
+			"@id":"Dimensions('id')"
+		},
+		{
+			"@id":"Dimensions('jurisdiction')"
+		},
+		{
+			"@id":"Dimensions('period')"
+		},
+		{
+			"@id":"Dimensions('ME reporting measure')"
+		}
+	],
+	"Rules@Code.link":"ME reporting.rules",
+	"Views@Code.links":[]
+}

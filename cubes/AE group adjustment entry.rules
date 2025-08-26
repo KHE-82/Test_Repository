@@ -1,0 +1,99 @@
+SKIPCHECK;
+# Rule 0000
+# Allow data entry
+[{'0000-0000','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'P0'}] = N: STET;
+['Actual'] = N: STET;
+
+# RULE 001
+# Allow data entry
+['data', id:'0000A'] = N: STET;
+['data', id:'00FBO'] = N: STET;
+
+# RULE 002
+# replicate "data" status element against status element indicated against each ID in the ID details cube
+[scenario:'CBMS', 'Finance validated'] = N: [scenario:'CBMS', 'data'];
+
+['draft'] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'status') @= 'draft',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['submitted'] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'status') @= 'submitted',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['business unit authorised'] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'status') @= 'business unit authorised',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['approved'] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'status') @= 'approved',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['approved non-flat file'] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'status') @= 'approved non-flat file',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+[status:'CBMS'] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'status') @= 'cbms',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['agency authorised'] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'status') @= 'agency authorised',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+['Finance validated'] = N:
+# TEST A - if status equals status on the ID in the ID details cube
+IF(DB('AE id details', !headline year, !scenario, !id, 'status') @= 'Finance validated',
+# TRUEPART A - populate with data from the "data" status element
+['data'] + [status:'cash flow'],
+# FALSEPART A - populate with zero
+0);
+
+
+FEEDERS;
+# Internal Feeders
+# RULE 001
+# Allow data entry
+# no feeder required
+
+
+# RULE 002
+# replicate "data" status element against status element indicated against each ID in the ID details cube
+[scenario:'CBMS', 'data'] => [scenario:'CBMS', 'finance validated'];
+[{'data', 'cash flow'}] =>
+['draft'],
+['submitted'],
+['business unit authorised'],
+['approved'],
+['approved non-flat file'],
+[status:'cbms'],
+['agency authorised'],
+['finance validated'];

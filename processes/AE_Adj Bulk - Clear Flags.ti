@@ -1,0 +1,175 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Adj Bulk - Clear Flags
+#**** DESCRIPTION:        This process will change the status of the selected adjustment
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    KG             Initial Revision
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS
+#******************************************************************************************************************
+cbID = 'AE id detail';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmID = 'id';
+dmIDMeas = 'id measure';
+
+sMeasure = 'bulk processing flag';
+
+
+#******************************************************************************************************************
+#*** DECLARE BULK PROCESS CUBE
+#******************************************************************************************************************
+cbBulk = 'AE bulk processing';
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED
+#******************************************************************************************************************
+sView = sUser | '_$sysBulkClear';
+
+#******************************************************************************************************************
+#*** STEP 1 - CREATE VIEW AND CLEAR OUT ALL FLAGS
+#******************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbBulk, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmIDMeas, sView);
+
+#******************************************************************************************************************
+#*** CREATE SUBSETS
+#******************************************************************************************************************
+# Client
+SUBSETCREATE (dmClient, sView);
+SUBSETELEMENTINSERT (dmClient, sView, sUser, 1);
+
+# Headline Year
+SUBSETCREATE (dmHLYear, sView);
+SUBSETELEMENTINSERT (dmHLYear, sView, psHLYear, 1);
+
+# Scenario
+SUBSETCREATE (dmScenario, sView);
+SUBSETELEMENTINSERT (dmScenario, sView, psScenario, 1);
+
+# ID
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmID | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmID, sView , MDX);
+
+# ID Measure
+SUBSETCREATE (dmIDMeas, sView);
+SUBSETELEMENTINSERT (dmIDMeas, sView, sMeasure, 1);
+
+
+#******************************************************************************************************************
+#*** BUILD VIEW
+#******************************************************************************************************************
+VIEWCREATE (cbBulk, sView);
+VIEWSUBSETASSIGN (cbBulk, sView, dmClient, sView);
+VIEWSUBSETASSIGN (cbBulk, sView, dmHLYear, sView);
+VIEWSUBSETASSIGN (cbBulk, sView, dmScenario, sView);
+VIEWSUBSETASSIGN (cbBulk, sView, dmID, sView);
+VIEWSUBSETASSIGN (cbBulk, sView, dmIDMeas, sView);
+
+#VIEWSETSKIPZEROES (cbBulk, sView, 1);
+#VIEWSETSKIPCALCS (cbBulk, sView, 1);
+
+ViewExtractSkipZeroesSet(cbBulk, sView, 1);
+ViewSuppressZeroesSet(cbBulk, sView, 1);
+ViewExtractSkipCalcsSet(cbBulk, sView, 1);
+
+VIEWZEROOUT (cbBulk, sView);
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbBulk, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmIDMeas, sView);
+
+#******************************************************************************************************************
+#*** CLEAR BULK PROCESS VALIDATION
+#******************************************************************************************************************
+CELLPUTS ('', cbClient, sUser, 'sys_bulk process', 'validate');
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

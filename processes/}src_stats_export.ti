@@ -1,0 +1,45 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+DatasourceASCIIQuoteCharacter = '';
+DatasourceASCIIDelimiter = CHAR(9);
+nFill = 1;
+
+sFileName = pOutputDir |  'Stats.stat';
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+    sControlCubeName = '}StatsByCube';
+    sControlName = '}StatsStatsByCube';
+    If( DimensionExists(sControlName) = 1 & CubeExists(sControlCubeName) = 1);
+      ASCIIOutput(sFileName, vCubeName);
+      nPropCount = DIMSIZ( sControlName );
+      p = 1;
+      WHILE (p <= nPropCount);
+          sProp = DIMNM( sControlName , p);
+          sValue = sProp | ':=' | NumberToString(CellGetN(sControlCubeName, sProp, vCubeName, 'LATEST' ));
+          ASCIIOutput(sFileName, Fill(' ', nFill) | sValue);
+          p = p + 1;
+      END;
+      ASCIIOutput(sFileName, '');
+    EndIf;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

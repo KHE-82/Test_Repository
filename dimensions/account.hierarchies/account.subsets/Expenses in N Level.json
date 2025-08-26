@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"Expenses in N Level",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1FILTERBYPATTERN( {TM1SUBSETALL( [account] )}, \"2*\")}, 0)}"
+}

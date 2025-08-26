@@ -1,0 +1,33 @@
+{
+	"@type":"Process",
+	"Name":"sys_Queue - Add Process to Queue",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Queue - Add Process to Queue.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psTI",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psParams",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psAll",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561009150001"
+}

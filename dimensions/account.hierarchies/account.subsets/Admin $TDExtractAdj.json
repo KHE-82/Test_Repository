@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"Admin $TDExtractAdj",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( { [account].[1000001]}, ALL, RECURSIVE )}, 0)}"
+}

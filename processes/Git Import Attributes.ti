@@ -1,0 +1,34 @@
+#region Prolog
+nEndDimName = scan('.csv',pFile)-1;
+sDim = Subst(pFile,1,nEndDimName);
+
+sEADim= '}ElementAttributes_' | sDim;
+
+DataSourceType = 'CHARACTERDELIMITED';
+DatasourceNameForServer = pDir | pFile;
+
+
+#endregion
+#region Metadata
+if(v2 @= 'AA');
+    if(DIMIX( sEADim, v3 )=0);
+        AttrInsert( sDim, '', v3, 'A' );
+    endif;
+
+    CellPutS( v4, sEADim, v1, v3);
+elseif( v2 @= 'AS' );
+    if(DIMIX( sEADim, v3 )=0);
+        AttrInsert( sDim, '', v3, 'S' );
+    endif;
+
+    CellPutS( v4, sEADim, v1, v3);
+elseif( v2 @= 'AN' );
+    if(DIMIX( sEADim, v3 )=0);
+        AttrInsert( sDim, '', v3, 'N' );
+    endif;
+
+    CellPutN( StringToNumber(v4), sEADim, v1, v3);
+endif;
+
+
+#endregion

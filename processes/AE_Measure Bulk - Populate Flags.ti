@@ -1,0 +1,300 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Measure Bulk - Populate Flags
+#**** DESCRIPTION:       This process will add a flag to the selected Measure
+#****		          It utilises the subset used in the sys_Client - Update Measure Bulk Process Subset.	
+#****
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    KG             Initial Revision
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS
+#******************************************************************************************************************
+cbID = 'AE id detail';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmID = 'id';
+dmIDMeas = 'id measure';
+
+sMeasure = 'bulk processing flag';
+
+
+#******************************************************************************************************************
+#*** DECLARE BULK PROCESS CUBE
+#******************************************************************************************************************
+cbBulk = 'AE bulk processing';
+
+
+
+#******************************************************************************************************************
+#*** DECLARE GOVERNMENT MEASURES DETAILS
+#******************************************************************************************************************
+cbMeasDet = 'government measures details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmMeasCode = 'measure code';
+dmMeasCodeDet = 'measure details';
+
+
+#******************************************************************************************************************
+#*** DECLARE BULK PROCESS CUBE
+#******************************************************************************************************************
+cbMeasBulk = 'government measures bulk processing';
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED
+#******************************************************************************************************************
+sView = sUser | '_$sysMeasBulkClear';
+sSubset = sUser | '_$sysMeasBulkList';
+
+#******************************************************************************************************************
+#*** GET SELECTED PROCESS
+#******************************************************************************************************************
+sCopyPrc = 'Copy';
+sRejPrc = 'Reject';
+sSelProcess = CELLGETS (cbClient, sUser, 'sys_meas bulk process', 'value');
+
+#******************************************************************************************************************
+#*** CLEAR BULK PROCESS VALIDATION
+#******************************************************************************************************************
+CELLPUTS ('', cbClient, sUser, 'sys_meas bulk process', 'validate');
+
+
+#******************************************************************************************************************
+#*** STEP 1 - CREATE VIEW AND CLEAR OUT ALL FLAGS
+#******************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbMeasBulk, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmMeasCodeDet, sView);
+
+#******************************************************************************************************************
+#*** CREATE SUBSETS
+#******************************************************************************************************************
+# Client
+SUBSETCREATE (dmClient, sView);
+SUBSETELEMENTINSERT (dmClient, sView, sUser, 1);
+
+# Headline Year
+SUBSETCREATE (dmHLYear, sView);
+SUBSETELEMENTINSERT (dmHLYear, sView, psHLYear, 1);
+
+# Scenario
+SUBSETCREATE (dmScenario, sView);
+SUBSETELEMENTINSERT (dmScenario, sView, psScenario, 1);
+
+# Measure Code
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode |'] )}, 0)}, [' | dmMeasCode |'].[Non-Measure] = "")}';
+
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmMeasCode, sView , MDX);
+
+# Measure Code Details
+SUBSETCREATE (dmMeasCodeDet, sView);
+SUBSETELEMENTINSERT (dmMeasCodeDet, sView, sMeasure, 1);
+
+
+
+#******************************************************************************************************************
+#*** BUILD VIEW
+#******************************************************************************************************************
+VIEWCREATE (cbMeasBulk, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmClient, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmHLYear, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmScenario, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmMeasCode, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmMeasCodeDet, sView);
+
+#VIEWSETSKIPZEROES (cbMeasBulk, sView, 1);
+#VIEWSETSKIPCALCS (cbMeasBulk, sView, 1);
+
+ViewExtractSkipZeroesSet(cbMeasBulk, sView, 1);
+ViewSuppressZeroesSet(cbMeasBulk, sView, 1);
+ViewExtractSkipCalcsSet(cbMeasBulk, sView, 1);
+
+VIEWZEROOUT (cbMeasBulk, sView);
+
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbMeasBulk, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmMeasCodeDet, sView);
+
+#******************************************************************************************************************
+#*** STEP 2 - CREATE VIEW TO POPULATE FLAGS
+#******************************************************************************************************************
+
+#******************************************************************************************************************
+#*** CREATE SUBSETS
+#******************************************************************************************************************
+
+#******************************************************************************************************************
+sView = sUser | '_$sysMeasBulkPopulateFlags';
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbMeasBulk, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmMeasCodeDet, sView);
+
+
+# Client
+SUBSETCREATE (dmClient, sView);
+SUBSETELEMENTINSERT (dmClient, sView, sUser, 1);
+
+# Headline Year
+SUBSETCREATE (dmHLYear, sView);
+SUBSETELEMENTINSERT (dmHLYear, sView, psHLYear, 1);
+
+# Scenario
+SUBSETCREATE (dmScenario, sView);
+SUBSETELEMENTINSERT (dmScenario, sView, psScenario, 1);
+
+# ID
+#*** Using sSubset for ths process
+
+# Measure Code Details
+SUBSETCREATE (dmMeasCodeDet, sView);
+SUBSETELEMENTINSERT (dmMeasCodeDet, sView, sMeasure, 1);
+
+#******************************************************************************************************************
+#*** BUILD VIEW - Note that ID is using sSubset
+#******************************************************************************************************************
+VIEWCREATE (cbMeasBulk, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmClient, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmHLYear, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmScenario, sView);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmMeasCode, sSubset);
+VIEWSUBSETASSIGN (cbMeasBulk, sView, dmMeasCodeDet, sView);
+
+VIEWSETSKIPZEROES (cbMeasBulk, sView, 0);
+VIEWSETSKIPCALCS (cbMeasBulk, sView, 1);
+
+#DATASOURCETYPE = 'VIEW';
+#DATASOURCECUBEVIEW = sView;
+
+
+#******************************************************************************************************************
+#*** IF SELECTED PROCESS IS COPY or COPY AND REVERSE or REVERSE
+#*** DO NOT POST DATA
+#******************************************************************************************************************
+IF (sSelProcess @= sCopyPrc % sSelProcess @= sRejPrc);
+	sErrMessage = 'This process does not allow the use of the Select All function to populate flags. Please manually add flags';
+	CELLPUTS ( sErrMessage, cbClient, sUser, 'sys_meas bulk process', 'validate');
+	PROCESSERROR;
+	
+ENDIF;
+
+
+
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#******************************************************************************************************************
+#*** POST DATA
+#******************************************************************************************************************
+IF (CELLISUPDATEABLE (cbMeasBulk, vsUser, vsHLYear, vsScenario, vsMeasCode, vsMeasure) = 1);
+	CELLPUTS ('Y', cbMeasBulk, vsUser, vsHLYear, vsScenario, vsMeasCode, vsMeasure);
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#******************************************************************************************************************
+sView = sUser | '_$sysMeasBulkPopulateFlags';
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbMeasBulk, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmMeasCodeDet, sView);
+
+#endregion

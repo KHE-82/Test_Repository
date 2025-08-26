@@ -1,0 +1,69 @@
+{
+	"@type":"Process",
+	"Name":"sys_Program Dimension Update - Archive",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Program Dimension Update - Archive.ti",
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForServer":"programme2",
+		"dataSourceNameForClient":"programme2",
+		"subset":"$ArchiveDimension"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psSrcEL",
+			"Prompt":"",
+			"Value":"total programmes",
+			"Type":"String"
+		},
+		{
+			"Name":"psSrcPar",
+			"Prompt":"",
+			"Value":"Not Required",
+			"Type":"String"
+		},
+		{
+			"Name":"psSrcSuffix",
+			"Prompt":"",
+			"Value":"Archive 1",
+			"Type":"String"
+		},
+		{
+			"Name":"psTarEL",
+			"Prompt":"",
+			"Value":"Not Required",
+			"Type":"String"
+		},
+		{
+			"Name":"psTarPar",
+			"Prompt":"",
+			"Value":"Not Required",
+			"Type":"String"
+		},
+		{
+			"Name":"psMethod",
+			"Prompt":"",
+			"Value":"Archive",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vsElement",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "17561009140002"
+}

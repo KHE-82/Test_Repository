@@ -1,0 +1,86 @@
+{
+	"@type":"NativeView",
+	"Name":"data entry",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_client preference measure')/Hierarchies('sys_client preference measure')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_client preference measure')/Hierarchies('sys_client preference measure')/Elements('old value')"
+					},
+					{
+						"@id":"Dimensions('sys_client preference measure')/Hierarchies('sys_client preference measure')/Elements('value')"
+					},
+					{
+						"@id":"Dimensions('sys_client preference measure')/Hierarchies('sys_client preference measure')/Elements('validate')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_client preference')/Hierarchies('sys_client preference')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_client preference')/Hierarchies('sys_client preference')/Elements('adj_account')"
+					},
+					{
+						"@id":"Dimensions('sys_client preference')/Hierarchies('sys_client preference')/Elements('adj_movement account')"
+					},
+					{
+						"@id":"Dimensions('sys_client preference')/Hierarchies('sys_client preference')/Elements('adj_related entity')"
+					},
+					{
+						"@id":"Dimensions('sys_client preference')/Hierarchies('sys_client preference')/Elements('adj_jurisdiction')"
+					},
+					{
+						"@id":"Dimensions('sys_client preference')/Hierarchies('sys_client preference')/Elements('adj_appropriation item')"
+					},
+					{
+						"@id":"Dimensions('sys_client preference')/Hierarchies('sys_client preference')/Elements('adj_spp')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('}Clients')/Hierarchies('}Clients')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('}Clients')/Hierarchies('}Clients')/Elements('Admin')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('}Clients')/Hierarchies('}Clients')/Elements('Admin')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":false,
+	"SuppressEmptyRows":false,
+	"FormatString":"0.#########"
+}

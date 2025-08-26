@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_dim update method",
+	"Hierarchies@Code.links":
+	[
+		"sys_dim update method.hierarchies/sys_dim update method.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_dim update method')/Hierarchies('sys_dim update method')"
+	}
+}

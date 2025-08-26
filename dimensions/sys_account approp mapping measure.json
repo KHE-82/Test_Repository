@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_account approp mapping measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_account approp mapping measure.hierarchies/sys_account approp mapping measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_account approp mapping measure')/Hierarchies('sys_account approp mapping measure')"
+	}
+}

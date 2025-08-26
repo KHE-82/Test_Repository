@@ -1,0 +1,73 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:		sys_Database Backup
+#**** DESCRIPTION:	This process generates a zip backup of the database.
+#****
+#****			It takes the following parameters:
+#****			Nil
+#****
+#**** AUTHOR:		Standard Installation FIle (Excelerated Consulting)
+#****
+#**** MODIFICATION HISTORY:
+#****
+#**** Date	Initials	Comments
+#**** ====	======	==========
+#**** 14/04/2016	EC	Standard Installation File
+#****  13/12/2016	KG	Back up process changed, changed path to new server
+#***********************************************************************************************************************
+
+
+
+#**** GLOBAL VARIABLES ****#
+dmVar = 'variables';
+dmClts = '}Clients';
+
+gsDbNm = AttrS (dmVar, 'sys_Database Name', 'value');
+gsPrg = 'C:\Program Files\7-Zip\7z.exe a -y ';
+gsTime = TIMST (NOW (), '\Y\m\d \h\i', 1);
+#gsASCIIDir = gsAdmDir | CELLGETS (cbVar, 'sys_ASCII Directory', 'sValue');
+gsASCIIDir = AttrS (dmVar, 'sys_ASCII Directory', 'value');
+#gsBckDir = gsAdmDir | CELLGETS (cbVar, 'sys_Backup Directory', 'sValue');
+gsBckDir = AttrS (dmVar, 'sys_Backup Directory', 'value');
+gsDBDir =AttrS (dmVar, 'sys_Data Directory', 'value');
+gsFilNm = gsDBNm | ' ' | gsTime | '.zip';
+gsClt = TM1USER ();
+IF (DIMIX (dmClts, gsClt) = 0);
+	gsClt = 'Admin';
+ENDIF;
+
+
+
+#**** PERFORM A SAVE DATA ALL BEFORE PERFORMING A BACKUP ****#
+#SAVEDATAALL;
+
+#**** PERFORM A BACKUP ****#
+sCmd = gsPrg | '"' | gsBckDir | gsFilNm | '" "' | gsDBDir | '"';
+#EXECUTECOMMAND (sCmd, 0);
+
+# export variables to logfiles\asci directoryi for verification
+#asciioutput(gsASCIIDir|'backup parameters.txt','gsDBNm',gsDBNm,'gsPrg',gsPrg,'gsTime',gsTime,'gsASCIIDir',gsASCIIDir,'gsBckDir',gsBckDir,'gsDBDir',gsDBDir,'gsFilNm',gsFilNm,'GSClt',gsClt,'sCmd',sCmd);
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

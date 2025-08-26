@@ -1,0 +1,601 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               ME Validate Profiles
+#**** DESCRIPTION:       This process creates a view and applies phasing to the selected line
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 18/04/2019    KG             Initial Revision
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE MONTHLY ESTIMATES REPORTING CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+cbME = 'ME reporting';
+dmMEMeas = 'ME reporting measure';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE ME PHASING CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+cbMEPhase = 'ME phasing method';
+dmMEPhaseMethod = 'ME phasing method';
+dmMEPhaseMeas = 'ME phasing method measure';
+
+#--------------------------------------------------------------------------------------------------------------------------
+#*** DIMENSION ATTRIBUTES
+#--------------------------------------------------------------------------------------------------------------------------
+dmReasonAttr = '}ElementAttributes_reason';
+dmAccAttr = '}ElementAttributes_account';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAM DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+dmProgMeas = snProg | ' measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE MONTHLY ESTIMATES VALIDATION CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+cbMEValid = 'ME validations';
+dmValidID = 'validation id';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE ME BALANCE SHEET CUBE (ACCOUNT TEMPLATE)
+#---------------------------------------------------------------------------------------------------------------------------
+cbMEBS = 'ME balance sheet';
+dmAccTemp = 'account template';
+dmAccBS = 'account_bs';
+dmMEBSMeas = 'balance sheet measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClient = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+
+
+sMEMeas = 'value';
+sRpTMeas = 'value';
+
+
+
+#******************************************************************************************************************
+#*** DEFAULT ME VALIDATION DATA
+#******************************************************************************************************************
+sTotalValidID = 'Total ME Validation';
+
+
+
+#*****************************************************************************************************************************************************
+#**** STEP 1 - CLEAR VALIDATION DATA VIEW
+#*****************************************************************************************************************************************************
+sMEView = sUser | '_$MEClear';
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbMEValid, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+SUBSETDESTROY (dmProg, sMEView);
+SUBSETDESTROY (dmValidID, sMEView);
+SUBSETDESTROY (dmID, sMEView);
+SUBSETDESTROY (dmPer, sMEView);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sMEView);
+SubsetElementInsert(dmHLYear, sMEView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sMEView);
+SubsetElementInsert(dmScenario, sMEView, psScenario, 1);
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {' | dmProg | '].[' | psProg | ']}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+
+# Validation ID
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmValidID | '].[' | sTotalValidID | '] }, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+SUBSETMDXSET (dmValidID, sMEView, MDX);
+
+
+# ID
+SubsetCreate(dmID, sMEView);
+SubsetElementInsert(dmID, sMEView, psID, 1);
+
+# Month
+#MDX = '{ EXCEPT( {FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer |'] )}, 0)}, [' | dmPer |'].[type] = "nMonth")}, { [' | dmPer |'].[P00] }) }';
+MDX = '{ EXCEPT( {FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer |'] )}, 0)}, [' | dmPer |'].[type] = "Month")}, { [' | dmPer |'].[P0] }) }';
+#MDX = '{ [' | dmPer |'].[P0] }) }';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbMEValid, sMEView);
+VIEWSUBSETASSIGN (cbMEValid, sMEView, dmHLYear, sMEView);
+VIEWSUBSETASSIGN (cbMEValid, sMEView, dmScenario, sMEView);
+VIEWSUBSETASSIGN (cbMEValid, sMEView, dmProg, sMEView);
+VIEWSUBSETASSIGN (cbMEValid, sMEView, dmValidID, sMEView);
+VIEWSUBSETASSIGN (cbMEValid, sMEView, dmID, sMEView);
+VIEWSUBSETASSIGN (cbMEValid, sMEView, dmPer, sMEView);
+
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbMEValid, sMEView, 1);
+ViewSuppressZeroesSet(cbMEValid, sMEView, 1);
+ViewExtractSkipCalcsSet(cbMEValid, sMEView, 1);
+ViewExtractSkipRuleValuesSet (cbMEValid, sMEView, 1);
+
+
+# *** VIEW ZERO OUT
+VIEWZEROOUT (cbMEValid, sMEView);
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbMEValid, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+SUBSETDESTROY (dmProg, sMEView);
+SUBSETDESTROY (dmValidID, sMEView);
+SUBSETDESTROY (dmID, sMEView);
+SUBSETDESTROY (dmPer, sMEView);
+
+
+
+#*****************************************************************************************************************************************************
+#*** STEP 2 - CREATE SOURCE VIEW FROM ME REPORTING
+#*****************************************************************************************************************************************************
+sMEView = sUser | '_$MEValidate';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbME, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+SUBSETDESTROY (dmRE, sMEView);
+SUBSETDESTROY (dmSPP, sMEView);
+SUBSETDESTROY (dmMA, sMEView);
+SUBSETDESTROY (dmProg, sMEView);
+SUBSETDESTROY (dmItem, sMEView);
+SUBSETDESTROY (dmAcc, sMEView);
+SUBSETDESTROY (dmID, sMEView);
+SUBSETDESTROY (dmJur, sMEView);
+SUBSETDESTROY (dmPer, sMEView);
+SUBSETDESTROY (dmMEMeas, sMEView);
+
+
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sMEView);
+SubsetElementInsert(dmHLYear, sMEView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sMEView);
+SubsetElementInsert(dmScenario, sMEView, psScenario, 1);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Movement Account
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}, [' | dmMA |'].[editable] = "")}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {' | dmProg | '].[' | psProg | ']}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Account
+MDX = '{{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[9000130]}, ALL, RECURSIVE )}, 0)},{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[3800001]}, ALL, RECURSIVE )}, 0)},{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[9000003]}, ALL, RECURSIVE )}, 0)}} ';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# ID
+SubsetCreate(dmID, sMEView);
+SubsetElementInsert(dmID, sMEView, psID, 1);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Month
+#MDX = '{ EXCEPT( {FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer |'] )}, 0)}, [' | dmPer |'].[type] = "nMonth")}, { [' | dmPer |'].[P00] }) }';
+#MDX = '{ EXCEPT( {FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer |'] )}, 0)}, [' | dmPer |'].[type] = "Month")}, { [' | dmPer |'].[P0] }) }';
+MDX = '{ [' | dmPer |'].[Jun YTD] }) }';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# ME Measure
+SubsetCreate(dmMEMeas, sMEView);
+SubsetElementInsert(dmMEMeas, sMEView, sMEMeas, 1);
+
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbME, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmHLYear, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmScenario, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmRE, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmSPP, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmMA, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmProg, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmItem, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmAcc, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmID, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmJur, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmPer, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmMEMEas, sMEView);
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbME, sMEView, 1);
+ViewSuppressZeroesSet(cbME, sMEView, 1);
+ViewExtractSkipCalcsSet(cbME, sMEView, 0);
+ViewExtractSkipRuleValuesSet (cbME, sMEView, 1);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sMEView;
+
+
+#******************************************************************************************************************
+#*** COUNTERS AND MONTHS
+#******************************************************************************************************************
+lHeaderCounter = 0;
+sMonth01 = 'Jul';
+sMonth02 = 'Aug';
+sMonth03 = 'Sep';
+sMonth04 = 'Oct';
+sMonth05 = 'Nov';
+sMonth06 = 'Dec';
+sMonth07 = 'Jan';
+sMonth08 = 'Feb';
+sMonth09 = 'Mar';
+sMonth10 = 'Apr';
+sMonth11 = 'May';
+sMonth12 = 'Jun';
+
+nMonthCounter = 1;
+nLastMonthCounter = 12;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#******************************************************************************************************************
+#*** DO VALIDATIONS
+#******************************************************************************************************************
+sAccType = DTYPE (dmAcc, vsAcc);
+
+
+IF (sAccType @= 'N');
+
+	#----------------------------------------------
+	#---- GET ANNUAL BUDGET
+	#----------------------------------------------
+	nAnnualBudget = CELLGETN(cbME, psHLYear, psScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, '0000A', vsJur, 'Jun YTD', vsMeas);
+
+
+	nMonthCounter = 1;
+	WHILE (nMonthCounter <= nLastMonthCounter);
+		IF (nMonthCounter = 1);
+			sMonth = 'Jul';
+		ELSEIF(nMonthCounter = 2);
+			sMonth = 'Aug';
+		ELSEIF(nMonthCounter = 3);
+			sMonth = 'Sep';
+		ELSEIF(nMonthCounter = 4);
+			sMonth = 'Oct';
+		ELSEIF(nMonthCounter = 5);
+			sMonth = 'Nov';
+		ELSEIF(nMonthCounter = 6);
+			sMonth = 'Dec';
+		ELSEIF(nMonthCounter = 7);
+			sMonth = 'Jan';
+		ELSEIF(nMonthCounter = 8);
+			sMonth = 'Feb';
+		ELSEIF(nMonthCounter = 9);
+			sMonth = 'Mar';
+		ELSEIF(nMonthCounter = 10);
+			sMonth = 'Apr';
+		ELSEIF(nMonthCounter = 11);
+			sMonth = 'May';
+		ELSEIF(nMonthCounter = 12);
+			sMonth = 'Jun';
+		ENDIF;
+
+		#******************************************************************************************************************
+		#*** SKIP LOCKED MONTHS
+		#******************************************************************************************************************
+		sMonthLock = ATTRS (dmPer, sMonth, 'me phasing lock');
+		sMEActualMonth = ATTRS (dmPer, sMonth, 'ME Actuals');
+
+		IF (sMonthLock @= 'Y');
+			#-----------------------------------------------------------
+			#--- DO NOTHING
+			#-----------------------------------------------------------
+			#ITEMSKIP;
+		ELSE;
+
+
+			#******************************************************************************************************************
+			#*** GET CURRENT MONTH VALUE
+			#******************************************************************************************************************
+			nValue = CELLGETN(cbME, psHLYear, psScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, sMonth, vsMeas);
+
+
+			#******************************************************************************************************************
+			#*** VALIDATION 01 - ME - Total Assets balances with total Liabilities and Equity
+			#******************************************************************************************************************
+			#--- RULE DRIVEN
+
+			#******************************************************************************************************************
+			#*** VALIDATION 02 - ME - Depreciation and amortisation expense (Operating stat.) = Depreciation (NFA)
+			#******************************************************************************************************************
+			#--- RULE DRIVEN
+
+			#******************************************************************************************************************
+			#*** VALIDATION 03 - No Amount Entered Where there is no Annual Budget
+			#******************************************************************************************************************
+			IF (nAnnualBudget = 0);
+				sValidID = 'M003';
+				sValidIDActive = ATTRS (dmValidID, sValidID, 'use');
+
+				IF (sValidIDActive @<> '');
+					IF (CELLISUPDATEABLE (cbMEValid, vsHLYear, vsScenario, vsProg, sValidID, psID, sMonth) =1);
+						CELLPUTN (1, cbMEValid, vsHLYear, vsScenario, vsProg, sValidID, psID, sMonth);
+					ENDIF;
+				ENDIF;
+			ENDIF;
+
+			#******************************************************************************************************************
+			#*** VALIDATION 04 - May YTD Exceeds June YTD
+			#*** 2 IS WARNING
+			#******************************************************************************************************************
+			IF (sMonth @= 'May');
+				nMayYTD = CELLGETN(cbME, psHLYear, psScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'May YTD', vsMeas);
+				nJunYTD = CELLGETN(cbME, psHLYear, psScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Jun YTD', vsMeas);
+				sValidID = 'M004';
+				sValidIDActive = ATTRS (dmValidID, sValidID, 'use');
+
+				IF (sValidIDActive @<> '');
+					IF (nJunYTD >= 0);
+						IF (nMayYTD > nJunYTD);
+							IF (CELLISUPDATEABLE (cbMEValid, vsHLYear, vsScenario, vsProg, sValidID, psID, sMonth) =1);
+								CELLPUTN (2, cbMEValid, vsHLYear, vsScenario, vsProg, sValidID, psID, sMonth);
+							ENDIF;
+						ENDIF;
+					ELSE;
+						IF (nMayYTD <  nJunYTD);
+							IF (CELLISUPDATEABLE (cbMEValid, vsHLYear, vsScenario, vsProg, sValidID, psID, sMonth) =1);
+								CELLPUTN (2, cbMEValid, vsHLYear, vsScenario, vsProg, sValidID, psID, sMonth);
+							ENDIF;
+						ENDIF;
+					ENDIF;
+				ENDIF;
+			ENDIF;
+
+
+			#******************************************************************************************************************
+			#*** VALIDATION 05 - Valid Account and Related Entity
+			#*** CURRENTLY SET TO WARNING ONLY
+			#******************************************************************************************************************
+			sMAEnabled = ATTRS (dmAcc, vsAcc, 'movement account required');
+			sAccREEnabled = ATTRS (dmAcc, vsAcc, 'related entity enabled');
+			sAccAssumedRE = ATTRS (dmAcc, vsAcc, 'assumed related entity');
+
+			sMAREEnabled = ATTRS (dmMA, vsMA, 'related entity enabled');
+			sMAAssumedRE = ATTRS (dmMA, vsMA, 'assumed related entity');
+
+
+			IF (sMAEnabled @= 'Y');
+				IF (vsRE @= '-' & sMAAssumedRE @<> '');
+					nValidRE = 1;
+				ELSEIF(sMAREEnabled @= 'Y' & sMAAssumedRE @<> vsRE);
+					nValidRE = 1;
+				ELSE;
+					nValidRE = 0;
+				ENDIF;
+
+			ELSE;
+				IF (vsRE @= '-' & sAccAssumedRE @<> '');
+					nValidRE = 1;
+				ELSEIF(sAccREEnabled @= 'Y' & sAccAssumedRE @<> vsRE);
+					nValidRE = 1;
+				ELSE;
+					nValidRE = 0;
+				ENDIF;		
+			ENDIF;
+
+			sValidID = 'M005';
+			sValidIDActive = ATTRS (dmValidID, sValidID, 'use');
+
+			IF (sValidIDActive @<> '');
+				IF (nValue <> 0);
+					IF (nValidRE <> 0);
+						IF (CELLISUPDATEABLE (cbMEValid, vsHLYear, vsScenario, vsProg, sValidID, psID, sMonth) =1);
+							CELLPUTN (2, cbMEValid, vsHLYear, vsScenario, vsProg, sValidID, psID, sMonth);
+						ENDIF;
+					ENDIF;
+				ENDIF;
+			ENDIF;
+
+			#******************************************************************************************************************
+			#*** VALIDATION 06 - Account Has Appropriation Item
+			#*** CURRENTLY SET TO WARNING ONLY
+			#******************************************************************************************************************
+			sAccAppropEnabled = ATTRS (dmAcc, vsAcc, 'appropriation type required');
+			sMAAppropEnabled = ATTRS(dmMA, vsMA, 'appropriation type required');
+			sMAEnabled = ATTRS (dmAcc, vsAcc, 'movement account required');
+
+			IF (sMAEnabled @= 'Y');
+				IF (vsItem @= '-' & sMAAppropEnabled @= 'Y');
+					nValidItem = 1;
+				ELSEIF(SUBST (vsItem, 1,4) @= 'A010' & sMAAppropEnabled @= 'Y');
+					nValidItem = 1;
+				ELSE;
+					nValidItem = 0;
+				ENDIF;
+
+			ELSE;
+				IF (vsItem @= '-' & sAccAppropEnabled @= 'Y');
+					nValidItem = 1;
+				ELSEIF(SUBST (vsItem, 1,4) @= 'A010' & sAccAppropEnabled @= 'Y');
+					nValidItem = 1;
+				ELSE;
+					nValidItem = 0;
+				ENDIF;
+			ENDIF;
+
+			sValidID = 'M006';
+			sValidIDActive = ATTRS (dmValidID, sValidID, 'use');
+
+			IF (sValidIDActive @<> '');
+				IF (nValue <> 0);
+					IF (nValidItem <> 0);
+						IF (CELLISUPDATEABLE (cbMEValid, vsHLYear, vsScenario, vsProg, sValidID, psID, sMonth) =1);
+							CELLPUTN (2, cbMEValid, vsHLYear, vsScenario, vsProg, sValidID, psID, sMonth);
+						ENDIF;
+					ENDIF;
+				ENDIF;
+			ENDIF;
+
+
+			#******************************************************************************************************************
+			#*** VALIDATION 07 - No Decimals Present In The Monthly Financial Collection
+			#*** ROUND SOURCE VALUE
+			#*** COMPARE ROUND VALUE WITH SOURCE VALUE
+			#******************************************************************************************************************
+
+			#nROUNDVal = ROUNDP (nValue, 0);
+			#sValidID = 'M007';
+			#sValidIDActive = ATTRS (dmValidID, sValidID, 'use');
+
+			#IF (sValidIDActive @<> '');
+			#	IF (nROUNDVal <> nValue);
+			#		IF (CELLISUPDATEABLE (cbMEValid, vsHLYear, vsScenario, vsProg, sValidID, psID, sMonth) =1);
+			#			CELLPUTN (2, cbMEValid, vsHLYear, vsScenario, vsProg, sValidID, psID, sMonth);
+			#		ENDIF;
+			#	ENDIF;
+			#ENDIF;
+
+
+
+		ENDIF;
+
+		nMonthCounter = nMonthCounter + 1;
+	END;
+
+
+
+ELSE;
+
+	#******************************************************************************************************************
+	#*** ACCOUNT IS CONSOLIDATION (C TYPE)
+	#******************************************************************************************************************
+	# DO NOTHING
+
+
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sMEView = sUser | '_$MEValidate';
+
+VIEWDESTROY (cbME, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+SUBSETDESTROY (dmRE, sMEView);
+SUBSETDESTROY (dmSPP, sMEView);
+SUBSETDESTROY (dmMA, sMEView);
+SUBSETDESTROY (dmProg, sMEView);
+SUBSETDESTROY (dmItem, sMEView);
+SUBSETDESTROY (dmAcc, sMEView);
+SUBSETDESTROY (dmID, sMEView);
+SUBSETDESTROY (dmJur, sMEView);
+SUBSETDESTROY (dmPer, sMEView);
+SUBSETDESTROY (dmMEMeas, sMEView);
+
+#endregion

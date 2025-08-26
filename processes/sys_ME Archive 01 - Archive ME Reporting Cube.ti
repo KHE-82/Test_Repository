@@ -1,0 +1,352 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_ME Archive 01 - Archive ME Reporting Cube
+#**** DESCRIPTION:       This process is used to archive the Monthly Estimates Profiles
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 23/05/2018    KG             Initial Revision
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE ME CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbME = 'ME reporting';
+sCube = cbME;
+
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmSPP = 'spp';
+dmMA = 'movement account';
+dmProg = snProg;
+dmItem = 'appropriation item';
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+dmMEMeas = 'ME reporting measure';
+
+dmVar = 'variables';
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 1 : CLEAR TARGET HEADLINE YEAR/SCENARIO
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE VIEWS
+#---------------------------------------------------------------------------------------------------------------------------
+sView = '$MEArchiveClear';
+sSubset = sView;
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+ViewDestroy(cbME, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmSPP, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmItem, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmJur, sView);
+SUBSETDESTROY (dmPer, sView);
+SUBSETDESTROY (dmMEMeas, sView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS****#
+#---------------------------------------------------------------------------------------------------------------------------
+# headline year
+SubsetCreate(dmHLYear, sView);
+SubsetElementInsert(dmHLYear, sView, psTargetHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sView);
+SubsetElementInsert(dmScenario, sView, psTargetScenario, 1);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmRE, sView, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmSPP, sView, MDX);
+
+# Movement Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmMA, sView, MDX);
+
+# Appropriation Item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmItem, sView, MDX);
+
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmProg, sView, MDX);
+
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmAcc, sView, MDX);
+
+
+# ID
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmID | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmID, sView, MDX);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmJur, sView, MDX);
+
+# Period
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmPer, sView, MDX);
+
+# ME Measure
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMEMeas | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmMEMeas, sView, MDX);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****BUILD VIEW****#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbME, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmHLYear, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmScenario, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmRE, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmSPP, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmMA, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmItem, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmProg, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmAcc, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmID, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmJur, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmPer, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmMEMeas, sView);
+
+
+ViewSetSkipZeroes(cbME, sView, 1);
+ViewSetSkipCalcs(cbME, sView, 1);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#**** VIEW ZERO OUT
+#---------------------------------------------------------------------------------------------------------------------------
+
+ViewZeroOut(cbME, sView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+ViewDestroy(cbME, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmSPP, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmItem, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmJur, sView);
+SUBSETDESTROY (dmPer, sView);
+SUBSETDESTROY (dmMEMeas, sView);
+
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 2 : CREATE SOURCE VIEW
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE DATA SOURCE VIEW
+#---------------------------------------------------------------------------------------------------------------------------
+sView = '$MEArchive';
+sSubset = sView;
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+ViewDestroy(cbME, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmSPP, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmItem, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmJur, sView);
+SUBSETDESTROY (dmPer, sView);
+SUBSETDESTROY (dmMEMeas, sView);
+
+#*****************************************************************
+#****CREATE SUBSETS****#
+#*****************************************************************
+# headline year
+SubsetCreate(dmHLYear, sView);
+SubsetElementInsert(dmHLYear, sView, psSourceHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sView);
+SubsetElementInsert(dmScenario, sView, psSourceScenario, 1);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmRE, sView, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmSPP, sView, MDX);
+
+# Movement Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmMA, sView, MDX);
+
+# Appropriation Item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmItem, sView, MDX);
+
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmProg, sView, MDX);
+
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmAcc, sView, MDX);
+
+
+# ID
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmID | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmID, sView, MDX);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmJur, sView, MDX);
+
+# Period
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmPer, sView, MDX);
+
+# ME Measure
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMEMeas | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SUBSETMDXSET (dmMEMeas, sView, MDX);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****BUILD VIEW****#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbME, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmHLYear, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmScenario, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmRE, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmSPP, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmMA, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmItem, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmProg, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmAcc, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmID, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmJur, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmPer, sView);
+VIEWSUBSETASSIGN (cbME, sView, dmMEMeas, sView);
+
+ViewSetSkipZeroes(cbME, sView, 1);
+ViewSetSkipCalcs(cbME, sView, 1);
+ViewExtractSkipRuleValuesSet (cbME, sView, 0);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#ITEMSKIP;
+
+
+IF(Value_Is_String=0);
+	#*** PERFORM DATA ENTRY INTO TARGET HL YEAR AND SCENARIO ***#
+	IF (CELLISUPDATEABLE (cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, vsPeriod, vsMeas) = 1);
+		nOldValue = CELLGETN (cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, vsPeriod, vsMeas);
+		CELLPUTN(nOldValue + nValue, cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, vsPeriod, vsMeas);
+	ENDIF;
+ELSE;
+	IF (CELLISUPDATEABLE (cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, vsPeriod, vsMeas) = 1);
+		CELLPUTS(sValue, cbME, psTargetHLYear, psTargetScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, vsPeriod, vsMeas);
+	ENDIF;
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE DATA SOURCE VIEW TO DELETE
+#---------------------------------------------------------------------------------------------------------------------------
+sView = '$MEArchive';
+sSubset = sView;
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+ViewDestroy(cbME, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmSPP, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmItem, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmJur, sView);
+SUBSETDESTROY (dmPer, sView);
+SUBSETDESTROY (dmMEMeas, sView);
+
+#endregion

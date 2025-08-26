@@ -1,0 +1,27 @@
+{
+	"@type":"Process",
+	"Name":"AE_Favourite - Clear Account Mappings",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_Favourite - Clear Account Mappings.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psFavID",
+			"Prompt":"",
+			"Value":"00003",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "1756100837000"
+}

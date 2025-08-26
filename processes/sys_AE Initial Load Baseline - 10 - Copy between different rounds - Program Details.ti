@@ -1,0 +1,206 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_AE Initial Load Baseline - 10 - Copy between different rounds - Program Details
+#**** DESCRIPTION:       This process creates a view of all data in the CURRENT scenario in the adjustments cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 12/05/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+sHLYear = ATTRS(dmVar,'headline year','value');
+sScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+sHLYear = ATTRS(dmVar, 'archive year', 'old value');
+sScenario = ATTRS(dmVar, 'archive scenario', 'old value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+sView = '$Archive';
+sSubset = sView;
+
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy(cbProg, sView);
+SubsetDestroy(dmHLYear, sSubset);
+SubsetDestroy(dmScenario, sSubset);
+SubsetDestroy(dmID, sSubset);
+SubsetDestroy(dmProg, sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, psTargetHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, psTargetScenario, 1);
+
+#*****************************************************************************
+# Programme
+#*****************************************************************************
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( { [' | dmProg | '].['| psProg | '] }, ALL, RECURSIVE )}, 0)}';
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+#*****************************************************************************
+# ID
+#*****************************************************************************
+#SubsetCreate('id', sSubset);
+#SubsetElementInsert('id', sSubset, psTargetID, 1);
+
+#****BUILD VIEW****#
+ViewCreate(cbProg, sView);
+
+ViewSubsetAssign(cbProg, sView,dmHLYear, sSubset);
+ViewSubsetAssign(cbProg, sView, dmScenario, sSubset);
+ViewSubsetAssign(cbProg, sView,dmProg, sSubset);
+#ViewSubsetAssign(cbAE, sView, dmID, sSubset);
+
+#ViewZeroOut(cbAE,sView);
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy(cbProg, sView);
+SubsetDestroy(dmHLYear, sSubset);
+SubsetDestroy(dmScenario, sSubset);
+#SubsetDestroy(dmID, sSubset);
+SubsetDestroy(dmProg, sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, psSourceHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, psSourceScenario, 1);
+
+#*****************************************************************************
+# Programme
+#*****************************************************************************
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( { [' | dmProg | '].['| psProg | '] }, ALL, RECURSIVE )}, 0)}';
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+#*****************************************************************************
+# ID
+#*****************************************************************************
+#SubsetCreate('id', sSubset);
+#SubsetElementInsert('id', sSubset, psSourceID, 1);
+
+#****BUILD VIEW****#
+ViewCreate(cbProg, sView);
+
+ViewSubsetAssign(cbProg, sView,dmHLYear, sSubset);
+ViewSubsetAssign(cbProg, sView, dmScenario, sSubset);
+ViewSubsetAssign(cbProg, sView,dmProg, sSubset);
+#ViewSubsetAssign(cbProg, sView, dmID, sSubset);
+
+
+
+ViewSetSkipZeroes(cbProg, sView, 1);
+ViewSetSkipCalcs(cbProg, sView, 1);
+
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF( CellIsUpdateable(cbProg,psTargetHLYear,psTargetScenario,vsProg, vsMeas)=1);
+	CellPutS(vsValue,cbProg,psTargetHLYear,psTargetScenario,vsProg, vsMeas);
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+ViewDestroy(cbProg, sView);
+SubsetDestroy(dmHLYear, sSubset);
+SubsetDestroy(dmScenario, sSubset);
+SubsetDestroy(dmID, sSubset);
+SubsetDestroy(dmProg, sSubset);
+
+#endregion

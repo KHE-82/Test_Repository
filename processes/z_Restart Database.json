@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"z_Restart Database",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"z_Restart Database.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[],
+	"UID": "1756100922000"
+}

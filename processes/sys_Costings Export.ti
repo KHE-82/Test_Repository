@@ -1,0 +1,158 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*************************************************************************************************************************************
+#**** PROCESS:               sys_Costings Export
+#****
+#**** DESCRIPTION:       This process exports the GEUS Adjustment ID and Costing ID to a file used for the Costings database
+#****
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 21/09/2022    KG          Initial Version
+#****
+#*************************************************************************************************************************************
+
+#*****************************************************************************
+#*** DECLARE CUBES AND DIMENSIONS***#
+#*****************************************************************************
+cbID = 'AE id details';
+dmVar = 'Variables';
+dmClient = '}Clients';
+dmID = 'id';
+dmIDMeas = 'id measure';
+
+#*****************************************************************************
+#*** DECLARE SYSTEM VARIABLES
+#*****************************************************************************
+sExpFilePath = ATTRS (dmVar, 'sys_Export Directory Costings', 'value');
+sFileName = 'GEUS Adjustment ID.csv';
+sOutputFile = sExpFilePath | sFileName;
+nFlag = 0;
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1USER ();
+IF (SUBST (sUser, 1, 2) @= 'R*');
+                sUser = 'Admin';
+ELSE;
+                sUser = ATTRS(dmClient, sUser, 'GEUS User Name');
+ENDIF;
+
+sObj = 'sys_Costing Export_' | sUser;
+
+#-----------------------------------------------------------------------------
+# ---- COUNT THE DIMENSIONS IN THE CUBE
+#-----------------------------------------------------------------------------
+nIdx = 1;
+WHILE (TABDIM (cbID, nIdx) @<> '');
+	nIdx = nIdx + 1;
+END;
+nDimCount = nIdx -1;
+
+
+#-----------------------------------------------------------------------------
+#   DELETE ANY VIEWS AND SUBSETS
+#-----------------------------------------------------------------------------
+VIEWDESTROY(cbID, sObj);
+nCounter = 1;
+WHILE(nCounter <= nDimCount);
+	sDim = TABDIM (cbID, nCounter);
+	SUBSETDESTROY(sDim, sObj);
+	nCounter = nCounter + 1;
+END;
+
+
+#******************************************************************************************************************
+#*** CREATE VIEWS and SUBSETS
+#******************************************************************************************************************
+#----- Adjustment ID ----#
+
+sMDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmID | '] )}, 0)}';
+
+SUBSETCREATEBYMDX(sObj, sMDX, 1);
+SUBSETMDXSET(dmID, sObj, '');
+
+
+#----- ID measure ----#
+
+sEl = 'Costing ID';
+
+SUBSETCREATE(dmIDMeas, sObj, 1);
+SUBSETELEMENTINSERT(dmIDMeas, sObj, sEl, 1);
+
+#******************************************************************************************************************
+#*** ASSIGN SUBSETS to VIEWS
+#******************************************************************************************************************
+
+VIEWCREATE(cbID, sObj, 1);
+VIEWSUBSETASSIGN (cbID, sObj, dmID, sObj);
+VIEWSUBSETASSIGN (cbID, sObj, dmIDMeas, sObj);
+
+VIEWEXTRACTSKIPZEROESSET (cbID, sObj, 1);
+VIEWEXTRACTSKIPCALCSSET (cbID, sObj, 1);
+
+#******************************************************************************************************************
+#*** SET DATASOURCE
+#******************************************************************************************************************
+
+DATASOURCENAMEFORSERVER = cbID;
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sObj;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+IF (nFlag = 0);
+	ASCIIOUTPUT(sOutputFile, 'GEUS Adjustment ID', 'Costing ID');
+	nFlag = 1;
+ENDIF;
+
+ASCIIOUTPUT(sOutputFile, vsID, vsValue);
+#ASCIIOUTPUT('test.txt', sOutputFile, vsID, vsValue);
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#-----------------------------------------------------------------------------
+# ---- COUNT THE DIMENSIONS IN THE CUBE
+#-----------------------------------------------------------------------------
+nIdx = 1;
+WHILE (TABDIM (cbID, nIdx) @<> '');
+	nIdx = nIdx + 1;
+END;
+nDimCount = nIdx -1;
+
+
+#-----------------------------------------------------------------------------
+#   DELETE ANY VIEWS AND SUBSETS
+#-----------------------------------------------------------------------------
+VIEWDESTROY(cbID, sObj);
+nCounter = 1;
+WHILE(nCounter <= nDimCount);
+	sDim = TABDIM (cbID, nCounter);
+	SUBSETDESTROY(sDim, sObj);
+	nCounter = nCounter + 1;
+END;
+
+
+#endregion

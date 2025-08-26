@@ -1,0 +1,162 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Generate FE3 Adj 00 - Start
+#**** DESCRIPTION:       This process creates a temporary dimension to identify which programmes require fe3 creations
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 14/05/2014    KG             Initial Revision
+#**** 06/08/2018	KG	  Updated process to do a copy of FE2
+#***********************************************************************************************************************
+
+#*** DECLARE CUBES AND DIMENSIONS
+snProg = 'programme';
+cbAE = 'AE adjustments';
+cbGrpAE = 'AE group adjustment entry';
+cbProg = snProg | ' details';
+cbID = 'AE id details';
+dmVar = 'variables';
+dmProg = snProg;
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmProgMeas = snProg | ' measure';
+
+sView = '$CreateFE3II';
+sSubset = sView;
+
+sMeasure = 'Generate FE3';
+sSubsetOutput = 'ProgsforFE3';
+dmTmpID = 'tmp_ID_tmp';
+
+sMeasureIDDet = 'Used';
+
+sNewReason = 'Creation of the New 3rd Forward Year Estimates''';
+#sNewReason = ATTRS (dmVar, 'creation of fe3 reason code', 'value');
+
+sHLYear = ATTRS (dmVar, 'headline year', 'value');
+sTargetScenario = 'current';
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy(cbProg, sView);
+ViewDestroy(cbAE, '$CreateFE3');
+ViewDestroy (cbGrpAE, '$CreateCustFE3');
+
+
+SubsetDestroy(dmHLYear, sSubset);
+SubsetDestroy(dmScenario, sSubset);
+SubsetDestroy(dmProgMeas, sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate('headline year', sSubset);
+SubsetElementInsert('headline year', sSubset, sHLYear, 1);
+
+# Scenario
+SubsetCreate('scenario', sSubset);
+SubsetElementInsert('scenario', sSubset, sTargetScenario, 1);
+
+# Programme
+# Dealt with in the Data tab
+
+# Programme Measure
+SubsetCreate(dmProgMeas, sSubset);
+SubsetElementInsert(dmProgMeas, sSubset, sMeasure, 1);
+
+#****BUILD VIEW****#
+ViewCreate(cbProg, sView);
+ViewSubsetAssign(cbProg, sView, 'headline year', sSubset);
+ViewSubsetAssign(cbProg, sView, 'scenario', sSubset);
+ViewSubsetAssign(cbProg, sView, dmProgMeas , sSubset);
+
+ViewSetSkipZeroes(cbProg, sView, 1);
+ViewSetSkipCalcs(cbProg, sView, 1);
+
+nFlag = 0;
+
+#**** Build a dimension to store IDs so we don't keep getting new ones
+
+IF(DimensionExists(dmTmpID)=0);
+      DimensionCreate (dmTmpID);
+      AttrInsert (dmTmpID, '', 'ID', 'S');
+      AttrInsert (dmTmpID,'','program','S');
+      AttrInsert (dmTmpID,'','Appropriation Type','S');
+      AttrInsert (dmTmpID,'','Function','S');
+#sProgramme|sAppropType|sFunction;
+ELSE;
+      Dimensiondestroy (dmTmpID);
+      DimensionCreate (dmTmpID);
+      AttrInsert (dmTmpID, '', 'ID', 'S');
+      AttrInsert (dmTmpID,'','program','S');
+      AttrInsert (dmTmpID,'','Appropriation Type','S');
+      AttrInsert (dmTmpID,'','Function','S');
+ENDIF;
+
+SubsetDestroy(dmProg, sSubsetOutput);
+SubsetCreate(dmProg, sSubsetOutput);
+lCounter = 0;
+
+DatasourceCubeview=sView;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*** CREATE A SUBSET USED TO GENERATE PROGRAMS USED FOR FE3***
+# If the program is an N level
+IF (DTYPE(dmProg, vsProg)@='N');
+# If the program is flagged as FE3 generation applies
+     IF(Value @= 'Y');
+# If the program is not listed in the dmTMpiid
+         IF (DIMIX (dmTmpID, vsProg) = 0);
+              DIMENSIONELEMENTINSERT (dmTmpID, '', vsProg, 'N');
+              lCounter = lCounter + 1;
+              SubsetElementInsert(dmProg, sSubsetOutput, vsProg, lCounter);
+         ENDIF;
+         nFlag = 1;
+     ENDIF;
+ENDIF;
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+ExecuteProcess('AE_Generate FE3 Adj 01 - Clear Temporary Dimension');
+ExecuteProcess('AE_Generate FE3 Adj 02 - Review and Populate ID List', 'psFE2Year', psFE2Year,  'psFE3Year', psFE3Year);
+ExecuteProcess('AE_Generate FE3 Adj 03 - Copy Data from AE Adjustments Cube (Exc Depn)',  'psFE2Year', psFE2Year,  'psFE3Year', psFE3Year);
+#ExecuteProcess('AE_Generate FE3 Adj 04 - Copy Data from AE Adjustments Cube (Depn)',  'psFE2Year', psFE2Year,  'psFE3Year', psFE3Year);
+
+#*** additional process for customer numbers
+#ExecuteProcess('AE_Generate FE3 Adj 01 - Clear Temporary Dimension');
+#ExecuteProcess('AE_Generate FE3 Adj 05 - Review Customer Numbers FE3', 'psFE3Year', psFE3Year);
+#ExecuteProcess('AE_Generate FE3 Adj 06 - Copy Customer Numbers', 'psFE3Year', psFE3Year);
+
+#*** Clear Selected Flags
+ExecuteProcess('AE_Generate FE3 Adj 99 - Clear Flags');
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+#ViewDestroy(cbProg, sView);
+#ViewDestroy(cbAE, '$CreateFE3');
+#SubsetDestroy(dmHLYear, sSubset);
+#SubsetDestroy(dmScenario, sSubset);
+#SubsetDestroy(dmProgMeas, sSubset);
+#SubsetDestroy(dmProg, sSubsetOutput);
+
+#endregion

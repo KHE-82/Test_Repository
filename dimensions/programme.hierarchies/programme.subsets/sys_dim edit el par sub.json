@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_dim edit el par sub",
+	"Alias":"code and description",
+	"Expression":"{STRTOSET(\"{Except({TM1ROLLUP({[\" + [sys_client preference].([}clients].[\"+username+\"],[sys_client preference].[dim_edit dimension name],[sys_client preference measure].[value]) + \"].[\" + [sys_client preference].([}clients].[\"+username+\"],[sys_client preference].[dim_edit dimension element_src],[sys_client preference measure].[value]) + \"]}, {[\" + [sys_client preference].([}clients].[\"+username+\"],[sys_client preference].[dim_edit dimension name],[sys_client preference measure].[value]) + \"].[\" + [sys_client preference].([}clients].[\"+username+\"],[sys_client preference].[dim_edit dimension element_src],[sys_client preference measure].[value]) + \"]})},{[\" + [sys_client preference].([}clients].[\"+username+\"],[sys_client preference].[dim_edit dimension name],[sys_client preference measure].[value]) + \"].[\" + [sys_client preference].([}clients].[\"+username+\"],[sys_client preference].[dim_edit dimension element_src],[sys_client preference measure].[value]) + \"]})}\")}"
+}

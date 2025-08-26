@@ -1,0 +1,45 @@
+{
+	"@type":"Process",
+	"Name":"sys_export dimension generic",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_export dimension generic.ti",
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForServer":"programme",
+		"dataSourceNameForClient":"programme",
+		"subset":"All"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psDimName",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psExportFile",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psAttributes",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"sElement",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "175610087500015"
+}

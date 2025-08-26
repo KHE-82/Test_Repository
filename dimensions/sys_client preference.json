@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_client preference",
+	"Hierarchies@Code.links":
+	[
+		"sys_client preference.hierarchies/sys_client preference.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_client preference')/Hierarchies('sys_client preference')"
+	}
+}

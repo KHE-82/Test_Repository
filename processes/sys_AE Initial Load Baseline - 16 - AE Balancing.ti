@@ -1,0 +1,459 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              sys_Load FBO 01 - Create GEUS Variances
+#**** DESCRIPTION:       
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 06/10/2017    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** DECLARE CUBES AND DIMENSIONS ***#
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+cbID = 'ae id details';
+
+sCube = cbAE;
+sView = '$CBMSRFBO';
+sSubset = sView;
+
+sSourceStatus = 'Total approved';
+#sSourceStatus = 'data';
+sSourceID = 'Total IDs';
+#sSourceID = '0000A';
+sSourceReason = 'Total reason';
+sSourceMeasCode = 'Total Measures';
+
+sTargetStatus = 'data';
+#sTargetID = '00FBO';
+sTargetID = '01BAL';
+sTargetReason = 'Other variations not elsewhere defined';
+sTargetMeasCode = 'M00000';
+
+nStartPerIndex = DIMIX (dmPer, psPeriod);
+nLastPerIndex = DIMIX (dmPer, '2036-2037');
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 01 : CLEAR OUT TARGET SCENARIO
+#------------------------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbAE, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmStatus, sSubset);
+SUBSETDESTROY (dmOC, sSubset);
+SUBSETDESTROY (dmRE, sSubset);
+SUBSETDESTROY (dmFunc, sSubset);
+SUBSETDESTROY (dmReason, sSubset);
+SUBSETDESTROY (dmSPP, sSubset);
+SUBSETDESTROY (dmMeasCode, sSubset);
+SUBSETDESTROY (dmType, sSubset);
+SUBSETDESTROY (dmMA, sSubset);
+SUBSETDESTROY (dmItem, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmAcc, sSubset);
+SUBSETDESTROY (dmID, sSubset);
+SUBSETDESTROY (dmJur, sSubset);
+SUBSETDESTROY (dmPer, sSubset);
+
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, psTargetHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, psTargetScenario, 1);
+
+# Status
+SubsetCreate(dmStatus, sSubset);
+SubsetElementInsert(dmStatus, sSubset, sTargetStatus, 1);
+
+# Outcome
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmOC | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Function
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmFunc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Reason
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmReason | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sSubset, MDX);
+SubsetCreate(dmReason, sSubset);
+SubsetElementInsert(dmReason, sSubset, sTargetReason, 1);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Measure Code
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Appropriation Type
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmType | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Movement account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Appropriation item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Programme
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( { [' | dmProg | '].[' | psProg | '] }, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+#MDX = '{{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[9000130]}, ALL, RECURSIVE )}, 0)}, ASC)},{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[3800001]}, ALL, RECURSIVE )}, 0)}, ASC)},{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[9000850]}, ALL, RECURSIVE )}, 0)}, ASC)}}';
+#MDX = '{{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[9000130]}, ALL, RECURSIVE )}, 0)}, ASC)},{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[3800001]}, ALL, RECURSIVE )}, 0)}, ASC)},{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[9000850]}, ALL, RECURSIVE )}, 0)}, ASC)}, {TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[9000003]}, ALL, RECURSIVE )}, 0)}, ASC)} }';
+
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# ID
+SubsetCreate(dmID, sSubset);
+SubsetElementInsert(dmID, sSubset, sTargetID, 1);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+
+# Period
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+
+#****BUILD VIEW****#
+ViewCreate(sCube, sView);
+
+ViewSubsetAssign(sCube, sView, dmHLYear, sSubset);
+ViewSubsetAssign(sCube, sView, dmScenario, sSubset);
+ViewSubsetAssign(sCube, sView, dmStatus, sSubset);
+ViewSubsetAssign(sCube, sView, dmOC, sSubset);
+ViewSubsetAssign(sCube, sView, dmRE, sSubset);
+ViewSubsetAssign(sCube, sView, dmFunc, sSubset);
+ViewSubsetAssign(sCube, sView, dmReason, sSubset);
+ViewSubsetAssign(sCube, sView, dmSPP, sSubset);
+ViewSubsetAssign(sCube, sView, dmMeasCode, sSubset);
+ViewSubsetAssign(sCube, sView, dmType, sSubset);
+ViewSubsetAssign(sCube, sView, dmMA, sSubset);
+ViewSubsetAssign(sCube, sView, dmItem, sSubset);
+ViewSubsetAssign(sCube, sView, dmProg, sSubset);
+ViewSubsetAssign(sCube, sView, dmAcc, sSubset);
+ViewSubsetAssign(sCube, sView, dmID, sSubset);
+ViewSubsetAssign(sCube, sView, dmJur, sSubset);
+ViewSubsetAssign(sCube, sView, dmPer, sSubset);
+
+ViewExtractSkipZeroesSet (sCube, sView, 1);
+ViewExtractSkipCalcsSet (sCube, sView, 1);
+ViewExtractSkipRuleValuesSet (sCube, sView, 1);
+
+VIEWZEROOUT (sCube, sView);
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbAE, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmStatus, sSubset);
+SUBSETDESTROY (dmOC, sSubset);
+SUBSETDESTROY (dmRE, sSubset);
+SUBSETDESTROY (dmFunc, sSubset);
+SUBSETDESTROY (dmReason, sSubset);
+SUBSETDESTROY (dmSPP, sSubset);
+SUBSETDESTROY (dmMeasCode, sSubset);
+SUBSETDESTROY (dmType, sSubset);
+SUBSETDESTROY (dmMA, sSubset);
+SUBSETDESTROY (dmItem, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmAcc, sSubset);
+SUBSETDESTROY (dmID, sSubset);
+SUBSETDESTROY (dmJur, sSubset);
+SUBSETDESTROY (dmPer, sSubset);
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 02 : CREATE SOURCE VIEW
+#------------------------------------------------------------------------------------------------------------------------------------------
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbAE, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmStatus, sSubset);
+SUBSETDESTROY (dmOC, sSubset);
+SUBSETDESTROY (dmRE, sSubset);
+SUBSETDESTROY (dmFunc, sSubset);
+SUBSETDESTROY (dmReason, sSubset);
+SUBSETDESTROY (dmSPP, sSubset);
+SUBSETDESTROY (dmMeasCode, sSubset);
+SUBSETDESTROY (dmType, sSubset);
+SUBSETDESTROY (dmMA, sSubset);
+SUBSETDESTROY (dmItem, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmAcc, sSubset);
+SUBSETDESTROY (dmID, sSubset);
+SUBSETDESTROY (dmJur, sSubset);
+SUBSETDESTROY (dmPer, sSubset);
+
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, psSourceHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, psSourceScenario, 1);
+
+# Status
+SubsetCreate(dmStatus, sSubset);
+SubsetElementInsert(dmStatus, sSubset, sSourceStatus, 1);
+
+# Outcome
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmOC | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Function
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmFunc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Reason
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmReason | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+#SubsetCreate(dmReason, sSubset);
+#SubsetElementInsert(dmReason, sSubset, sSourceReason, 1);
+
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Measure Code
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+#SubsetCreate(dmMeasCode, sSubset);
+#SubsetElementInsert(dmMeasCode, sSubset, sSourceMeasCode, 1);
+
+# Appropriation Type
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmType | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Movement account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Appropriation item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Programme
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+#MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( { [' | dmProg | '].[' | psProg | '] }, ALL, RECURSIVE )}, 0)}';
+#MDX = '{Descendants([programme].['| psProg | '],1, SELF)}';
+MDX = '{[programme].['| psProg | ']}';
+
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+#MDX = '{{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[9000130]}, ALL, RECURSIVE )}, 0)}, ASC)},{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[3800001]}, ALL, RECURSIVE )}, 0)}, ASC)},{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[9000850]}, ALL, RECURSIVE )}, 0)}, ASC)}}';
+#MDX = '{{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[9000130]}, ALL, RECURSIVE )}, 0)}, ASC)},{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[3800001]}, ALL, RECURSIVE )}, 0)}, ASC)},{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[9000850]}, ALL, RECURSIVE )}, 0)}, ASC)}, {TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[9000003]}, ALL, RECURSIVE )}, 0)}, ASC)} }';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# ID
+SubsetCreate(dmID, sSubset);
+SubsetElementInsert(dmID, sSubset, sSourceID, 1);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Period
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+#SubsetCreate(dmPer, sSubset);
+#SubsetElementInsert(dmPer, sSubset, psPeriod, 1);
+
+
+#****BUILD VIEW****#
+ViewCreate(sCube, sView);
+
+ViewSubsetAssign(sCube, sView, dmHLYear, sSubset);
+ViewSubsetAssign(sCube, sView, dmScenario, sSubset);
+ViewSubsetAssign(sCube, sView, dmStatus, sSubset);
+ViewSubsetAssign(sCube, sView, dmOC, sSubset);
+ViewSubsetAssign(sCube, sView, dmRE, sSubset);
+ViewSubsetAssign(sCube, sView, dmFunc, sSubset);
+ViewSubsetAssign(sCube, sView, dmReason, sSubset);
+ViewSubsetAssign(sCube, sView, dmSPP, sSubset);
+ViewSubsetAssign(sCube, sView, dmMeasCode, sSubset);
+ViewSubsetAssign(sCube, sView, dmType, sSubset);
+ViewSubsetAssign(sCube, sView, dmMA, sSubset);
+ViewSubsetAssign(sCube, sView, dmItem, sSubset);
+ViewSubsetAssign(sCube, sView, dmProg, sSubset);
+ViewSubsetAssign(sCube, sView, dmAcc, sSubset);
+ViewSubsetAssign(sCube, sView, dmID, sSubset);
+ViewSubsetAssign(sCube, sView, dmJur, sSubset);
+ViewSubsetAssign(sCube, sView, dmPer, sSubset);
+
+ViewExtractSkipZeroesSet (sCube, sView, 1);
+ViewExtractSkipCalcsSet (sCube, sView, 0);
+ViewExtractSkipRuleValuesSet (sCube, sView, 0);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#ITEMSKIP;
+
+#-------------------------------------------------------------
+#--- SKIP All Accounts Except for Liability and Assets
+#-------------------------------------------------------------
+
+#IF (ELISANC (dmAcc, '3000000', vsAcc) <> 1 & ELISANC (dmAcc, '5000000', vsAcc) <> 1)  ;
+#	ITEMSKIP;
+#ENDIF;
+
+
+#-------------------------------------------------------------
+#--- SKIP Loans accounts
+#-------------------------------------------------------------
+
+#IF (ELISANC (dmAcc, '5232000', vsAcc) = 1 ) ;
+#	ITEMSKIP;
+#ENDIF;
+
+
+nPerIndex = DIMIX( dmPer, vsPeriod);
+
+IF( nPerIndex< nStartPerIndex % nPerIndex>nLastPerIndex);
+	ItemSkip;
+ENDIF;
+ 
+
+
+
+#asciioutput('data.csv', numbertostring(vnValue), vsHLYear, vsScenario,vsStatus,vsID, vsProg, vsAcc, vsMA,vsPeriod,vsReason,vsMeaCode);
+
+IF( vsProg @='1080');
+	sNewProg = vsProg | '.00.BAL';
+ELSE;
+	sNewProg = vsProg | '.01.BAL';
+ENDIF;
+
+
+
+sNewProgPar = vsProg| '.01';
+
+IF( DIMIX(dmProg, sNewProg) =0);
+	asciioutput('new EL.csv', sNewProg, sNewProgPar);
+	DimensionElementInsertDirect( dmProg, '', sNewProg, 'N');
+	DimensionElementComponentAddDirect(dmProg, sNewProgPar, sNewProg, 1);
+ENDIF;
+
+
+#-------------------------------------------------------------------------------
+#--- Find account codes if it has the word (Annual Only)
+#-------------------------------------------------------------------------------
+sAccDesc = ATTRS (dmAcc, vsAcc, 'description');
+nSCAN = SCAN('Annual Only', sAccDesc);
+IF (nSCAN > 0);
+	ITEMSKIP;
+ENDIF;
+
+nTargetValue = vnValue;
+IF (CELLISUPDATEABLE (sCube, psTargetHLYear, psTargetScenario, sTargetStatus, vsOC, vsRE, vsFunc, sTargetReason, vsSPP, sTargetMeasCode, vsType, vsMA, vsItem, sNewProg, vsAcc, sTargetID, vsJur, vsPeriod) = 1);
+	nOldTargetValue = CELLGETN (sCube, psTargetHLYear, psTargetScenario, sTargetStatus, vsOC, vsRE, vsFunc, sTargetReason, vsSPP, sTargetMeasCode, vsType, vsMA, vsItem, sNewProg, vsAcc, sTargetID, vsJur, vsPeriod);
+	CELLPUTN (nOldTargetValue + nTargetValue, sCube, psTargetHLYear, psTargetScenario, sTargetStatus, vsOC, vsRE, vsFunc, sTargetReason, vsSPP, sTargetMeasCode, vsType, vsMA, vsItem, sNewProg, vsAcc, sTargetID, vsJur, vsPeriod);
+	#ASCIIOUTPUT ('transfertocurrent.csv', NUMBERTOSTRING (nTargetValue), NUMBERTOSTRING (nOldTargetValue),  sCube, psTargetHLYear, psTargetScenario, sTargetStatus, vsOC, vsRE, vsFunc, sTargetReason, vsSPP, sTargetMeasCode, vsType, vsMA, vsItem, sNewProg, vsAcc, sTargetID, vsJur, vsPeriod);
+
+
+
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF (1=1);
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbAE, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmStatus, sSubset);
+SUBSETDESTROY (dmOC, sSubset);
+SUBSETDESTROY (dmRE, sSubset);
+SUBSETDESTROY (dmFunc, sSubset);
+SUBSETDESTROY (dmReason, sSubset);
+SUBSETDESTROY (dmSPP, sSubset);
+SUBSETDESTROY (dmMeasCode, sSubset);
+SUBSETDESTROY (dmType, sSubset);
+SUBSETDESTROY (dmMA, sSubset);
+SUBSETDESTROY (dmItem, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmAcc, sSubset);
+SUBSETDESTROY (dmID, sSubset);
+SUBSETDESTROY (dmJur, sSubset);
+SUBSETDESTROY (dmPer, sSubset);
+ENDIF;
+
+#endregion

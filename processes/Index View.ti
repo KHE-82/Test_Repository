@@ -1,0 +1,110 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+sCube = 'index';
+sView = '$Temp';
+sSubset = sView;
+sHLYear = ATTRS('variables', 'headline year', 'value');
+sScenario = 'current';
+dmIndex = 'index measure';
+
+#2011
+nHLYear1 = NUMBR(SUBST(sHLYear, 3,4));
+nPer1 = nHLYear1 - 1;
+nPer2 = nHLYear1 + 1;
+nPer3 = nHLYear1 + 2;
+nPer4 = nHLYear1 + 3;
+nPer5 = nHLYear1 + 4;
+
+#Revised Budget
+#2010-2011
+sPeriod1 = STR(nPer1,4,0) | '-' | STR(nHLYear1,4,0);
+
+#Next Year Budget
+#2011-2012
+sPeriod2 = STR(nHLYear1,4,0) | '-' | STR(nPer2,4,0);
+
+#Forward Estimates 1
+#2012-2013
+sPeriod3 = STR(nPer2,4,0) | '-' | STR(nPer3,4,0);
+
+#Forward Estimates 2
+#2013-2014
+sPeriod4 = STR(nPer3,4,0) | '-' | STR(nPer4,4,0);
+
+#Forward Estimates 3
+#2014-2015
+sPeriod5 = STR(nPer4,4,0) | '-' | STR(nPer5,4,0);
+
+#asciioutput('test.txt', sPeriod1, sPeriod2, sPeriod3, sPeriod4, sPeriod5);
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy(sCube, sView);
+SubsetDestroy('headline year', sSubset);
+SubsetDestroy('scenario', sSubset);
+SubsetDestroy('period', sSubset);
+SubsetDestroy('index', sView);
+SubsetDestroy('index measure', sView);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate('headline year', sSubset);
+SubsetElementInsert('headline year', sSubset, sHLYear, 1);
+
+# Scenario
+SubsetCreate('scenario', sSubset);
+SubsetElementInsert('scenario', sSubset, sScenario, 1);
+
+# Period
+SubsetCreate('period', sSubset);
+SubsetElementInsert('period', sSubset, sPeriod1, 1);
+SubsetElementInsert('period', sSubset, sPeriod2, 2);
+SubsetElementInsert('period', sSubset, sPeriod3, 3);
+SubsetElementInsert('period', sSubset, sPeriod4, 4);
+SubsetElementInsert('period', sSubset, sPeriod5, 5);
+
+#Index
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [index] )}, 0)}';
+SUBSETCREATEBYMDX(sView, MDX);
+
+# Index Measure
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [index measure] )}, 0)}';
+SUBSETCREATEBYMDX(sView, MDX);
+
+#****BUILD VIEW****#
+ViewCreate(sCube, sView);
+ViewSubsetAssign(sCube, sView, 'headline year', sSubset);
+ViewSubsetAssign(sCube, sView, 'scenario', sSubset);
+ViewSubsetAssign(sCube, sView, 'period', sSubset);
+ViewSubsetAssign(sCube, sView, 'index', sView);
+ViewSubsetAssign(sCube, sView, 'index measure', sView);
+
+ViewRowDimensionSet(sCube, sView, 'index',1);
+ViewRowDimensionSet(sCube, sView, 'index measure',2);
+
+ViewExtractSkipZeroesSet(sCube, sView, 0);
+ViewSuppressZeroesSet(sCube, sView, 0);
+ViewExtractSkipCalcsSet(sCube, sView, 0);
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

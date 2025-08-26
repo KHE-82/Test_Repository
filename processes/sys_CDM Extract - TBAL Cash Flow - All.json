@@ -1,0 +1,45 @@
+{
+	"@type":"Process",
+	"Name":"sys_CDM Extract - TBAL Cash Flow - All",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_CDM Extract - TBAL Cash Flow - All.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psHLYear",
+			"Prompt":"",
+			"Value":"HL2023-2024",
+			"Type":"String"
+		},
+		{
+			"Name":"psScenario",
+			"Prompt":"",
+			"Value":"Current",
+			"Type":"String"
+		},
+		{
+			"Name":"psStatus",
+			"Prompt":"",
+			"Value":"Total approved",
+			"Type":"String"
+		},
+		{
+			"Name":"psProg",
+			"Prompt":"",
+			"Value":"Total Programmes",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561008740003"
+}

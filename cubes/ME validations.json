@@ -1,0 +1,30 @@
+{
+	"@type":"Cube",
+	"Name":"ME validations",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('headline year')"
+		},
+		{
+			"@id":"Dimensions('scenario')"
+		},
+		{
+			"@id":"Dimensions('programme')"
+		},
+		{
+			"@id":"Dimensions('validation id')"
+		},
+		{
+			"@id":"Dimensions('id')"
+		},
+		{
+			"@id":"Dimensions('period')"
+		}
+	],
+	"Rules@Code.link":"ME validations.rules",
+	"Views@Code.links":
+	[
+		"ME validations.views/Default.json"
+	]
+}

@@ -1,0 +1,140 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*************************************************************************************************************************************
+#**** PROCESS: 		sys_Dimension Replicate Export
+#****
+#**** DESCRIPTION: 	This process exports dimensions required for other TM1 databases.  It calls
+#**** 			the generic process "sys_Dimension Replicate Export - Part 2".  It is used to
+#**** 			copy the dimensions into a data directory where they will be imported using
+#**** 			"sys_Dimension Replicate Import - Part 2".
+#****
+#****			 It takes the following parameters:
+#**** 			Nil
+#****
+#**** AUTHOR: 		Standard Installation FIle (Excelerated Consulting)
+#****
+#**** MODIFICATION HISTORY:
+#****
+#**** Date Initials Comments
+#**** ==== ====== ==========
+#**** 21/05/2024 EC Standard Installation File
+#****
+#*************************************************************************************************************************************
+
+
+#---------------------------------------------------------------------------------------
+#    CUBES
+#---------------------------------------------------------------------------------------
+cbDimRep = 'sys_Dimension Replicate';
+cbVar = 'sys_Variable';
+
+#---------------------------------------------------------------------------
+#    DIMENSIONS
+#---------------------------------------------------------------------------
+dmClts = '}Clients';
+dmDB = 'sys_Database';
+dmDims = '}Dimensions';
+dmDimRepMeas = cbDimRep | ' Measure';
+
+#---------------------------------------------------------------------------
+#    OTHER PARAMETERS
+#---------------------------------------------------------------------------
+gsClt = TM1USER ();
+IF (SUBST (gsClt, 1, 2) @= 'R*');
+                gsClt = 'Admin';
+ELSE;
+              #  gsClt = ATTRS(dmClts, gsClt, '}TM1_DefaultDisplayValue');
+                gsClt = ATTRS(dmClts, gsClt, 'GEUS User Name');
+ENDIF;
+
+gsObj = '}$sys_DRE_' | gsClt;
+
+#---------------------------------------------------------------------------
+#    BUILD SOURCE SUBSETS
+#---------------------------------------------------------------------------
+
+# ---- }Dimensions
+sDim = dmDims;
+SUBSETCREATE (sDim, gsObj, 1);
+
+nPos = 1;
+nCtr = 1;
+nMaxCtr = DIMSIZ (sDim);
+
+WHILE (nCtr <= nMaxCtr);
+
+	sEl = DIMNM (sDim, nCtr);
+	IF (SUBST (sEl, 1, 1) @<> '}');
+		SUBSETELEMENTINSERT (sDim, gsObj, sEl, nPos);
+		nPos = nPos + 1;
+	ENDIF;
+	nCtr = nCtr + 1;
+
+END;
+
+# ---- sys_Database
+sDim = dmDB;
+SUBSETCREATE (sDim, gsObj, 1);
+
+sMDX = '{EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | sDim | '] )}, 0 )}, {[' | sDim | '].[Import]} )}';
+SUBSETMDXSET (sDim, gsObj, sMDX);
+SUBSETMDXSET (sDim, gsObj, '');
+
+# ---- sys_Dimension Replicate Measure
+sDim = dmDimRepMeas;
+SUBSETCREATE (sDim, gsObj, 1);
+SUBSETELEMENTINSERT (sDim, gsObj, 'Replicate', 1);
+
+
+#---------------------------------------------------------------------------------------
+#    BUILD DATASOURCE
+#---------------------------------------------------------------------------------------
+sCub = cbDimRep;
+VIEWCREATE (sCub, gsObj, 1);
+VIEWSUBSETASSIGN (sCub, gsObj, dmDims, gsObj);
+VIEWSUBSETASSIGN (sCub, gsObj, dmDB, gsObj);
+VIEWSUBSETASSIGN (sCub, gsObj, dmDimRepMeas, gsObj);
+VIEWEXTRACTSKIPCALCSSET (sCub, gsObj, 1);
+VIEWEXTRACTSKIPRULEVALUESSET (sCub, gsObj, 1);
+VIEWEXTRACTSKIPZEROESSET (sCub, gsObj, 1);
+
+#--------------------------------------------------------------------------------
+#    SET DATASOURCE
+#--------------------------------------------------------------------------------
+DATASOURCETYPE = 'VIEW';
+DATASOURCENAMEFORSERVER = sCub;
+DATASOURCECUBEVIEW = gsObj;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------
+#    SET VARIABLES
+#---------------------------------------------------------------------------------------
+sAttr = CELLGETS (cbDimRep, vsDatabase, vsDimension, 'Attributes');
+
+#---------------------------------------------------------------------------------------
+#    EXPORT DIMENSION
+#---------------------------------------------------------------------------------------
+sProcess = 'sys_Dimension Replicate Export - Part 2';
+EXECUTEPROCESS (sProcess, 'psDB', vsDatabase, 'psDim', vsDimension, 'psAttr', sAttr);
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

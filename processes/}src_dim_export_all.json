@@ -1,0 +1,45 @@
+{
+	"@type":"Process",
+	"Name":"}src_dim_export_all",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"}src_dim_export_all.ti",
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForServer":"}Dimensions",
+		"dataSourceNameForClient":"}Dimensions",
+		"subset":"All"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pIncludeControlObjects",
+			"Prompt":"Include the control Objects",
+			"Value":1,
+			"Type":"Numeric"
+		},
+		{
+			"Name":"pIncludeSecurity",
+			"Prompt":"Include security",
+			"Value":1,
+			"Type":"Numeric"
+		},
+		{
+			"Name":"pOutputDir",
+			"Prompt":"Export directory",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"V1",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "17561009220007"
+}

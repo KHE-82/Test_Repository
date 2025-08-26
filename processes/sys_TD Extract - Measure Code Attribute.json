@@ -1,0 +1,39 @@
+{
+	"@type":"Process",
+	"Name":"sys_TD Extract - Measure Code Attribute",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_TD Extract - Measure Code Attribute.ti",
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForServer":"}ElementAttributes_measure code",
+		"dataSourceNameForClient":"}ElementAttributes_measure code",
+		"view":"Admin$ExportAEMeasureCode"
+	},
+	"Parameters":[],
+	"Variables":
+	[
+		{
+			"Name":"vsMeasureCode",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsEAMeasureCode",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsValue",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "17561009160005"
+}

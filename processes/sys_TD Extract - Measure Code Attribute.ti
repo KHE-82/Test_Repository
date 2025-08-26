@@ -1,0 +1,194 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#============================================================================================
+#**** PROCESS:		sys_TD Extract - Measure Code Attribute
+#**** DESCRIPTION:	This TI Process export "}ElementAttributes_Measure Code" cube data in flat file format for Top Down Allocation module. 
+#****
+#****			It takes the following parameters:
+#****			psFileName
+#****			psFilePathExport
+#****			
+#****			
+#****
+#****
+#**** AUTHOR:		Standard Installation FIle (Excelerated Consulting)
+#****
+#**** MODIFICATION HISTORY:
+#****
+#**** Date		Initials	Comments
+#**** ====		======	==========
+#**** 25/05/2023		KG	Draft 
+#****
+#============================================================================================
+#=============================================
+#      CUBES
+#=============================================
+cbMeasureCode = '}ElementAttributes_Measure Code';
+cbVariable = '}ElementAttributes_Variables';
+
+#=============================================
+#      DIMENSIONS
+#=============================================
+dmMeasureCode = 'Measure Code';
+dmEAMeasureCode = '}ElementAttributes_Measure Code';
+
+dmVar = 'Variables';
+dmEAVariables = '}ElementAttributes_Variables';
+
+dmClient = '}Clients';
+
+#=============================================
+#      OTHER VARIABLES
+#=============================================
+sUser = TM1User();
+IF (SCAN ('*', sUser) > 0);
+	sUser = 'Admin';
+ELSE;
+	#sUser = sUser;
+	sUser = ATTRS(dmClient, sUser, 'GEUS User Name');
+ENDIF;
+sView = sUser | '$ExportAEMeasureCode';
+
+nCounter = 1;
+
+
+#******************************************************************************************************************
+#*** DECLARE EXTRACT PATH
+#******************************************************************************************************************
+sFilePath =  ATTRS(dmVar,'sys_TD Extract Location','value');
+sFileName = sFilePath | ' GEUS Top Down - Measure Details Extract.csv';
+
+
+#============================================================================================
+#				CREATE SOURCE VIEW
+#============================================================================================
+#=============================================
+#      CLEAR EXISTING CUBE VIEW AND SUBSETS
+#=============================================
+ViewDestroy (cbMeasureCode, sView);
+
+SubsetDestroy (dmMeasureCode, sView);
+SubsetDestroy (dmEAMeasureCode, sView);
+
+#=============================================
+#      CREATE SUBSETS AND ASSIGN ELEMENTS
+#=============================================
+#====================
+#      MEASURE CODE
+#====================
+IF (SubsetExists (dmMeasureCode, sView) = 0);
+	SubsetCreate (dmMeasureCode, sView);
+ELSE;
+	SubsetDeleteAllElements (dmMeasureCode, sView);
+ENDIF;
+
+sMDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( { [' | dmMeasureCode | '].[' | 'Total Measures' | ']}, ALL, RECURSIVE )}, 0)}';
+SUBSETMDXSET (dmMeasureCode, sView, sMDX);
+SUBSETMDXSET (dmMeasureCode, sView, '');
+
+#====================
+#      }ELEMENT ATTRIBUTES_MEASURE CODE
+#====================
+IF (SubsetExists (dmEAMeasureCode, sView) = 0);
+	SubsetCreate (dmEAMeasureCode, sView);
+ELSE;
+	SubsetDeleteAllElements (dmEAMeasureCode, sView);
+ENDIF;
+
+SubsetElementInsert (dmEAMeasureCode, sView, 'Budget Round Created', 1);
+
+#=============================================
+#      CREATE CUBE VIEW
+#=============================================
+IF (ViewCreate (cbMeasureCode, sView) = 0);
+	ViewCreate (cbMeasureCode, sView);
+ENDIF;
+
+#=============================================
+#      ASSIGN SUBSETS TO CUBE VIEW
+#=============================================
+ViewSubsetAssign (cbMeasureCode, sView, dmMeasureCode, sView);
+ViewSubsetAssign (cbMeasureCode, sView, dmEAMeasureCode, sView);
+
+#=============================================
+#      VIEW EXTRACT OPTIONS
+#=============================================
+#1 to exclude zeroes from the extract. Specify 0 to include zeros
+ViewExtractSkipZeroesSet (cbMeasureCode, sView, 1);
+
+#1 to suppress the display of rows or columns containing only zeroes in the view. Specify 0 to enable the display of rows and columns containing only zeroes
+#ViewSuppressZeroesSet (cbMeasureCode, sView, 1);
+
+#1 to exclude consolidated values from the view extract. Specify 0 to include consolidated values.
+ViewExtractSkipCalcsSet (cbMeasureCode, sView, 0);
+ViewExtractSkipRuleValuesSet (cbMeasureCode, sView, 0);
+
+#============================================================================================
+#				SET DATASOURCE
+#============================================================================================
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#============================================================================================
+#				EXPORT TRANSACTION LISTING
+#============================================================================================
+#=============================================
+#      PRINT HEADERS
+#=============================================
+IF (nCounter = 1);
+	ASCIIOUTPUT (sFileName, 'Measure Code', 'Element Attributes', 'Budget Round Created', 'CBMS', 'Funding Life', 'Termination Year', 'Code and Description', 'Title', 'CBMS Code and Description');
+	nCounter = 0;
+ENDIF;
+
+#=============================================
+#      EXPORT
+#=============================================
+#====================
+#      DEFINE HLYEAR
+#====================
+sHLYear = CellGetS (cbVariable, 'Headline Year', 'Value');
+
+#IF (vsValue @= sHLYear);
+
+	sCBMS = CellGetS (cbMeasureCode, vsMeasureCode, 'CBMS');
+	sFundingLife = CellGetS (cbMeasureCode, vsMeasureCode, 'Funding Life');
+	sTerminationYear = CellGetS (cbMeasureCode, vsMeasureCode, 'Termination Year');
+	sCodeDescription = CellGetS (cbMeasureCode, vsMeasureCode, 'Code and Description');
+	sTitle = CellGetS (cbMeasureCode, vsMeasureCode, 'Title');
+	sCBMSCodeDescription = CellGetS (cbMeasureCode, vsMeasureCode, 'CBMS Code and Description');
+
+	ASCIIOUTPUT (sFileName, vsMeasureCode, vsEAMeasureCode, vsValue, sCBMS, sFundingLife, sTerminationYear, sCodeDescription, sTitle, sCBMSCodeDescription);
+#ELSE;
+#	ITEMSKIP;
+#ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#=============================================
+#      CLEAR EXISTING CUBE VIEW AND SUBSETS
+#=============================================
+ViewDestroy (cbMeasureCode, sView);
+
+SubsetDestroy (dmMeasureCode, sView);
+SubsetDestroy (dmEAMeasureCode, sView);
+
+#endregion

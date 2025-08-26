@@ -1,0 +1,68 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_acc_add data entry details to template
+#**** DESCRIPTION:       This process adds the data entry component of the account template into the AE account template cube.
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 20/03/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** DECLARE CUBES & DIMENSIONS ***#
+
+cbAccTemp = 'AE account template';
+dmAccTemp = 'account template';
+dmRecType = 'account template record type';
+dmAccType = 'account type';
+dmAcc = 'account';
+dmMA = 'movement account';
+dmTempMeas = 'account template measure';
+dmClients = '}Clients';
+
+sAcc = 'account template';
+sMA = '-';
+
+# *** IDENTIFY CURRENT USER ***#
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sUser) + 1;
+     sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+     sUser = TM1User();
+ENDIF;
+
+
+#*** CREATE DATA ENTRY OF IMPACT ***#
+CELLPUTS (psImpact, cbAccTemp, psAccTemp, psRecType, psAccType, sAcc, sMA, 'impact');
+CELLPUTN (1,  cbAccTemp, psAccTemp, psRecType, psAccType, sAcc, sMA, 'flag');
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

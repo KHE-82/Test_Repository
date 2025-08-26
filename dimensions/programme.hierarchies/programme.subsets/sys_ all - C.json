@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_ all - C",
+	"Alias":"code and description",
+	"Expression":"{FILTER(TM1SUBSETALL([programme].[programme]) , (STRTOVALUE([programme].[programme].CURRENTMEMBER.PROPERTIES(\"ELEMENT_LEVEL\")) <> 0))}"
+}

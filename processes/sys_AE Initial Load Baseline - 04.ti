@@ -1,0 +1,181 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              sys_AE Initial Load Baseline - 01
+#**** DESCRIPTION:       This process will load a CBMS Upload file into GEUS for reconciliation purposes
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 13/06/2014    KG             Initial Revision
+#**** 08/08/2017	KG	Converting this process from AE_CBMS Reconciliations to AE_Reco - CBMSR Reconciliatio Upload
+#**** 2020 	KG	 Updated for New GEUS
+#*** 16/11/2020	KG	  Updated validations
+#****
+#***********************************************************************************************************************
+
+snProg = 'programme';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#*****************************************************************************
+#*** DECLARE CUBES AND DIMENSIONS***#
+#*****************************************************************************
+sCube = 'AE adjustments';
+sView = '$RECO';
+sSubset = sView;
+
+cbProg = snProg | ' details';
+dmProg = snProg;
+
+cbID = 'AE id details';
+
+#*****************************************************************************
+#*** DECLARE AE ADJUSTMENTS DIMENSIONS ***#
+#*****************************************************************************
+dmID = 'id';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmReason = 'reason';
+dmType = 'appropriation type';
+dmItem = 'appropriation item';
+dmFunc = 'function';
+dmMeas = 'measure code';
+dmAcc = 'account';
+dmMA = 'movement account';
+dmSPP = 'spp';
+dmJur = 'jurisdiction';
+
+#*****************************************************************************
+#*** DECLARE SYSTEM VARIABLES
+#*****************************************************************************
+dmVar = 'variables';
+dmVar = 'variables'; 
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+#sImpFilePath = ATTRS(dmVar, 'sys_ImpFileExceptionLogs', ' value');
+sImpFilePath = 'upload error.csv';
+sDefOC = ATTRS(dmVar, 'AE Default Outcome', 'value');
+
+
+sScenario = 'CBMS';
+sStatus = 'data';
+sReason = 'Other variations not elsewhere defined';
+sID = '0000A';
+
+
+
+
+#*****************************************************************************
+#*** IDENTIFY SOURCE FILE
+#*****************************************************************************
+#sFilePath = ATTRS (dmVar, 'sys_CBMS Upload directory', 'value');
+#sFilePath='';
+#sFileName = sFilePath | '\' | psFileName;
+#sFileName = sFilePath | psFileName;
+#DATASOURCENAMEFORSERVER = sFileName;
+
+NumericGlobalVariable('gv');
+gv=1;
+sFiles ='./File Conversion\*.csv';
+sStrFile = WildcardFileSearch ( sFiles, '' );
+sProg = subst(sStrFile, 1,5);
+While ( sStrFile @<> '');
+	ExecuteProcess ('sys_AE Initial Load Baseline - 01', 'psFileName', sStrFile);
+	
+	#----------------------------------------------------------------
+	#--- CHECK RETURN CODE FROM MFC STAGING SECURITY
+	#----------------------------------------------------------------
+	NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+	sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+
+	#----------------------------------------------------------------
+	#--- STOP PROCESS IF SECURITY IS INVALID
+	#----------------------------------------------------------------
+	IF (ProcessReturnCode <> ProcessExitNormal() );
+		asciioutput('error.txt',sStrFile);
+	ELSE;
+
+		ExecuteProcess ('sys_AE Initial Load Baseline - 02', 'psFileName', sStrFile,'psProg',sProg,'psHLYear',psHLYear,'psScenario',psScenario,'psID',psID,'psFirstYear',psFirstYear);
+	ENDIF;
+
+
+	#----------------------------------------------------------------
+	#--- CHECK RETURN CODE FROM MFC STAGING SECURITY
+	#----------------------------------------------------------------
+	NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+	sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+
+	#----------------------------------------------------------------
+	#--- STOP PROCESS IF SECURITY IS INVALID
+	#----------------------------------------------------------------
+	IF (ProcessReturnCode <> ProcessExitNormal() );
+		asciioutput('error- Load.txt',sStrFile);
+	ENDIF;
+
+
+	IF(psScenario @= 'CBMS-R FBO');
+		ExecuteProcess ('sys_AE Initial Load Baseline - 08 - Trasnfer CBMS FBO 0000A to Current 00FB0 incl Flow on','psProg',sProg,'psSourceHLYear',psHLyear,'psTargetHLYear',psHLYear,'psSourceScenario','CBMSR FBO Variance','psTargetScenario','current');
+
+
+		#----------------------------------------------------------------
+		#--- CHECK RETURN CODE FROM MFC STAGING SECURITY
+		#----------------------------------------------------------------
+		NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+		sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+
+		#----------------------------------------------------------------
+		#--- STOP PROCESS IF SECURITY IS INVALID
+		#----------------------------------------------------------------
+		IF (ProcessReturnCode <> ProcessExitNormal() );
+			asciioutput('error- FBO.txt',sStrFile);
+		ENDIF;
+	ENDIF;
+
+
+
+	#sStrFile = './FileConversion\' | sStrFile;
+	asciioutput('file.txt',sStrFile);
+	sStrFile = WildcardFileSearch ( sFiles, sStrFile );
+	sProg = subst(sStrFile, 1,5);
+End;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+
+#endregion

@@ -1,0 +1,284 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_AE_Archive and New Baseline_00 - Run Process
+#**** DESCRIPTION:       This process is the master that calls all other Archive Processes
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials      Comments
+#****  ====              ======      =========
+#****  2019	KG	Initiative Version
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE CLIENT GROUPS CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbGroups = '}ClientGroups';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYS CLIENT FAVOURITE APPLICATION CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbFavApp = 'sys_client favourite application';
+dmApp = 'sys_application';
+dmFavAppMeas = 'sys_client favourite application measure';
+
+
+#------------------------------------------------------------------------
+#--- Update System Process Administration Cube
+#------------------------------------------------------------------------
+cbProc = 'sys_process administration';
+dmReturnProcCode = 'sys_process return codes';
+
+#--------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#--------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** STEP 01 CLEAR FLAGS PERFORM ARCHIVE PROCESS
+#******************************************************************************************************************
+#----------------------------------------------------------------------------------------------------------
+#--- Process - Clear Flags in sys_process management cube
+#----------------------------------------------------------------------------------------------------------
+sProcess = 'sys_Process Administration - Clear Flags';
+IF (psRunClearFlag @= 'Y');
+	EXECUTEPROCESS (sProcess);
+ENDIF;
+
+
+
+#******************************************************************************************************************
+#*** STEP 01A PERFORM VALIDATIONS
+#******************************************************************************************************************
+
+#------------------------------------------------------------------------
+#--- CLEAR ADMIN ARCHIVE STATUS IN CLIENT PREFERENCE
+#------------------------------------------------------------------------
+sErrMsg = '';
+CELLPUTS ('', cbClient, sUser, 'sys_admin archive status', 'value');
+CELLPUTS (sErrMsg, cbClient, sUser, 'sys_admin archive status', 'validate');
+
+#------------------------------------------------------------------------
+#--- DO A CHECK IF SOURCE AND TARGET HEADLINE YEARS AND SCENARIOS ARE SAME
+#------------------------------------------------------------------------
+IF (psArcTargetScenario @= 'current');
+	sErrMsg = 'ERROR : Target Scenario can not be CURRENT.';
+	CELLPUTS ('FAILED', cbClient, sUser, 'sys_admin archive status', 'value');
+	CELLPUTS (sErrMsg, cbClient, sUser, 'sys_admin archive status', 'validate');
+	PROCESSBREAK;
+ELSE;
+	IF (psArcSourceHLYear @= psArcTargetHLYear & psArcSourceScenario @= psArcTargetScenario);
+		sErrMsg = 'ERROR : Source and Target Headline Year and Scenario can not be the same.';
+		CELLPUTS ('FAILED', cbClient, sUser, 'sys_admin archive status', 'value');
+		CELLPUTS (sErrMsg, cbClient, sUser, 'sys_admin archive status', 'validate');
+		PROCESSBREAK;
+	ENDIF;
+ENDIF;
+
+
+
+
+
+IF (psNBSourceHLYear @= psNBTargetHLYear & psNBSourceScenario @= psNBTargetScenario);
+	sErrMsg = 'ERROR : Source and Target Headline Year and Scenario can not be the same.';
+	CELLPUTS ('FAILED', cbClient, sUser, 'sys_admin archive status', 'value');
+	CELLPUTS (sErrMsg, cbClient, sUser, 'sys_admin archive status', 'validate');
+	PROCESSBREAK;
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** STEP 02 - PERFORM ARCHIVE PROCESS
+#******************************************************************************************************************
+
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
+#--- Process 01 - Run Archive Processes
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF (1= 1);
+sProcess = 'sys_AE_Archive_00 - Commence Archive Process';
+EXECUTEPROCESS (sProcess, 
+	'psUser', psUser,
+	'psSourceHLYear', psArcSourceHLYear,
+	'psSourceScenario', psArcSourceScenario,
+	'psTargetHLYear', psArcTargetHLYear,
+	'psTargetScenario', psArcTargetScenario,
+	'psRunClearFlag', psRunClearFlag);
+
+
+#----------------------------------------------------------------
+#--- Run Process To Update System Process Cube
+#----------------------------------------------------------------
+NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+sProcessReturnCodeDesc = ATTRS (dmReturnProcCode, sProcessReturnCode, 'description');
+
+IF (ProcessReturnCode = ProcessExitNormal() );
+	#-------------------------------------------------------------
+	#--- Process Completed Successfully
+	#-------------------------------------------------------------
+
+	CELLPUTN (1, cbProc, sProcess, 'completed flag');
+	CELLPUTS (sProcessReturnCode, cbProc, sProcess, 'error description');
+	CELLPUTS ('SUCCESS', cbProc, sProcess, 'status flag');
+ELSE;
+	#-------------------------------------------------------------
+	#--- Process Completed With Errors
+	#-------------------------------------------------------------
+	CELLPUTN (1, cbProc, sProcess, 'error flag');
+	CELLPUTS (sProcessReturnCodeDesc, cbProc, sProcess, 'error description');
+	CELLPUTS ('FAILED', cbProc, sProcess, 'status flag');
+
+ENDIF;
+ENDIF;
+
+#******************************************************************************************************************
+#*** STEP 03 - PERFORM NEW BASELINE PROCESS
+#******************************************************************************************************************
+	
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
+#--- Process 02 : Run New Baseline Process
+#--------------------------------------------------------------------------------------------------------------------------------------------------------
+sProcess = 'sys_AE_NewZeroID_00 - Commence New Baseline Process';
+EXECUTEPROCESS (sProcess, 
+	'psUser', psUser,
+	'psSourceHLYear', psNBSourceHLYear,
+	'psSourceScenario', psNBSourceScenario,
+	'psTargetHLYear', psNBTargetHLYear,
+	'psTargetScenario', psNBTargetScenario,
+	'psRunClearFlag', 'N');
+
+
+#----------------------------------------------------------------
+#--- Run Process To Update System Process Cube
+#----------------------------------------------------------------
+NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+sProcessReturnCodeDesc = ATTRS (dmReturnProcCode, sProcessReturnCode, 'description');
+
+IF (ProcessReturnCode = ProcessExitNormal() );
+	#-------------------------------------------------------------
+	#--- Process Completed Successfully
+	#-------------------------------------------------------------
+
+	CELLPUTN (1, cbProc, sProcess, 'completed flag');
+	CELLPUTS (sProcessReturnCode, cbProc, sProcess, 'error description');
+	CELLPUTS ('SUCCESS', cbProc, sProcess, 'status flag');
+ELSE;
+	#-------------------------------------------------------------
+	#--- Process Completed With Errors
+	#-------------------------------------------------------------
+	CELLPUTN (1, cbProc, sProcess, 'error flag');
+	CELLPUTS (sProcessReturnCodeDesc, cbProc, sProcess, 'error description');
+	CELLPUTS ('FAILED', cbProc, sProcess, 'status flag');
+
+ENDIF;
+
+#******************************************************************************************************************
+#*** STEP 04 - POST VALUES IN VARIABLES
+#******************************************************************************************************************
+ATTRPUTS (psNBTargetHLYear, dmVar, 'headline year', 'value');
+ATTRPUTS (psNBTargetScenario, dmVar, 'headline scenario', 'value');
+
+ATTRPUTS (psArcSourceHLYear, dmVar, 'headline year', 'old value');
+ATTRPUTS (psArcSourceScenario, dmVar, 'headline scenario', 'old value');
+
+ATTRPUTS (psArcTargetHLYear, dmVar, 'archive year', 'value');
+ATTRPUTS (psArcTargetScenario, dmVar, 'archive scenario', 'value');
+
+ATTRPUTS (psCurrentRoundName, dmVar, 'current budget round', 'value');
+
+ATTRPUTS (psArcSourceHLYear, dmVar, 'archive year', 'old value');
+ATTRPUTS (psArcSourceScenario, dmVar, 'archive scenario', 'old value');
+
+
+
+#******************************************************************************************************************
+#*** STEP 05 - CALL SET DEFAULT HEADLINE YEAR
+#******************************************************************************************************************
+sProcess = 'sys_Set Default Headline Year';
+EXECUTEPROCESS (sProcess);
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#------------------------------------------------------------------------
+#--- Update System Process Administration Cube
+#------------------------------------------------------------------------
+cbProc = 'sys_process administration';
+sProcess = GETPROCESSNAME ();
+NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+
+IF (ProcessReturnCode = ProcessExitNormal() );
+	#-------------------------------------------------------------
+	#--- Process Completed Successfully
+	#-------------------------------------------------------------
+
+	CELLPUTN (1, cbProc, sProcess, 'completed flag');
+	CELLPUTS (sProcessReturnCode, cbProc, sProcess, 'error description');
+	CELLPUTS ('SUCCESS', cbProc, sProcess, 'status flag');
+ELSE;
+	#-------------------------------------------------------------
+	#--- Process Completed With Errors
+	#-------------------------------------------------------------
+	CELLPUTN (1, cbProc, sProcess, 'error flag');
+	CELLPUTS (sProcessReturnCode, cbProc, sProcess, 'error description');
+	CELLPUTS ('FAILED', cbProc, sProcess, 'status flag');
+
+ENDIF;
+
+#endregion

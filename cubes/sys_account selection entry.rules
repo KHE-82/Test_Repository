@@ -1,0 +1,49 @@
+SKIPCHECK;
+
+# RULE 1 - Auto assign movement account mapping
+
+['movement account mapping'] =S:
+IF (DB('sys_account selection entry', !favourites_id, !id row, !account, 'flag') = 1,
+IF(ATTRS('account', !account, 'movement account required') @= '',
+'No Movement Code',
+STET),
+STET);
+
+
+# RULE 2 - Auto assign related entity mapping
+['related entity mapping'] = S:
+IF (DB('sys_account selection entry', !favourites_id, !id row, !account, 'flag') = 1,
+# TRUE PART A - IF FLAG EXISTS
+# NOW CHECK IF ACCOUNT HAS MOVEMENT ACCOUNT
+IF (ATTRS ('account', !account, 'movement account required') @<> '',
+# TRUE PART B
+# NOW CHECK IF MA ATTRIBUTE IS NO RE ENABLED AND NO ASSUMED RELATED ENTITY
+IF ((ATTRS('movement account', DB('sys_account selection entry', !favourites_id, !id row, !account, 'movement account mapping'), 'related entity enabled') @<> 'Y'
+& ATTRS('movement account', DB('sys_account selection entry', !favourites_id, !id row, !account, 'movement account mapping'), 'assumed related entity') @= ''),
+# TRUE PART C
+'No Related Entity',
+# FALSE PART C
+# NOW CHECK IF MA ATTRIBUTE IS ASSUMED RELATED ENTITY
+IF (ATTRS('movement account', DB('sys_account selection entry', !favourites_id, !id row, !account, 'movement account mapping'), 'assumed related entity') @<> '',
+# TRUE PART D
+ATTRS('related entity',ATTRS('movement account', DB('sys_account selection entry', !favourites_id, !id row, !account, 'movement account mapping'), 'assumed related entity'),'code and description'),
+# FALSE PART D
+STET)),
+# CHECK IF ACCOUNT ALLOWS RELATED ENTITY
+IF(ATTRS('account', !account, 'related entity enabled') @= '',
+# TRUE PART B
+'No Related Entity',
+# FALSE PART B
+# IF ACCOUNT SAYS REQUIRED, USE RELATED ENTITY CODE
+IF(ATTRS('account', !account, 'related entity enabled') @= 'Y' & ATTRS('account', !account, 'assumed related entity') @<> '',
+# TRUE PART C
+ATTRS('related entity', ATTRS('account', !account, 'assumed related entity'),'code and description'),
+# FALSE PART C
+# FALSE PART D
+STET))),
+# FALSE PART A
+STET);
+
+
+
+FEEDERS;

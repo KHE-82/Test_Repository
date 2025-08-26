@@ -1,0 +1,194 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_Acc Temp Mapping 01 - Create Source Map
+#**** DESCRIPTION:       This process will create subsets in the account template for program
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    KG             Initial Revision
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+dmProg = ATTRS(dmVar, 'program dimension name', 'value');
+
+#******************************************************************************************************************
+#*** DECLARE AE ACCOUNT TEMPLATE MAPPING
+#******************************************************************************************************************
+cbAccTempMap = 'AE account template mapping';
+dmAccTemp = 'account template';
+IF (dmProg @= '');
+	dmProg = 'programme';
+ENDIF;
+dmAccTempMapMeas = 'account template measure';
+
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT GROUPS CUBE
+#******************************************************************************************************************
+cbGroups = '}ClientGroups';
+dmGroups = '}Groups';
+
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED
+#******************************************************************************************************************
+sView = sUser | '_$AccTempSubset02';
+
+#***********************************************************************************************************************
+#--- STEP 1 - CREATE SUBSETS
+#***********************************************************************************************************************
+sProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, psProg);
+sSubset = 'sys_' | sProg;
+
+IF (SUBSETEXISTS (dmAccTemp, sSubset) = 1);
+	SUBSETDESTROY (dmAccTemp, sSubset);
+	SUBSETCREATE (dmAccTemp, sSubset);
+	SUBSETALIASSET (dmAccTemp, sSubset, 'title');
+ELSE;
+	SUBSETCREATE (dmAccTemp, sSubset);
+	SUBSETALIASSET (dmAccTemp, sSubset, 'title');
+ENDIF;
+
+
+#***********************************************************************************************************************
+#--- STEP 2 - CREATE SOURCE VIEW
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbAccTempMap, sView);
+SUBSETDESTROY (dmAccTemp, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmAccTempMapMeas, sView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** CREATE SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+# Account Template
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAccTemp | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+#SubsetCreate(dmAccTemp, sView);
+#SubsetElementInsert(dmAccTemp, sView, 'Total account templates', 1);
+
+
+
+# Program
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sView, MDX);
+SubsetCreate(dmProg, sView);
+SubsetElementInsert(dmProg, sView, psProg, 1);
+
+
+
+# Account Template Measure
+SubsetCreate(dmAccTempMapMeas, sView);
+SubsetElementInsert(dmAccTempMapMeas, sView, 'flag', 1);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#---- BUILD VIEW 
+#---------------------------------------------------------------------------------------------------------------------------
+ViewCreate (cbAccTempMap, sView);
+ViewSubsetAssign (cbAccTempMap, sView, dmAccTemp, sView);
+ViewSubsetAssign (cbAccTempMap, sView, dmProg, sView);
+ViewSubsetAssign (cbAccTempMap, sView, dmAccTempMapMeas, sView);
+
+ViewExtractSkipZeroesSet (cbAccTempMap, sView, 1);
+ViewExtractSkipCalcsSet (cbAccTempMap, sView, 1);
+ViewExtractSkipRuleValuesSet (cbAccTempMap, sView, 1);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- DEFINE DATA SOURCE
+#---------------------------------------------------------------------------------------------------------------------------
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+#******************************************************************************************************************
+#*** CREATE SYSTEM SUBSETS FOR EACH PROGRAM
+#******************************************************************************************************************
+
+nSubsetSize = SUBSETGETSIZE (dmAccTemp, sSubset);
+nSubsetSize = nSubsetSize + 1;
+
+IF (vnValue = 1);
+	SUBSETELEMENTINSERT (dmAccTemp, sSubset, vsAccTemp, nSubsetSize);
+ENDIF;
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbAccTempMap, sView);
+SUBSETDESTROY (dmAccTemp, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmAccTempMapMeas, sView);
+
+#endregion

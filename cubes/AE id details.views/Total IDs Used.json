@@ -1,0 +1,86 @@
+{
+	"@type":"NativeView",
+	"Name":"Total IDs Used",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('id measure')/Hierarchies('id measure')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('id measure')/Hierarchies('id measure')/Elements('used')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('headline year')/Hierarchies('headline year')/Subsets('sys_all-n')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('scenario')/Hierarchies('scenario')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('current')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('MYEFO')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('Budget')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('CBMS')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('Actual')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('Actual Adjustments')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('MA CBMS')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('ACM')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('id')/Hierarchies('id')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('id')/Hierarchies('id')/Elements('Total IDs')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":[],
+	"SuppressEmptyColumns":true,
+	"SuppressEmptyRows":true,
+	"FormatString":"0.#########"
+}

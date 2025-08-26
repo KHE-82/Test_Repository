@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"sys_ME 00002",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		}
+	]
+}

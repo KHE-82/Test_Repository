@@ -1,0 +1,409 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              sys_CDM Extract - Section 2 - Summary
+#**** DESCRIPTION:       This process creates a view of all data in the CURRENT scenario in the adjustments cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** Feb 2023          EC             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+sHLYear = ATTRS(dmVar,'headline year','value');
+sScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+sHLYear = ATTRS(dmVar, 'archive year', 'old value');
+sScenario = ATTRS(dmVar, 'archive scenario', 'old value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = SUBST(sUser, lScan, 9);
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+sPrc = GetProcessName();
+sView = sUser | ' - ' | sPrc;
+sSubset = sView;
+sRE = 'Total related entity';
+sFunc = 'Total Functions';
+sReason = 'Total reason';
+sSPP = 'Total SPP';
+sMeasCode = 'Total Measures';
+sType = 'Total approp types';
+sItem = 'Total approp item';
+sID = 'Total IDs';
+sJur = 'Total jurisdictions';
+sOC = 'Total Outcomes';
+sMA = 'Total Movement'; 
+#sPeriod = 'Total years';
+sPeriod = '0000-0000';
+#sStatus = 'Total Approved';
+sCF = '6000000'; 
+
+
+#*****************************************************************************
+#*** IDENTIFY OUTPUT FILE
+#*****************************************************************************
+sFilePath = ATTRS (dmVar, 'sys_shared directory', 'value');
+sFilePath ='';
+
+
+IF( psProg @= 'Administered Outcome 1');
+	sOCNum = '1';
+ELSEIF( psProg @= 'Administered Outcome 2');
+	sOCNum = '2';
+ELSEIF( psProg @= 'Administered Outcome 3');
+	sOCNum = '3';
+ELSEIF( psProg @= 'Administered Outcome 4');
+	sOCNum = '4';
+ELSE;
+	sOCNum = '99';
+ENDIF;
+
+
+sFileName = 'CDM - Section 2 Summary Outcome ' | sOCNum | '.csv';
+
+sFile = sFilePath | sFileName;
+
+IF( FileExists(sFile) =1);
+	AsciiDelete(sFile);
+ENDIF;
+
+nTitle = 0;
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE CDM EXTRACT  CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbCDM = 'sys_CDM publication extract';
+dmCDMId = 'sys_CDM extract ID';
+dmCDMRow = 'sys_CDM row';
+dmCDMMeas = 'sys_CDM publication extract measure';
+sTotal = 'Total Rows';
+sUsed = 'Used';
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 00 : CLEAR TARGET VIEW
+#------------------------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbCDM, sSubset);
+SUBSETDESTROY (dmCDMId, sSubset);
+
+
+#****CREATE SUBSETS****#
+# CDM Extract ID
+sCDMId = 'E0015';
+SubsetCreate(dmCDMId, sSubset);
+SubsetElementInsert(dmCDMId, sSubset, sCDMId, 1);
+
+#****BUILD VIEW****#
+ViewCreate(cbCDM, sView);
+ViewSubsetAssign(cbCDM, sView, dmCDMId, sSubset);
+
+#****CLEAR OUT****#
+ViewZeroOut(cbCDM,sView);
+
+VIEWDESTROY (cbCDM, sSubset);
+SUBSETDESTROY (dmCDMId, sSubset);
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 01 : CREATE SOURCE VIEW
+#------------------------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbAE, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmStatus, sSubset);
+SUBSETDESTROY (dmOC, sSubset);
+SUBSETDESTROY (dmRE, sSubset);
+SUBSETDESTROY (dmFunc, sSubset);
+SUBSETDESTROY (dmReason, sSubset);
+SUBSETDESTROY (dmSPP, sSubset);
+SUBSETDESTROY (dmMeasCode, sSubset);
+SUBSETDESTROY (dmType, sSubset);
+SUBSETDESTROY (dmMA, sSubset);
+SUBSETDESTROY (dmItem, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmAcc, sSubset);
+SUBSETDESTROY (dmID, sSubset);
+SUBSETDESTROY (dmJur, sSubset);
+SUBSETDESTROY (dmPer, sSubset);
+
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, psScenario, 1);
+
+# Status
+SubsetCreate(dmStatus, sSubset);
+SubsetElementInsert(dmStatus, sSubset, psStatus, 1);
+
+# Outcome
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmOC | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sSubset, MDX);
+SubsetCreate(dmOC, sSubset);
+SubsetElementInsert(dmOC, sSubset, sOC, 1);
+
+# Related Entity
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sSubset, MDX);
+SubsetCreate(dmRE, sSubset);
+SubsetElementInsert(dmRE, sSubset, sRE, 1);
+
+# Function
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmFunc | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sSubset, MDX);
+SubsetCreate(dmFunc, sSubset);
+SubsetElementInsert(dmFunc, sSubset, sFunc, 1);
+
+# Reason
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmReason | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sSubset, MDX);
+SubsetCreate(dmReason, sSubset);
+SubsetElementInsert(dmReason, sSubset, sReason, 1);
+
+# SPP
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sSubset, MDX);
+SubsetCreate(dmSPP, sSubset);
+SubsetElementInsert(dmSPP, sSubset, sSPP, 1);
+
+# Measure Code
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sSubset, MDX);
+SubsetCreate(dmMeasCode, sSubset);
+SubsetElementInsert(dmMeasCode, sSubset, sMeasCode, 1);
+
+# Appropriation Type
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmType | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+#SubsetCreate(dmType, sSubset);
+#SubsetElementInsert(dmType, sSubset, sType, 1);
+
+
+# Movement account
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+#MDX = '{DESCENDANTS([ ' | dmMA | '].[' | sMA | '],1,SELF_AND_BEFORE)}';
+#MDX = '{[ ' | dmMA | '].[' | sMA | ']}';
+MDX = '{[' | dmMA |' ].[-],[' | dmMA |' ].[7153],[' | dmMA |' ].[7353]}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Appropriation item
+SubsetCreate(dmItem, sSubset);
+SubsetElementInsert(dmItem, sSubset, sItem, 1);
+#MDX = '{Union({TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0,1)}, {[' | dmItem | '].[' | sItem | ']})}';
+#SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Programme
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+#MDX = '{ [' | dmProg | '].[' | psProg |'] }';
+
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0,1,2,3,4,5,6,7)}+{[' | dmProg | '].[administered programmes]}+ {[' | dmProg |'].[departmental programmes]}';
+
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Account
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+#MDX = '{{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[9000130]}, ALL, RECURSIVE )}, 0)}, ASC)},{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[3800001]}, ALL, RECURSIVE )}, 0)}, ASC)},{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[9000850]}, ALL, RECURSIVE )}, 0)}, ASC)}}';
+#MDX = '{TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[' | sCF |']}, ALL, RECURSIVE )}';
+MDX = '{[account].[1280004],[account].[2240000],[account].[1220000],[account].[9000863],[account].[9000865],[account].[1270004],[account].[1270034],[account].[5300000],[account].[2000000],[account].[2423000],[account].[2400000]}';
+
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# ID
+SubsetCreate(dmID, sSubset);
+SubsetElementInsert(dmID, sSubset, sID, 1);
+
+# Jurisdiction
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sSubset, MDX);
+SubsetCreate(dmJur, sSubset);
+SubsetElementInsert(dmJur, sSubset, sJur, 1);
+
+# Period
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sSubset, MDX);
+SubsetCreate(dmPer, sSubset);
+SubsetElementInsert(dmPer, sSubset, sPeriod, 1);
+
+#****BUILD VIEW****#
+ViewCreate(cbAE, sView);
+
+ViewSubsetAssign(cbAE, sView, dmHLYear, sSubset);
+ViewSubsetAssign(cbAE, sView, dmScenario, sSubset);
+ViewSubsetAssign(cbAE, sView, dmStatus, sSubset);
+ViewSubsetAssign(cbAE, sView, dmOC, sSubset);
+ViewSubsetAssign(cbAE, sView, dmRE, sSubset);
+ViewSubsetAssign(cbAE, sView, dmFunc, sSubset);
+ViewSubsetAssign(cbAE, sView, dmReason, sSubset);
+ViewSubsetAssign(cbAE, sView, dmSPP, sSubset);
+ViewSubsetAssign(cbAE, sView, dmMeasCode, sSubset);
+ViewSubsetAssign(cbAE, sView, dmType, sSubset);
+ViewSubsetAssign(cbAE, sView, dmMA, sSubset);
+ViewSubsetAssign(cbAE, sView, dmItem, sSubset);
+ViewSubsetAssign(cbAE, sView, dmProg, sSubset);
+ViewSubsetAssign(cbAE, sView, dmAcc, sSubset);
+ViewSubsetAssign(cbAE, sView, dmID, sSubset);
+ViewSubsetAssign(cbAE, sView, dmJur, sSubset);
+ViewSubsetAssign(cbAE, sView, dmPer, sSubset);
+
+ViewExtractSkipZeroesSet (cbAE, sView, 1);
+ViewExtractSkipCalcsSet (cbAE, sView, 0);
+ViewExtractSkipRuleValuesSet (cbAE, sView, 0);
+
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+#****REPORTING YEARS****#
+sYr02 = Subst(psHLYear,3,9);
+sYr01 = DIMNM(dmPer, DIMIX(dmPer, sYr02)-1);
+sYr03 = DIMNM(dmPer, DIMIX(dmPer, sYr02)+1);
+sYr04 = DIMNM(dmPer, DIMIX(dmPer, sYr02)+2);
+sYr05 = DIMNM(dmPer, DIMIX(dmPer, sYr02)+3);
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF( nTitle =0);
+	Asciioutput(sFile, vsHLYear, vsScenario, vsStatus);
+	Asciioutput(sFile,dmAcc, dmType,dmItem,dmProg,dmMA,sYr01, sYr02, sYr03, sYr04, sYr05);
+	nTitle =1;
+ENDIF;
+
+
+nYr01 = Roundp(CellGetN(cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sYr01),0);
+nYr02 = Roundp(CellGetN(cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sYr02),0);
+nYr03 = Roundp(CellGetN(cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sYr03),0);
+nYr04 = Roundp(CellGetN(cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sYr04),0);
+nYr05 = Roundp(CellGetN(cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sYr05),0);
+
+Asciioutput(sFile, vsAcc, vsType, vsItem,vsProg,vsMA, NumberToString(nYr01), NumberToString(nYr02), NumberToString(nYr03),NumberToString(nYr04),NumberToString(nYr05));
+
+
+
+#------Populate CDM Extract Cube------#
+nRowNum =1+ CellGetN( cbCDM, sCDMId, sTotal, sUsed);
+sRowNum = NumberToString(nRowNum);
+sRowNum = Fill('0',5-Long(sRowNum)) | sRowNum; 
+
+
+CellPutS(vsProg,cbCDM, sCDMId,sRowNum,'Programme');
+CellPutS(vsType,cbCDM, sCDMId,sRowNum,'Appropriation Type');
+CellPutS(vsItem,cbCDM, sCDMId,sRowNum,'Appropriation Item');
+#CellPutS(vsRE,cbCDM, sCDMId,sRowNum,'Related Entity');
+CellPutS(vsAcc,cbCDM, sCDMId,sRowNum,'Account');
+CellPutS(vsMA,cbCDM, sCDMId,sRowNum,'Movement Account');
+CellPutN(nYr01,cbCDM, sCDMId,sRowNum,sYr01);
+CellPutN(nYr02,cbCDM, sCDMId,sRowNum,sYr02);
+CellPutN(nYr03,cbCDM, sCDMId,sRowNum,sYr03);
+CellPutN(nYr04,cbCDM, sCDMId,sRowNum,sYr04);
+CellPutN(nYr05,cbCDM, sCDMId,sRowNum,sYr05);
+
+CellPutN(1,cbCDM, sCDMId,sRowNum, 'used');
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+VIEWDESTROY (cbAE, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmStatus, sSubset);
+SUBSETDESTROY (dmOC, sSubset);
+SUBSETDESTROY (dmRE, sSubset);
+SUBSETDESTROY (dmFunc, sSubset);
+SUBSETDESTROY (dmReason, sSubset);
+SUBSETDESTROY (dmSPP, sSubset);
+SUBSETDESTROY (dmMeasCode, sSubset);
+SUBSETDESTROY (dmType, sSubset);
+SUBSETDESTROY (dmMA, sSubset);
+SUBSETDESTROY (dmItem, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmAcc, sSubset);
+SUBSETDESTROY (dmID, sSubset);
+SUBSETDESTROY (dmJur, sSubset);
+SUBSETDESTROY (dmPer, sSubset);
+
+#endregion

@@ -1,0 +1,95 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#
+# Process:          sys_csv_to_xlsx
+#
+# Purpose:         Convert csv file into xlsx.  Uses Powershell script and requires Excel to be installed on TM1 server
+#
+# Parameters:
+# 	           pCSV - path to csv file (input)
+# 	           pXLSX - path to xlsx file (output).  This gets overwritten each time
+#
+# Change Log
+# No  | Date      	| User               			| Comments
+# 000 | 20230419 	| Rod Jager		      	| Initial scripting
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+#----------------------------------------------------------
+#   VARIABLES
+#----------------------------------------------------------
+
+#sPSScript = '.\scripts\csv_to_xlsx.ps1';
+sPSScript = 's:\prod\dcceew_geus\data\scripts\csv_to_xlsx.ps1';
+#sPSScript = '\\10.63.15.160\s\prod\DCCEEW_GEUS\data\scripts\csv_to_xlsx.ps1';
+
+
+sCmdLine = 'powershell -file ' | sPSScript | ' -csvfile "' | pCSV | '" -xlsxfile "' | pXLSX | '"';
+#sCmdLine = 'powershell.exe ' | sPSScript | ' -csvfile "' | pCSV | '" -xlsxfile "' | pXLSX | '"';
+
+
+#----------------------------------------------------------
+#    TEST CSV EXISTS
+#----------------------------------------------------------
+
+If ( FileExists ( pCSV ) = 0 );
+
+      	# File does not exist so quit
+	ItemReject ( pCSV | ' cannot be found.');
+
+EndIf;
+
+
+
+#----------------------------------------------------------
+#    EXECUTE THE CONVERSION
+#----------------------------------------------------------
+
+# Clear the old XLSX file
+If ( FileExists ( pXLSX ) = 0 );
+
+      	# File does not exist so quit
+	AsciiDelete ( pXLSX );
+
+EndIf;
+
+# Using paramter of 1 as we need to wait for script to complete before going to next step
+
+#ExecuteCommand ( sCmdLine, 1 );
+
+
+
+#----------------------------------------------------------
+#    TEST FOR XLSX FILE
+#----------------------------------------------------------
+
+If ( FileExists ( pXLSX ) = 0 );
+
+      	# File does not exist so quit
+	ItemReject ( 'Conversion failed, ' |  pXLSX | ' cannot be found.');
+
+EndIf;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

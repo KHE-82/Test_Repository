@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"sys_id_list",
+	"Expression":"{{FILTER( {EXCEPT( {[id].[Total IDs].Children}, {[00000],[id].[cash flow]} )}, INSTR( [AE id details].([Headline Year].[HL2014-2015],[scenario].[current],[id measure].[created by]), \"KG\" ) >=1) }}"
+}

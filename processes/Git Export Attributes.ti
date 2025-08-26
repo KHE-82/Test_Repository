@@ -1,0 +1,37 @@
+#region Prolog
+sCb = '}ElementAttributes_' | psDim;
+sObj = '}Git_' | NumberToString(RAND());
+sExportFile = psDir | psDim | '.csv';
+nTemp =1;
+
+ViewCreate( sCb, sObj, nTemp );
+
+sMdx = '[' | psDim | '].members';
+SubsetCreatebyMDX( sObj, sMdx, nTemp );
+
+sMdx = '[' | sCb | '].members';
+SubsetCreatebyMDX( sObj, sMdx, nTemp );
+
+ViewSubsetAssign( sCb, sObj, psDim, sObj );
+ViewSubsetAssign( sCb, sObj, sCb, sObj );
+
+ViewExtractSkipZeroesSet( sCb, sObj, 1 );
+
+DataSourceType = 'View';
+DatasourceNameForServer = sCb;
+DatasourceCubeview = sObj;
+
+
+if(FileExists( sExportFile )=1);
+    ASCIIDelete( sExportFile );
+endif;
+
+
+
+#endregion
+#region Data
+sAttr_type = Dtype(sCb,v2);
+ASCIIOutput( sExportFile, v1, sAttr_type,v2,value );
+
+
+#endregion

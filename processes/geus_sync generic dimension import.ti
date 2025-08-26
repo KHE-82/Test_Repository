@@ -1,0 +1,154 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               geus_sync generic dimension import
+#**** DESCRIPTION:       This is a generic process to import a dimension structure from a flat file for
+#****                                  use with the GEUS project dimension replication.  It loads the dimension
+#****                                  from a flat file that was created by "geus_sync generic dimension import".
+#****                                  It takes the following parameters:
+#****
+#****                                        psDimName : The dimension to be exported
+#****                                        psExportFile : The file to export it to
+#****                                        psAttributes : 'Y' or 'N', to export attributes as well
+#****
+#**** AUTHOR:                Khristian Gimenal (Excelerated Consulting)
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 16/04/2019      KG       Initial Revision
+#****
+#***********************************************************************************************************************
+
+
+DataSourceType = 'CHARACTERDELIMITED';
+DataSourceNameForServer = psImportFile;
+DataSourceNameForClient = psImportFile;
+sAttrDim = '}ElementAttributes_' | psDimName;
+sAttrCube = sAttrDim;
+nFirst = 1;
+
+# Make sure that the dimension exists
+If (DimensionExists (psDimName) = 0);
+      DimensionCreate (psDimName);
+EndIf;
+
+# Remove all C-Level Elements
+nElCount = DimSiz (psDimName);
+
+While (nElCount > 0);
+      sEl = DimNm (psDimName, nElCount);
+
+      If (DType (psDimName, sEl) @= 'C');
+            DimensionElementDelete (psDimName, sEl);
+      EndIf;
+
+      nElCount = nElCount - 1;
+End;
+
+#Set the Dimension Sort order to Hierarchical
+DimensionSortOrder (psDimName, 'ByInput', 'Ascending', 'ByHierarchy', 'Ascending');
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+# Insert the element even if it's already there
+# Doing a check was causing the TI to fail every second execution
+# Odd, I know!
+DimensionElementInsert (psDimName, '', sParent, sType);
+
+# Insert the child if not already there
+If (Trim (sChild) @<> '');
+      DimensionElementInsert (psDimName, sParent, sChild, sChildType);
+#--- Add the child to the consolidation
+      DimensionElementComponentAdd (psDimName, sParent, sChild, Numbr (sWeight));
+Endif;
+
+# If this is the first time through, make sure that all of the attributes exist
+If (nFirst = 1 & psAttributes @= 'Y');
+#--- Parse the Attribute Array
+      While (Long (sAttributeArray) > 0);
+            nIndex = Scan ('|', sAttributeArray);
+            sAttName = SubSt (sAttributeArray, 1, nIndex - 1);
+            sAttributeArray = Trim (SubSt (sAttributeArray, nIndex + 1, Long (sAttributeArray) - nIndex));
+            nIndex = Scan ('|', sAttributeArray);
+            sAttType = SubSt (sAttributeArray, 1, nIndex - 1);
+            sAttributeArray = Trim (SubSt (sAttributeArray, nIndex + 1, Long (sAttributeArray) - nIndex));
+            nIndex = Scan ('|', sAttributeArray);
+
+            If (nIndex = 0);
+#--------------- Last one found.  No more '|' to search for
+                  sAttVal = sAttributeArray;
+                  sAttributeArray = '';
+            Else;
+                  sAttVal = SubSt (sAttributeArray, 1, nIndex - 1);
+                  sAttributeArray = Trim (SubSt (sAttributeArray, nIndex + 1, Long (sAttributeArray) - nIndex));
+            EndIf;
+
+#--------- Insert the attribute value
+            If (DimIx (sAttrDim, sAttName) = 0);
+                  AttrInsert (psDimName, '', sAttName, sAttType);
+            EndIf;
+      End;
+
+      nFirst = 0;
+EndIf;
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+# Populate the attributes if required
+If (psAttributes @= 'Y');
+#--- First parse the Attribute Array
+      While (Long (sAttributeArray) > 0);
+            nIndex = Scan ('|', sAttributeArray);
+            sAttName = SubSt (sAttributeArray, 1, nIndex - 1);
+            sAttributeArray = SubSt (sAttributeArray, nIndex + 1, Long (sAttributeArray) - nIndex);
+            nIndex = Scan ('|', sAttributeArray);
+            sAttType = SubSt (sAttributeArray, 1, nIndex - 1);
+            sAttributeArray = SubSt (sAttributeArray, nIndex + 1, Long (sAttributeArray) - nIndex);
+            nIndex = Scan ('|', sAttributeArray);
+
+            If (nIndex = 0);
+#--------------- Last one found.  No more '|' to search for
+                  sAttVal = sAttributeArray;
+                  sAttributeArray = '';
+            Else;
+                  sAttVal = SubSt (sAttributeArray, 1, nIndex - 1);
+                  sAttributeArray = Trim (SubSt (sAttributeArray, nIndex + 1, Long (sAttributeArray) - nIndex));
+            EndIf;
+
+#--------- Add the attribute
+            If (sAttType @= 'N');
+                  AttrPutN (Numbr (sAttVal), psDimName, sParent, sAttName);
+            Else;
+#--------------- Replace any pipes '|' removed during the export
+                  nPipeINdex = Scan ('##PIPE$$', sAttVal);
+
+                  While (nPipeIndex > 0);
+                        sAttVal = SubSt (sAttVal, 1, nPipeIndex - 1) | '|' | SubSt (sAttVal, nPipeINdex + 8, Long (sAttVal) - nPipeIndex - 7);
+                        nPipeINdex = Scan ('##PIPE$$', sAttVal);
+                  End;
+
+                  AttrPutS (sAttVal, psDimName, sParent, sAttName);
+            EndIf;
+      End;
+EndIf;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

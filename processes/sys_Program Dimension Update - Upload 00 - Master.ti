@@ -1,0 +1,332 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_Program Dimension Update - Upload 01 - Create Temp Dim
+#**** DESCRIPTION:       This process will 
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date	Initials	Comments
+#****  ====              ======    =========
+#**** 15/08/2023     EC           Initial Revision
+#***********************************************************************************************************************
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+cbEAProg = '}ElementAttributes_'|snProg;
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYS APPLICATION CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbApp = 'sys_application';
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYS CLIENT FAVOURITE APPLICATION CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbFavApp = 'sys_client favourite application';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE ID DETAILS CUBE DIMENSIONS
+#-------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS
+#-------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+#dmClients = '}Clients';
+cbEAVar = '}ElementAttributes_variables';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT GROUPS CUBE
+#******************************************************************************************************************
+cbGroups = '}ClientGroups';
+
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sCurUser = TM1User();
+
+#--------------------------------------------------------------------------------------------------------
+#--- CHECK IF CBMS-R IS LIVE : New Code 08 August 2017 - KG
+#--------------------------------------------------------------------------------------------------------
+sCBMSRLive = ATTRS (dmVar, 'sys_CBMSR GoLive', 'value');
+sCBMSRLiveHLYear = ATTRS (dmVar, 'sys_CBMSR GoLive Headline Year', 'value');
+sCBMSRMigrationScenario = 'CBMS-R OBAL';
+
+#--------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#--------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = SUBST(sUser, lScan, 9);
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+sSubset  = sUser | '_$EditView';
+sAEView = sUser | '_$EditView';
+
+sVarUpLoad = 'sys_upload directory';
+
+
+#------------------------------------------------------------------------
+#--- Update System Process Administration Cube
+#------------------------------------------------------------------------
+cbProc = 'sys_process administration';
+dmReturnProcCode = 'sys_process return codes';
+
+#******************************************************************************************************************
+# **** GET DATE VALUES AND POST USER AND DATE STAMP
+#******************************************************************************************************************
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+sHNow = TimST( Now, '\h');
+sMNow = TimST( Now, '\i');
+sSNow = TimST( Now, '\s');
+
+sDay = TRIM(SUBST(sDNow, 1,2));
+
+IF (LONG (sDay) = 1);
+	sDay = '0' | sDay;
+ELSE;
+	sDay = sDay;
+ENDIF;
+
+sMonth = TRIM(SUBST(sMNow, 1,2));
+
+IF (LONG (sMonth) = 1);
+	sMonth = '0' | sMonth;
+ELSE;
+	sMonth = sMonth;
+ENDIF;
+
+sYear = TRIM(SUBST(sYNow, 1,4));
+sNow = sDay | '/' | sMonth | '/' | sYear;
+sNow = sYNow | sMNow | sDNow | sHNow| sMNow | sSNow; 
+
+nTime = 1;
+
+#-------------------------------------------------------------------------------------------------------------
+#*** Validation on Parameters 
+#-------------------------------------------------------------------------------------------------------------
+nValid =0;
+
+sClientMeas = 'geus programme';
+sValid = 'validate';
+sErrorPreFix= 'Error : ';
+
+CellPutS( '', cbClient, sUser, sClientMeas, sValid);
+
+nValid =0;
+
+sClientMeas = 'geus programme';
+sValid = 'validate';
+sErrorPreFix= 'Error : ';
+
+CellPutS( '', cbClient, sUser, sClientMeas, sValid);
+
+
+#------FILE DIRECTORY------#
+sOutPutDir = CellGetS( cbEAVar, sVarUpLoad ,'value');
+
+sUpFile = sOutputDir | psFile;
+
+IF( FileExists(sUpFile) = 0);
+	
+	sMsgBody = 'File path is not valid.';	
+
+	sOldMsg = CellGetS(cbClient, sUser, sClientMeas, sValid);
+
+	IF( sOldMsg @='');
+		sMsg = sErrorPreFix | sMsgBody;
+	ELSEIF(scan(sErrorPreFix,sOldMsg) <>0);
+		sMsg = sOldMsg |' | ' | sMsgBody;
+	ELSE;
+		sMsg = sErrorPreFix | sMsgBody;
+	ENDIF; 
+
+	CellPutS( sMsg,cbClient, sUser, sClientMeas, sValid); 	
+	nValid = nValid +1;
+
+ENDIF;
+
+IF(nValid <>0);
+	ProcessError;
+ENDIF;
+
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** Call Process 
+#-------------------------------------------------------------------------------------------------------------
+
+sPrc='sys_Program Dimension Update - Upload 01 - Create Temp Dim';
+ExecuteProcess(sPrc, 'psUser',sUser,'psDim',psDim,'psConsol',psConsol,'psFile',psFile);
+
+#------------------------------------------------------------------
+#--- Run Process To Update System Process Cube
+#----------------------------------------------------------------
+NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+sProcessReturnCodeDesc = ATTRS (dmReturnProcCode, sProcessReturnCode, 'description');
+
+IF (ProcessReturnCode = ProcessExitNormal() );
+	#-------------------------------------------------------------
+	#--- Process Completed Successfully
+	#-------------------------------------------------------------
+
+	CELLPUTN (1, cbProc, sPrc, 'completed flag');
+	CELLPUTS (sProcessReturnCode, cbProc, sPrc, 'error description');
+	CELLPUTS ('SUCCESS', cbProc, sPrc, 'status flag');
+ELSE;
+	#-------------------------------------------------------------
+	#--- Process Completed With Errors
+	#-------------------------------------------------------------
+	CELLPUTN (1, cbProc, sPrc, 'error flag');
+	CELLPUTS (sProcessReturnCodeDesc, cbProc, sPrc, 'error description');
+	CELLPUTS ('FAILED', cbProc, sPrc, 'status flag');
+
+	ProcessQuit;
+ENDIF;
+
+sPrc='sys_Program Dimension Update - Upload 02 - Validate';
+ExecuteProcess(sPrc, 'psUser',sUser,'psDim',psDim,'psConsol',psConsol);
+
+
+#------------------------------------------------------------------
+#--- Run Process To Update System Process Cube
+#----------------------------------------------------------------
+NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+sProcessReturnCodeDesc = ATTRS (dmReturnProcCode, sProcessReturnCode, 'description');
+
+IF (ProcessReturnCode = ProcessExitNormal() );
+	#-------------------------------------------------------------
+	#--- Process Completed Successfully
+	#-------------------------------------------------------------
+
+	CELLPUTN (1, cbProc, sPrc, 'completed flag');
+	CELLPUTS (sProcessReturnCode, cbProc, sPrc, 'error description');
+	CELLPUTS ('SUCCESS', cbProc, sPrc, 'status flag');
+ELSE;
+	#-------------------------------------------------------------
+	#--- Process Completed With Errors
+	#-------------------------------------------------------------
+	CELLPUTN (1, cbProc, sPrc, 'error flag');
+	CELLPUTS (sProcessReturnCodeDesc, cbProc, sPrc, 'error description');
+	CELLPUTS ('FAILED', cbProc, sPrc, 'status flag');
+
+	ProcessQuit;
+ENDIF;
+sPrc='sys_Program Dimension Update - Upload 03 - Update Original Dimension';
+ExecuteProcess(sPrc, 'psUser',sUser,'psDim',psDim,'psConsol',psConsol);
+
+
+#------------------------------------------------------------------
+#--- Run Process To Update System Process Cube
+#----------------------------------------------------------------
+NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+sProcessReturnCodeDesc = ATTRS (dmReturnProcCode, sProcessReturnCode, 'description');
+
+IF (ProcessReturnCode = ProcessExitNormal() );
+	#-------------------------------------------------------------
+	#--- Process Completed Successfully
+	#-------------------------------------------------------------
+
+	CELLPUTN (1, cbProc, sPrc, 'completed flag');
+	CELLPUTS (sProcessReturnCode, cbProc, sPrc, 'error description');
+	CELLPUTS ('SUCCESS', cbProc, sPrc, 'status flag');
+ELSE;
+	#-------------------------------------------------------------
+	#--- Process Completed With Errors
+	#-------------------------------------------------------------
+	CELLPUTN (1, cbProc, sPrc, 'error flag');
+	CELLPUTS (sProcessReturnCodeDesc, cbProc, sPrc, 'error description');
+	CELLPUTS ('FAILED', cbProc, sPrc, 'status flag');
+
+	ProcessQuit;
+ENDIF;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+
+#endregion

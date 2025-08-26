@@ -1,0 +1,100 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_ae favourites - new mapping
+#**** DESCRIPTION:       This process will add a new row in the account mapping proccess
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 21/01/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** DECLARE CUBES & DIMENSIONS ***#
+cbFav = 'sys_account selection entry';
+dmFavID = 'favourites_id';
+dmIDRow = 'id row';
+dmAcc = 'account';
+dmMA = 'movement account';
+dmFavMeas = 'favourites_measure';
+
+dmClients = '}Clients';
+# *** IDENTIFY CURRENT USER ***#
+IF (psUser @= '');
+     sUser = TM1User();
+ELSE;
+     sUser = psUser;
+ENDIF;
+
+#*** IF USER IS ADMIN, LEAVE AS IS ***#
+IF (sUser @= 'Admin');
+     sUser = sUser;
+ELSE;
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     IF (sUser @<> '');
+          lScan = SCAN('\',sUser) + 1;
+          sUser = TRIM(SUBST(sUser, lScan, 100));
+     ELSE;
+          sUser = TM1User();
+     ENDIF;
+ENDIF;
+
+#*** OTHER MEASURES AND SUBSETS USED
+sElFavMeas = 'flag';
+sElFavMAMeas = 'movement account mapping';
+sID = sUser | '_Accounts';
+sSubset = sUser | '_$geuspvt';
+
+#*** FIND NEXT AVAILABLE ROW
+nRowID = CELLGETN(cbFav, sID, 'All Rows', psAcc, sElFavMeas) + 1;
+sRowID = NUMBERTOSTRING(nRowID);
+
+IF (LONG(sRowID) = 1);
+     sRowID = 'IR000' | sRowID;
+ENDIF;
+
+IF (LONG(sRowID) = 2);
+     sRowID = 'IR00' | sRowID;
+ENDIF;
+
+IF (LONG(sRowID) = 3);
+     sRowID = 'IR0' | sRowID;
+ENDIF;
+
+IF (LONG(sRowID) = 4);
+     sRowID = 'IR' | sRowID;
+ENDIF;
+
+#*** ADD 1 TO FLAG TO IDENTIFY NEW ACCOUNT LINE
+CELLPUTN (1, cbFav, sID, sRowID, psAcc, sElFavMeas);
+IF (CELLISUPDATEABLE (cbFav, sID, sRowID, psAcc, sElFavMAMeas) = 1);
+     psMA = ATTRS(dmMA, psMA, 'code and description');
+     CELLPUTS (psMA, cbFav, sID, sRowID, psAcc, sElFavMAMeas);
+ENDIF;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

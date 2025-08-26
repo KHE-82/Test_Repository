@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"z.clear",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"z.clear.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psCube",
+			"Prompt":"",
+			"Value":"CubeName",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561009160009"
+}

@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_Database",
+	"Hierarchies@Code.links":
+	[
+		"sys_Database.hierarchies/sys_Database.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_Database')/Hierarchies('sys_Database')"
+	}
+}

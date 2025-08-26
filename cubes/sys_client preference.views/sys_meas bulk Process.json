@@ -1,0 +1,80 @@
+{
+	"@type":"NativeView",
+	"Name":"sys_meas bulk Process",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_client preference measure')/Hierarchies('sys_client preference measure')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_client preference measure')/Hierarchies('sys_client preference measure')/Elements('old value')"
+					},
+					{
+						"@id":"Dimensions('sys_client preference measure')/Hierarchies('sys_client preference measure')/Elements('value')"
+					},
+					{
+						"@id":"Dimensions('sys_client preference measure')/Hierarchies('sys_client preference measure')/Elements('validate')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_client preference')/Hierarchies('sys_client preference')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_client preference')/Hierarchies('sys_client preference')/Elements('sys_meas bulk process')"
+					},
+					{
+						"@id":"Dimensions('sys_client preference')/Hierarchies('sys_client preference')/Elements('sys_meas bulk process picklist')"
+					},
+					{
+						"@id":"Dimensions('sys_client preference')/Hierarchies('sys_client preference')/Elements('sys_meas bulk process count')"
+					},
+					{
+						"@id":"Dimensions('sys_client preference')/Hierarchies('sys_client preference')/Elements('sys_meas bulk process comment')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('}Clients')/Hierarchies('}Clients')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('}Clients')/Hierarchies('}Clients')/Elements('Admin')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('}Clients')/Hierarchies('}Clients')/Elements('Admin')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":false,
+	"SuppressEmptyRows":false,
+	"FormatString":"0.#########"
+}

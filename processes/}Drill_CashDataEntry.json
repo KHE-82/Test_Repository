@@ -1,0 +1,90 @@
+{
+	"@type":"Process",
+	"Name":"}Drill_CashDataEntry",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"}Drill_CashDataEntry.ti",
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForServer":"MEA adjustments",
+		"dataSourceNameForClient":"MEA adjustments",
+		"view":"Cash Related Entity Data Entry"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"cubename",
+			"Prompt":"",
+			"Value":"MEA adjustments",
+			"Type":"String"
+		},
+		{
+			"Name":"headline year",
+			"Prompt":"",
+			"Value":"HL2005-2006",
+			"Type":"String"
+		},
+		{
+			"Name":"scenario",
+			"Prompt":"",
+			"Value":"current",
+			"Type":"String"
+		},
+		{
+			"Name":"status",
+			"Prompt":"",
+			"Value":"Total approved",
+			"Type":"String"
+		},
+		{
+			"Name":"related entity",
+			"Prompt":"",
+			"Value":"Total related entity",
+			"Type":"String"
+		},
+		{
+			"Name":"function",
+			"Prompt":"",
+			"Value":"Total functions",
+			"Type":"String"
+		},
+		{
+			"Name":"movement account",
+			"Prompt":"",
+			"Value":"Total movement",
+			"Type":"String"
+		},
+		{
+			"Name":"programme",
+			"Prompt":"",
+			"Value":"Administered programmes",
+			"Type":"String"
+		},
+		{
+			"Name":"account",
+			"Prompt":"",
+			"Value":"9000130",
+			"Type":"String"
+		},
+		{
+			"Name":"id",
+			"Prompt":"",
+			"Value":"Total IDs",
+			"Type":"String"
+		},
+		{
+			"Name":"jurisdiction",
+			"Prompt":"",
+			"Value":"Total jurisdictions",
+			"Type":"String"
+		},
+		{
+			"Name":"period",
+			"Prompt":"",
+			"Value":"2004-2005",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561009220001"
+}

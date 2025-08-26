@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"AE_Adj Create New 01 - Clear Data",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_Adj Create New 01 - Clear Data.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"Admin",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561008320002"
+}

@@ -1,0 +1,45 @@
+{
+	"@type":"Process",
+	"Name":"sys_AE_Archive_18 - AE CF Derivation Cube Create Current View",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_AE_Archive_18 - AE CF Derivation Cube Create Current View.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psSourceHLYear",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psSourceScenario",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psTargetHLYear",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psTargetScenario",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561008680002"
+}

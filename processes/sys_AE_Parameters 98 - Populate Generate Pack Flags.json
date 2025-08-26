@@ -1,0 +1,61 @@
+{
+	"@type":"Process",
+	"Name":"sys_AE_Parameters 98 - Populate Generate Pack Flags",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_AE_Parameters 98 - Populate Generate Pack Flags.ti",
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForServer":"programme details",
+		"dataSourceNameForClient":"programme details",
+		"view":"$CreateReportFlag"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psProg",
+			"Prompt":"",
+			"Value":"Administered Programmes",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vsHLYear",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsScenario",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsProg",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsMeas",
+			"Type":"String",
+			"Position":4,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsValue",
+			"Type":"String",
+			"Position":5,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "1756100870000"
+}

@@ -1,0 +1,12 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_account approp mapping measure",
+	"Elements":
+	[
+		{
+			"Name":"flag",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

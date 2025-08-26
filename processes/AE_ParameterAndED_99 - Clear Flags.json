@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"AE_ParameterAndED_99 - Clear Flags",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_ParameterAndED_99 - Clear Flags.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psAdjType",
+			"Prompt":"",
+			"Value":"parameter",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561008490004"
+}

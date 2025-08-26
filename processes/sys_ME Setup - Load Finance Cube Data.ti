@@ -1,0 +1,296 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_ME Setup - Load Finance Cube Data
+#**** DESCRIPTION:       This process creates loads the csv file created from Finance Cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 15/04/2018    KG             Initial Revision
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#--------------------------------------------------------------------------------------------------------------------------
+#*** DIMENSION ATTRIBUTES
+#--------------------------------------------------------------------------------------------------------------------------
+dmReasonAttr = '}ElementAttributes_reason';
+dmAccAttr = '}ElementAttributes_account';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+dmProgMeas = snProg | ' measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE MONTHLY ESTIMATES CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+cbME = 'ME reporting';
+dmMEMeas = 'ME reporting measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE ME MAPPING CUBES
+#---------------------------------------------------------------------------------------------------------------------------
+dmFinCC = 'finance cost centre';
+dmFinGL = 'finance gl code';
+
+cbMECCMap = 'sys_ME cost centre mapping';
+cbMEGLMap = 'sys_ME GL Code mapping';
+
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+	sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+	lScan = SCAN('\',sUser) + 1;
+	sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+	sUser = TM1User();
+ENDIF;
+
+sMEView = sUser | ' $MEClearTransferP0';
+sAEVIew = sUser | ' $METransferP0';
+
+sStatus = 'Total approved';
+sOC = 'Total outcomes';
+sReason = 'Total reason';
+sFunc = 'Total functions';
+sSPP = 'Total SPP';
+sAppType = 'Total approp types';
+sItem = 'Total approp item';
+sMeasCode = 'Total Measures';
+sID = 'Total IDs';
+sTargetID = '0000A';
+#sPeriod2 = ATTRS('variables', 'ME year', 'value');
+#sPeriod1 = DIMNM('period', DIMIX('period', sPeriod2) - 1);
+
+sPeriod2 = psSourcePeriod;
+sPeriod1 = DIMNM(dmPer, DIMIX(dmPer, sPeriod2) - 1);
+
+IF (psSourceScenario @= 'Actual');
+	sRptMeas = 'finance actual value';
+ELSEIF (psSourceScenario @= 'Budget');
+	sRptMeas = 'finance budget value';
+ELSEIF (psSourceScenario @= 'Forecast');
+	sRptMeas = 'finance forecast value';
+ENDIF;
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#*** STEP 1 - CLEAR TARGET CUBE 
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbME, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+SUBSETDESTROY (dmMEMeas, sMEView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS****#
+#---------------------------------------------------------------------------------------------------------------------------
+# headline year
+SubsetCreate(dmHLYear, sMEView);
+SubsetElementInsert(dmHLYear, sMEView, psTargetHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sMEView);
+SubsetElementInsert(dmScenario, sMEView, psTargetScenario, 1);
+
+# Measure
+SubsetCreate(dmMEMeas, sMEView);
+SubsetElementInsert(dmMEMeas, sMEView, sRptMeas, 1);
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbME, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmHLYear, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmScenario, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmMEMeas, sMEView);
+
+VIEWZEROOUT (cbME, sMEView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbME, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+SUBSETDESTROY (dmMEMeas, sMEView);
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+#*** STEP 2 - SET SOURCE FILE
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------
+sFileLocation = '\\actdc01tm104v\TM1_Common\TM1_FIN\finance\';
+
+IF (psSourceScenario @= 'Actual');
+	sFile = 'GEUS - Monthly Extract Actual.csv';
+ELSEIF (psSourceScenario @= 'Budget');
+	sFile = 'GEUS - Monthly Extract Budget.csv';
+ELSEIF (psSourceScenario @= 'Forecast');
+	sFile = 'GEUS - Monthly Extract Forecast.csv';
+ENDIF;
+
+sFile = sFileLocation | sFile;
+DATASOURCENAMEFORSERVER = sFile;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------
+#--- SKIP ANY COST CENTRES NOT UNDER ADM HEIRARCHY
+#---------------------------------------------------------------------------------
+IF (DIMIX (dmFinCC, vsCC) <> 0);
+	IF (ELISANC (dmFinCC, 'ADMN_GEUS', vsCC) = 0);
+		ITEMSKIP;
+	ENDIF;
+ELSE;
+	ASCIIOUTPUT ('missing cost centre code.txt', NUMBERTOSTRING (DIMIX (dmFinCC, vsCC)),vsYear, vsScenario, vsCC, vsGL, vsMth, NUMBERTOSTRING (vnValue) );
+	ITEMSKIP;
+ENDIF;
+
+
+#---------------------------------------------------------------------------------
+#--- SKIP ANY GL CODES NOT UNDER ADM HEIRARCHY
+#---------------------------------------------------------------------------------
+IF (DIMIX (dmFinGL, vsGL) <> 0);
+	IF (ELISANC (dmFinGL, 'ZADM Administered Expenses', vsGL) = 0);
+		ITEMSKIP;
+	ENDIF;
+ELSE;
+	ASCIIOUTPUT ('missing gl code.txt', vsYear, vsScenario, vsCC, vsGL, vsMth, NUMBERTOSTRING (vnValue) );
+	ITEMSKIP;
+ENDIF;
+
+
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 01 : GET MAPPING CODES
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------
+sProg = CELLGETS (cbMECCMap, vsCC, 'programme');
+sAcc = CELLGETS (cbMEGLMap, vsGL, 'account');
+sMA = CELLGETS (cbMEGLMap, vsGL, 'movement account');
+sJur = CELLGETS (cbMEGLMap, vsGL, 'jurisdiction');
+sRE = CELLGETS (cbMEGLMap, vsGL, 'related entity');
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 02 : CHECK IF MAPPING EXISTS
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Program
+IF (DIMIX (dmProg, sProg) = 0);
+	ASCIIOUTPUT ('program is invalid.txt', vsYear, vsScenario, vsCC, vsGL, vsMth, NUMBERTOSTRING (vnValue) );
+	ITEMSKIP;
+ENDIF;
+
+# Account
+IF (DIMIX (dmAcc, sAcc) = 0);
+	ASCIIOUTPUT ('account is invalid.txt', vsYear, vsScenario, vsCC, vsGL, vsMth, NUMBERTOSTRING (vnValue) );
+	ITEMSKIP;
+ENDIF;
+
+# MA (USE DEFAULT)
+IF (DIMIX (dmMA, sMA) = 0);
+	sMA = '-';
+ENDIF;
+
+# Jurisdiction (USE DEFAULT)
+IF (DIMIX (dmJur, sJur) = 0);
+	sJur = '-';
+ENDIF;
+
+
+# RE (USE DEFAULT)
+IF (DIMIX (dmRE, sRE) = 0);
+	sRE = '-';
+ENDIF;
+
+# SPP
+sSPP = CELLGETS (cbProg, curHLYear, curScenario, sProg, 'spp');
+
+# Item
+sItem = CELLGETS (cbProg, curHLYear, curScenario, sProg, 'appropriation item');
+
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 03 : POST DATA
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------
+nFactor = 1000;
+nValue = ROUNDP (vnValue / nFactor,0);
+IF (CELLISUPDATEABLE (cbME, psTargetHLYear, psTargetScenario, sRE, sSPP, sMA, sProg, sItem, sAcc, sTargetID, sJur, vsMth, sRptMeas) = 1);
+	nOldValue = CELLGETN (cbME, psTargetHLYear, psTargetScenario, sRE, sSPP, sMA, sProg, sItem, sAcc, sTargetID, sJur, vsMth, sRptMeas);
+	CELLPUTN (nOldValue + nValue, cbME, psTargetHLYear, psTargetScenario, sRE, sSPP, sMA, sProg, sItem, sAcc, sTargetID, sJur, vsMth, sRptMeas);
+	ASCIIOUTPUT ('check me load.txt', NUMBERTOSTRING (nOldValue), NUMBERTOSTRING (nValue), vsCC, vsGL, cbME, psTargetHLYear, psTargetScenario, sRE, sSPP, sMA, sProg, sItem, sAcc, sTargetID, sJur, vsMth, sRptMeas);
+ENDIF;
+
+
+
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

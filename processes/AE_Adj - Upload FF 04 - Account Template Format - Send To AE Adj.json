@@ -1,0 +1,25 @@
+{
+	"@type":"Process",
+	"Name":"AE_Adj - Upload FF 04 - Account Template Format - Send To AE Adj",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_Adj - Upload FF 04 - Account Template Format - Send To AE Adj.ti",
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForServer":"}tmp_ID_tmp Admin",
+		"dataSourceNameForClient":"}tmp_ID_tmp Admin",
+		"subset":"All"
+	},
+	"Parameters":[],
+	"Variables":
+	[
+		{
+			"Name":"vsID",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "17561008280000"
+}

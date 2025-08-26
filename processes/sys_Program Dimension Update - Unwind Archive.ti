@@ -1,0 +1,274 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_Program Dimension Update - Unwind Archive
+#**** DESCRIPTION:       This process will 
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date	Initials	Comments
+#****  ====              ======    =========
+#**** 15/07/2023     EC           Initial Revision
+#***********************************************************************************************************************
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+cbEAProg = '}ElementAttributes_'|snProg;
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYS APPLICATION CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbApp = 'sys_application';
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYS CLIENT FAVOURITE APPLICATION CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbFavApp = 'sys_client favourite application';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE ID DETAILS CUBE DIMENSIONS
+#-------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS
+#-------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+#dmClients = '}Clients';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT GROUPS CUBE
+#******************************************************************************************************************
+cbGroups = '}ClientGroups';
+
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sCurUser = TM1User();
+
+#--------------------------------------------------------------------------------------------------------
+#--- CHECK IF CBMS-R IS LIVE : New Code 08 August 2017 - KG
+#--------------------------------------------------------------------------------------------------------
+sCBMSRLive = ATTRS (dmVar, 'sys_CBMSR GoLive', 'value');
+sCBMSRLiveHLYear = ATTRS (dmVar, 'sys_CBMSR GoLive Headline Year', 'value');
+sCBMSRMigrationScenario = 'CBMS-R OBAL';
+
+#--------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#--------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = SUBST(sUser, lScan, 9);
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+Object  = sUser | '_$EditView';
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** RETRIEVE ID DETAILS
+#-------------------------------------------------------------------------------------------------------------
+#sOutcome = CellGetS(cbID, psHLYear, psScenario, psID, 'outcome');
+#sFunction = CellGetS(cbID, psHLYear, psScenario, psID, 'function');
+#sReason = CellGetS(cbID, psHLYear, psScenario, psID, 'reason');
+#sSPP = CellGetS(cbID, psHLYear, psScenario, psID, 'SPP');
+#sAppropType = CellGetS(cbID, psHLYear, psScenario, psID, 'appropriation type');
+#sAppropItem = CellGetS(cbID, psHLYear, psScenario, psID, 'appropriation item');
+#sProg = CellGetS(cbID, psHLYear, psScenario, psID, snProg | ' code');
+#sMeasureCode = CellGetS(cbID, psHLYear, psScenario, psID, 'measure');
+
+
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** Validation on Parameters 
+#-------------------------------------------------------------------------------------------------------------
+nValid =0;
+
+sClientMeas = 'geus programme';
+sValid = 'validate';
+sErrorPreFix= 'Error : ';
+
+CellPutS( '', cbClient, sUser, sClientMeas, sValid);
+
+
+sClientProgMeas = 'dim_edit dimension name';
+#dim_edit dimension method
+#dim_edit dimension element_src
+#dim_edit dimension element parent_src
+#dim_edit dimension element _tar
+#dim_edit dimension element_suffix
+
+sDim = CellGetS(cbClient, sUser, sClientPRogMeas,'value');
+#---------------------------------------------------------------------------------------
+#    OTHER PARAMETERS
+#---------------------------------------------------------------------------------------
+
+Object = '$ArchiveDimension';
+
+cbEADim='}ElementAttributes_'  |sDim; 
+
+sTopConsolidation = psSrcEL | '_' | psSrcSuffix ;
+#---------------------------------------------------------------------------------------
+#    Validation
+#---------------------------------------------------------------------------------------
+#------Suffix cannot be empty-----#
+
+IF(  psSrcSuffix @='' );
+
+	sMsgBody = 'The archive suffix cannot be blank.' ;	
+	sOldMsg = CellGetS(cbClient, sUser, sClientMeas, sValid);
+
+	IF( sOldMsg @='');
+		sMsg = sErrorPreFix | sMsgBody;
+	ELSEIF(scan(sErrorPreFix,sOldMsg) <>0);
+		sMsg = sOldMsg |' | ' | sMsgBody;
+	ELSE;
+		sMsg = sErrorPreFix | sMsgBody;
+	ENDIF; 
+
+	CellPutS( sMsg,cbClient, sUser, sClientMeas, sValid); 	
+	nValid = nValid +1;
+
+ELSEIF(  DIMIX(sDim, sTopConsolidation) =0 );
+
+	sMsgBody = 'The archiving hierarchy is not valid. "' | sTopConsolidation | '"' ;	
+	sOldMsg = CellGetS(cbClient, sUser, sClientMeas, sValid);
+
+	IF( sOldMsg @='');
+		sMsg = sErrorPreFix | sMsgBody;
+	ELSEIF(scan(sErrorPreFix,sOldMsg) <>0);
+		sMsg = sOldMsg |' | ' | sMsgBody;
+	ELSE;
+		sMsg = sErrorPreFix | sMsgBody;
+	ENDIF; 
+
+	CellPutS( sMsg,cbClient, sUser, sClientMeas, sValid); 	
+	nValid = nValid +1;
+
+ENDIF;
+
+
+
+
+IF( nValid <>0 );
+	Processquit;
+ENDIF;
+
+
+#---------------------------------------------------------------------------------------
+#    DESTROY ALL TARGET CONSOLIDATIONS 
+#---------------------------------------------------------------------------------------
+
+
+IF( DIMIX( sDim, sTopConsolidation) <> 0);
+
+      SUBSETDESTROY( sDim, Object);
+      SUBSETCREATE ( sDim, Object );
+
+      sMDX = '{ TM1DRILLDOWNMEMBER ( { [' | sDim | '].[' | sTopConsolidation | '] }, ALL, RECURSIVE ) }';
+      SUBSETMDXSET ( sDim, Object, sMDX );
+      SUBSETMDXSET ( sDim, Object, '' );
+
+      nCounter = SUBSETGETSIZE ( sDim, Object );
+
+      WHILE ( nCounter > 0 );
+            sEl = SUBSETGETELEMENTNAME ( sDim, Object, nCounter );
+            IF ( DTYPE ( sDim, sEl ) @= 'C'  &  sEl @<> sTopConsolidation );
+                  DIMENSIONELEMENTDELETE(  sDim, sEl );
+            ENDIF;
+            nCounter = nCounter - 1;
+      END;
+
+ENDIF;
+
+DIMENSIONELEMENTDELETE(  sDim, sTopConsolidation );
+#---------------------------------------------------------------------------------------
+#    DEFINE SUBSET AS THE DATASOURCE
+#---------------------------------------------------------------------------------------
+#DATASOURCETYPE = 'SUBSET';
+#DATASOURCENAMEFORSERVER = sDim;
+#DATASOURCEDIMENSIONSUBSET = Object;
+
+
+      
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#endregion

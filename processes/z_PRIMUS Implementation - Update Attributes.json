@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"z_PRIMUS Implementation - Update Attributes",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"z_PRIMUS Implementation - Update Attributes.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[],
+	"UID": "17561009200002"
+}

@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"}BeachwareClients",
+	"Hierarchies@Code.links":
+	[
+		"}BeachwareClients.hierarchies/}BeachwareClients.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('}BeachwareClients')/Hierarchies('}BeachwareClients')"
+	}
+}

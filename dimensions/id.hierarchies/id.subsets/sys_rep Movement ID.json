@@ -1,0 +1,16 @@
+{
+	"@type":"Subset",
+	"Name":"sys_rep Movement ID",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('id')/Hierarchies('id')/Elements('0BASE')"
+		},
+		{
+			"@id":"Dimensions('id')/Hierarchies('id')/Elements('New Adjustments')"
+		},
+		{
+			"@id":"Dimensions('id')/Hierarchies('id')/Elements('Total IDs')"
+		}
+	]
+}

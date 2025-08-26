@@ -1,0 +1,56 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               	sys_Queue - Delete Elements
+#**** DESCRIPTION:       	This process will will be delete the element in the TI_Queue
+
+#****
+#**** PARAMETERS:               psQID          - The ID in the queue to delete
+
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 14/06/2015    MJM          Initial Revision
+#***********************************************************************************************************************
+
+#--- Dimensions
+#-----------------------
+dmQ = '}TI_Queue';
+
+#--- Other variables
+#----------------------------
+sUser = TM1User ();
+
+
+#--- Now remove it from the queue
+#--- Even if the process failed.
+#----------------------------------------------------
+DimensionElementDelete (dmQ, psQID);
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+
+#endregion

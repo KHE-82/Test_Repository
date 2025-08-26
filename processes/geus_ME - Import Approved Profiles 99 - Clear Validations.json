@@ -1,0 +1,27 @@
+{
+	"@type":"Process",
+	"Name":"geus_ME - Import Approved Profiles 99 - Clear Validations",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"geus_ME - Import Approved Profiles 99 - Clear Validations.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psYear",
+			"Prompt":"",
+			"Value":"2016-2017",
+			"Type":"String"
+		},
+		{
+			"Name":"psScenario",
+			"Prompt":"",
+			"Value":"PRE-ERC",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "1756100859000"
+}

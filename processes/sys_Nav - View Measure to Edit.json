@@ -1,0 +1,39 @@
+{
+	"@type":"Process",
+	"Name":"sys_Nav - View Measure to Edit",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Nav - View Measure to Edit.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psHLYear",
+			"Prompt":"",
+			"Value":"HL2018-2019",
+			"Type":"String"
+		},
+		{
+			"Name":"psScenario",
+			"Prompt":"",
+			"Value":"current",
+			"Type":"String"
+		},
+		{
+			"Name":"psMeasCode",
+			"Prompt":"",
+			"Value":"00021",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "175610091300016"
+}

@@ -1,0 +1,27 @@
+{
+	"@type":"Process",
+	"Name":"sys_Load FBO 99 - Clear FBO Adjustments",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Load FBO 99 - Clear FBO Adjustments.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psTargetHLYear",
+			"Prompt":"HL2020-2021",
+			"Value":"HL2022-2023",
+			"Type":"String"
+		},
+		{
+			"Name":"psProg",
+			"Prompt":"",
+			"Value":"7590",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561009040003"
+}

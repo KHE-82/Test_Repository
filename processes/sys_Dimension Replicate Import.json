@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"sys_Dimension Replicate Import",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Dimension Replicate Import.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[],
+	"UID": "175610087500013"
+}

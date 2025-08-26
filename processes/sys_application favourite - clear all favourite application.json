@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"sys_application favourite - clear all favourite application",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_application favourite - clear all favourite application.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "175610087000013"
+}

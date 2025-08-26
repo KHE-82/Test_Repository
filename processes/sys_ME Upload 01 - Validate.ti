@@ -1,0 +1,645 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_ME Upload 01 - Validate
+#**** DESCRIPTION:       This process loads the generic geus ME Upload Template
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 16/05/2022    KG             Initial Revision
+#***********************************************************************************************************************
+
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#******************************************************************************************************************
+#*** DECLARE MONTHLY ESTIMATES CUBE
+#******************************************************************************************************************
+cbMAMap = 'ME mapping';
+cbProgDetails = 'programme details';
+
+cbME = 'ME reporting';
+dmMEMeas = 'ME reporting measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#*****************************************************************************
+#*** DECLARE SYSTEM VARIABLES
+#*****************************************************************************
+cbMEVar = 'sys_ME variable';
+dmVar = 'variables'; 
+
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+sImpFilePath = ATTRS(dmVar, 'sys_ImpFileExceptionLogs', ' value');
+
+
+#--------------------------------------------------------------------------------------------------------------------------
+#*** DIMENSION ATTRIBUTES
+#--------------------------------------------------------------------------------------------------------------------------
+dmReasonAttr = '}ElementAttributes_reason';
+dmAccAttr = '}ElementAttributes_account';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+dmProgMeas = snProg | ' measure';
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+ATTRPUTS ('PASS', dmVar, 'sys_ImpFileValidation', 'value');
+
+# **** GET DATE VALUES ***#
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+sHNow = TimST (Now, '\h');
+sMinNow = TimST (Now, '\i');
+sSNow = TimST (Now, '\s');
+ 
+sDay = TRIM(SUBST(sDNow, 1,2));
+ 
+IF (LONG (sDay) = 1);
+	sDay = '0' | sDay;
+ELSE;
+     	sDay = sDay;
+ENDIF;
+ 
+sMonth = TRIM(SUBST(sMNow, 1,2));
+ 
+IF (LONG (sMonth) = 1);
+     	sMonth = '0' | sMonth;
+ELSE;
+     	sMonth = sMonth;
+ENDIF;
+ 
+sYear = TRIM(SUBST(sYNow, 1,4));
+sNow = sYear | sMonth | sDay | sHNow | sMinNow | sSNow ;
+ 
+ 
+sOutputFile = 'ME GEUS upload file failed' | sUser | ' ' | sNow | '.csv';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAM SUBSET USED
+#---------------------------------------------------------------------------------------------------------------------------
+sProgSubset = sUser | ' ME Clear Program';
+IF (SUBSETEXISTS (dmProg, sProgSubset) = 1);
+	SUBSETDESTROY (dmProg, sProgSubset);
+	SUBSETCREATE (dmProg, sProgSubset);
+ELSE;
+	SUBSETCREATE (dmProg, sProgSubset);
+
+ENDIF;
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+cbMEVar = 'sys_ME variable';
+
+##Deprecated Function - CubeSetLogChanges in Tm1V12
+#CubeSetLogChanges(cbME, 0);
+
+
+#*****************************************************************************
+#***** COUNTERS USED
+#*****************************************************************************
+lHeaderCount = 0;
+nLine = 1;
+nValid = 0;
+nTotalValid = 0;
+
+#*****************************************************************************
+#*** IDENTIFY SOURCE FILE
+#*****************************************************************************
+sFilePath = ATTRS (dmVar, 'sys_Upload directory', 'value');
+
+sFileName = sFilePath | psFile;
+
+#*****************************************************************************
+#***** DATASOURCE VARIABLES
+#*****************************************************************************
+
+DATASOURCENAMEFORSERVER = sFileName;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#------20221117 CHANGE ONLY USE CODE------#
+IF(DIMIX(dmAcc,vsAcc)=0);
+	vsAcc = TRIM(SUBST(vsAcc,1,7));
+ENDIF;
+
+IF( DIMIX(dmRE,vsRE) =0);
+	vsRE = TRIM(SUBST(vsRE,1,5));
+ENDIF;
+
+IF(DIMIX(dmMA,vsMA) =0);
+	vsMA = TRIM(SUBST(vsMA,1,4));
+ENDIF;
+
+#*****************************************************************************
+# SKIP CERTAIN ACCOUNTS
+#*****************************************************************************
+IF (vsAcc @= '3322001' % vsAcc @= '2330008' % vsAcc @= '2330009' % vsAcc @= '3322002' % vsAcc @= '9000510' % vsAcc @= '9000515' % vsAcc @= '9000520' % vsAcc @= '9000525');
+	ITEMSKIP;
+ENDIF;
+
+#*****************************************************************************
+#*** PERFORM A VALIDATION TEST ***#
+#*****************************************************************************
+nProgValid = 0;
+nOCValid = 0;
+nMeasValid = 0;
+nReasValid = 0;
+nFuncValid = 0;
+nMAValid = 0;
+nAccValid = 0;
+nItemValid = 0;
+nTypeValid = 0;
+nREValid  = 0;
+nSPPValid = 0;
+
+#*****************************************************************************
+#**** PERFORM ADDITIONAL CHECKS - 20150407
+#*****************************************************************************
+nJurValid = 0;
+nAccREValid = 0;
+nAccJurValid = 0;
+nAccMAValid = 0;
+nMAREValid = 0;
+
+#*************************************************************************************************************************************#
+#**** DEFAULT ACCOUNTS ****#
+
+# Get movement account element
+IF (vsMA @= '');
+	vsMA = '-';
+ELSE;
+	vsMA = vsMA;
+ENDIF;
+
+# Get related entity element
+IF (vsRE @= '');
+	vsRE = '-';
+ELSE;
+	vsRE = vsRE;
+ENDIF;
+
+# Get SPP element
+IF (vsSPP @= '');
+	vsSPP = '-';
+ELSE;
+	vsSPP = vsSPP;
+ENDIF;
+
+# Get jurisdiction element
+IF (vsJur @= '');
+	vsJur = '-';
+ELSE;
+	vsJur = vsJur;
+ENDIF;
+
+
+#*************************************************************************************************************************************#
+#*****************************************************************************
+#**** VALIDATION CHECKS TO ENSURE THEY EXIST IN THE DIMENSION
+#*****************************************************************************
+
+#--------------------------------------------------------------------------------
+#*** Check Programme
+#--------------------------------------------------------------------------------
+IF (DIMIX (dmProg, vsProg) = 0);
+	nProgValid = nProgValid + 1;
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check MA
+#--------------------------------------------------------------------------------
+IF (DIMIX (dmMA, vsMA) = 0);
+	nMAValid = nMAValid + 1;
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check Appropriation Item
+#--------------------------------------------------------------------------------
+IF (vsItem @= '');
+	sNewItem = '-';
+ELSE;
+	sNewItem = vsItem;
+ENDIF;
+
+IF (DIMIX (dmItem, sNewItem) = 0);
+	nItemValid = nItemValid + 1;
+ENDIF;
+
+
+#--------------------------------------------------------------------------------
+#*** Check Related Entity
+#--------------------------------------------------------------------------------
+
+IF (DIMIX (dmRE, vsRE) = 0);
+	nREValid = nREValid + 1;
+ELSE;
+
+#------20221117 CHANGE ONLY USE CODE------#
+	vsRE = DimensionElementPrincipalname(dmRE, vsRE);
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check SPP
+#--------------------------------------------------------------------------------
+IF (DIMIX (dmSPP, vsSPP) = 0);
+	nSPPValid = nSPPValid + 1;
+ENDIF;
+
+#--------------------------------------------------------------------------------
+#*** Check Account
+#--------------------------------------------------------------------------------
+
+IF (DIMIX (dmAcc, vsAcc) = 0);
+	nAccValid = nAccValid + 1;
+ELSE;
+	#--------------------------------------------------------------------------------
+	#*** NOW CHECK IF IT REQUIRES RELATED ENTITY OR JURISDICTION ***#
+	#--------------------------------------------------------------------------------
+	sRECheck = ATTRS( dmAcc, vsAcc, 'related entity enabled');
+	sAssumedRE = ATTRS( dmAcc, vsAcc, 'assumed related entity');
+	sJurCheck = ATTRS( dmAcc, vsAcc, 'jurisdiction required');
+	sMACheck = ATTRS( dmAcc, vsAcc, 'movement account required');
+
+	#--------------------------------------------------------------------------------   
+	#*** Account has related entity enabled ***#
+	#--------------------------------------------------------------------------------
+	IF (sRECheck @= 'Y');
+     
+		#--------------------------------------------------------------------------------
+		#*** CHECK IF assumed related entity is not blank, otherwise just use another related entity
+		#--------------------------------------------------------------------------------
+		sAssumedRE = ATTRS( dmAcc, vsAcc, 'assumed related entity');
+		IF (sAssumedRE @= '');
+
+			#--------------------------------------------------------------------------------
+                		#*** IF NO ASSUMED RELATED ENTITY, USE OTHER RELATED ENTITY ***#
+			#--------------------------------------------------------------------------------
+			IF (vsRE @<> '-');
+				#--------------------------------------------------------------------------------
+				#*** DO CHECK FOR RE EXISTS ***#
+				#--------------------------------------------------------------------------------
+				IF ( nREValid = 1);
+					#*** UTILIZES PREVIOUS CHECKS ***#
+                           				nAccREValid = nAccREValid + 1;
+                      			ENDIF;  
+                 		ENDIF;
+            		ELSE;
+			#--------------------------------------------------------------------------------
+                		#*** DO CHECK FOR RE EXISTS ***#
+			#--------------------------------------------------------------------------------
+                 		IF ( nREValid = 1);
+				#--------------------------------------------------------------------------------
+                      			#*** UTILIZES PREVIOUS CHECKS ***#
+				#--------------------------------------------------------------------------------
+                 			vsRE = vsRE;
+                 		ELSE;
+				#--------------------------------------------------------------------------------
+                      			#*** IF Account has assumed RE Then use Assumed RE
+				#--------------------------------------------------------------------------------
+                       			IF (vsRE @<> sAssumedRE);
+                             				nAccREValid = nAccREValid + 1;
+                        			ENDIF;
+                  		ENDIF;
+            		ENDIF;
+    
+    	ELSE;
+		#--------------------------------------------------------------------------------
+          		#*** SOMETIMES EVEN WITHOUT RELATED ENTITY ENABLED, THIS ACCOUNT SHOULD HAVE A RELATED ENTITY ***#
+		#--------------------------------------------------------------------------------
+          		sAssumedRE = ATTRS( dmAcc, vsAcc, 'assumed related entity');
+          		IF (sAssumedRE @<> '');
+               			#*** DO CHECK FOR RE EXISTS ***#
+               			IF ( nREValid = 1);
+				#--------------------------------------------------------------------------------
+                    			#*** UTILIZES PREVIOUS CHECKS ***#
+				#--------------------------------------------------------------------------------
+                    			vsRE = vsRE;
+                		ELSE;
+                    			IF (vsRE @<> sAssumedRE);
+                         				vsRE = sAssumedRE;
+                    			ENDIF;
+                		ENDIF;
+          		ENDIF;
+
+     	ENDIF;
+
+	#--------------------------------------------------------------------------------
+	#*** Account has Jurisdiction enabled ***#
+	#--------------------------------------------------------------------------------
+     	IF (sJurCheck @= 'Y');
+     
+          		#*** Now check if Jurisdiction is Blank or '-' ***#
+               		IF (vsJur @= '-');
+			#--------------------------------------------------------------------------------
+                    		#*** Validation Fail for Jurisdiction as this account requires Jurisdiction not blank, if so, then account check failed
+			#--------------------------------------------------------------------------------
+                    		nAccJurValid = nAccJurValid + 1;
+               		ELSE;
+			#--------------------------------------------------------------------------------
+                   		#*** DO CHECK FOR JURISDICTION EXISTS ***#
+			#--------------------------------------------------------------------------------
+                    		IF (DIMIX (dmJur, vsJur) = 0);
+                         			nAccJurValid = nAccJurValid + 1;
+                    		ENDIF;
+               		ENDIF;       
+     	ENDIF;
+
+	#--------------------------------------------------------------------------------
+     	#*** Account has Movment Account enabled ***#
+	#--------------------------------------------------------------------------------
+     	IF (sMACheck @= 'Y');
+     
+		#--------------------------------------------------------------------------------
+          		#*** Now check if Jurisdiction is Blank or '-' ***#
+		#--------------------------------------------------------------------------------
+               		IF (vsMA @= '-');
+			#--------------------------------------------------------------------------------
+                    		#*** Validation Fail for Movement Account as this account requires a Movement Account , if so, then account check failed
+			#--------------------------------------------------------------------------------
+                    		nAccMAValid = nAccMAValid + 1;
+               		ELSE;
+			#--------------------------------------------------------------------------------
+                   		#*** DO CHECK FOR MOVEMENT ACCOUNT EXISTS ***#
+			#--------------------------------------------------------------------------------
+                    		IF (nMAValid = 1);
+				#--------------------------------------------------------------------------------
+                        			#*** UTILIZES PREVIOUS CHECKS ***#
+				#--------------------------------------------------------------------------------
+                    		ELSE;
+				#--------------------------------------------------------------------------------
+                         			#*** IF MA EXISTS, CHECK ASSUMED RE ***#
+				#--------------------------------------------------------------------------------
+                         			sMARECheck = ATTRS (dmMA, vsMA, 'related entity enabled');
+                         			sMAAssumedRE = ATTRS (dmMA, vsMA, 'assumed related entity');
+
+				#--------------------------------------------------------------------------------
+                         			#*** Movement Account has related entity enabled ***#
+				#--------------------------------------------------------------------------------
+                         			IF (sMARECheck @= 'Y');
+					#--------------------------------------------------------------------------------
+                              				#*** CHECK IF assumed related entity is not blank, if so, then account check failed
+					#--------------------------------------------------------------------------------
+                              				sMAAssumedRE = ATTRS (dmMA, vsMA, 'assumed related entity');
+
+                              				IF (sMAAssumedRE @= '');
+						#--------------------------------------------------------------------------------
+                                   				#*** IF NO ASSUMED RELATED ENTITY, USE OTHER RELATED ENTITY ***#
+						#--------------------------------------------------------------------------------
+                                   				IF (vsRE @<> '-');
+							#--------------------------------------------------------------------------------
+                                        					#*** DO CHECK FOR RE EXISTS ***#
+							#--------------------------------------------------------------------------------
+                                        					IF ( nREValid = 1);
+								#--------------------------------------------------------------------------------
+                                             						#*** UTILIZES PREVIOUS CHECKS ***#
+								#--------------------------------------------------------------------------------
+                                             						nMAREValid = nMAREValid + 1;
+                                        					ENDIF;  
+                                   				ENDIF;
+                              				ELSE;
+						#--------------------------------------------------------------------------------
+                                   				#*** IF Account has assumed RE Then use Assumed RE
+						#--------------------------------------------------------------------------------
+                                   				IF (vsRE @<> sMAAssumedRE);
+                                        					vsRE = sMAAssumedRE;
+                                   				ENDIF;
+                              				ENDIF;
+                       			ELSE;
+					#--------------------------------------------------------------------------------
+                             				#*** DO CHECK FOR RE EXISTS ***#
+					#--------------------------------------------------------------------------------
+                             				IF ( nREValid = 1);
+						#--------------------------------------------------------------------------------
+                                  				#*** UTILIZES PREVIOUS CHECKS ***#
+						#--------------------------------------------------------------------------------
+                             				ELSE;
+
+						#--------------------------------------------------------------------------------
+				                                #*** SOMETIMES EVEN WITHOUT RELATED ENTITY ENABLED, THIS ACCOUNT SHOULD HAVE A RELATED ENTITY ***#
+                                 				sMAAssumedRE = ATTRS (dmMA, vsMA, 'assumed related entity');
+						#--------------------------------------------------------------------------------
+                                 				IF (sMAAssumedRE @<> '');
+                                      					IF (vsRE @<> sMAAssumedRE);
+                                           						vsRE = sMAAssumedRE;
+                                       					ENDIF;
+                                  				ENDIF;
+                             				ENDIF;
+                        			ENDIF;
+                    		ENDIF;
+               		ENDIF;
+     	ELSE;
+		#--------------------------------------------------------------------------------
+     		#*** DO NOTHING IF ACCOUNT IS NO MOVEMENT ACCOUNT ***#
+		#--------------------------------------------------------------------------------
+	ENDIF;
+ENDIF;
+
+#**************************************************************************************************************************************#
+#*****************************************************************************
+#**** OUTPUT FILES
+#*****************************************************************************
+nValid = nProgValid + nMAValid + nAccValid + nItemValid + nREValid + nSPPValid + nJurValid + nAccREValid + nAccJurValid + nAccMAValid + nMAREValid;
+nTotalValid = nTotalValid + nValid;
+
+IF (nValid > 0);
+     
+	#*****************************************************************************
+     	#*** PUT A HEADER ON THE FILE 
+     	#*****************************************************************************
+     	IF (lHeaderCount = 0);
+               		ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Error Description', 'Line Number', 'Entered Value', 'Comments', 'Other Details/Assumed Values');
+     	ENDIF;
+
+     	#*****************************************************************************
+     	#**** VALIDATION FAILED
+     	#*****************************************************************************
+    	IF (nProgValid > 0);
+     		ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Programme Code error on line ', NUMBERTOSTRING(nLine), vsProg);
+     	ENDIF;
+
+
+     	IF (nMAValid > 0);	
+          		ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Movement Account Code error on line ', NUMBERTOSTRING(nLine), vsMA);
+     	ENDIF;
+
+     	IF (nAccValid > 0);
+          		ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Account Code error on line ', NUMBERTOSTRING(nLine), vsAcc);
+     	ENDIF;
+
+     	IF (nAccREValid >0);
+          		ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Account has an invalid Related Entity Code error on line ', NUMBERTOSTRING(nLine), vsRE, vsAcc, sAssumedRE);
+     	ENDIF;
+
+     	IF (nAccJurValid >0);
+          		ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Account has an invalid Jurisdiction Code error on line ', NUMBERTOSTRING(nLine), vsJur, vsAcc);
+     	ENDIF;
+	
+     	IF (nAccMAValid >0);
+          		ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Account is missing or has an invalid Movement Account Code error on line ', NUMBERTOSTRING(nLine), vsMA, vsAcc);
+     	ENDIF;
+
+     	IF (nMAREValid >0);
+          		ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Movement Account has an invalid Related Entity Code error on line ', NUMBERTOSTRING(nLine), vsRE, vsAcc, vsMA);
+     	ENDIF;
+
+     	IF (nItemValid > 0);
+          		ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Appropriation Item error on line ', NUMBERTOSTRING(nLine), sNewItem);
+     	ENDIF;
+
+     	IF (nREValid > 0);
+          		ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Related Entity error on line ', NUMBERTOSTRING(nLine), vsRE);
+     	ENDIF;
+
+     	IF (nSPPValid > 0);
+          		ASCIIOUTPUT (sImpFilePath | ' geus upload file failed.csv', 'SPP error on line ', NUMBERTOSTRING(nLine), vsSPP);
+     	ENDIF;
+
+     	IF (nJurValid > 0);
+          		ASCIIOUTPUT (sImpFilePath | sOutputFile, 'Jurisdiction error on line ', NUMBERTOSTRING(nLine), vsJur);
+     	ENDIF;
+
+ELSE;
+
+	#*** VALIDATION PASSED ****#
+	# Do Nothing
+
+ENDIF;
+
+#*** DISABLE HEADER LINE ***#
+lHeaderCount = lHeaderCount + 1;
+
+#*** ADD LINE NUMBER
+nLine = nLine + 1;
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*****************************************************************************
+#**** SKIP LINE IF DIMENSIONS ARENT VALID 
+#*****************************************************************************
+IF (nTotalValid > 0);
+	#---------------------------------------------------------------------------
+	#--- UPLOAD FAILED
+	#---------------------------------------------------------------------------
+
+
+ELSE;
+     	ATTRPUTS ('PASS', dmVar, 'sys_ImpFileValidation', 'value');
+	CELLPUTS ('PASS', cbClient, sUser,  'sys_ImpFileValidation', 'value');
+
+	#-----------------------------------------------------------------------------
+	#--- CREATE PROGRAM SUBSET TO CLEAR PROFILES IN PROCES 02
+	#-----------------------------------------------------------------------------
+	sProg = DIMENSIONELEMENTPRINCIPALNAME(dmProg,vsProg);
+	IF (SUBSETELEMENTEXISTS (dmProg, sProgSubset, sProg) = 0);
+		SUBSETELEMENTINSERT (dmProg, sProgSubset, sProg, 1);
+	ENDIF;
+
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*****************************************************************************
+#**** SKIP LINE IF DIMENSIONS ARENT VALID 
+#*****************************************************************************
+
+IF (nTotalValid > 0);
+	CELLPUTS ('FAIL', cbClient, sUser,  'sys_ImpFileValidation', 'value');
+	PROCESSERROR;
+ELSE;
+	CELLPUTS ('PASS', cbClient, sUser, 'sys_ImpFileValidation', 'value');
+	sProcess = 'sys_ME Upload 02 - Upload';
+	ExecuteProcess(sProcess,'psHLYear',psHLYear,'psScenario',psScenario,'psFile',psFile);
+	#---------------------------------------------------------------------------------
+	#--- VALIDATION CHECKS TO MAKE SURE PROCESS 02 RUNS SUCCESSFULLY
+	#---------------------------------------------------------------------------------
+	#RETURN_VALUE = EXECUTEPROCESS(sProcess, 'psUser', sUser, 'psHLYear', psHLYear, 'psScenario', psScenario,  'psFile', psFile);
+
+	#----------------------------------------------------------
+	#--- CHECK RETURN VALUE OF PROCESS
+	#--- CREATE OUTPUT FILE TO SAY PROCESS 02 HAS FAILED
+	#----------------------------------------------------------
+	#IF (RETURN_VALUE <> ProcessExitNormal());
+	#	CELLPUTS ('WARNING', cbClient, sUser,  'sys_ImpFileValidation', 'value');
+	#ENDIF;
+
+ENDIF;
+
+#endregion

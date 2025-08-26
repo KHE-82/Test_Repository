@@ -1,0 +1,130 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_Process Administration - Populate Flags
+#**** DESCRIPTION:       This process creates a view and clear all flags in the sys_process administration cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date	Initials	Comments
+#****  ====              ======    =========
+#**** 2019    KG           Initial Revision
+#***********************************************************************************************************************
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+cbProc = 'sys_process administration';
+dmProc = '}Processes';
+dmProcMeas = 'sys_process administration measure';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+dmClient = '}Clients';
+
+#--------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#--------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+sView = sUser | '_$PopulateProcessView';
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CREATE SOURCE VIEW ***#
+#*****************************************************************************************************************************************************
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbProc, sView);
+SUBSETDESTROY (dmProc, sView);
+SUBSETDESTROY (dmProcMeas, sView);
+
+
+#-------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+# Processes
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Process Measure
+SubsetCreate(dmProcMeas, sView);
+SubsetElementInsert(dmProcMeas, sView, 'status flag', 1);
+SubsetElementInsert(dmProcMeas, sView, 'completed flag', 2);
+SubsetElementInsert(dmProcMeas, sView, 'error flag', 3);
+SubsetElementInsert(dmProcMeas, sView, 'error description', 4);
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** BUILD VIEW
+#-------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbProc, sView);
+VIEWSUBSETASSIGN (cbProc, sView, dmProc, sView);
+VIEWSUBSETASSIGN (cbProc, sView, dmProcMeas, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+#--- DEFINE VIEW EXTRACT
+#-------------------------------------------------------------------------------------------------------------
+VIEWSUPPRESSZEROESSET(cbProc, sView, 1);
+VIEWEXTRACTSKIPZEROESSET (cbProc, sView, 1);
+VIEWEXTRACTSKIPRULEVALUESSET (cbProc, sView, 1);
+VIEWEXTRACTSKIPCALCSSET (cbProc, sView, 1);
+
+
+#-------------------------------------------------------------------------------------------------------------
+#--- VIEW ZEROOUT
+#-------------------------------------------------------------------------------------------------------------
+#VIEWZEROOUT (cbProc, sView);
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+#VIEWDESTROY (cbProc, sView);
+#SUBSETDESTROY (dmProc, sView);
+#SUBSETDESTROY (dmProcMeas, sView);
+
+
+#endregion

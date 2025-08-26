@@ -1,0 +1,411 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               ME Export - Extract As Flatfile
+#**** DESCRIPTION:       This process creates a view from the ME Reporting Cube and creates an extract
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 07/04/2019    KG             Initial Revision
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE MONTHLY ESTIMATES REPORTING CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+cbME = 'ME reporting';
+dmMEMeas = 'ME reporting measure';
+
+
+#--------------------------------------------------------------------------------------------------------------------------
+#*** DIMENSION ATTRIBUTES
+#--------------------------------------------------------------------------------------------------------------------------
+dmReasonAttr = '}ElementAttributes_reason';
+dmAccAttr = '}ElementAttributes_account';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAM DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+dmProgMeas = snProg | ' measure';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE ME BALANCE SHEET CUBE (ACCOUNT TEMPLATE)
+#---------------------------------------------------------------------------------------------------------------------------
+cbMEBS = 'ME balance sheet';
+dmAccTemp = 'account template';
+dmAccBS = 'account_bs';
+dmMEBSMeas = 'balance sheet measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+	sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+	sUser = TM1User();
+ENDIF;
+
+sMEView = sUser | '_$MEExtract';
+sMEMeas = 'value';
+
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CREATE SOURCE VIEW FROM ME REPORTING
+#*****************************************************************************************************************************************************
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbME, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+SUBSETDESTROY (dmRE, sMEView);
+SUBSETDESTROY (dmSPP, sMEView);
+SUBSETDESTROY (dmMA, sMEView);
+SUBSETDESTROY (dmProg, sMEView);
+SUBSETDESTROY (dmItem, sMEView);
+SUBSETDESTROY (dmAcc, sMEView);
+SUBSETDESTROY (dmID, sMEView);
+SUBSETDESTROY (dmJur, sMEView);
+SUBSETDESTROY (dmPer, sMEView);
+SUBSETDESTROY (dmMEMeas, sMEView);
+
+
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sMEView);
+SubsetElementInsert(dmHLYear, sMEView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sMEView);
+SubsetElementInsert(dmScenario, sMEView, psScenario, 1);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Movement Account
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}, [' | dmMA |'].[editable] = "")}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {' | dmProg | '].[' | psProg | ']}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Account
+MDX = '{{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[9000130]}, ALL, RECURSIVE )}, 0)},{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[3800001]}, ALL, RECURSIVE )}, 0)},{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[9000003]}, ALL, RECURSIVE )}, 0)}} ';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# ID
+SubsetCreate(dmID, sMEView);
+SubsetElementInsert(dmID, sMEView, psID, 1);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Month
+#MDX = '{ EXCEPT( {FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer |'] )}, 0)}, [' | dmPer |'].[type] = "nMonth")}, { [' | dmPer |'].[P00] }) }';
+#MDX = '{ EXCEPT( {FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer |'] )}, 0)}, [' | dmPer |'].[type] = "Month")}, { [' | dmPer |'].[P0] }) }';
+#SUBSETCREATEBYMDX (sMEView, MDX);
+
+sMonth = 'Jun YTD';
+SubsetCreate(dmPer, sMEView);
+SubsetElementInsert(dmPer, sMEView, sMonth, 1);
+
+
+# ME Measure
+SubsetCreate(dmMEMEas, sMEView);
+SubsetElementInsert(dmMEMEas, sMEView, sMEMeas, 1);
+
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbME, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmHLYear, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmScenario, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmRE, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmSPP, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmMA, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmProg, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmItem, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmAcc, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmID, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmJur, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmPer, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmMEMEas, sMEView);
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbME, sMEView, 1);
+ViewSuppressZeroesSet(cbME, sMEView, 1);
+ViewExtractSkipCalcsSet(cbME, sMEView, 0);
+ViewExtractSkipRuleValuesSet (cbME, sMEView, 0);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sMEView;
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** COUNTER TO DETERMINE NOT TO CLEAR DATA SETS
+#---------------------------------------------------------------------------------------------------------------------------
+lHeaderCounter = 0;
+
+nCounter = 0;
+sOldProg = '';
+
+#******************************************************************************************************************
+# **** GET DATE VALUES AND POST USER AND DATE STAMP
+#******************************************************************************************************************
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+sHNow = TimST( Now, '\h'); 
+sMinNow = TimST( Now, '\i'); 
+sSecNow = TimST( Now, '\s'); 
+
+sSeconds = TRIM(SUBST(sSecNow, 1,2));
+IF (LONG (sSeconds) = 1);
+	sSeconds = '0' | sSeconds;
+ELSE;
+	sSeconds = sSeconds;
+ENDIF;
+
+sMins = TRIM(SUBST(sMinNow, 1,2));
+IF (LONG (sMins) = 1);
+	sMins = '0' | sMins;
+ELSE;
+	sMins = sMins;
+ENDIF;
+
+sHour = TRIM(SUBST(sHNow, 1,2));
+IF (LONG (sHour) = 1);
+	sHour = '0' | sHour;
+ELSE;
+	sHour = sHour;
+ENDIF;
+
+sDay = TRIM(SUBST(sDNow, 1,2));
+
+IF (LONG (sDay) = 1);
+	sDay = '0' | sDay;
+ELSE;
+	sDay = sDay;
+ENDIF;
+
+sMonth = TRIM(SUBST(sMNow, 1,2));
+
+IF (LONG (sMonth) = 1);
+	sMonth = '0' | sMonth;
+ELSE;
+	sMonth = sMonth;
+ENDIF;
+
+sYear = TRIM(SUBST(sYNow, 1,4));
+
+sNow = sYear | sMonth | sDay | sHour | sMins | sSeconds;
+
+#******************************************************************************************************************
+#***** EXPORT FLAT FILE VARIABLES
+#******************************************************************************************************************
+sSaveLocation =  ATTRS(dmVar, 'save location', 'value');
+
+#sSaveLocation = '';
+ 
+sExpDirectory = sSaveLocation;
+sFileName = sExpDirectory | sUser | ' ' | 'ME Export as flatfile for ' | psHLYear | ' ' | sNow | '.csv';
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#--------------------------------------------------------------------------------------------------
+#--- SKIP CASH AT BEGINNING OF YEAR
+#--------------------------------------------------------------------------------------------------
+
+IF (vsAcc @= '6100001');
+	ITEMSKIP;
+ENDIF;
+
+
+#--------------------------------------------------------------------------------------------------
+#--- SKIP CASH FLOW ACCOUNTS : AMEND IF REQUIRED
+#--------------------------------------------------------------------------------------------------
+IF (ELISANC (dmAcc, '9000003', vsAcc) = 1);
+	ITEMSKIP;
+ENDIF;
+
+#----------------------------------------------
+#---- GET ANNUAL BUDGET
+#----------------------------------------------
+nAnnualBudget = CELLGETN(cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, '0000A', vsJur, 'Jun YTD', vsMeas);
+
+nJul =  CELLGETN(cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Jul', vsMeas);
+nAug = CELLGETN(cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Aug', vsMeas);
+nSep = CELLGETN(cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Sep', vsMeas);
+nOct = CELLGETN(cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Oct', vsMeas);
+nNov = CELLGETN(cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Nov', vsMeas);
+nDec = CELLGETN(cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Dec', vsMeas);
+nJan = CELLGETN(cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Jan', vsMeas);
+nFeb = CELLGETN(cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Feb', vsMeas);
+nMar = CELLGETN(cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Mar', vsMeas);
+nApr = CELLGETN(cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Apr', vsMeas);
+nMay = CELLGETN(cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'May', vsMeas);
+nJun = CELLGETN(cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsID, vsJur, 'Jun', vsMeas);
+
+
+nJul = ROUNDP (nJul, 0);
+nAug = ROUNDP (nAug, 0);
+nSep = ROUNDP (nSep, 0);
+nOct = ROUNDP (nOct, 0);
+nNov = ROUNDP (nNov, 0);
+nDec = ROUNDP (nDec, 0);
+nJan = ROUNDP (nJan, 0);
+nFeb = ROUNDP (nFeb, 0);
+nMar = ROUNDP (nMar, 0);
+nApr = ROUNDP (nApr, 0);
+nMay = ROUNDP (nMay, 0);
+nJun = ROUNDP (nJun, 0);
+
+#----------------------------------------------
+#---- DO HEADING EXTRACT
+#----------------------------------------------
+IF (lHeaderCounter = 0);
+	ASCIIOUTPUT (sFileName, 'Year', 'Program', 'Appropriation Item',  'Account', 'Movement Account', 'Related Entity', 'Jurisdiction', 'SPP', 'Annual Budget', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun');
+ENDIF;
+
+#----------------------------------------------
+#---- EXTRACT DATA
+#----------------------------------------------
+sProg = ATTRS (dmProg, vsProg, 'code and description');
+IF (sProg @= '');
+	sProg = vsProg;
+ENDIF;
+
+sItem = ATTRS (dmItem, vsItem, 'code and description');
+IF (sItem @= '');
+	sItem = vsItem;
+ENDIF;
+
+sAcc = ATTRS (dmAcc, vsAcc, 'code and description');
+IF (sAcc @= '');
+	sAcc = vsAcc;
+ENDIF;
+
+sMA = ATTRS (dmMA, vsMA, 'code and description');
+IF (sMA @= '');
+	sMA = vsMA;
+ENDIF;
+
+sRE = ATTRS (dmRE, vsRE, 'code and description');
+IF( sRE @='');
+	sRE = vsRE;
+ENDIF;
+
+
+
+ASCIIOUTPUT (sFileName, vsHLYear, sProg, sItem, sAcc, sMA, sRE, vsJur, vsSPP, NUMBERTOSTRING (nAnnualBudget), NUMBERTOSTRING (nJul), NUMBERTOSTRING (nAug), NUMBERTOSTRING (nSep), NUMBERTOSTRING (nOct),
+NUMBERTOSTRING (nNov), NUMBERTOSTRING (nDec), NUMBERTOSTRING (nJan), NUMBERTOSTRING (nFeb), NUMBERTOSTRING (nMar), NUMBERTOSTRING (nApr), NUMBERTOSTRING (nMay), NUMBERTOSTRING (nJun));
+
+
+lHeaderCounter = lHeaderCounter + 1;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbME, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+SUBSETDESTROY (dmRE, sMEView);
+SUBSETDESTROY (dmSPP, sMEView);
+SUBSETDESTROY (dmMA, sMEView);
+SUBSETDESTROY (dmProg, sMEView);
+SUBSETDESTROY (dmItem, sMEView);
+SUBSETDESTROY (dmAcc, sMEView);
+SUBSETDESTROY (dmID, sMEView);
+SUBSETDESTROY (dmJur, sMEView);
+SUBSETDESTROY (dmPer, sMEView);
+SUBSETDESTROY (dmMEMeas, sMEView);
+
+#endregion

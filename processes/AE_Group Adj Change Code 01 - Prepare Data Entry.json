@@ -1,0 +1,39 @@
+{
+	"@type":"Process",
+	"Name":"AE_Group Adj Change Code 01 - Prepare Data Entry",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_Group Adj Change Code 01 - Prepare Data Entry.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psHLYear",
+			"Prompt":"",
+			"Value":"HL2018-2019",
+			"Type":"String"
+		},
+		{
+			"Name":"psScenario",
+			"Prompt":"",
+			"Value":"current",
+			"Type":"String"
+		},
+		{
+			"Name":"psID",
+			"Prompt":"",
+			"Value":"00021",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561008410005"
+}

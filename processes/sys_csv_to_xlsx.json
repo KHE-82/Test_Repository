@@ -1,0 +1,27 @@
+{
+	"@type":"Process",
+	"Name":"sys_csv_to_xlsx",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_csv_to_xlsx.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pCSV",
+			"Prompt":"s:\\prod\\dcceew_geus\\GEUS PRIMUS\\CDM\\CDM - Program Details.csv",
+			"Value":"s:\\prod\\dcceew_geus\\data\\CDM - Program Details.csv",
+			"Type":"String"
+		},
+		{
+			"Name":"pXLSX",
+			"Prompt":"s:\\prod\\dcceew_geus\\GEUS PRIMUS\\CDM\\CDM - Program Details.xlsx",
+			"Value":"s:\\prod\\dcceew_geus\\data\\CDM - Program Details.xlsx",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561008750009"
+}

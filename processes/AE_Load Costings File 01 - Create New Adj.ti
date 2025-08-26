@@ -1,0 +1,583 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              AE_Load Costings File 01 - Create New Adj
+#**** DESCRIPTION:       This process will load the measure adjustments form costings. This will also create a flat file for costings
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 13/06/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** DECLARE CUBES ***#
+cbMeas = 'government measures';
+cbMeasID = 'government measures details';
+cbAE = 'AE group adjustment entry';
+cbID = 'AE id details';
+cbProg = 'programme details';
+
+#*** DECLARE DIMENSIONS USED FOR VALIDATIONS ***#
+snProg = 'programme';
+dmProg = snProg;
+dmMeas = 'measure code';
+dmReas = 'reason';
+dmAccType = 'account type';
+dmAccTemp = 'account template';
+dmRelEntity = 'related entity';
+dmClients = '}Clients';
+dmTmpID = 'tmpID';
+
+#*** DECLARE VARIABLES USED FOR MAPPING ***#
+cbAccTemp = 'AE account template';
+dmAccTempMeas = 'account template measure';
+sRecType = 'data entry';
+sAcc = 'account template';
+sMA = '-';
+sPerFlag = '0000-0000';
+
+#*** DECLARE SYSTEM VARIABLES
+dmVar = 'variables'; 
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sAgencyCode = ATTRS(dmVar, 'agency code', 'value');
+sExpFilePath = ATTRS(dmVar, 'sys_Costings Export Directory', ' value');
+
+sFileName = 'geus_extract.cma';
+sFileName = sExpFilePath | sFileName;
+
+sImpFilePath = ATTRS(dmVar, 'sys_Costings Import Directory', ' value');
+sImpLogFilePath = ATTRS(dmVar, 'sys_ImpFileExceptionLogs', ' value');
+sImpFileName = 'costings_extract.cma';
+sDefCashAcc = ATTRS(dmVar, 'Default Cash Flow account', ' value');
+
+sBY = SUBST(curHLYear, 3, 9);
+sPY = DIMNM('period', DIMIX ('period',sBY) - 1);
+sFE1 = DIMNM('period', DIMIX ('period',sBY) + 1);
+sFE2 = DIMNM('period', DIMIX ('period',sBY) + 2);
+sFE3 = DIMNM('period', DIMIX ('period',sBY) + 3);
+sFE4 = DIMNM('period', DIMIX ('period',sBY) + 4);
+sFE5 = DIMNM('period', DIMIX ('period',sBY) + 5);
+sFE6 = DIMNM('period', DIMIX ('period',sBY) + 6);
+sFE7 = DIMNM('period', DIMIX ('period',sBY) + 7);
+sFE8 = DIMNM('period', DIMIX ('period',sBY) + 8);
+sFE9 = DIMNM('period', DIMIX ('period',sBY) + 9);
+sFE10 = DIMNM('period', DIMIX ('period',sBY) + 10);
+
+
+#*** FILE FLAG
+nLine = 1;
+nProgValid = 0;
+nMeasValid = 0;
+nReasValid = 0;
+nATypeValid = 0;
+nATempValid = 0;
+nValid = 0;
+nTotalValid = 0;
+
+sMOldVarNo = '';
+sOldVarNo = '';
+nWorkersCompCheck = 0;
+nNewIDInc = 1;
+
+#**** Build a dimension to store IDs so we don't keep getting new ones
+
+IF(DimensionExists(dmTmpID)=0);
+      DimensionCreate (dmTmpID);
+      AttrInsert (dmTmpID, '', 'ID', 'S');
+      AttrInsert (dmTmpID,'','Workers Comp','S');
+
+ELSE;
+      Dimensiondestroy (dmTmpID);
+      DimensionCreate (dmTmpID);
+      AttrInsert (dmTmpID, '', 'ID', 'S');
+      AttrInsert (dmTmpID,'','Workers Comp','S');
+ENDIF;
+
+#*** SET IMPORT FILE STATUS BACK TO PASS ***#
+ATTRPUTS ('PASS', dmVar, 'sys_ImpFileValidation', 'value');
+
+#*** DATA SOURCES ***#
+DataSourceNameForServer = sImpFilePath | sImpFileName;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*** DO A CHECK OF THE FILE ***#
+
+sProgValid = 'PASS';
+sMeasValid = 'PASS';
+sReasValid = 'PASS';
+sATypeValid = 'PASS';
+sATempValid = 'PASS';
+
+nProgValid = 0;
+nMeasValid = 0;
+nReasValid = 0;
+nATypeValid = 0;
+nATempValid = 0;
+
+#*** Check Programme
+IF (DIMIX (dmProg, vsProg) = 0);
+     sProgValid = 'FAIL';
+     nProgValid = nProgValid + 1;
+ELSE;
+     sCtrlTypeCheck = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'Control Type');
+     IF (sCtrlTypeCheck @<> vsControlType);
+          sProgValid = 'FAIL';
+          nProgValid = nProgValid + 1;     
+     ENDIF;
+
+ENDIF;
+
+#*** Check Measure
+asciioutput('micheal.txt', vsMeasCode, numbertostring (DIMIX (dmMeas, vsMeasCode)) );
+IF (DIMIX (dmMeas, vsMeasCode) = 0);
+     sMeasValid = 'FAIL';
+     nMeasValid = nMeasValid + 1;
+ENDIF;
+
+#*** Check Reason
+IF (DIMIX (dmReas, vsReason) = 0);
+     sReasValid = 'FAIL';
+     nReasValid = nReasValid + 1;
+ENDIF;
+
+#*** Check Account Type
+IF (DIMIX (dmAccType, vsAccType) = 0);
+     sATypeValid = 'FAIL';
+     nATypeValid = nATypeValid + 1;
+ENDIF;
+
+ #*** Check Account Template
+IF (DIMIX (dmAccTemp, vsAccTemp) = 0);
+     sATempValid = 'FAIL';
+     nATempValid = nATempValid + 1;
+ENDIF;
+
+nValid = nProgValid + nMeasValid + nReasValid + nATypeValid + nATempValid;
+nTotalValid = nTotalValid + nValid;
+IF (nValid > 0);
+     IF (nProgValid > 0);
+          ASCIIOUTPUT (sImpLogFilePath | 'costings extract failed.csv', 'Programme Code error on line ' | NUMBERTOSTRING(nLine), vsProg, vsControlType);
+     ENDIF;
+
+     IF (nMeasValid > 0);
+          ASCIIOUTPUT (sImpLogFilePath | 'costings extract failed.csv', 'Measure Code error on line ' | NUMBERTOSTRING(nLine), vsMeasCode);
+     ENDIF;
+
+     IF (nReasValid > 0);
+          ASCIIOUTPUT (sImpLogFilePath | 'costings extract failed.csv', 'Reason Code error on line ' | NUMBERTOSTRING(nLine), vsReason);
+     ENDIF;
+
+     IF (nATypeValid > 0);
+          ASCIIOUTPUT (sImpLogFilePath | 'costings extract failed.csv', 'Account Type error on line ' | NUMBERTOSTRING(nLine), vsAccType);
+     ENDIF;
+
+     IF (nATempValid > 0);
+          ASCIIOUTPUT (sImpLogFilePath | 'costings extract failed.csv', 'Account Template error on line ' | NUMBERTOSTRING(nLine), vsAccTemp);
+     ENDIF;
+
+
+ELSE;
+
+#*** CHECK NEW ID ***#
+     IF (vsVarNo @<> sMOldVarNo);
+
+          #*** PROCESS FOR CREATING A NEW ADJUSTMENT ***#
+          nNewID = CELLGETN(cbID, curHLYear, curScenario, 'Total IDs', 'used') + nNewIDInc;
+          sNewID = NUMBERTOSTRING(nNewID);
+
+          IF (LONG(sNewID) = 1);
+               sNewID = '0000' | sNewID;
+          ENDIF;
+
+          IF (LONG(sNewID) = 2);
+               sNewID = '000' | sNewID;
+          ENDIF;
+
+          IF (LONG(sNewID) = 3);
+               sNewID = '00' | sNewID;
+          ENDIF;
+
+          IF (LONG(sNewID) = 4);
+               sNewID = '0' | sNewID;
+          ENDIF;
+
+          IF (LONG(sNewID) = 5);
+               sNewID = sNewID;
+          ENDIF;
+
+          #*** ADD NEW ID IN TEMP DIMENSION WHICH WILL BE USED TO CREATE GROUP ADJUSTMENTS AND WORKERS COMPENSATION ADJUSTMENTS ***#
+          IF (DIMIX (dmTmpID, sNewID) = 0);
+               DIMENSIONELEMENTINSERT (dmTmpID, '', sNewID, 'N');
+          ENDIF;
+          nNewIDInc = nNewIDInc + 1;
+
+     ENDIF;
+
+ENDIF;
+
+     nLine = nLine + 1;
+
+     sMOldVarNo = vsVarNo;
+
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF (nTotalValid > 0);
+     ATTRPUTS ('FAIL', dmVar, 'sys_ImpFileValidation', 'value');
+     ITEMSKIP;
+     #PROCESSQUIT;
+ENDIF;
+
+#*** STEP 1 *************************************************************
+#*** STEP 1A - UPDATE MEASURE DETAILS CUBE WITH COSTING ID METADATA FOR MEASURE CODE FROM COSTINGS ***#
+     sOldCostingID = CELLGETS (cbMeasID, curHLYear, curScenario, vsMeasCode, 'costing ID');
+     nSCAN = SCAN(vsCostingID, sOldCostingID);
+     IF (nSCAN = 0);
+          IF (sOldCostingID @= ''); 
+	#*** THIS IS IF THERE IS NO COSTING ID ***#
+	CELLPUTS (vsCostingID, cbMeasID, curHLYear, curScenario, vsMeasCode, 'costing ID');
+          ELSE;
+	CELLPUTS (sOldCostingID |','| vsCostingID, cbMeasID, curHLYear, curScenario, vsMeasCode, 'costing ID');
+          ENDIF;
+
+     ENDIF;
+
+
+#*** STEP 1B - UPDATE MEASURE DETAILS CUBE WITH PROGRAMME METADATA FOR MEASURE CODE FROM COSTINGS ***#
+     sOldProg = CELLGETS (cbMeasID, curHLYear, curScenario, vsMeasCode, 'related programme code');
+     sProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, vsProg);
+     nSCAN = SCAN(sProg, sOldProg);
+     IF (nSCAN = 0);
+          IF (sOldProg @= '');
+	#*** THIS IS IF THERE IS NO PROGRAMME ENTERED ***#
+               CELLPUTS (sProg, cbMeasID, curHLYear, curScenario, vsMeasCode, 'related programme code');
+          ELSE;
+               CELLPUTS (sOldProg |','| sProg, cbMeasID, curHLYear, curScenario, vsMeasCode, 'related programme code');
+          ENDIF;
+     ENDIF;
+
+#*** STEP 2 *************************************************************
+#*** CREATE A NEW ADJUSTMENT ***#
+
+     #*** GET PROGRAMME DETAILS DATA ***#
+     sProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, vsProg);
+     sOC = CELLGETS (cbProg, curHLYear, curScenario, sProg, 'outcome');
+     sFunc = CELLGETS (cbProg, curHLYear, curScenario, sProg, 'function');
+     sSPP = CELLGETS (cbProg, curHLYear, curScenario, sProg, 'SPP');
+     sAppropItem = CELLGETS (cbProg, curHLYear, curScenario, sProg, 'appropriation item');
+     sAppropType = CELLGETS (cbProg, curHLYear, curScenario, sProg, 'appropriation type');
+
+     sProgDesc = ATTRS (dmProg, sProg, 'code and description');
+
+IF (vsVarNo @<> sOldVarNo);
+
+     sAccTemp = DIMENSIONELEMENTPRINCIPALNAME (dmAccTemp, vsAccTemp);
+     #IF (vsAccTemp @= 'Workers Compensation - External Entities');
+     IF ((sAccTemp @= '00024') & (vsReason @= 'Government decision or measure'));
+          nWorkersCompCheck = nWorkersCompCheck + 1;
+         ATTRPUTS ('Y', dmTmpID, sNewID, 'Workers Comp');
+     ENDIF;
+
+     #*** PROCESS FOR CREATING A NEW ADJUSTMENT ***#
+     nNewID = CELLGETN(cbID, curHLYear, curScenario, 'Total IDs', 'used') + 1;
+     sNewID = NUMBERTOSTRING(nNewID);
+
+     IF (LONG(sNewID) = 1);
+          sNewID = '0000' | sNewID;
+     ENDIF;
+
+     IF (LONG(sNewID) = 2);
+          sNewID = '000' | sNewID;
+     ENDIF;
+
+     IF (LONG(sNewID) = 3);
+          sNewID = '00' | sNewID;
+     ENDIF;
+
+     IF (LONG(sNewID) = 4);
+          sNewID = '0' | sNewID;
+     ENDIF;
+
+     IF (LONG(sNewID) = 5);
+          sNewID = sNewID;
+     ENDIF;
+
+     sDesc = '(' | sNewID | ') ' | vsDesc;
+
+     #**** INSERT DATA INTO ID DETAILS CUBE USING INITIAL PROGRAMME DETAILS ***#
+     CELLPUTN(1,cbID, curHLYear, curScenario, sNewID, 'used');
+     CELLPUTS(vsTitle, cbID, curHLYear, curScenario, sNewID, 'title');
+     CELLPUTS(sDesc, cbID, curHLYear, curScenario, sNewID, 'description');
+     CELLPUTS(vsComment, cbID, curHLYear, curScenario, sNewID, 'comments');
+     CELLPUTS('draft',cbID, curHLYear, curScenario, sNewID, 'status');
+     CELLPUTS(vsReason, cbID, curHLYear, curScenario, sNewID, 'reason');
+     sNewMeas = DIMENSIONELEMENTPRINCIPALNAME (dmMeas, vsMeasCode);
+     CELLPUTS(sNewMeas, cbID, curHLYear, curScenario, sNewID, 'measure');
+#     CELLPUTS(vsMeasCode, cbID, curHLYear, curScenario, sNewID, 'measure');
+     CELLPUTS('Group', cbID, curHLYear, curScenario, sNewID, 'Adjustment Type');
+     CELLPUTS(vsControlType, cbID, curHLYear, curScenario, sNewID, 'Control Type');
+
+     CELLPUTS(sProg, cbID, curHLYear, curScenario, sNewID, snProg | ' code');
+     CELLPUTS(sProgDesc, cbID, curHLYear, curScenario, sNewID, snProg | 'description');
+     CELLPUTS(sOC, cbID, curHLYear, curScenario, sNewID, 'outcome');
+     CELLPUTS(sFunc, cbID, curHLYear, curScenario, sNewID, 'function');
+     CELLPUTS(sSPP, cbID, curHLYear, curScenario, sNewID, 'SPP');
+     CELLPUTS(sAppropItem, cbID, curHLYear, curScenario, sNewID, 'appropriation item');
+     CELLPUTS(sAppropType,cbID, curHLYear, curScenario, sNewID, 'appropriation type');
+
+     # *** REGARDLESS PUT ZERO CASH FLOW & CASH FLOW DETAILS ***#
+    IF (SUBST(vsAccType,1,4) @<> 'Cash');
+         CELLPUTS (sDefCashAcc, cbID, curHLYear, curScenario, sNewID, 'zero cashflow account');
+    ELSE;
+         CELLPUTS ('', cbID, curHLYear, curScenario, sNewID, 'zero cashflow account');
+    ENDIF;
+    CELLPUTS('Y', cbID, curHLYear, curScenario, sNewID, 'disagree cashflow');
+
+
+     #*** GET MEASURE DATA ***#
+     sFundLife = CELLGETS (cbMeasID, curHLYear, curScenario, vsMeasCode, 'funding life');
+
+     IF (vsMeasCode @= 'M00000');
+          sFundLife = 'ongoing';
+     ENDIF;
+     
+     IF (sFundLife @= '');
+          sFundLife = 'ongoing';
+     ENDIF;
+
+     sEndDate = CELLGETS (cbMeasID, curHLYear, curScenario, vsMeasCode, 'end date');
+
+      CELLPUTS (sFundLife, cbID, curHLYear, curScenario, sNewID, 'funding life');
+      CELLPUTS (sEndDate, cbID, curHLYear, curScenario, sNewID, 'end date');
+
+     IF (vsAccTemp @= 'Compliance Debt');
+          CELLPUTS ('Compliance', cbID, curHLYear, curScenario, sNewID, 'Group Adj Type');
+     ELSE;
+          CELLPUTS ('Expense', cbID, curHLYear, curScenario, sNewID, 'Group Adj Type');
+     ENDIF;
+
+
+#     CELLPUTS(sProg, cbID, curHLYear, curScenario, sNewID, snProg | ' code');
+#     CELLPUTS(sProgDesc, cbID, curHLYear, curScenario, sNewID, snProg | 'description');
+#     CELLPUTS(sOC, cbID, curHLYear, curScenario, sNewID, 'outcome');
+#     CELLPUTS(sFunc, cbID, curHLYear, curScenario, sNewID, 'function');
+#     CELLPUTS(sSPP, cbID, curHLYear, curScenario, sNewID, 'SPP');
+#     CELLPUTS(sAppropItem, cbID, curHLYear, curScenario, sNewID, 'appropriation item');
+#     CELLPUTS(sAppropType,cbID, curHLYear, curScenario, sNewID, 'appropriation type');
+
+     sCurUser = TM1User();
+
+     #*** IF USER IS ADMIN, LEAVE AS IS ***#
+     IF (sCurUser @= 'Admin');
+          sCurUser = sCurUser;
+     ELSE;
+          sCurUser = ATTRS(dmClients, sCurUser, '}TM1_DefaultDisplayValue');
+          IF (sCurUser @<> '');
+               lScan = SCAN('\',sCurUser) + 1;
+               sCurUser = SUBST(sCurUser, lScan, 9);
+          ELSE;
+               sCurUser = TM1User();
+          ENDIF;
+     ENDIF;
+
+     CELLPUTS(sCurUser, cbID, curHLYear, curScenario, sNewID, 'Created By');
+
+     # **** GET DATE VALUES ***#
+     sDNow = TimST( Now, '\D'); 
+     sMNow = TimST( Now, '\m'); 
+     sYNow = TimST( Now, '\Y'); 
+
+     sDay = TRIM(SUBST(sDNow, 1,2));
+
+     IF (LONG (sDay) = 1);
+          sDay = '0' | sDay;
+     ELSE;
+          sDay = sDay;
+     ENDIF;
+
+     sMonth = TRIM(SUBST(sMNow, 1,2));
+
+     IF (LONG (sMonth) = 1);
+          sMonth = '0' | sMonth;
+     ELSE;
+          sMonth = sMonth;
+     ENDIF;
+
+     sYear = TRIM(SUBST(sYNow, 1,4));
+
+     sNow = sDay | '/' | sMonth | '/' | sYear;
+     CELLPUTS(sNow, cbID, curHLYear, curScenario, sNewID, 'created date');
+
+     #*** IF THE ACCOUNT TEMPLATE IS A COMPLIANCE DEBT ***#
+     IF (vsAccTemp @= 'Compliance Debt');
+          IF (vsAccType @= 'Expense');
+               vsAccType = 'Recognition';
+          ENDIF;
+
+         IF (vsAccType @= 'Cash Payment');
+               vsAccType = 'Cash Recoveries';
+          ENDIF;
+     ENDIF;
+
+     #*****************************************************************************************************************
+     #**** COPY VALUES INTO AE GROUP ADJUSTMENT CUBE 
+     IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sPY, 'value') = 1);
+          CELLPUTN (vnP00, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sPY, 'value');
+          CELLPUTN (vnP01, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sBY, 'value');
+          CELLPUTN (vnP02, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE1, 'value');
+          CELLPUTN (vnP03, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE2, 'value');
+          CELLPUTN (vnP04, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE3, 'value');
+          CELLPUTN (vnP05, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE4, 'value');
+          CELLPUTN (vnP06, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE5, 'value');
+          CELLPUTN (vnP07, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE6, 'value');
+          CELLPUTN (vnP08, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE7, 'value');
+          CELLPUTN (vnP09, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE8, 'value');
+          CELLPUTN (vnP10, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE9, 'value');
+          CELLPUTN (vnP11, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE10, 'value');
+
+          #*** ADD GROUP LINE MAPPING FOR SELECTED ACCOUNT TEMPLATE AND PROGRAMME ***#
+         nDimSiz = DIMSIZ(dmAccType);
+         lCounter = 1;
+         WHILE (lCounter < nDimSiz);
+              sAccType = DIMNM(dmAccType, lCounter);
+               IF (DTYPE (dmAccType, sAccType) @= 'N');
+                    #**** CHECK IN ACCOUNT TEMPLATE CUBE IF VALUE HAS BEEN FLAGGED
+                    nAccGroup = CELLGETN (cbAccTemp, vsAccTemp, sRecType, sAccType, sAcc, sMA, 'flag');
+                    IF (nAccGroup <>0);
+                         CELLPUTN( 1, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, sAccType, vsAccTemp, sNewID, vsJur, sPerFlag, 'flag');
+                    ENDIF;
+               ENDIF;
+               lCounter = lCounter + 1;
+          END;
+     ENDIF;
+
+
+ELSE;
+
+#*** USING THE SAME ID (NOT A NEW ADJUSTMENt) ****#
+
+     # *** IF ITS CASH PAYMENTS THEN REMOVE ZERO CASH FLOW ***#
+    IF (SUBST(vsAccType,1,4) @= 'Cash');
+         CELLPUTS ('', cbID, curHLYear, curScenario, sNewID, 'zero cashflow account');
+    ENDIF;
+
+     #**** CHECK IF ITS ONLY 1 SUB PROGRAMME TO POPULATE 
+     IF (sOldProg @<> vsProg);
+     
+          CELLPUTS('multiple', cbID, curHLYear, curScenario, sNewID, snProg | ' code');
+          CELLPUTS('multiple', cbID, curHLYear, curScenario, sNewID, snProg | 'description');
+          CELLPUTS('multiple', cbID, curHLYear, curScenario, sNewID, 'outcome');
+          CELLPUTS('multiple', cbID, curHLYear, curScenario, sNewID, 'function');
+          CELLPUTS('multiple', cbID, curHLYear, curScenario, sNewID, 'SPP');
+          CELLPUTS('multiple', cbID, curHLYear, curScenario, sNewID, 'appropriation item');
+          CELLPUTS('multiple',cbID, curHLYear, curScenario, sNewID, 'appropriation type');
+
+     ENDIF;
+
+     #*** IF THE ACCOUNT TEMPLATE IS A COMPLIANCE DEBT ***#
+     IF (vsAccTemp @= 'Compliance Debt');
+          IF (vsAccType @= 'Expense');
+               vsAccType = 'Recognition';
+          ENDIF;
+
+         IF (vsAccType @= 'Cash Payment');
+               vsAccType = 'Cash Recoveries';
+          ENDIF;
+     ENDIF;
+
+     #*****************************************************************************************************************
+     #**** COPY VALUES INTO AE GROUP ADJUSTMENT CUBE 
+     IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sPY, 'value') = 1);
+          CELLPUTN (vnP00, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sPY, 'value');
+          CELLPUTN (vnP01, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sBY, 'value');
+          CELLPUTN (vnP02, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE1, 'value');
+          CELLPUTN (vnP03, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE2, 'value');
+          CELLPUTN (vnP04, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE3, 'value');
+          CELLPUTN (vnP05, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE4, 'value');
+          CELLPUTN (vnP06, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE5, 'value');
+          CELLPUTN (vnP07, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE6, 'value');
+          CELLPUTN (vnP08, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE7, 'value');
+          CELLPUTN (vnP09, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE8, 'value');
+          CELLPUTN (vnP10, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE9, 'value');
+          CELLPUTN (vnP11, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sNewID, vsJur, sFE10, 'value');
+     ENDIF;
+
+          #*** ADD GROUP LINE MAPPING FOR SELECTED ACCOUNT TEMPLATE AND PROGRAMME ***#
+
+         nDimSiz = DIMSIZ(dmAccType);
+         lCounter = 1;
+         WHILE (lCounter < nDimSiz);
+              sAccType = DIMNM(dmAccType, lCounter);
+               IF (DTYPE (dmAccType, sAccType) @= 'N');
+                    #**** CHECK IN ACCOUNT TEMPLATE CUBE IF VALUE HAS BEEN FLAGGED
+                    nAccGroup = CELLGETN (cbAccTemp, vsAccTemp, sRecType, sAccType, sAcc, sMA, 'flag');
+                    IF (nAccGroup <>0);
+                         CELLPUTN( 1, cbAE, curHLYear, curScenario, 'data', vsRE, vsMeasCode, vsProg, sAccType, vsAccTemp, sNewID, vsJur, sPerFlag, 'flag');
+                    ENDIF;
+               ENDIF;
+               lCounter = lCounter + 1;
+          END;
+
+
+     sNewID = sNewID;
+
+ENDIF;
+
+#************************************************************************************************************************************************************************************************
+     #*** DO A CHECK TO SEE IF WORKERS COMPENSATION JOURNAL IS REQUIRED ***#
+     sAccTemp = DIMENSIONELEMENTPRINCIPALNAME (dmAccTemp, vsAccTemp);
+     #IF (vsAccTemp @= 'Workers Compensation - External Entities');
+     IF ((sAccTemp @= '00024') & (vsReason @= 'Government decision or measure'));
+          nWorkersCompCheck = nWorkersCompCheck + 1;
+         ATTRPUTS ('Y', dmTmpID, sNewID, 'Workers Comp');
+     ENDIF;
+
+     sNewID = sNewID;
+    sOldVarNo = vsVarNo;
+
+#************************************************************************************************************************************************************************************************
+     #*** GENERATE A FLAT FILE FOR COSTINGS ***#
+     sLongAgencyCode = AttrS (dmRelEntity, sAgencyCode, 'description');
+     sLongProg = AttrS (dmProg, vsProg, 'code and description');
+     ASCIIOUTPUT(sFileName, vsCostingID, sLongAgencyCode, vsControlType, sAppropType, sAppropItem, sLongProg, sNewID);
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+sCheck = ATTRS(dmVar, 'sys_ImpFileValidation', 'value');
+
+#IF (nTotalValid <> 0);
+IF (sCheck @= 'PASS');
+     #*** CALL PROCESS TO SEND DATA TO AE ADJUSTMENTS CUBE ***#
+     EXECUTEPROCESS ('AE_Load Costings File 02 - Send data to AE Adj');
+ENDIF;
+
+##**** DESTROY TEMPORARY ID DIMENSION ***#
+IF(DimensionExists(dmTmpID)=0);
+	#DO NOTHING
+ELSE;
+	Dimensiondestroy (dmTmpID);
+ENDIF;
+
+#endregion

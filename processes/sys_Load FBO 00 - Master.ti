@@ -1,0 +1,362 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              sys_Load FBO 00 - Master
+#**** DESCRIPTION:       
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2023                EC             Initial Revision
+#****
+#***********************************************************************************************************************
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE CLIENT GROUPS CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbGroups = '}ClientGroups';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYS CLIENT FAVOURITE APPLICATION CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbFavApp = 'sys_client favourite application';
+dmApp = 'sys_application';
+dmFavAppMeas = 'sys_client favourite application measure';
+
+
+#------------------------------------------------------------------------
+#--- Update System Process Administration Cube
+#------------------------------------------------------------------------
+cbProc = 'sys_process administration';
+dmReturnProcCode = 'sys_process return codes';
+
+#--------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#--------------------------------------------------------------------------------------------------------
+sTM1User = TM1User();
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = SUBST(sUser, lScan, 9);
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+
+#--------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM VARIABLES
+#--------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sImpFilePath = ATTRS(dmVar, 'sys_CBMS Upload Directory', ' value');
+sFile = sImpFilePath | psFile;
+
+
+#--------Check File Location------#
+CellPutS('', cbClient,psUser, 'sys_ImpFileValidation', 'validate');
+CellPutS('', cbClient,psUser, 'sys_ImpFileValidation', 'value');
+
+IF(FileExists(sFile)=0);
+	CellPutS('Failed - Upload file path/name is invalid.', cbClient,psUser, 'sys_ImpFileValidation', 'validate');
+	CellPutS('Failed', cbClient,psUser, 'sys_ImpFileValidation', 'value');
+	ProcessQuit;	
+ENDIF;
+
+IF( psFBOAdjType @='');
+	CellPutS('Failed - Please select FBO Adjustments Type.', cbClient,psUser, 'sys_ImpFileValidation', 'validate');
+	CellPutS('Failed', cbClient,psUser, 'sys_ImpFileValidation', 'value');
+	ProcessQuit;
+ENDIF;
+
+
+#-----------------------------------------------------------------------------------------#
+#------CLEAR ALL 00FBO ADJUSTMENT IF NEEDED------#
+#----------------------------------------------------------------------------------------#
+#IF(psFBOAdjType @= 'Baseline - 00FBO' );
+	sPrc = 'sys_Load FBO 99 - Clear FBO Adjustments';
+	ExecuteProcess(sPrc,'psTargetHLYear', psTargetHLYear,'psProg',psProg);
+
+	#------------------------------------------------------------------
+	#--- Run Process To Update System Process Cube
+	#----------------------------------------------------------------
+	NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+	sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+	sProcessReturnCodeDesc = ATTRS (dmReturnProcCode, sProcessReturnCode, 'description');
+
+	IF (ProcessReturnCode = ProcessExitNormal() );
+		#-------------------------------------------------------------
+		#--- Process Completed Successfully
+		#-------------------------------------------------------------
+
+		CELLPUTN (1, cbProc, sPrc, 'completed flag');
+		CELLPUTS (sProcessReturnCode, cbProc, sPrc, 'error description');
+		CELLPUTS ('SUCCESS', cbProc, sPrc, 'status flag');
+	ELSE;
+		#-------------------------------------------------------------
+		#--- Process Completed With Errors
+		#-------------------------------------------------------------
+		CELLPUTN (1, cbProc, sPrc, 'error flag');
+		CELLPUTS (sProcessReturnCodeDesc, cbProc, sPrc, 'error description');
+		CELLPUTS ('FAILED', cbProc, sPrc, 'status flag');
+		ProcessQuit;
+	ENDIF;
+#ENDIF;
+
+IF (1=1);
+#--------------------------------------------------------------------#
+#------Load User modified CBMS AA flat File to CBMS-R FBO------#
+#--------------------------------------------------------------------#
+sPrc = 'sys_Load FBO 00 - Load to New Scenario';
+ExecuteProcess(sPrc,'psTargetHLYear', psTargetHLYear,'psTargetScenario','CBMS-R FBO','psTargetID', '0000A', 'psTargetProg',psProg,'psFile',psFile,'psPeriod',psPeriod);
+
+
+
+#------------------------------------------------------------------
+#--- Run Process To Update System Process Cube
+#----------------------------------------------------------------
+NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+sProcessReturnCodeDesc = ATTRS (dmReturnProcCode, sProcessReturnCode, 'description');
+
+IF (ProcessReturnCode = ProcessExitNormal() );
+	#-------------------------------------------------------------
+	#--- Process Completed Successfully
+	#-------------------------------------------------------------
+
+	CELLPUTN (1, cbProc, sPrc, 'completed flag');
+	CELLPUTS (sProcessReturnCode, cbProc, sPrc, 'error description');
+	CELLPUTS ('SUCCESS', cbProc, sPrc, 'status flag');
+ELSE;
+	#-------------------------------------------------------------
+	#--- Process Completed With Errors
+	#-------------------------------------------------------------
+	CELLPUTN (1, cbProc, sPrc, 'error flag');
+	CELLPUTS (sProcessReturnCodeDesc, cbProc, sPrc, 'error description');
+	CELLPUTS ('FAILED', cbProc, sPrc, 'status flag');
+
+	ProcessQuit;
+ENDIF;
+
+
+#--------------------------------------------------------------------#
+#------Load Operating Result
+#--------------------------------------------------------------------#
+sPrc = 'sys_Load FBO 00 (c) - Derive Equity - Operating Result';
+ExecuteProcess(sPrc,'psSourceHLYear', psSourceHLYear,'psSourceScenario','CBMS-R FBO', 'psTargetHLYear', psTargetHLYear, 'psProg',psProg,'psTargetScenario','CBMS-R FBO','psPeriod',psPeriod);
+
+
+ENDIF;
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------------#
+#------Generate FBO Adjustments FOR P/L C/F C/B and B/S with no Mvt Acc-------------------------#
+#------Source - CBMSR FBO Variance (C)/ 0000A----------------------------------------------------------------------#
+#------Target - CBMS-R FBO Adj/ 00FBO ----------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------------------------------------------------------------------------#
+sPrc = 'sys_Load FBO 01 - Create GEUS Variances';
+ExecuteProcess(sPrc,'psSourceHLyear', psSourceHLYear, 'psSourceScenario',psSourceScenario,'psTargetHLYear', psTargetHLYear,'psTargetScenario',psTargetScenario, 'psProg',psProg,'psPeriod',psPeriod);
+
+#------------------------------------------------------------------
+#--- Run Process To Update System Process Cube
+#----------------------------------------------------------------
+NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+sProcessReturnCodeDesc = ATTRS (dmReturnProcCode, sProcessReturnCode, 'description');
+
+IF (ProcessReturnCode = ProcessExitNormal() );
+	#-------------------------------------------------------------
+	#--- Process Completed Successfully
+	#-------------------------------------------------------------
+
+	CELLPUTN (1, cbProc, sPrc, 'completed flag');
+	CELLPUTS (sProcessReturnCode, cbProc, sPrc, 'error description');
+	CELLPUTS ('SUCCESS', cbProc, sPrc, 'status flag');
+ELSE;
+	#-------------------------------------------------------------
+	#--- Process Completed With Errors
+	#-------------------------------------------------------------
+	CELLPUTN (1, cbProc, sPrc, 'error flag');
+	CELLPUTS (sProcessReturnCodeDesc, cbProc, sPrc, 'error description');
+	CELLPUTS ('FAILED', cbProc, sPrc, 'status flag');
+
+	ProcessQuit;
+ENDIF;
+
+#------------------------------------------------------------------------------------------------------------------------------------------------#
+#------Generate FBO Adjustments FOR B/S Equity with Mvt Acc-------------------------#
+#------Source - CBMS-R FBO Ad (C)/ 00FBO----------------------------------------------------------------------#
+#------Target - CBMS-R FBO Adj/ 00FBO ----------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------------------------------------------------------------------------------#
+sPrc = 'sys_Load FBO 02 - Create GEUS Variances For Equity';
+ExecuteProcess(sPrc,
+	'psSourceHLyear', psSourceHLYear, 
+	'psSourceScenario',psTargetScenario, 
+	'psTargetHLYear', psTargetHLYear,
+	'psTargetScenario',psTargetScenario, 
+	'psProg',psProg,
+	'psPeriod',psPeriod);
+
+#------------------------------------------------------------------
+#--- Run Process To Update System Process Cube
+#----------------------------------------------------------------
+NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+sProcessReturnCodeDesc = ATTRS (dmReturnProcCode, sProcessReturnCode, 'description');
+
+IF (ProcessReturnCode = ProcessExitNormal() );
+	#-------------------------------------------------------------
+	#--- Process Completed Successfully
+	#-------------------------------------------------------------
+
+	CELLPUTN (1, cbProc, sPrc, 'completed flag');
+	CELLPUTS (sProcessReturnCode, cbProc, sPrc, 'error description');
+	CELLPUTS ('SUCCESS', cbProc, sPrc, 'status flag');
+ELSE;
+	#-------------------------------------------------------------
+	#--- Process Completed With Errors
+	#-------------------------------------------------------------
+	CELLPUTN (1, cbProc, sPrc, 'error flag');
+	CELLPUTS (sProcessReturnCodeDesc, cbProc, sPrc, 'error description');
+	CELLPUTS ('FAILED', cbProc, sPrc, 'status flag');
+
+	ProcessQuit;
+ENDIF;
+
+
+IF (1=1);
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+#------Generate FBO Adjustments FOR B/S with MA rolling to a New Mvt Acc (NFA) and B/S Account with Open Bal Account (Lease/Loan Liability--------------------#
+#------Source - CBMS-R FBO Ad (C)/ 00FBO-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+#------Target - CBMS-R FBO Adj/ 00FBO -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+sPrc = 'sys_Load FBO 03 - Create GEUS Variances For Other Accounts';
+ExecuteProcess(sPrc,
+	'psSourceHLyear', psSourceHLYear, 
+	'psSourceScenario',psTargetScenario, 
+	'psTargetHLYear', psTargetHLYear,
+	'psTargetScenario',psTargetScenario, 
+	'psProg',psProg,
+	'psPeriod',psPeriod);
+
+
+#------------------------------------------------------------------
+#--- Run Process To Update System Process Cube
+#----------------------------------------------------------------
+NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+sProcessReturnCodeDesc = ATTRS (dmReturnProcCode, sProcessReturnCode, 'description');
+
+IF (ProcessReturnCode = ProcessExitNormal() );
+	#-------------------------------------------------------------
+	#--- Process Completed Successfully
+	#-------------------------------------------------------------
+
+	CELLPUTN (1, cbProc, sPrc, 'completed flag');
+	CELLPUTS (sProcessReturnCode, cbProc, sPrc, 'error description');
+	CELLPUTS ('SUCCESS', cbProc, sPrc, 'status flag');
+ELSE;
+	#-------------------------------------------------------------
+	#--- Process Completed With Errors
+	#-------------------------------------------------------------
+	CELLPUTN (1, cbProc, sPrc, 'error flag');
+	CELLPUTS (sProcessReturnCodeDesc, cbProc, sPrc, 'error description');
+	CELLPUTS ('FAILED', cbProc, sPrc, 'status flag');
+
+	ProcessQuit;
+ENDIF;
+
+
+ENDIF;
+
+#-----------------------------------------------------------------------------------------------------#
+#------Transfer FBO adjustments to Current/00FBO-------------------------#
+#----------------------------------------------------------------------------------------------------#
+IF(psFBOAdjType @= 'Baseline - 00FBO');
+	sPrc = 'sys_Load FBO 04 - Upload GEUS Variances to Current 00FBO';
+	ExecuteProcess(sPrc,'psSourceHLyear', psTargetHLYear, 'psSourceScenario',psTargetScenario,'psTargetHLYear', psTargetHLYear,'psTargetScenario','Current', 'psProg',psProg,'psPeriod',psPeriod);
+ELSEIF(psFBOAdjType @= 'FBO Flatfile');
+	sPrc = 'sys_Load FBO 05 - Create FBO Flatfile';
+	ExecuteProcess(sPrc,'psSourceHLyear', psTargetHLYear, 'psSourceScenario',psTargetScenario, 'psProg',psProg,'psPeriod',psPeriod);
+ELSEIF(psFBOAdjType @= 'NewAdjustments');
+	sPrc = 'sys_Load FBO 06 - Create New Adjustment - ID';
+	ExecuteProcess(sPrc,'psSourceHLyear', psTargetHLYear, 'psSourceScenario',psTargetScenario, 'psProg',psProg,'psPeriod',psPeriod);
+	sPrc = 'sys_Load FBO 07 - Create New Adjustment - Data';
+	ExecuteProcess(sPrc,'psSourceHLyear', psTargetHLYear, 'psSourceScenario',psTargetScenario, 'psProg',psProg,'psPeriod',psPeriod);
+ELSE;
+
+ENDIF;
+
+
+#------------------------------------------------------------------
+#--- Run Process To Update System Process Cube
+#----------------------------------------------------------------
+NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+sProcessReturnCodeDesc = ATTRS (dmReturnProcCode, sProcessReturnCode, 'description');
+
+IF (ProcessReturnCode = ProcessExitNormal() );
+	#-------------------------------------------------------------
+	#--- Process Completed Successfully
+	#-------------------------------------------------------------
+
+	CELLPUTN (1, cbProc, sPrc, 'completed flag');
+	CELLPUTS (sProcessReturnCode, cbProc, sPrc, 'error description');
+	CELLPUTS ('SUCCESS', cbProc, sPrc, 'status flag');
+ELSE;
+	#-------------------------------------------------------------
+	#--- Process Completed With Errors
+	#-------------------------------------------------------------
+	CELLPUTN (1, cbProc, sPrc, 'error flag');
+	CELLPUTS (sProcessReturnCodeDesc, cbProc, sPrc, 'error description');
+	CELLPUTS ('FAILED', cbProc, sPrc, 'status flag');
+
+	ProcessError;
+ENDIF;
+
+
+
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

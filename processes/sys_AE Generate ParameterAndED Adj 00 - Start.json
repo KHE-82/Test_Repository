@@ -1,0 +1,39 @@
+{
+	"@type":"Process",
+	"Name":"sys_AE Generate ParameterAndED Adj 00 - Start",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_AE Generate ParameterAndED Adj 00 - Start.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"Admin",
+			"Type":"String"
+		},
+		{
+			"Name":"psProg",
+			"Prompt":"",
+			"Value":"Departmental Programmes",
+			"Type":"String"
+		},
+		{
+			"Name":"psAdjType",
+			"Prompt":"",
+			"Value":"parameter",
+			"Type":"String"
+		},
+		{
+			"Name":"psCreateAdjByMeasures",
+			"Prompt":"",
+			"Value":"Y",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561008640000"
+}

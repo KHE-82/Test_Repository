@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"sys_Queue - Delete Elements",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Queue - Delete Elements.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psQID",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561009150003"
+}

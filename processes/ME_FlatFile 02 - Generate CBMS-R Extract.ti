@@ -1,0 +1,536 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               ME_FlatFile 02 - Generate CBMS-R Extract
+#**** DESCRIPTION:       This process creates a view for the flatfile generation
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 14/12/2017    KG           Initial Revision - For DAFF
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+cbME = 'ME adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+cbID = 'ME id details';
+#---------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+cbProg = snProg | ' details';
+#---------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE EXTRACT CUBE
+cbProg = snProg | ' details';
+#---------------------------------------------------------------------------------------------------------------------------
+cbExtract = 'sys_ME extract';
+dmFFScenario = 'sys_flatfile scenario';
+dmID = 'id';
+dmRowID = 'sys_ME_extract row id';
+dmExtractMeas = 'sys_flatfile measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#--------------------------------------------------------------------------------------
+#*** DECLARE VARIABLES CUBE
+#--------------------------------------------------------------------------------------
+cbMEVar = 'sys_ME variable';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+sHLYear = CELLGETS (cbMEVar, 'ME_headline year','Value');
+curHLYear = ATTRS(dmVar, 'headline year', 'value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+sChangeStatus = 'CBMS';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     	sUser = ATTRS(dmClients, sUser, 'GEUS User Name');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+     	sUser = TM1User();
+ENDIF;
+
+
+sAEView = sUser | '_$MEFlatFileExtract';
+sFFScenario = 'upload';
+sStatus = 'approved';
+sExtractMeas = 'used';
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CREATE SOURCCE VIEW ***#
+#*****************************************************************************************************************************************************
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbExtract, sAEView);
+SUBSETDESTROY (dmClients, sAEView);
+SUBSETDESTROY (dmFFScenario, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmRowID, sAEView);
+SUBSETDESTROY (dmExtractMeas, sAEView);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS****#
+#---------------------------------------------------------------------------------------------------------------------------
+
+# Client
+SubsetCreate(dmClients, sAEView);
+SubsetElementInsert(dmClients, sAEView, sUser, 1);
+
+# FF Scenario
+SubsetCreate(dmFFScenario, sAEView);
+SubsetElementInsert(dmFFScenario, sAEView, sFFScenario, 1);
+
+# ID
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmID | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+#SUBSETMDXSET (dmID, sAEView, MDX);
+
+# Row ID
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRowID | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+#SUBSETMDXSET (dmRowID, sAEView, MDX);
+
+
+# Extract Measure
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmExtractMeas | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sAEView, MDX);
+#SUBSETMDXSET (dmExtractMeas, sAEView, MDX);
+
+SubsetCreate(dmExtractMeas, sAEView);
+SubsetElementInsert(dmExtractMeas, sAEView, sExtractMeas, 1);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****BUILD VIEW****#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbExtract, sAEView);
+VIEWSUBSETASSIGN (cbExtract, sAEView, dmClients, sAEView);
+VIEWSUBSETASSIGN (cbExtract, sAEView, dmFFScenario, sAEView);
+VIEWSUBSETASSIGN (cbExtract, sAEView, dmRowID, sAEView);
+VIEWSUBSETASSIGN (cbExtract, sAEView, dmID, sAEView);
+VIEWSUBSETASSIGN (cbExtract, sAEView, dmExtractMeas, sAEView);
+
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbExtract, sAEView, 1);
+ViewSuppressZeroesSet(cbExtract, sAEView, 1);
+ViewExtractSkipCalcsSet(cbExtract, sAEView, 1);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- OUTPUT FILE DETAILS
+#---------------------------------------------------------------------------------------------------------------------------
+
+# **** GET DATE VALUES ***#
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+sHNow = TimST (Now, '\h');
+sMinNow = TimST (Now, '\i');
+sSNow = TimST (Now, '\s');
+ 
+sDay = TRIM(SUBST(sDNow, 1,2));
+ 
+IF (LONG (sDay) = 1);
+     sDay = '0' | sDay;
+ELSE;
+     sDay = sDay;
+ENDIF;
+ 
+sMonth = TRIM(SUBST(sMNow, 1,2));
+ 
+IF (LONG (sMonth) = 1);
+     sMonth = '0' | sMonth;
+ELSE;
+     sMonth = sMonth;
+ENDIF;
+ 
+sYear = TRIM(SUBST(sYNow, 1,4));
+ 
+sNow = sYear | sMonth | sDay | sHNow | sMinNow | sSNow ;
+#sSaveLocation =  ATTRS(dmVar, 'save location', 'value');
+
+sSaveLocation = CellGetS(cbMEVar,'sys_ME ExportDirectory','value');
+ 
+sOutputFile = sSaveLocation | sUser | ' cbmsr ME flatfile for ' | psHLYear | ' ' | sNow | '.csv';
+sOutputFile1 = sUser | ' cbmsr ME flatfile for ' | psHLYear | ' ' | sNow | '.csv';
+
+lHeadercounter = 0;
+
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sAEView;
+
+
+#-----------------------------------------------------------------------------------------------------------
+#--- The following line of code removes double quotes on extract files
+#--- This may be required for CBMS-R flatfiles
+#-----------------------------------------------------------------------------------------------------------
+
+DataSourceAsciiQuoteCharacter='';
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------------------------------------------
+#**** GET METADATA
+#---------------------------------------------------------------------------------------------------------------------------
+sPeriod = CELLGETS (cbExtract, vsClient, sFFScenario, vsID, vsRowID, 'month');
+sProg = CELLGETS (cbExtract, vsClient, sFFScenario, vsID, vsRowID, 'programme');
+sReason = CELLGETS (cbExtract, vsClient, sFFScenario, vsID, vsRowID, 'reason');
+
+IF (DIMIX (dmReason, sReason) <> 0);
+	sReason = DIMENSIONELEMENTPRINCIPALNAME (dmReason, sReason);
+	sReason = ATTRS (dmReason, sReason, 'CBMS reason code');
+ELSE;
+	sReason = sReason;
+ENDIF;
+
+sAcc  = CELLGETS (cbExtract, vsClient, sFFScenario, vsID, vsRowID, 'account');
+sRE = CELLGETS (cbExtract, vsClient, sFFScenario, vsID, vsRowID, 'related entity');
+sSPP = CELLGETS (cbExtract, vsClient, sFFScenario, vsID, vsRowID, 'spp');
+sAppropriation = CELLGETS (cbExtract, vsClient, sFFScenario, vsID, vsRowID, 'appropriation');
+
+IF (DIMIX (dmItem, sAppropriation) <> 0);
+	sAppropriation = DIMENSIONELEMENTPRINCIPALNAME (dmItem, sAppropriation);
+ELSE;
+	sAppropriation = sAppropriation;
+ENDIF;
+sJur = CELLGETS (cbExtract, vsClient, sFFScenario, vsID, vsRowID, 'jurisdiction');
+sMA = CELLGETS (cbExtract, vsClient, sFFScenario, vsID, vsRowID, 'Movement account');
+sMeasCode = CELLGETS (cbExtract, vsClient, sFFScenario, vsID, vsRowID, 'measure');
+sTitle = TRIM(SUBST(CELLGETS (cbExtract, vsClient, sFFScenario, vsID, vsRowID, 'title'),1,60));
+sDesc = CELLGETS (cbExtract, vsClient, sFFScenario, vsID, vsRowID, 'cmt_justification');
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------
+#---- PATCH TO REMOVE BAD CHARACTERS FROM TITLE/ADJ DESCRIPTION
+#---- OCTOBER 2017 - BY EXCELERATED CONSULTING
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#------------------------------------------------
+#--- BRACK REMOVAL IS CURRENTLY DISABLED
+#--- SEE 1 = 0 IN IF STATEMENT
+#------------------------------------------------
+IF (1 = 0);
+	nLenTitle = LONG (TRIM (sTitle));
+
+	#------------------------------------------------------------------
+	#--- SCAN FOR BAD CHARACTER
+	#--- LEFT OPEN BRACKET
+	#------------------------------------------------------------------
+	sBadChar = '(';
+	lCounter = 1;
+	nBadSCAN = SCAN(sBadChar, sTitle);
+	IF (nBadScan <> 0);
+		WHILE (nBadSCAN <> 0);
+			#----------------------------------------------------------
+			#--- Remove Open Bracket
+			#----------------------------------------------------------
+			IF (nBadSCAN = 1);
+				sTitle = TRIM(SUBST (sTitle, 2, nLenTitle));
+			ELSE;
+				sTitle = TRIM (SUBST(sTitle, 1, nBadSCAN - 1) | SUBST (sTitle, nBadSCAN + 1, nLenTitle)); 
+			ENDIF;
+			nBadSCAN = SCAN (sBadChar, sTitle);
+			lCounter = lCounter + 1;
+		END;	
+	ENDIF;
+
+
+	#------------------------------------------------------------------
+	#--- SCAN FOR BAD CHARACTER
+	#--- RIGHT CLOSED BRACKET
+	#------------------------------------------------------------------
+	nLenTitle = LONG (TRIM (sTitle));
+	sBadChar = ')';
+	lCounter = 1;
+	nBadSCAN = SCAN(sBadChar, sTitle);
+	IF (nBadScan <> 0);
+		WHILE (nBadSCAN <> 0);
+			#----------------------------------------------------------
+			#--- Remove Open Bracket
+			#----------------------------------------------------------
+			IF (nBadSCAN = 1);
+				sTitle = TRIM(SUBST (sTitle, 2, nLenTitle));
+			ELSE;
+				sTitle = TRIM (SUBST(sTitle, 1, nBadSCAN - 1) | SUBST (sTitle, nBadSCAN + 1, nLenTitle)); 
+			ENDIF;
+			nBadSCAN = SCAN (sBadChar, sTitle);
+			lCounter = lCounter + 1;
+		END;	
+	ENDIF;
+
+ENDIF;
+
+#------------------------------------------------------------------
+#--- SCAN FOR BAD CHARACTER
+#--- SEMI COLON
+#------------------------------------------------------------------
+nLenTitle = LONG (TRIM (sTitle));
+sBadChar = ';';
+lCounter = 1;
+nBadSCAN = SCAN(sBadChar, sTitle);
+IF (nBadScan <> 0);
+	WHILE (nBadSCAN <> 0);
+		#----------------------------------------------------------
+		#--- Remove Open Bracket
+		#----------------------------------------------------------
+		IF (nBadSCAN = 1);
+			sTitle = TRIM(SUBST (sTitle, 2, nLenTitle));
+		ELSE;
+			sTitle = TRIM (SUBST(sTitle, 1, nBadSCAN - 1) | SUBST (sTitle, nBadSCAN + 1, nLenTitle)); 
+		ENDIF;
+		nBadSCAN = SCAN (sBadChar, sTitle);
+		lCounter = lCounter + 1;
+	END;	
+ENDIF;
+#------------------------------------------------------------------
+#--- SCAN FOR BAD CHARACTER
+#--- COMMA
+#------------------------------------------------------------------
+nLenTitle = LONG (TRIM (sTitle));
+sBadChar = ',';
+lCounter = 1;
+nBadSCAN = SCAN(sBadChar, sTitle);
+IF (nBadScan <> 0);
+	WHILE (nBadSCAN <> 0);
+		#----------------------------------------------------------
+		#--- Remove Open Bracket
+		#----------------------------------------------------------
+		IF (nBadSCAN = 1);
+			sTitle = TRIM(SUBST (sTitle, 2, nLenTitle));
+		ELSE;
+			sTitle = TRIM (SUBST(sTitle, 1, nBadSCAN - 1) | SUBST (sTitle, nBadSCAN + 1, nLenTitle)); 
+		ENDIF;
+		nBadSCAN = SCAN (sBadChar, sTitle);
+		lCounter = lCounter + 1;
+	END;	
+ENDIF;
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------
+#---- PATCH TO REMOVE BAD CHARACTERS FROM DESCRIPTION/CMT JUSTIFICATION
+#---- OCTOBER 2017 - BY EXCELERATED CONSULTING
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#------------------------------------------------
+#--- BRACK REMOVAL IS CURRENTLY DISABLED
+#--- SEE 1 = 0 IN IF STATEMENT
+#------------------------------------------------
+IF (1 = 0);
+
+	nLenDesc = LONG (TRIM (sDesc));
+	#------------------------------------------------------------------
+	#--- SCAN FOR BAD CHARACTER
+	#--- LEFT OPEN BRACKET
+	#------------------------------------------------------------------
+	sBadChar = '(';
+	lCounter = 1;
+	nBadSCAN = SCAN(sBadChar, sDesc);
+	IF (nBadScan <> 0);
+		WHILE (nBadSCAN <> 0);
+			#----------------------------------------------------------
+			#--- Remove Open Bracket
+			#----------------------------------------------------------
+			IF (nBadSCAN = 1);
+				sDesc = TRIM(SUBST (sDesc, 2, nLenDesc));
+			ELSE;
+				sDesc = TRIM (SUBST(sDesc, 1, nBadSCAN - 1) | SUBST (sDesc, nBadSCAN + 1, nLenDesc)); 
+			ENDIF;
+			nBadSCAN = SCAN (sBadChar, sDesc);
+			lCounter = lCounter + 1;
+		END;	
+	ENDIF;
+
+
+	#------------------------------------------------------------------
+	#--- SCAN FOR BAD CHARACTER
+	#--- RIGHT CLOSED BRACKET
+	#------------------------------------------------------------------
+	nLenDesc = LONG (TRIM (sDesc));
+	sBadChar = ')';
+	lCounter = 1;
+	nBadSCAN = SCAN(sBadChar, sDesc);
+	IF (nBadScan <> 0);
+		WHILE (nBadSCAN <> 0);
+			#----------------------------------------------------------
+			#--- Remove Open Bracket
+			#----------------------------------------------------------
+			IF (nBadSCAN = 1);
+				sDesc = TRIM(SUBST (sDesc, 2, nLenDesc));
+			ELSE;
+				sDesc = TRIM (SUBST(sDesc, 1, nBadSCAN - 1) | SUBST (sDesc, nBadSCAN + 1, nLenDesc)); 
+			ENDIF;
+			nBadSCAN = SCAN (sBadChar, sDesc);
+			lCounter = lCounter + 1;
+		END;	
+	ENDIF;
+ENDIF;
+
+#------------------------------------------------------------------
+#--- SCAN FOR BAD CHARACTER
+#--- SEMI COLON
+#------------------------------------------------------------------
+nLenDesc = LONG (TRIM (sDesc));
+sBadChar = ';';
+lCounter = 1;
+nBadSCAN = SCAN(sBadChar, sDesc);
+IF (nBadScan <> 0);
+	WHILE (nBadSCAN <> 0);
+		#----------------------------------------------------------
+		#--- Remove Open Bracket
+		#----------------------------------------------------------
+		IF (nBadSCAN = 1);
+			sDesc = TRIM(SUBST (sDesc, 2, nLenDesc));
+		ELSE;
+			sDesc = TRIM (SUBST(sDesc, 1, nBadSCAN - 1) | SUBST (sDesc, nBadSCAN + 1, nLenDesc)); 
+		ENDIF;
+		nBadSCAN = SCAN (sBadChar, sDesc);
+		lCounter = lCounter + 1;
+	END;	
+ENDIF;
+#------------------------------------------------------------------
+#--- SCAN FOR BAD CHARACTER
+#--- COMMA
+#------------------------------------------------------------------
+nLenDesc = LONG (TRIM (sDesc));
+sBadChar = ',';
+lCounter = 1;
+nBadSCAN = SCAN(sBadChar, sDesc);
+IF (nBadScan <> 0);
+	WHILE (nBadSCAN <> 0);
+		#----------------------------------------------------------
+		#--- Remove Open Bracket
+		#----------------------------------------------------------
+		IF (nBadSCAN = 1);
+			sDesc = TRIM(SUBST (sDesc, 2, nLenDesc));
+		ELSE;
+			sDesc = TRIM (SUBST(sDesc, 1, nBadSCAN - 1) | SUBST (sDesc, nBadSCAN + 1, nLenDesc)); 
+		ENDIF;
+		nBadSCAN = SCAN (sBadChar, sDesc);
+		lCounter = lCounter + 1;
+	END;	
+ENDIF;
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+sRBVal = CELLGETS (cbExtract, vsClient, sFFScenario, vsID, vsRowID, 'ytd amount');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#**** Identify Columns of extract file
+#---- sCol01 = AccountingPeriod
+#---- sCol02 = Programme
+#---- sCol03 = Account
+#---- sCol04 = Related Entity
+#---- sCol05 = SPP
+#---- sCol06 = Appropriation
+#---- sCol07 = Jurisdiction
+#---- sCol08 = Movement Account
+#---- sCol09 = Title
+#---- sCol10 = Cmt Justification
+#---- sCol11 = RB
+#---- sCol12 = Reason
+#---------------------------------------------------------------------------------------------------------------------------
+
+sCol01 = sPeriod;
+sCol02 = sProg;
+sCol03 = sAcc;
+sCol04 = sRE;
+sCol05 = sSPP;
+sCol06 = sAppropriation;
+sCol07 = sJur;
+sCol08 = sMA;
+sCol09 = sTitle;
+sCol10 = sDesc;
+sCol11 = sRBVal;
+sCol12 = sReason;
+
+IF (lHeaderCounter = 0);
+	ASCIIOUTPUT (sOutputFile, 'Month' , 'Program' , 'Account' , 'Related Agency' , 'SPP' , 'Appropriation' , 'Jurisdiction' , 'Movement Account' , 'Adjustment Description'  , 'Cmt_Justification' , 'YTD Amount' , 'Reason Code');
+	#ASCIIOUTPUT (sOutputFile1, 'Month' , 'Program' , 'Account' , 'Related Agency' , 'SPP' , 'Appropriation' , 'Jurisdiction' , 'Movement Account' , 'Adjustment Description'  , 'Cmt_Justification' , 'YTD Amount' , 'Reason Code');
+ENDIF;
+
+
+ASCIIOUTPUT (sOutputFile, sCol01, sCol02, sCol03, sCol04, sCol05, sCol06, sCol07, sCol08, sCol09, sCol10, sCol11, sCol12);
+#ASCIIOUTPUT (sOutputFile1, sCol01, sCol02, sCol03, sCol04, sCol05, sCol06, sCol07, sCol08, sCol09, sCol10, sCol11, sCol12);
+
+lHeaderCounter = lHeaderCounter + 1;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbExtract, sAEView);
+SUBSETDESTROY (dmClients, sAEView);
+SUBSETDESTROY (dmFFScenario, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmRowID, sAEView);
+SUBSETDESTROY (dmExtractMeas, sAEView);
+
+#endregion

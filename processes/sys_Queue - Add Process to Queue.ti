@@ -1,0 +1,366 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               	sys_Queue - Add Process to Queue 
+#**** DESCRIPTION:       	This process will will be called by other processes to queue up TIs
+#****	                                 It can be used to stop specific processes starting before the previous 
+#****	                                 one has completed. 
+#****
+#****	                                  e.g. to call the process "test proc" with the parameters psID and psYear:
+#****
+#**** PARAMETERS:               psTI          - The name of the process to call
+#****                                          psParams  - The list of parameterf of the called process in the format:
+#****                                                               param1;value1|param2;value2
+#****                                          psAll          - 'Y' means wait behind all processes in the queue
+#****                                                              otherwise just wait behind instances of this same process.
+#****
+#****                                          sQProc = 'sys_Queue - Add Process to Queue';
+#****                                          sProc = 'test proc';
+#****                                          sID = 'psID';
+#****                                          sYear = 'psYear';
+#****                                          
+#****                                          ExecuteProcess (sQProc,
+#****                                                                     'psTI', sProc,
+#****                                                                     'psParams', 'psID;' | sID | '|psYear;' | sYear);
+#****                                           
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 14/06/2015    MJM          Initial Revision
+#***********************************************************************************************************************
+
+#--- Dimensions
+#-----------------------
+dmQ = '}TI_Queue';
+
+IF (DIMENSIONEXISTS (dmQ) = 0);
+	DIMENSIONCREATE (dmQ);
+ENDIF;
+
+#--- Other variables
+#----------------------------
+sUser = TM1User ();
+sQID = TimSt (Now (), '\y\m\d\h\i\s') | '_' | psTI | '_' | sUser;
+sParamSep = '|';
+sSplitSep = ';';
+sAll = Upper (psAll);
+nLen = Long (psTI) + 1;
+
+#--- Add ID to Queue
+#-------------------------------
+sLast = DimNm (dmQ, DimSiz (dmQ));
+sInsertproc = 'sys_Queue - Add Element Process to Dimension';
+
+ExecuteProcess (sInsertProc,
+                            'psQID', sQID);
+
+#DimensionElementInsertDirect (dmQ, sLast, sQID, 'N');
+
+#--- NOTE: The rest of this process is in the Epilog to
+#--- make sure the element is committed in the queue
+#---------------------------------------------------------------------------------
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#--- Now start waiting
+#--------------------------------
+If (sAll @= 'Y');
+      #--- Waiting til we are at the top of the queue
+      #--------------------------------------------------------------------
+      sCurrent = DimNm (dmQ, 1);
+Else;
+      #--- Waiting til we are at the top of the queue for this particular process
+      #-------------------------------------------------------------------------------------------------------------
+      nIdx = 1;
+      nCount = DimSiz (dmQ);
+
+      While (nIdx <= nCount);
+            sCurrent = DimNm (dmQ, nIdx);
+
+            If (SubSt (sCurrent, 14, nLen) @= psTI | '_');
+                  Break;
+            EndIf;
+
+            nIdx = nIdx +1;
+      End;
+EndIf;
+
+While (sQID @<> sCurrent);
+#      Sleep (1000);
+      Sleep (300);
+
+      If (sAll @= 'Y');
+            #--- Waiting til we are at the top of the queue
+            #--------------------------------------------------------------------
+            sCurrent = DimNm (dmQ, 1);
+      Else;
+            #--- Waiting til we are at the top of the queue for this particular process
+            #-------------------------------------------------------------------------------------------------------------
+            nIdx = 1;
+            nCount = DimSiz (dmQ);
+
+            While (nIdx <= nCount);
+                  sCurrent = DimNm (dmQ, nIdx);
+
+                  If (SubSt (sCurrent, 14, nLen) @= psTI | '_');
+                        Break;
+                  EndIf;
+
+                  nIdx = nIdx +1;
+            End;
+      EndIf;
+End;
+
+#--- Break up and count the parameters
+#--- We'll except up to 8
+#------------------------------------------------------------
+sRest = psParams;
+sParams = '';
+nParamCount = 0;
+
+If (sRest @<> '');
+      nIdx = Scan (sParamSep, sRest);
+
+      If (nIdx <> 0);
+            sParam = Trim (SubSt (sRest, 1, nIdx -1));
+            sRest = Trim (SubSt (sRest, nIdx +1, Long (sRest)));
+      Else;
+            sParam = sRest;
+            sRest = '';
+      EndIf;
+
+      nIdx2 = Scan (sSplitSep, sParam);
+
+      If (nIdx2 <> 0);
+            sParam1 = Trim (SubSt (sParam, 1, nIdx2 -1));
+            sVal1 = Trim (SubSt (sParam, nIdx2 +1, Long (sParam)));
+            nParamCount = nParamCount +1;
+      EndIf;
+EndIf;
+
+If (sRest @<> '');
+      nIdx = Scan (sParamSep, sRest);
+
+      If (nIdx <> 0);
+            sParam = Trim (SubSt (sRest, 1, nIdx -1));
+            sRest = Trim (SubSt (sRest, nIdx +1, Long (sRest)));
+      Else;
+            sParam = sRest;
+            sRest = '';
+      EndIf;
+
+      nIdx2 = Scan (sSplitSep, sParam);
+
+      If (nIdx2 <> 0);
+            sParam2 = Trim (SubSt (sParam, 1, nIdx2 -1));
+            sVal2 = Trim (SubSt (sParam, nIdx2 +1, Long (sParam)));
+            nParamCount = nParamCount +1;
+      EndIf;
+EndIf;
+
+If (sRest @<> '');
+      nIdx = Scan (sParamSep, sRest);
+
+      If (nIdx <> 0);
+            sParam = Trim (SubSt (sRest, 1, nIdx -1));
+            sRest = Trim (SubSt (sRest, nIdx +1, Long (sRest)));
+      Else;
+            sParam = sRest;
+            sRest = '';
+      EndIf;
+
+      nIdx2 = Scan (sSplitSep, sParam);
+
+      If (nIdx2 <> 0);
+            sParam3 = Trim (SubSt (sParam, 1, nIdx2 -1));
+            sVal3 = Trim (SubSt (sParam, nIdx2 +1, Long (sParam)));
+            nParamCount = nParamCount +1;
+      EndIf;
+EndIf;
+
+If (sRest @<> '');
+      nIdx = Scan (sParamSep, sRest);
+
+      If (nIdx <> 0);
+            sParam = Trim (SubSt (sRest, 1, nIdx -1));
+            sRest = Trim (SubSt (sRest, nIdx +1, Long (sRest)));
+      Else;
+            sParam = sRest;
+            sRest = '';
+      EndIf;
+
+      nIdx2 = Scan (sSplitSep, sParam);
+
+      If (nIdx2 <> 0);
+            sParam4 = Trim (SubSt (sParam, 1, nIdx2 -1));
+            sVal4 = Trim (SubSt (sParam, nIdx2 +1, Long (sParam)));
+            nParamCount = nParamCount +1;
+      EndIf;
+EndIf;
+
+If (sRest @<> '');
+      nIdx = Scan (sParamSep, sRest);
+
+      If (nIdx <> 0);
+            sParam = Trim (SubSt (sRest, 1, nIdx -1));
+            sRest = Trim (SubSt (sRest, nIdx +1, Long (sRest)));
+      Else;
+            sParam = sRest;
+            sRest = '';
+      EndIf;
+
+      nIdx2 = Scan (sSplitSep, sParam);
+
+      If (nIdx2 <> 0);
+            sParam5 = Trim (SubSt (sParam, 1, nIdx2 -1));
+            sVal5 = Trim (SubSt (sParam, nIdx2 +1, Long (sParam)));
+            nParamCount = nParamCount +1;
+      EndIf;
+EndIf;
+
+If (sRest @<> '');
+      nIdx = Scan (sParamSep, sRest);
+
+      If (nIdx <> 0);
+            sParam = Trim (SubSt (sRest, 1, nIdx -1));
+            sRest = Trim (SubSt (sRest, nIdx +1, Long (sRest)));
+      Else;
+            sParam = sRest;
+            sRest = '';
+      EndIf;
+
+      nIdx2 = Scan (sSplitSep, sParam);
+
+      If (nIdx2 <> 0);
+            sParam6 = Trim (SubSt (sParam, 1, nIdx2 -1));
+            sVal6 = Trim (SubSt (sParam, nIdx2 +1, Long (sParam)));
+            nParamCount = nParamCount +1;
+      EndIf;
+EndIf;
+
+If (sRest @<> '');
+      nIdx = Scan (sParamSep, sRest);
+
+      If (nIdx <> 0);
+            sParam = Trim (SubSt (sRest, 1, nIdx -1));
+            sRest = Trim (SubSt (sRest, nIdx +1, Long (sRest)));
+      Else;
+            sParam = sRest;
+            sRest = '';
+      EndIf;
+
+      nIdx2 = Scan (sSplitSep, sParam);
+
+      If (nIdx2 <> 0);
+            sParam7 = Trim (SubSt (sParam, 1, nIdx2 -1));
+            sVal7 = Trim (SubSt (sParam, nIdx2 +1, Long (sParam)));
+            nParamCount = nParamCount +1;
+      EndIf;
+EndIf;
+
+If (sRest @<> '');
+      nIdx = Scan (sParamSep, sRest);
+
+      If (nIdx <> 0);
+            sParam = Trim (SubSt (sRest, 1, nIdx -1));
+            sRest = Trim (SubSt (sRest, nIdx +1, Long (sRest)));
+      Else;
+            sParam = sRest;
+            sRest = '';
+      EndIf;
+
+      nIdx2 = Scan (sSplitSep, sParam);
+
+      If (nIdx2 <> 0);
+            sParam8 = Trim (SubSt (sParam, 1, nIdx2 -1));
+            sVal8 = Trim (SubSt (sParam, nIdx2 +1, Long (sParam)));
+            nParamCount = nParamCount +1;
+      EndIf;
+EndIf;
+
+#--- Run the process
+#-------------------------------
+If (nParamCount = 0);
+      ExecuteProcess (psTI);
+ElseIf (nParamCount = 1);
+      ExecuteProcess (psTI,
+                                  sParam1, sVal1);
+ElseIf (nParamCount = 2);
+      ExecuteProcess (psTI,
+                                  sParam1, sVal1,
+                                  sParam2, sVal2);
+ElseIf (nParamCount = 3);
+      ExecuteProcess (psTI,
+                                  sParam1, sVal1,
+                                  sParam2, sVal2,
+                                  sParam3, sVal3);
+ElseIf (nParamCount = 4);
+      ExecuteProcess (psTI,
+                                  sParam1, sVal1,
+                                  sParam2, sVal2,
+                                  sParam3, sVal3,
+                                  sParam4, sVal4);
+ElseIf (nParamCount = 5);
+      ExecuteProcess (psTI,
+                                  sParam1, sVal1,
+                                  sParam2, sVal2,
+                                  sParam3, sVal3,
+                                  sParam4, sVal4,
+                                  sParam5, sVal5);
+ElseIf (nParamCount = 6);
+      ExecuteProcess (psTI,
+                                  sParam1, sVal1,
+                                  sParam2, sVal2,
+                                  sParam3, sVal3,
+                                  sParam4, sVal4,
+                                  sParam5, sVal5,
+                                  sParam6, sVal6);
+ElseIf (nParamCount = 7);
+      ExecuteProcess (psTI,
+                                  sParam1, sVal1,
+                                  sParam2, sVal2,
+                                  sParam3, sVal3,
+                                  sParam4, sVal4,
+                                  sParam5, sVal5,
+                                  sParam6, sVal6,
+                                  sParam7, sVal7);
+ElseIf (nParamCount = 8);
+      ExecuteProcess (psTI,
+                                  sParam1, sVal1,
+                                  sParam2, sVal2,
+                                  sParam3, sVal3,
+                                  sParam4, sVal4,
+                                  sParam5, sVal5,
+                                  sParam6, sVal6,
+                                  sParam7, sVal7,
+                                  sParam8, sVal8);
+EndIf;
+
+#--- Now remove it from the queue
+#--- Even if the process failed.
+#----------------------------------------------------
+sProcess = 'sys_Queue - Delete Elements';
+EXECUTEPROCESS (sProcess, 'psQID', sQID);
+
+#endregion

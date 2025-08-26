@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"}src_export",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"}src_export.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pOutputDir",
+			"Prompt":"Directory to output files",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561009220008"
+}

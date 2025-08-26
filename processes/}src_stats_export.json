@@ -1,0 +1,33 @@
+{
+	"@type":"Process",
+	"Name":"}src_stats_export",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"}src_stats_export.ti",
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForServer":"}PerfCubes",
+		"dataSourceNameForClient":"}PerfCubes",
+		"subset":"All"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pOutputDir",
+			"Prompt":"Directory to export to",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vCubeName",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "17561009220009"
+}

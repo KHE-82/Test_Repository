@@ -1,0 +1,661 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              sys_AE_Parameters 04 - FE3 Step 03 - Update Existing FE3
+#**** DESCRIPTION:       This process reverses adjustment data from that has values in the FE3 field
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 12/05/2014    KG             Initial Revision
+#**** 2019	KG	Update for NEW GEUS
+#***********************************************************************************************************************
+#  
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CALCULATION CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+cbFE3 = 'AE parameters and FE3 calculation';
+dmFE3Meas = 'AE parameters and FE3 calculation measure';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+
+curHLYear = ATTRS(dmVar, 'headline year', 'value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+sView = sUser | '_$FE3Step03';
+sSubset = sView;
+
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED FOR VIEWS
+#******************************************************************************************************************
+sStatus = 'Total approved';
+sSPP = 'Total SPP';
+sReason = 'Total reason';
+sRE = 'Total related entity';
+sJur = 'Total jurisdictions';
+sTotalMA = 'Total movement';
+sItem = 'Total approp item';
+sOC = 'Total outcomes';
+sFunc = 'Total functions';
+sType = 'Total approp types';
+sID = 'Total IDs';
+
+#******************************************************************************************************************
+#*** DEFAULT POSTING DATA
+#******************************************************************************************************************
+sNewStatus = 'data';
+sPostStatus = 'unuthorised';
+sManualCF = '';
+sAdjType = 'Generated';
+sMeas = 'original value';
+sSourceMeas = 'FE3 Calculation value';
+sMeas = sSourceMeas;
+sFE3Step1Meas = 'step 1 value';
+sFE3Meas = 'step 3 value';
+
+#----------------------------------------------------------
+#--- GET Periods to transfer data
+#----------------------------------------------------------
+sRBPeriod = DIMNM(dmPer,DIMIX(dmPer, psFE3Year) - 4);
+sNBPeriod = DIMNM(dmPer,DIMIX(dmPer, psFE3Year) -3);
+sFE1Period = DIMNM(dmPer,DIMIX(dmPer, psFE3Year) -2);
+sFE2Period = psFE2Year;
+sFE3Period = psFE3Year;
+
+
+#-------------------------------------------------
+#--- sPYPeriod is sFE1Period
+#-------------------------------------------------
+#sPYPeriod = DIMNM(dmPer,DIMIX(dmPer, psFE3Year) -2);
+
+#***********************************************************************************************************************
+#***********************************************************************************************************************
+#*** STEP 1 - DELETE DATA FROM AE FE3 CALCULATION CUBE
+#***********************************************************************************************************************
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbFE3, sView);
+
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmSPP, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmJur, sView);
+SUBSETDESTROY (dmItem, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmPer, sView);
+SUBSETDESTROY (dmFE3Meas, sView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** CREATE SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+# Programme
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmProg | '].[' | psProg | '] }, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmProg, sView, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Movement account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Appropriation item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Measure Code
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# ID
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmID | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Period
+SUBSETCREATE (dmPer, sView);
+SUBSETELEMENTINSERT (dmPer, sView, sRBPeriod, 1);
+SUBSETELEMENTINSERT (dmPer, sView, sNBPeriod, 2);
+SUBSETELEMENTINSERT (dmPer, sView, sFE1Period, 3);
+SUBSETELEMENTINSERT (dmPer, sView, sFE2Period, 4);
+SUBSETELEMENTINSERT (dmPer, sView, sFE3Period, 5);
+
+# Measure
+SUBSETCREATE (dmFE3Meas, sView);
+SUBSETELEMENTINSERT (dmFE3Meas, sView, sFE3Meas, 1);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** CREATE VIEW
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbFE3, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmProg, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmSPP, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmAcc, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmMA, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmRE, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmJur, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmItem, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmMeasCode, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmID, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmPer, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmFE3Meas, sView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** ZERO OUT CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWZEROOUT (cbFE3, sView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbFE3, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmSPP, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmJur, sView);
+SUBSETDESTROY (dmItem, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmPer, sView);
+SUBSETDESTROY (dmFE3Meas, sView);
+
+
+#***********************************************************************************************************************
+#--- STEP 2 - CREATE SOURCE VIEW
+#***********************************************************************************************************************
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbFE3, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmSPP, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmJur, sView);
+SUBSETDESTROY (dmItem, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmPer, sView);
+SUBSETDESTROY (dmFE3Meas, sView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** CREATE SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+# Programme
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmProg | '].[' | psProg | '] }, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmProg, sView, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Movement account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Appropriation item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Measure Code
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+MDX = '{ EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}, { [' | dmMeasCode | '].[M00000] }) }';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# ID
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmID | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+#SUBSETCREATE (dmID, sView);
+#SUBSETELEMENTINSERT (dmID, sView, sID, 1);
+
+
+# Period
+SUBSETCREATE (dmPer, sView);
+SUBSETELEMENTINSERT (dmPer, sView, sFE1Period, 1);
+SUBSETELEMENTINSERT (dmPer, sView, sFE2Period, 2);
+
+# Measure
+SUBSETCREATE (dmFE3Meas, sView);
+#SUBSETELEMENTINSERT (dmFE3Meas, sView, sMeas, 1);
+SUBSETELEMENTINSERT (dmFE3Meas, sView, sSourceMeas, 1);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** CREATE VIEW
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbFE3, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmProg, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmSPP, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmAcc, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmMA, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmRE, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmJur, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmItem, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmMeasCode, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmID, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmPer, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmFE3Meas, sView);
+
+
+ViewExtractSkipZeroesSet (cbFE3, sView, 1);
+ViewExtractSkipCalcsSet (cbFE3, sView, 0);
+ViewExtractSkipRuleValuesSet (cbFE3, sView, 0);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- DEFINE DATA SOURCE
+#---------------------------------------------------------------------------------------------------------------------------
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+nFactor = -1;
+vnValue = nFactor * vnValue;
+
+
+#**********************************************************************************************************************************************************************************
+#*** STEP 1 : DECLARE VARIABLES USED IN DATA TAB
+#**********************************************************************************************************************************************************************************
+
+#******************************************************************************************************************
+#*** ADD DATA TO ADJUSTMENTS CUBE BASED ON THE SELECTED FE3 YEAR ***#
+#******************************************************************************************************************
+sFE1Period = DIMNM(dmPer,DIMIX(dmPer, psFE3Year) -2);
+sFE2Period = DIMNM(dmPer,DIMIX(dmPer, psFE3Year) -1);
+sFE3Period = psFE3Year;
+
+
+#******************************************************************************************************************
+#*** BALANCE ID ***#
+#******************************************************************************************************************
+sBalID = 'Total Ids';
+
+#***************************************************************************************************
+# *** SKIP PROCECSS IF ITS FE1 AND NOT PART OF NET ASSETS
+#***************************************************************************************************
+
+IF (ELISANC (dmAcc, '3800001', vsAcc) <> 1);
+	IF (vsPeriod @= sFE1Period);
+		ITEMSKIP;
+	ENDIF;
+ELSE;
+	IF (vsPeriod @= sFE1Period);
+		IF (vsMA @<> '-');
+			ITEMSKIP;
+		ENDIF;
+	ENDIF;
+ENDIF;
+
+#***************************************************************************************************
+# *** SKIP PROCESS IF ITS CASH FLOW
+#***************************************************************************************************
+IF (ELISANC (dmAcc, '9000003', vsAcc) = 1);
+	ITEMSKIP;
+ENDIF;
+
+IF(vsAcc @= '2330008' % vsAcc @= '2330009');
+	ITEMSKIP;
+ENDIF;
+
+#***************************************************************************************************
+# *** SKIP ANY MOVEMENT ACCOUNT THAT ARE NOT EDITABLE
+#***************************************************************************************************
+sMAEditable = ATTRS (dmMA, vsMA, 'editable');
+IF (sMAEditable @= 'N');
+	ITEMSKIP;
+ENDIF;
+
+#***************************************************************************************************
+# *** IDENTIFY TERMINATING MEASURES
+# *** DISPLAY TERMINATING YEAR OR TERMINATING/TERMINATION YEAR IS THE LAST YEAR OF FUNDING
+# *** GEUS TERMINATING YEAR IS THE YEAR THAT IT SHOULDNT HAVE ANY VALUES
+#***************************************************************************************************
+#sTerminatingYear = ATTRS (dmMeasCode, vsMeasCode, 'Terminating Year');
+sTerminatingYear = ATTRS (dmMeasCode, vsMeasCode, 'sys_GEUS terminating year');
+IF (DIMIX (dmPer, sTerminatingYear) <> 0);
+	sTerminatingYear = sTerminatingYear;
+ENDIF;
+
+#-------------------------------------------------
+#--- IF TERMINATING YEAR THE SAME AS FE3 YEAR, DO NOT PROCESS
+#-------------------------------------------------
+IF (sTerminatingYear @= sFE3Period);
+	ITEMSKIP;
+ENDIF;
+
+
+
+#**********************************************************************************************************************************************************************************
+#*** STEP 2 : FE3 CREATION PROCESS
+#*** THIS PROCESS USUALLY INVOLVES SOME VALIDATION CHECKS DEPENDING ON MEASURE CODES
+#**********************************************************************************************************************************************************************************
+sMeasCode = DIMNM(dmMeasCode, DIMIX (dmMeasCode, vsMeasCode));
+
+
+IF (ELISANC (dmAcc, '9000130', vsAcc) = 1 % ELISANC(dmAcc, '9000020', vsAcc) = 1);
+	#sMA = sNoMA;
+	#***************************************************************************************************
+	#*** INCOME STATEMENTS & DCB
+	#***
+	#*** 
+	#***************************************************************************************************
+
+	#***************************************************************************************************
+	# *** DO A CHECK ON EXISTING FE3 DATA
+	# *** SOME AGENCIES HAS RELATED ENTITY OR OTHERS NOT IN FE3 DATA WHICH CAUSES SOME VARIANCES SO BEST TO SELECT ALL RELATED ENTITY
+	#***************************************************************************************************
+
+	nFE2Data = CELLGETN (cbFE3, vsProg, vsSPP, vsAcc, vsMA, vsRE, vsJur, vsItem, vsMeasCode, vsID, sFE2Period, sMeas) * nFactor;
+	nFE3Data = CELLGETN (cbFE3, vsProg, vsSPP, vsAcc, vsMA, vsRE, vsJur, vsItem, vsMeasCode, vsID, sFE3Period, sMeas) * nFactor;
+	nTotalFE3Data = CELLGETN (cbFE3, vsProg, vsSPP, vsAcc, vsMA, sRE, sJur, vsItem, vsMeasCode, vsID, sFE3Period, sMeas) * nFactor;
+
+
+	#***************************************************************************************************
+	# *** GET EXISTING POSTED DATA 
+	# *** Use sFE3Meas (Step 01 value)
+	#***************************************************************************************************
+	nAddData = CELLGETN (cbFE3, vsProg, vsSPP, vsAcc, vsMA, vsRE, vsJur, vsItem, vsMeasCode, vsID, sFE3Period, sFE3Meas);
+
+	#***************************************************************************************************
+	# *** WHAT TO DO WITH FE3 DATA
+	#***************************************************************************************************
+
+	#***************************************************************************************************
+	# *** SINCE THERE ARE 3 YEARS ON SOURCE 
+	# *** ONLY DO CALCULATION WHEN THE PERIOD IS ON FE3 ONLY
+	#***************************************************************************************************
+
+	#IF (nFE3Data <> 0);
+	IF (nTotalFE3Data <> 0);
+
+		#***************************************************************************************************
+		# *** THIS ONE REVERSE RECENTLY CREATED FE3
+		#***************************************************************************************************
+		nReversalData = CELLGETN (cbFE3, vsProg, vsSPP, vsAcc, vsMA, vsRE, vsJur, vsItem, vsMeasCode, vsID, sFE3Period, sFE3Step1Meas)  * nFactor;
+		nCalcFE3Data = (nAddData + nReversalData);
+
+	ELSE;
+
+		#***************************************************************************************************
+		# *** IF THERE IS NO FE3, SKIP AS IT DOES NOT NEED TO BE REVERSED
+		#***************************************************************************************************
+		ITEMSKIP;
+
+	ENDIF;
+
+	#***************************************************************************************************
+	# *** POST DATA
+	#***************************************************************************************************
+		
+	IF (CELLISUPDATEABLE (cbFE3, vsProg, vsSPP, vsAcc, vsMA, vsRE, vsJur, vsItem, vsMeasCode, vsID, sFE3Period, sFE3Meas) =1);
+		CELLPUTN (nCalcFE3Data,  cbFE3, vsProg, vsSPP, vsAcc, vsMA, vsRE, vsJur, vsItem, vsMeasCode, vsID, sFE3Period, sFE3Meas);
+	ENDIF;
+
+ELSE;
+
+	#***************************************************************************************************
+	#*** BALANCE SHEET ****#
+	#*** FE3 = FE2 + (FE2 - FE1)
+	#*** 
+	#***************************************************************************************************
+
+	IF (ELISANC (dmAcc, '3800001', vsAcc) = 1);
+
+		nFE1Data = CELLGETN (cbFE3, vsProg, vsSPP, vsAcc, vsMA, vsRE, vsJur, vsItem, vsMeasCode, vsID, sFE1Period, sMeas);
+		nFE2Data = CELLGETN (cbFE3, vsProg, vsSPP, vsAcc, vsMA, vsRE, vsJur, vsItem, vsMeasCode, vsID, sFE2Period, sMeas);
+		nFE3Data = CELLGETN (cbFE3, vsProg, vsSPP, vsAcc, vsMA, vsRE, vsJur, vsItem, vsMeasCode, vsID, sFE3Period, sMeas);
+
+		nFE3Balance = nFE3Data - nFE2Data;
+
+		IF (nFE3Balance = 0);
+		#	ITEMSKIP;
+		ENDIF;
+
+		#------------------------------------------------------------
+		#--- CONVERT the factor for a reversal
+		#------------------------------------------------------------
+		nFE1Data = nFE1Data * nFactor;
+		nFE2Data = nFE2Data * nFactor;
+		nFE3Data = nFE3Data * nFactor;
+
+
+		#***************************************************************************************************
+		# *** GET EXISTING POSTED DATA 
+		# *** Use sFE3Meas (Step 03 value)
+		#***************************************************************************************************
+		nAddData = CELLGETN (cbFE3, vsProg, vsSPP, vsAcc, vsMA, vsRE, vsJur, vsItem, vsMeasCode, vsID, sFE3Period, sFE3Meas);
+
+
+		#***************************************************************************************************
+		# *** NEW CHECK - IF OPERATING STATEMENT HAS BEEN REVERSED IN STEP 3, 
+		#***  ANY BALANCE SHEET IN STEP 1 SHOULD BE REVERSED
+		#***************************************************************************************************
+		nOrigRevFE3 = ABS (CELLGETN (cbFE3, vsProg, sSPP, '1000000', sTotalMA, sRE, sJur, sItem, vsMeasCode, vsID, sFE3Period, sMeas));
+		nOrigExpFE3 = ABS (CELLGETN (cbFE3, vsProg, sSPP, '2000000', sTotalMA, sRE, sJur, sItem, vsMeasCode, vsID, sFE3Period, sMeas));
+		nOrigDCBFE3 = ABS (CELLGETN (cbFE3, vsProg, sSPP, '9000020', sTotalMA, sRE, sJur, sItem, vsMeasCode, vsID, sFE3Period, sMeas));
+
+
+		nRevStep1DataReversal = CELLGETN (cbFE3, vsProg, vsSPP, '1000000', sTotalMA, vsRE, vsJur, sItem, vsMeasCode, vsID, sFE3Period, sFE3Meas);
+		nExpStep1DataReversal = CELLGETN (cbFE3, vsProg, vsSPP, '2000000', sTotalMA, vsRE, vsJur, sItem, vsMeasCode, vsID, sFE3Period, sFE3Meas);
+		nDCBStep1DataReversal = CELLGETN (cbFE3, vsProg, vsSPP, '9000020', sTotalMA, vsRE, vsJur, sItem, vsMeasCode, vsID, sFE3Period, sFE3Meas);
+
+		#----------------------------------------------------------------------
+		#---- Do a sum of all the checks to see if data exist in FE3 from original value
+		#----------------------------------------------------------------------
+		nFE3BSDataCheck1 = nRevStep1DataReversal + nExpStep1DataReversal + nDCBStep1DataReversal;
+		nFE3BSDataCheck  = nOrigRevFE3 + nOrigExpFE3 + nOrigDCBFE3 + nFE3BSDataCheck1;
+
+		nReversalData = CELLGETN (cbFE3, vsProg, vsSPP, vsAcc, vsMA, vsRE, vsJur, vsItem, vsMeasCode, vsID, sFE3Period, sFE3Step1Meas)  * nFactor;
+
+		IF (vsMA @<> '-');
+
+
+			#***************************************************************************************************
+			#*** BALANCE SHEET WITH MOVEMENT ACCOUNT CODES ****#
+			#***
+			#***************************************************************************************************
+
+			#***************************************************************************************************
+			# *** WHAT TO DO WITH FE3 DATA
+			#***************************************************************************************************
+
+			IF (nFE3Data <> 0);
+
+				#----------------------------------------------------------------------
+				#---- IF Balance She	et exist, reverse existing data from Step 1 Value
+				#----------------------------------------------------------------------
+
+				IF (nFE3BSDataCheck <> 0);
+					nCalcFE3Data = nReversalData;
+				ELSE;
+					ITEMSKIP;
+				ENDIF;	
+
+			ELSE;
+		
+				#***************************************************************************************************
+				# *** IF THERE IS NO FE3, SKIP AS IT DOES NOT NEED TO BE REVERSED
+				#***************************************************************************************************
+				ITEMSKIP;
+
+			ENDIF;
+		ELSE;
+
+			#***************************************************************************************************
+			#*** BALANCE SHEET WITH NO MOVEMENT ACCOUNT CODES
+			#***  FE3 = FE2 + (FE2 - FE1)
+			#***************************************************************************************************
+			#***************************************************************************************************
+			# *** WHAT TO DO WITH FE3 DATA
+			#***************************************************************************************************
+			nCalcFE3Data = (nAddData + (nFE2Data - nFE1Data));
+
+			#***************************************************************************************************
+			# *** DO A CHECK ON CURRENT FE1 DATA AND 
+			#**** IF DATA EXISTS IN FE2, SKIP AS IT WILL BE USED IN THE NEXT SET OF LINES FOR CURRENT FE2 DATA
+			# *** THIS CODE IS TO ENSURE THAT IF THERE IS DATA IN FE1, AND NO DATA IN FE2, THAT IT STILL CALCULATES AS TM1 SUPPRESS ZEROES
+			#***************************************************************************************************
+
+			IF (vsPeriod @= sFE1Period);
+				nFE2Data = CELLGETN (cbFE3, vsProg, vsSPP, vsAcc, vsMA, vsRE, vsJur, vsItem, vsMeasCode, vsID, sFE2Period, sMeas);
+
+				IF (nFE2Data <> 0);
+					ITEMSKIP;
+				ELSE;
+					ITEMSKIP;
+				ENDIF;
+			ENDIF;
+
+		ENDIF;
+
+		#***************************************************************************************************
+		# *** POST DATA
+		#***************************************************************************************************
+		
+		IF (CELLISUPDATEABLE (cbFE3, vsProg, vsSPP, vsAcc, vsMA, vsRE, vsJur, vsItem, vsMeasCode, vsID, sFE3Period, sFE3Meas) =1);
+			CELLPUTN (nCalcFE3Data,  cbFE3, vsProg, vsSPP, vsAcc, vsMA, vsRE, vsJur, vsItem, vsMeasCode, vsID, sFE3Period, sFE3Meas);
+		ENDIF;
+	ENDIF;
+ENDIF;
+
+
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+IF (1= 0);
+VIEWDESTROY (cbFE3, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmSPP, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmJur, sView);
+SUBSETDESTROY (dmItem, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmPer, sView);
+SUBSETDESTROY (dmFE3Meas, sView);
+ENDIF;
+
+#endregion

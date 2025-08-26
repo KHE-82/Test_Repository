@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"sys_Client - Clear Validation Data",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Client - Clear Validation Data.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[],
+	"UID": "1756100875000"
+}

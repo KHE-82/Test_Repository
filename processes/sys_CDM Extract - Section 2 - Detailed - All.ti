@@ -1,0 +1,277 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_CDM Extract - Section 2 - Detailed - All
+#**** DESCRIPTION:       This process creates a view of all data in the CURRENT scenario in the adjustments cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** Feb 2023          EC             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+dmProgMeas = 'programme measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+sHLYear = ATTRS(dmVar,'headline year','value');
+sScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+sHLYear = ATTRS(dmVar, 'archive year', 'old value');
+sScenario = ATTRS(dmVar, 'archive scenario', 'old value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = SUBST(sUser, lScan, 9);
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+sPrc = GetProcessName();
+sView = sUser | ' - ' | sPrc;
+
+#******************************************************************************************************************
+#*** DATE TIME
+#******************************************************************************************************************
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+sHNow = TimST (Now, '\h');
+sMinNow = TimST (Now, '\i');
+sSNow = TimST (Now, '\s');
+
+sDay = TRIM(SUBST(sDNow, 1,2));
+
+IF (LONG (sDay) = 1);
+     sDay = '0' | sDay;
+ELSE;
+     sDay = sDay;
+ENDIF;
+
+sMonth = TRIM(SUBST(sMNow, 1,2));
+
+IF (LONG (sMonth) = 1);
+     sMonth = '0' | sMonth;
+ELSE;
+     sMonth = sMonth;
+ENDIF;
+
+sYear = TRIM(SUBST(sYNow, 1,4));
+
+sStart =  sYear | sMonth | sDay | ' - ' | sHNow | ':' | sMinNow | ':' | sSNow ;
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** CALL SUBPROCESS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sID = 'Total IDs';
+sPrc = 'sys_CDM Extract - Populate Flags';
+ExecuteProcess( sPrc, 'psHLYear',psHLYear,'psScenario',psScenario, 'psStatus',psStatus,'psProg',psProg,'psID', sID);
+
+#----------------------------------------------------------------
+#--- Run Process To Update System Process Cube
+#----------------------------------------------------------------
+NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+
+IF( ProcessReturnCode <> ProcessExitNormal());
+	ProcessQuit;
+ENDIF;
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** CALL SUBPROCESS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sAProg = 'Administered Outcome 1';
+sDProg = 'Departmental Outcome 1';
+
+sPrc = 'sys_CDM Extract - Section 2 - Detailed';
+ExecuteProcess( sPrc, 'psHLYear',psHLYear,'psScenario',psScenario, 'psStatus',psStatus,'psAProg',sAProg, 'psDProg',sDProg );
+
+#----------------------------------------------------------------
+#--- Run Process To Update System Process Cube
+#----------------------------------------------------------------
+NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+
+IF( ProcessReturnCode <> ProcessExitNormal());
+	ProcessQuit;
+ENDIF;
+
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** CALL SUBPROCESS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sAProg = 'Administered Outcome 2';
+sDProg = 'Departmental Outcome 2';
+
+sPrc = 'sys_CDM Extract - Section 2 - Detailed';
+ExecuteProcess( sPrc, 'psHLYear',psHLYear,'psScenario',psScenario, 'psStatus',psStatus,'psAProg',sAProg, 'psDProg',sDProg );
+
+#----------------------------------------------------------------
+#--- Run Process To Update System Process Cube
+#----------------------------------------------------------------
+NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+
+IF( ProcessReturnCode <> ProcessExitNormal());
+	ProcessQuit;
+ENDIF;
+
+
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** CALL SUBPROCESS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sAProg = 'Administered Outcome 3';
+sDProg = 'Departmental Outcome 3';
+
+sPrc = 'sys_CDM Extract - Section 2 - Detailed';
+ExecuteProcess( sPrc, 'psHLYear',psHLYear,'psScenario',psScenario, 'psStatus',psStatus,'psAProg',sAProg, 'psDProg',sDProg );
+
+#----------------------------------------------------------------
+#--- Run Process To Update System Process Cube
+#----------------------------------------------------------------
+NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+
+IF( ProcessReturnCode <> ProcessExitNormal());
+	ProcessQuit;
+ENDIF;
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** CALL SUBPROCESS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sAProg = 'Administered Outcome 4';
+sDProg = 'Departmental Outcome 4';
+
+sPrc = 'sys_CDM Extract - Section 2 - Detailed';
+ExecuteProcess( sPrc, 'psHLYear',psHLYear,'psScenario',psScenario, 'psStatus',psStatus,'psAProg',sAProg, 'psDProg',sDProg );
+
+#----------------------------------------------------------------
+#--- Run Process To Update System Process Cube
+#----------------------------------------------------------------
+NUMERICGLOBALVARIABLE ('ProcessReturnCode');
+sProcessReturnCode = NUMBERTOSTRING(ProcessReturnCode);
+
+IF( ProcessReturnCode <> ProcessExitNormal());
+	ProcessQuit;
+ENDIF;
+
+
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#******************************************************************************************************************
+#*** DATE TIME
+#******************************************************************************************************************
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+sHNow = TimST (Now, '\h');
+sMinNow = TimST (Now, '\i');
+sSNow = TimST (Now, '\s');
+
+sDay = TRIM(SUBST(sDNow, 1,2));
+
+IF (LONG (sDay) = 1);
+     sDay = '0' | sDay;
+ELSE;
+     sDay = sDay;
+ENDIF;
+
+sMonth = TRIM(SUBST(sMNow, 1,2));
+
+IF (LONG (sMonth) = 1);
+     sMonth = '0' | sMonth;
+ELSE;
+     sMonth = sMonth;
+ENDIF;
+
+sYear = TRIM(SUBST(sYNow, 1,4));
+
+sEnd = sYear | sMonth | sDay | ' - ' | sHNow | ':' | sMinNow | ':' | sSNow ;
+
+#asciioutput('time.txt' , sStart, sEnd) ;
+
+#endregion

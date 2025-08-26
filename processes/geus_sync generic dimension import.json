@@ -1,0 +1,92 @@
+{
+	"@type":"Process",
+	"Name":"geus_sync generic dimension import",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"geus_sync generic dimension import.ti",
+	"DataSource":
+	{
+		"Type":"ASCII",
+		"dataSourceNameForServer":"//actdc01tm104v/TM1_Common/TM1_FIN/finance/cost centre.cma",
+		"dataSourceNameForClient":"\\\\actdc01tm104v\\TM1_Common\\TM1_FIN\\finance\\cost centre.cma",
+		"asciiHeaderRecords":0,
+		"asciiQuoteCharacter":"\"",
+		"asciiDecimalSeparator":".",
+		"asciiThousandSeparator":",",
+		"asciiDelimiterType":"Character",
+		"asciiDelimiterChar":","
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psDimName",
+			"Prompt":"",
+			"Value":"finance cost centre",
+			"Type":"String"
+		},
+		{
+			"Name":"psImportFile",
+			"Prompt":"",
+			"Value":"\\\\actdc01tm104v\\TM1_Common\\TM1_FIN\\finance\\cost centre.cma",
+			"Type":"String"
+		},
+		{
+			"Name":"psAttributes",
+			"Prompt":"",
+			"Value":"Y",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"sParent",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"sType",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"sChild",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"sChildType",
+			"Type":"String",
+			"Position":4,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"sWeight",
+			"Type":"String",
+			"Position":5,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"sAttributeArray",
+			"Type":"String",
+			"Position":6,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"V7",
+			"Type":"Numeric",
+			"Position":7,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "17561008590002"
+}

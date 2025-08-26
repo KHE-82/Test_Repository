@@ -1,0 +1,76 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_ae_acc_Update Account Subset
+#**** DESCRIPTION:       This process will update the subset used for accounts
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 21/01/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** DECLARE CUBES & DIMENSIONS ***#
+dmAcc = 'account';
+dmClients ='}Clients';
+
+# *** IDENTIFY CURRENT USER ***#
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sUser) + 1;
+     sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+     sUser = TM1User();
+ENDIF;
+
+
+#*** OTHER MEASURES AND SUBSETS USED
+sSubset = sUser | '_$geuspvt';
+
+IF (SUBSETEXISTS (dmAcc, sSubset) = 1);
+     IF (psDelete @= 'Y');
+          SUBSETDESTROY (dmAcc, sSubset);
+          SUBSETCREATE (dmAcc, sSubset);
+          SUBSETELEMENTINSERT (dmAcc, sSubset, psAcc, 1);  
+     ELSE;
+           nSubSiz = SUBSETGETSIZE (dmAcc, sSubset);
+           nIndex = nSubSiz + 1;
+           SUBSETELEMENTINSERT (dmAcc, sSubset, psAcc, nIndex );  
+     ENDIF;
+     
+ELSE;
+     SUBSETCREATE (dmAcc, sSubset);
+      nSubSiz = SUBSETGETSIZE (dmAcc, sSubset);
+      nIndex = nSubSiz + 1;
+      SUBSETELEMENTINSERT (dmAcc, sSubset, psAcc, nIndex );  
+ENDIF;
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

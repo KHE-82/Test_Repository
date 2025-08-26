@@ -1,0 +1,51 @@
+{
+	"@type":"Process",
+	"Name":"sys_Meas Correction - one off 02",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Meas Correction - one off 02.ti",
+	"DataSource":
+	{
+		"Type":"ASCII",
+		"dataSourceNameForServer":"//po1tm101/tm1_afmu/Tm1_Common/GEUS/Treasury_GEUS/EAMEASCODE.cma",
+		"dataSourceNameForClient":"\\\\po1tm101\\tm1_afmu\\Tm1_Common\\GEUS\\Treasury_GEUS\\EAMEASCODE.cma",
+		"asciiHeaderRecords":0,
+		"asciiQuoteCharacter":"\"",
+		"asciiDecimalSeparator":".",
+		"asciiThousandSeparator":",",
+		"asciiDelimiterType":"Character",
+		"asciiDelimiterChar":","
+	},
+	"Parameters":[],
+	"Variables":
+	[
+		{
+			"Name":"vsCube",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsMeasCode",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsEAMeas",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsValue",
+			"Type":"String",
+			"Position":4,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "1756100913000"
+}

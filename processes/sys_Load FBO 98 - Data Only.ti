@@ -1,0 +1,136 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              sys_Load FBO 98 - Data Only
+#**** DESCRIPTION:       
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2023                EC             Initial Revision
+#****
+#***********************************************************************************************************************
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE CLIENT GROUPS CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbGroups = '}ClientGroups';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYS CLIENT FAVOURITE APPLICATION CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbFavApp = 'sys_client favourite application';
+dmApp = 'sys_application';
+dmFavAppMeas = 'sys_client favourite application measure';
+
+
+#------------------------------------------------------------------------
+#--- Update System Process Administration Cube
+#------------------------------------------------------------------------
+cbProc = 'sys_process administration';
+dmReturnProcCode = 'sys_process return codes';
+
+#--------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#--------------------------------------------------------------------------------------------------------
+sTM1User =  TM1User();
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = SUBST(sUser, lScan, 9);
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+
+#--------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM VARIABLES
+#--------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sImpFilePath = ATTRS(dmVar, 'sys_CBMS Upload Directory', ' value');
+sFile = sImpFilePath | psFile;
+
+
+#--------Check File Location------#
+CellPutS('', cbClient,psUser, 'sys_ImpFileValidation', 'validate');
+CellPutS('', cbClient,sTM1User, 'sys_ImpFileValidation', 'value');
+
+IF(FileExists(sFile)=0);
+	CellPutS('Failed - Upload file path/name is invalid.', cbClient,psUser, 'sys_ImpFileValidation', 'validate');
+	CellPutS('Failed', cbClient,sTM1User, 'sys_ImpFileValidation', 'value');
+	#ProcessQuit;	
+ENDIF;
+
+IF( psFBOAdjType @='');
+	CellPutS('Failed - Please select FBO Adjustments Type.', cbClient,psUser, 'sys_ImpFileValidation', 'validate');
+	CellPutS('Failed', cbClient,sTM1User, 'sys_ImpFileValidation', 'value');
+	ProcessQuit;
+ENDIF;
+
+#--------------------------------------------------------------------#
+#------Load User modified CBMS AA flat File to CBMS-R FBO------#
+#----- ID was 0000A? Should be 00FBO
+#--------------------------------------------------------------------#
+IF (psFBOSource @= 'CBMS');
+	sPrc = 'sys_Load FBO 00 - Load to New Scenario';
+	ExecuteProcess(sPrc,
+		'psTargetHLYear', psTargetHLYear,
+		'psTargetScenario','CBMS-R FBO CBMS',
+		'psTargetID', '00FBO', 
+		'psTargetProg',psProg,
+		'psFile',psFile,
+		'psPeriod',psPeriod);
+ELSE;
+	sPrc = 'sys_Load FBO 99 - Load BARS File';
+	ExecuteProcess(sPrc,
+		'psTargetHLYear', psTargetHLYear,
+		'psTargetScenario','CBMS-R FBO BARS',
+		'psTargetID', '0000A', 
+		'psTargetProg',psProg,
+		'psFile',psFile,
+		'psPeriod',psPeriod);
+ENDIF;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

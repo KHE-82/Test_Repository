@@ -1,0 +1,67 @@
+{
+	"@type":"Process",
+	"Name":"z_PRIMUS IMPLEMENTATION - Update Measures",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"z_PRIMUS IMPLEMENTATION - Update Measures.ti",
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForServer":"government measures details",
+		"dataSourceNameForClient":"government measures details",
+		"view":"$PRIMUSMeasCode"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psTargetHLYear",
+			"Prompt":"",
+			"Value":"HL2018-2019",
+			"Type":"String"
+		},
+		{
+			"Name":"psTargetScenario",
+			"Prompt":"",
+			"Value":"current",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vsHLYear",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsScenario",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsMeasCode",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsMeasure",
+			"Type":"String",
+			"Position":4,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"Value",
+			"Type":"String",
+			"Position":5,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "17561009200003"
+}

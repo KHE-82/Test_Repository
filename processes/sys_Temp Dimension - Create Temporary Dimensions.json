@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"sys_Temp Dimension - Create Temporary Dimensions",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Temp Dimension - Create Temporary Dimensions.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[],
+	"UID": "17561009160006"
+}

@@ -1,0 +1,707 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_ME Upload - TECHONE
+#**** DESCRIPTION:       This process loads the TECHONE Flatfile into GEUS ME REPORTING
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 16/05/2022    KG             Initial Revision
+#***********************************************************************************************************************
+
+DatasourceNameForServer=psFile;
+
+#****************************************************************************************************************************
+#****DEFINE VARIABLES****#
+#****************************************************************************************************************************
+# reset validation status
+ATTRPUTS('Pass','variables','validation status','Old Value');
+lStatus = 0;
+
+# log file
+sLogFile = 'LogFile.txt';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE MONTHLY ESTIMATES CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+cbMAMap = 'ME mapping';
+cbProgDetails = 'programme details';
+cbMAReco = 'ME Ledger Reconciliation';
+
+cbME = 'ME reporting';
+dmMEMeas = 'ME reporting measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#--------------------------------------------------------------------------------------------------------------------------
+#*** DIMENSION ATTRIBUTES
+#--------------------------------------------------------------------------------------------------------------------------
+dmReasonAttr = '}ElementAttributes_reason';
+dmAccAttr = '}ElementAttributes_account';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+dmProgMeas = snProg | ' measure';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+cbMEVar = 'sys_ME variable';
+
+#Deprecated Function - #Deprecated Function - #Deprecated Function - CubeSetLogChanges in Tm1V12
+#CubeSetLogChanges in Tm1V12
+##Deprecated Function - CubeSetLogChanges in Tm1V12
+#CubeSetLogChanges in Tm1V12
+##Deprecated Function - #Deprecated Function - CubeSetLogChanges in Tm1V12
+#CubeSetLogChanges in Tm1V12
+##Deprecated Function - CubeSetLogChanges in Tm1V12
+#CubeSetLogChanges(cbME, 0);
+
+
+#****************************************************************************************************************************
+#**** nFACTOR
+#*** Used to determine how much to divide the values
+#****************************************************************************************************************************
+nFactor = 1000;
+
+#****************************************************************************************************************************
+#*** DIMENSION NAMES
+#****************************************************************************************************************************
+sDimA = 'Cost Centre';
+sDimB = 'Company Code';
+sDimC = 'GL Code';
+sDimD = 'Business Area';
+sDimE = 'Nominal';
+sDimF = 'Nominal';
+sDimProg = 'Programme';
+
+sDimMapCC = 'cost centre';
+sDimMapPjt = 'project';
+sDimMapGL = 'gl code';
+sDimMapMap = 'mapping measure';
+
+DimYr = 'headline year';
+DimScn = 'scenario';
+DimApnItem = 'appropriation item';
+DimAcct = 'account';
+DimPeriod = 'period';
+DimControlT = 'Control Type';
+DimMA = 'movement account';
+DimStus = 'status';
+DimRE = 'related entity';
+DimFunc = 'function';
+DimProg = 'programme';
+DimID = 'id';
+DimJuris = 'jurisdiction';
+DimAcctCF = 'account_cf';
+DimAcctOth = 'account_other';
+DimCFM ='cash flow measure';
+DimVadID = 'validation id';
+DimVadMe = 'validation measure';
+DimAASch = 'AA schedule';
+
+#sDimGAc = 'Account';
+#sDimGMA = 'Movement Account';
+
+
+Object = '}upload Admin ME';
+
+
+
+#****************************************************************************************************************************
+#**** This scenario is used to reference the program details cube for the current program details.
+#***  This headline year references the current year program details cube in the data tab.
+#****************************************************************************************************************************
+sScenario2 = 'current';
+sHLYear2 = ATTRS('variables','headline year','value');
+sMEHLYear = CELLGETS (cbMEVar,  'ME_headline year', 'value');
+
+sID = '00001';
+sScenario = 'Current';
+sStatus = 'data';
+sMapGL = 'default';
+sMapPjt = 'default';
+
+sCCMissingTotal = '$New Cost Centres';
+
+
+#****************************************************************************************************************************
+#****DELETE EXISTING VIEWS AND SUBSETS
+#****************************************************************************************************************************
+ViewDestroy(cbME, Object);
+ViewDestroy(cbMAMap, Object);
+SubsetDestroy(dmHLYear, Object);
+SubsetDestroy(dmScenario, Object);
+SubsetDestroy(dmID, Object);
+SubsetDestroy(dmProg, Object);
+SubsetDestroy(sDimMapMap, Object);
+
+nFlagMetaOnce = 0;
+lStatus = 0;
+
+#### Put the headline year into the variables dimension for the purpose of the TM1 rules
+sUpdateYear = DIMNM('headline year',DIMIX('headline year',psHLYear));
+ATTRPUTS(sUpdateYear,'variables','MA headline year','value');
+
+
+
+
+
+#endregion
+#region Metadata
+
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#****************************************************************************************************************************
+#**** RESET VARIABLES
+#****************************************************************************************************************************
+
+sProg = '';
+sAcc  = '';
+sMA = '';
+sJur = '';
+
+
+#****************************************************************************************************************************
+#*** VALIDATE CHART COMPONENTS IN FILE
+#****************************************************************************************************************************
+
+#*** DIMENSION A - Cost Centre
+
+IF (DIMIX(sDimA, vsCC) = 0);
+	DIMENSIONELEMENTINSERT(sDimA, '', vsCC, 'n');
+
+      	#*** Now add it to the 'Unmapped cost centres' consolidation
+     	DIMENSIONELEMENTCOMPONENTADD (sDimA, 'Unmapped cost centres'  ,vsCC, 1);
+
+	#-----------------------------------
+	#--- Post to $New Cost centres
+	#-----------------------------------
+	DIMENSIONELEMENTCOMPONENTADD(sDimA, sCCMissingTotal, vsCC, 1);
+	ASCIIOUTPUT(sLogFile,'Element ' | vsCC | ' was added to the ' | sDimC | ' dimension');
+ELSE;
+
+     	#*** NOW CHECK IF PROGRAMME MAPPING EXIST ***#
+     	#*** GET Program Element
+     	sProg = CELLGETS (cbMAMap, vsCC, 'default', 'default', 'program');
+	sProgOR = CELLGETS (cbMAMap, vsCC, 'default', 'default', 'program override');
+
+     	IF (sProgOR @<> '');
+	         	sProg = sProg;
+     	ELSE;
+          		sProg = sProgOR;
+     	ENDIF;
+
+     	IF (DIMIX (sDimProg, sProg) <> 0);
+         		ASCIIOUTPUT(sLogFile,'Element ' | sProg | ' does not exist in the ' | sDimProg | ' dimension');
+	ENDIF;
+
+ENDIF;
+
+#****************************************************************************************************************************
+#*** IF THIS IS THE FIRST LINE OF THE METADATA TAB
+#*** CREATE A VIEW AND CLEAR OUT DATA ***#
+#****************************************************************************************************************************
+
+IF(nFlagMetaOnce = 0);
+	#*** If it flagged as so do a cube clear and a mapping clear.
+	
+	IF(psClear @= 'Y'); 
+
+		#****CREATE SUBSETS****#
+		# Year
+		SubsetCreate(dmHLYear, Object);
+		SubsetElementInsert(dmHLYear, Object, sMEHLYear,1);
+
+		# Scenario
+		SubsetCreate(dmScenario, Object);
+		SubsetElementInsert(dmScenario, Object, sScenario,1);
+
+		# Programme
+		sSubset = Object;
+
+		sDim = DimProg;
+		SubsetCreate(sDim, sSubset);
+
+		lIndex = 1;
+		lCounter = 1;
+		lDimSize = DIMSIZ(sDim);
+
+		While (lIndex <= lDimSize);
+     			sElement = DIMNM(sDim, lIndex);
+     			sType = DTYPE(sDim, sElement);
+	     		IF (sType @<> 'C');
+				SubsetElementInsert(sDim, sSubset, sElement, lCounter);
+          				lCounter = lCounter + 1;
+		     	ENDIF;
+     			lIndex = lIndex + 1;
+		End;
+
+		# mapping
+		SubsetCreate(sDimMapMap, Object);
+		SubsetElementInsert(sDimMapMap, Object, 'unmapped',1);
+
+		# ID
+		SubsetCreate(dmID, Object);
+		SubsetElementInsert(dmID, Object, sID,1);
+
+		#****BUILD VIEW****#
+		ViewCreate(cbME, Object);
+		ViewSubsetAssign(cbME, Object, dmHLYear, Object);
+		ViewSubsetAssign(cbME, Object, dmScenario, Object);
+		ViewSubsetAssign(cbME, Object, dmProg, Object);
+		ViewSubsetAssign(cbME, Object, dmID, Object);
+
+		ViewCreate(cbMAMap, Object);
+		ViewSubsetAssign(cbMAMap, Object, sDimMapMap, Object);
+
+		#****ZERO OUT VIEWS****#
+		IF (psClear @= 'Y');
+			ViewZeroOut(cbME, Object);
+			ViewZeroOut(cbMAMap, Object);
+		ENDIF;
+
+
+		#****DELETE EXISTING VIEWS AND SUBSETS
+		ViewDestroy(cbME, Object);
+		ViewDestroy(cbMAMap, Object);
+		SubsetDestroy(dmHLYear, Object);
+		SubsetDestroy(dmScenario, Object);
+		SubsetDestroy(dmID, Object);
+		SubsetDestroy(dmProg, Object);
+		SubsetDestroy(sDimMapMap, Object);
+
+	ENDIF;
+
+	nFlagMetaOnce = nFlagMetaOnce + 1;
+
+ENDIF;
+
+#****************************************************************************************************************************
+#*** IF ACCOUNT DOES NOT EXIST, ADD A NEW ACCOUNT
+#****************************************************************************************************************************
+
+IF(DIMIX(sDimC , vsAcc) = 0);
+	DimensionElementInsert(sDimC , ''  , vsAcc, 'N');
+	ASCIIOUTPUT(sLogFile,'Element ' | vsAcc | ' was added to the ' | sDimC | ' dimension');
+ENDIF;
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#********************************************************************************************************
+#*** FLAG TECHONE ACCOUNTS that do not exist in CBMS
+#*** Do a check if accounts exists
+#***
+#********************************************************************************************************
+
+IF(vsAcc @<>'');
+	IF(DIMIX( dmAcc ,vsAcc)=0);
+		CELLPUTS('Account Invalid', cbMAMap, vsCC, sMapPjt , vsAcc , 'Unmapped');			
+		IF(lStatus = 0);
+			ATTRPUTS('Fail','variables','validation status', 'old value');
+		lStatus = 1;
+		ENDIF;
+	ENDIF;
+ENDIF;
+
+#********************************************************************************************************
+#*** FLAG TECHONE GROUP ACCOUNTS that are consolidations t in CBMS
+#*** Do a check if account is an N Level and does not exist
+#***
+#********************************************************************************************************
+
+IF(vsAcc @<>'');
+	IF((DTYPE( dmAcc ,  vsAcc)@<>'N') & (DIMIX( dmAcc , vsAcc)<>0));
+          		CELLPUTS('Account Consolidated', cbMAMap, vsCC, sMapPjt , vsAcc , 'Unmapped');			
+          		IF(lStatus = 0);
+               			ATTRPUTS('Fail','variables','validation status', 'old value');
+               		lStatus = 1;
+		ENDIF;
+	ENDIF;
+ENDIF;
+
+
+#********************************************************************************************************
+#**** RESET VARIABLES****#
+#********************************************************************************************************
+sProg = '';
+sMA = '';
+sJur = '';
+seFunc = '';
+
+#********************************************************************************************************
+#*** Here we need some code that if a movement account is required checks to see if there is one required.
+#********************************************************************************************************
+	IF(ATTRS( dmAcc , vsAcc , 'movement account required') @='Y');
+		sMA = CELLGETS(cbMAMap, vsCC , sMapPjt ,  vsAcc , 'movement account' );
+
+		#---------------------------------------------------------------------
+		IF (SUBST(vsAcc,1,7) @= '4100001' & sMA @= '');
+			sMA = '7593';
+		ENDIF;
+	ELSE;
+		#Appears not so make it dash
+		sMA = '-';
+	ENDIF;
+
+#****************************************************************************************************************************
+#*** WORKOUT Related Entity
+#*** IF this account related entity enabled?
+#****************************************************************************************************************************
+
+	IF(ATTRS(dmAcc , vsAcc ,'related entity enabled') @='Y');
+		sHardCodedRE = '';
+		sHardCodedMARE = '';
+		
+		#********************************************************************************************************
+		#*** If so does it have assumed related entity?
+		#********************************************************************************************************
+		
+		sHardCodedRE = ATTRS(dmAcc , vsAcc ,'assumed related entity');
+		IF(sHardCodedRE @<>'');
+			#********************************************************************************************************
+			#*** IF sHardCodedRE from Account attribute assumed related entity is blank, leave blank 
+			#********************************************************************************************************
+			sRE = sHardCodedRE;
+
+		ELSE;
+			#********************************************************************************************************
+			#*** IF assumed related related entity isnt blank 
+			#********************************************************************************************************
+			sHardCodedMARE = ATTRS(DimMA , sMA ,'assumed related entity');
+			IF(sHardCodedMARE @<>'');
+				#********************************************************************************************************
+				#*** Now do a check if the movement account has an assumed related entity.
+				#***  It does not look in the mapping cube
+				#********************************************************************************************************
+				
+				sRE = sHardCodedMARE;					
+			ELSE;
+				#********************************************************************************************************
+				#*** Movement account has an assumed related entity
+				#*** Also check the mapping cube to see if the cost centre has a mapping component for an account code related entity
+				#*** It does not look in the mapping cube
+				#********************************************************************************************************
+				
+				sRE = CELLGETS( cbMAMap ,vsCC, sMapPjt , vsAcc ,'related entity');
+
+				IF(sRE @<> '');
+					nRE = DIMIX('related entity',sRE);
+					#********************************************************************************************************
+					#*** DO A CHECK IF RELATED ENTITY EXISTS, OTHERWISE SHOW AS INVALID
+					#********************************************************************************************************
+					IF(nRE = 0);
+						IF(lStatus = 0);
+							CELLPUTS('Related Entity invalid', cbMAMap, vsCC, sMapPjt , vsAcc , 'Unmapped');
+							lStatus = 1;
+						ENDIF;							
+					ENDIF;
+				ELSE;
+					sRE = '-';
+				ENDIF;
+			ENDIF;
+		ENDIF;
+	ELSE;
+
+		#********************************************************************************************************
+		#*** ACCOUNT DOES NOT HAVE ASSUMED RELATED ENTITY ***#
+		#********************************************************************************************************
+
+		IF(sMA @= '');
+			sMA ='-';
+		ENDIF;
+				
+		sHardCodedMARE = ATTRS( DimMA , sMA ,'assumed related entity');
+
+		IF(sHardCodedMARE @<>'');
+			sRE = sHardCodedMARE;	
+					
+			#********************************************************************************************************
+			#*** Related entity is not enabled therefore dash
+			#********************************************************************************************************
+		ELSE;
+			sRE = '-';
+		ENDIF;
+	ENDIF;
+
+#****************************************************************************************************************************
+#*** WORKOUT JURISDICTION
+#*** Get jurisdiction from mapping cube
+#*** Similar here for jurisdiction account
+#****************************************************************************************************************************
+
+	IF(ATTRS( dmAcc , vsAcc ,'jurisdiction required') @='Y');
+		sJur = CELLGETS(cbMAMap, vsCC , sMapPjt ,  vsAcc ,'jurisdiction');
+		
+		#****************************************************************************************************************************
+		#*** MAPPING CUBE HAS NO JURISDICTION
+		#****************************************************************************************************************************
+		IF (sJur @= '');
+			sJur = '-';
+		ENDIF;
+	ELSE;
+		sJur = '-';
+	ENDIF;
+
+#****************************************************************************************************************************
+#*** WORKOUT PROGRAM
+#*** GET CBMS ELEMENT NAMES FROM MA MAPPING CUBE
+#*** 
+#*** Need to status check on program
+#****************************************************************************************************************************
+
+	#*** old code for Admin only
+	sProg = CELLGETS(cbMAMap, vsCC, sMapPjt , sMapGL, 'program');
+
+	#****************************************************************************************************************************
+	#*** WORKOUT FUNCTION/APPROPRIATION ITEM/SPP from PROG DETAILS
+	#****************************************************************************************************************************
+
+	IF(sProg @<> '');
+		sFunc = CELLGETS(cbProgDetails, sHLYear2, sScenario2, sProg, 'function');
+		sSPP = CELLGETS(cbProgDetails, sHLYear2, sScenario2, sProg, 'spp');
+		sSourceItem = CELLGETS(cbProgDetails, sHLYear2, sScenario2, sProg, 'appropriation item');
+
+		IF(sFunc @= '');
+			#****************************************************************************************************************************
+			#*** FUNCTION IS BLANK
+			#****************************************************************************************************************************
+                    		#ASCIIOUTPUT('Unmapped Function Codes.txt','Function code not defined for ' | sProg | ' programme');
+	          		#IF(lStatus = 0);
+               			#	ATTRPUTS('Fail','variables','validation status', 'old value');
+                          		#	lStatus = 1;
+          			#ENDIF;
+		ENDIF;
+                ELSE;
+
+		#****************************************************************************************************************************
+		#*** PROGRAM IS UNMAPPED
+		#*** USE DEFAULT??
+		#****************************************************************************************************************************
+		ITEMSKIP;
+
+	ENDIF;
+
+#****************************************************************************************************************************
+#*** OTHER CHECKS FOR MOVEMENT ACCOUNT AND JURISDICTIONS
+#*** CONSIDERING THAT OPERATING STATEMENT AND CASH FLOW DATA ARE LOADED
+#*** NO MOVEMENT ACCOUNT WILL BE NEEDED
+#*** THEY ALSO DO NOT HAVE JURISDICTION
+#****************************************************************************************************************************
+
+	IF((sMA @= '') % (sJur @= ''));
+		CELLPUTS('Unmapped', cbMAMap, vsCC, sMapPjt , vsAcc, 'Unmapped');
+		IF(lStatus = 0);
+               			ATTRPUTS('Fail','variables','validation status', 'old value');
+               			lStatus = 1;
+          		ENDIF;
+     	ENDIF;
+
+
+#****************************************************************************************************************************
+#--- CHECK APPROPRIATION
+#****************************************************************************************************************************
+sMACheck = ATTRS(dmAcc , vsAcc , 'movement account Required');
+sAcctAppnReqQM = ATTRS(dmAcc , vsAcc , 'Appropriation Type Required');
+sMvtAcctAppnReqQM = ATTRS(dmMA , sMA , 'Appropriation Type Required');
+
+IF (sMACheck @= '');
+	IF(sAcctAppnReqQM @='');
+		sApprnItem = '-';
+	ELSE;
+		sApprnItem = sSourceItem;
+	ENDIF;
+
+ELSE;
+	IF (sMvtAcctAppnReqQM @='');
+		sApprnItem = '-';
+	ELSE;
+		sApprnItem = sSourceItem;
+	ENDIF;
+ENDIF;
+sItem = sApprnItem;
+
+
+#****************************************************************************************************************************
+#*** LOAD DATA
+#****************************************************************************************************************************
+
+	#*** CONVERT TO '000s (Using Fator)
+	July = ROUNDP (July/nFactor,0);
+	August = ROUNDP (August/nFactor,0);
+	September = ROUNDP (September/nFactor,0);
+	October = ROUNDP (October/nFactor,0);
+	November = ROUNDP (November/nFactor,0);
+	December = ROUNDP (December/nFactor,0);
+	January = ROUNDP (January/nFactor,0);
+	February = ROUNDP (February/nFactor,0);
+	March = ROUNDP (March/nFactor,0);
+	April = ROUNDP (April/nFactor,0);
+	May = ROUNDP (May/nFactor,0);
+	June = ROUNDP (June/nFactor,0);
+
+	IF (CELLISUPDATEABLE (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Jul', 'value') = 1);
+
+		nOldJuly = CELLGETN (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Jul', 'value');
+		#ASCIIOUTPUT ('kg.txt', NUMBERTOSTRING (nOldJuly), NUMBERTOSTRING (July), vsCC, seCube, sMEHLYear ,  seScenario , seStatus , sRE , seFunc , sMA , sProg , vsAcc , seID , sJur ,'Jul');
+		CellPutN(July + nOldJuly, cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Jul', 'value');
+	ENDIF;
+
+	IF (CELLISUPDATEABLE (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Aug', 'value') = 1);
+		nOldAug = CELLGETN (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Aug', 'value');
+		CellPutN(August + nOldAug, cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Aug', 'value');
+	ENDIF;
+
+	IF (CELLISUPDATEABLE (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Sep', 'value') = 1);
+		nOldSep = CELLGETN (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Sep', 'value');
+		CellPutN(September + nOldSep, cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Sep', 'value');
+	ENDIF;
+
+	IF (CELLISUPDATEABLE (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Oct', 'value') = 1);
+		nOldOct = CELLGETN (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Oct', 'value');
+		CellPutN(October + nOldOct, cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Oct', 'value');
+	ENDIF;
+
+	IF (CELLISUPDATEABLE (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Nov', 'value') = 1);
+		nOldNov = CELLGETN (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Nov', 'value');
+		CellPutN(November + nOldNov, cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Nov', 'value');
+	ENDIF;
+
+	IF (CELLISUPDATEABLE (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Dec', 'value') = 1);
+		nOldDec = CELLGETN (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Dec', 'value');
+		CellPutN(December + nOldDec, cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Dec', 'value');
+	ENDIF;
+
+	IF (CELLISUPDATEABLE (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Jan', 'value') = 1);
+		nOldJan = CELLGETN (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Jan', 'value');
+		CellPutN(January + nOldJan, cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Jan', 'value');
+	ENDIF;
+
+	IF (CELLISUPDATEABLE (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Feb', 'value') = 1);
+		nOldFeb = CELLGETN (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Feb', 'value');
+		CellPutN(February + nOldFeb, cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Feb', 'value');
+	ENDIF;
+
+	IF (CELLISUPDATEABLE (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Mar', 'value') = 1);
+		nOldMar = CELLGETN (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Mar', 'value');
+		CellPutN(March + nOldMar, cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Mar', 'value');
+	ENDIF;
+
+	IF (CELLISUPDATEABLE (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Apr', 'value') = 1);
+		nOldApr = CELLGETN (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Apr', 'value');
+		CellPutN(April + nOldApr, cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Apr', 'value');
+	ENDIF;
+	IF (CELLISUPDATEABLE (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'May', 'value') = 1);
+		nOldMay = CELLGETN (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'May', 'value');
+		CellPutN(May + nOldMay, cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'May', 'value');
+	ENDIF;
+
+	IF (CELLISUPDATEABLE (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Jun', 'value') = 1);
+		nOldJun = CELLGETN (cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Jun', 'value');
+		CellPutN(June + nOldJun, cbME, sMEHLYear, sScenario, sRE, sSPP, sMA, sProg, sItem, vsAcc, sID, sJur, 'Jun', 'value');
+	ENDIF;
+
+
+	CELLPUTS('Y',cbMAMap, vsCC, sMapPjt , vsAcc , 'used' );
+
+
+#*** FLAG Profile as being loaded
+	CELLPUTS('Profile Loaded','ME ID Details', sMEHLYear , 'Current' , sProg ,'0000B' ,'Status');
+
+#--------------------------------------------------------------------
+#--- ADDED FOR GEUS ME PRIMUS
+#--------------------------------------------------------------------
+CELLPUTS('Profile Loaded', cbME, sMEHLYear,'current','-','-','-',sProg,'-','account template','00001','-','P0','status');
+
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#****************************************************************************************************************************
+#*** IF FILE EXISTS
+#*** Check the file exists before we go too far
+#****************************************************************************************************************************
+
+# IF(FileExists(psFile) = 0);
+
+#	ItemReject('The following file '|psFile|' could not be located no trial balance information was loaded');	
+#	ProcessBreak;
+#	ItemReject('The following file '|psFile|' could not be located no trial balance information was loaded');	
+#	ProcessQuit;
+
+# ELSE;
+
+	#****************************************************************************************************************************
+	#*** DESTROY VIEWS AND SUBSETS
+	#****************************************************************************************************************************
+
+	ViewDestroy(cbME, Object);
+	ViewDestroy(cbMAMap, Object);
+
+	SubsetDestroy(dmHLYear, Object);
+	SubsetDestroy(dmScenario, Object);
+	SubsetDestroy(dmProg, Object);
+	SubsetDestroy('mapping', Object);
+
+##Deprecated Function - CubeSetLogChanges Tm1V12
+#CubeSetLogChanges(cbMAMap, 1);
+
+# ENDIF;
+
+
+
+
+#----------------------------------------------------------------------------------
+#--- TI to call generation of profiles
+#----------------------------------------------------------------------------------
+#sProg = 'Administered Programs';
+#sProcess = 'ME_Generate_Profiles 00 - Bulk Generate';
+#EXECUTEPROCESS (sProcess,
+#	'psHeadlineYear', psHLYear,
+#	'psProg', sProg);
+
+
+#endregion

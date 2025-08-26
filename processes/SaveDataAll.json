@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"SaveDataAll",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"SaveDataAll.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[],
+	"UID": "17561008630000"
+}

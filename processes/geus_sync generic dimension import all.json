@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"geus_sync generic dimension import all",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"geus_sync generic dimension import all.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[],
+	"UID": "17561008590001"
+}

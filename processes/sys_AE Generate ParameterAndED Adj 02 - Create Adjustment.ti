@@ -1,0 +1,663 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_AE Generate ParameterAndED Adj 02 - Create Adjustment
+
+#*** DESCRIPTION:       This process will create a view for the parameters and efficiency dividend adjustments ; Note some agencies may use 9110000 instead of 9170000
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 28/04/2014    KG             Initial Revision
+#**** 2019	KG	  Updated for GEUS PRIMUS
+#**** 07/08/2020	KG	  Made changes relating to DCB grouping of adjustments.
+#**** 31/10/2020	KG	  Added validation for vsIte @= '-' in DATA TAB along side ELISANC
+#**** 31/10/2020	KG	  Added account 9110000 as part of calculation along side 9170000. Check with some agencies too
+#**** SEP 2021	KG	  Changes made whether the agency wants to use APPROPS or EXP as offsetting accounts and added sOffSetJur
+#***********************************************************************************************************************
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CALCULATION CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+cbFE3 = 'AE parameters and FE3 calculation';
+dmFE3Meas = 'AE parameters and FE3 calculation measure';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+
+curHLYear = ATTRS(dmVar, 'headline year', 'value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sNoMeasCode = ATTRS(dmVar, 'No Measure Code', 'value');
+sNewReason = ATTRS(dmVar, 'FE3 Reason Code', 'value');
+sDCBItem = '05001';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+
+sView = sUser | '_$parameters01';
+
+#******************************************************************************************************************
+#*** SUBSETS USED FOR PRINT REPORT
+#******************************************************************************************************************
+sProgParamSubset = 'sysRep_ParamEDAdj';
+IF (SUBSETEXISTS (dmProg, sProgParamSubset) = 0);
+	SUBSETCREATE (dmProg, sProgParamSubset);
+ELSE;
+	SUBSETDELETEALLELEMENTS (dmProg, sProgParamSubset);
+ENDIF;
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED FOR VIEWS
+#******************************************************************************************************************
+sStatus = 'Total approved';
+sReason = 'Total reason';
+sOC = 'Total outcomes';
+sFunc = 'Total functions';
+sType = 'Total approp types';
+sID = 'Total IDs';
+
+#******************************************************************************************************************
+#*** DECLARE TEMPORARY DIMENSION
+#******************************************************************************************************************
+dmTmpID = '}tmp_ID_tmp ' | sUser;
+
+#******************************************************************************************************************
+#*** DEFAULT POSTING DATA
+#******************************************************************************************************************
+sNewStatus = 'data';
+
+sPostStatus = 'unauthorised';
+sManualCF = '';
+sAdjType = 'Generated';
+sMeas = 'original value';
+
+IF (psAdjType @= 'parameter');
+	sSourceMeas = 'Total parameter adjustment value';
+	#sPreFixTitle = 'Parameter adjustment';
+	sPreFixTitle = ATTRS(dmVar, 'parameter prefix title', 'value');
+	sIDMeasure = 'parameter adjustment generated';
+	sNewReason = ATTRS(dmVar, 'parameter reason code', 'value');
+ELSE;
+	sSourceMeas = 'Total efficiency dividend adjustment value';
+	#sPreFixTitle = 'Efficiency Dividend';
+	sPreFixTitle = ATTRS(dmVar, 'efficiency dividend prefix title', 'value');
+	sIDMeasure = 'efficiency dividend adjustment generated';
+	sNewReason = ATTRS(dmVar, 'efficiency dividend reason code', 'value');
+
+ENDIF;
+
+
+lCounter = 0;
+
+#***********************************************************************************************************************
+#--- STEP 1 - DECLARE DATA SOURCE VIEWS
+#***********************************************************************************************************************
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#******************************************************************************************************************
+#*** IF PROGRAM IS NOT N LEVEL
+#******************************************************************************************************************
+IF (DTYPE (dmProg, vsProg) @<> 'N');
+	ITEMSKIP;
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** CHECK IF THERE IS AN FE3 FLAG AGAINST THIS PROGRAM
+#******************************************************************************************************************
+
+IF (psAdjType @= 'parameter');
+	sCheckGenerateFlag = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'Generate WCI');
+ELSE;
+	sCheckGenerateFlag = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'Generate ED');
+ENDIF;
+
+IF (sCheckGenerateFlag @<> 'Y');
+	ITEMSKIP;
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** FIND NEXT AVAILABLE ID FOR PROGRAM
+#*** Update 2020 - For DCB Adjustments
+#******************************************************************************************************************
+IF (psCreateAdjByMeasures @= 'Yes' % psCreateAdjByMeasures @= 'Y');
+	IF (SCAN(sDCBItem,vsItem) > 0);
+		sIDProg = vsProg | vsMeasCode | vsItem;
+		#sIDProg = vsProg | vsMeasCode;
+	ELSE;
+		sIDProg = vsProg | vsMeasCode;
+	ENDIF;
+
+ELSE;
+	IF (SCAN(sDCBItem,vsItem) > 0);
+		sIDProg = vsProg | vsItem;
+		#sIDProg = vsProg;
+	ELSE;
+		sIDProg = vsProg;
+	ENDIF;
+
+ENDIF;
+
+
+
+IF (DIMIX (dmTmpID, sIDProg) = 0);
+	DIMENSIONELEMENTINSERT (dmTmpID, '', sIDProg, 'N');
+	lCounter = lCounter + 1;
+ENDIF;
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF (DTYPE(dmProg, vsProg) @<> 'N');
+	ITEMSKIP;
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** CHECK IF THERE IS AN FE3 FLAG AGAINST THIS PROGRAM
+#******************************************************************************************************************
+
+IF (psAdjType @= 'parameter');
+	sCheckGenerateFlag = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'Generate WCI');
+ELSE;
+	sCheckGenerateFlag = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'Generate ED');
+ENDIF;
+
+IF (sCheckGenerateFlag @<> 'Y');
+	ITEMSKIP;
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** FIND NEXT AVAILABLE ID FOR PROGRAM
+#*** Update 2020 - For DCB Adjustments
+#******************************************************************************************************************
+IF (psCreateAdjByMeasures @= 'Yes' % psCreateAdjByMeasures @= 'Y');
+	IF (SCAN(sDCBItem,vsItem) > 0);
+		sIDProg = vsProg | vsMeasCode | vsItem;
+		#sIDProg = vsProg | vsMeasCode;
+	ELSE;
+		sIDProg = vsProg | vsMeasCode;
+	ENDIF;
+
+ELSE;
+	IF (SCAN(sDCBItem,vsItem) > 0);
+		sIDProg = vsProg | vsItem;
+		#sIDProg = vsProg;
+	ELSE;
+		sIDProg = vsProg;
+	ENDIF;
+
+ENDIF;
+
+
+IF (DIMIX (dmTmpID, sIDProg) = 0);
+	ITEMSKIP;
+ENDIF;
+
+sNewID = ATTRS (dmTmpID, sIDProg, 'ID');
+
+#******************************************************************************************************************
+#*** GET PROGRAM DETAILS
+#******************************************************************************************************************
+sApplyParam = 'Y';
+sSPP = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'SPP');
+sOC = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'outcome');
+sFunc = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'function');
+sControlType = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'control type');
+
+
+sPostMeasCode = vsMeasCode;
+sCBMSMeasCode = ATTRS (dmMeasCode, vsMeasCode, 'CBMS');
+
+IF (psCreateAdjByMeasures @= 'Yes' % psCreateAdjByMeasures @= 'Y');
+	sMeasCode = DIMENSIONELEMENTPRINCIPALNAME (dmMeasCode, vsMeasCode);
+
+ELSE;
+	sMeasCode = DIMENSIONELEMENTPRINCIPALNAME (dmMeasCode, sNoMeasCode);
+
+ENDIF;
+
+
+
+#*******************************************************************************************************************************************************
+#*** STEP 1 : TEST IF WE NEED A NEW ID
+#*******************************************************************************************************************************************************
+
+IF (sNewID @= '');
+
+	#******************************************************************************************************************
+	#*** EXECUTE NEXT PROCESS
+	#*** RUN PROCESS TO CREATE NEW SYSTEM ID
+	#******************************************************************************************************************
+	StringGlobalVariable ('NextID');
+
+	sNewIDProcess = 'AE_Adj - Assign New ID';	
+	sProcess = 'sys_Queue - Add Process to Queue';
+	EXECUTEPROCESS(sProcess, 'psTI', sNewIDProcess, 'psParams','psUser;' | sUser);
+
+	sNewID = NextID;
+
+
+	ATTRPUTS (sNewID, dmTmpID, sIDProg, 'ID');
+	sProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, vsProg);
+	ATTRPUTS (vsProg, dmTmpID, sIDProg , 'program');
+
+ 	ATTRPUTS (vsItem, dmTmpID, sIDProg, 'Appropriation');
+ 	ATTRPUTS (sFunc, dmTmpID, sIDProg , 'Function');
+
+
+	#******************************************************************************************************************
+	#*** POPULATE THE AE ID DETAIL CUBE
+	#******************************************************************************************************************
+	sCBMSMeasCode = ATTRS (dmMeasCode, vsMeasCode, 'CBMS');
+	IF (vsMeasCode @= sNoMeasCode % vsMeasCode @= 'Total Measures');
+		sNewTitle = vsProg | ' - Base Funding';
+	ELSE;
+		sNewTitle = vsProg | ' - Measure ' | sCBMSMeasCode;
+	ENDIF;
+
+
+	sProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, vsProg);
+
+	CELLPUTS (sProg, cbID, curHLYear, curScenario, sNewID, snProg | ' code');
+	
+	sProgDesc = ATTRS (dmProg, vsProg, 'code and description');
+	CELLPUTS(sProgDesc, cbID, curHLYear, curScenario, sNewID, snProg | ' description');
+
+	# GET THE INDEXATION FACTOR #
+	sFactor = CELLGETS (cbProg,  curHLYear, curScenario, vsProg, 'parameter');
+
+	IF (vsAcc @= '9170000' % vsAcc @= '9110000');
+		sProgAppropType = 'A001';
+		sProgAppropItem = 'A001-00001-05001';
+		sNewTitle = sNewTitle | ' - CBS';
+	ELSE;
+		IF (vsAcc @= '1280004');
+			sProgAppropType = 'A001';
+			sProgAppropItem = 'A001-00001-05000';
+		ELSE;
+			sProgAppropType = CELLGETS (cbProg, curHLYear, curScenario, sProg, 'appropriation type');
+			sProgAppropItem = CELLGETS (cbProg, curHLYear, curScenario, sProg, 'appropriation item');
+		ENDIF;
+	ENDIF;
+
+	IF (psAdjType @= 'Parameter');
+		sNewTitle = sNewTitle | ' - ' | sPreFixTitle | ' - ' | sFactor;
+	ELSE;
+		sNewTitle = sNewTitle | ' - ' | sPreFixTitle;
+	ENDIF;
+
+	CELLPUTS (SUBST(sNewTitle, 1, 60), cbID, curHLYear, curScenario, sNewID, 'title');
+	CELLPUTS ('(' | sNewID | ')' | ' ' | sNewTitle, cbID, curHLYear, curScenario, sNewID, 'description');
+
+	CELLPUTS(sPostStatus,cbID, curHLYear, curScenario, sNewID, 'status');
+	CELLPUTS(sNewReason,cbID, curHLYear, curScenario, sNewID, 'reason');
+
+	CELLPUTS(sOC, cbID, curHLYear, curScenario, sNewID, 'outcome');
+	CELLPUTS(sFunc, cbID, curHLYear, curScenario, sNewID, 'function');
+	CELLPUTS(sSPP, cbID, curHLYear, curScenario, sNewID, 'SPP');
+	CELLPUTS(sMeasCode, cbID, curHLYear, curScenario, sNewID, 'measure');
+
+	#-----------------------------------------------------------------------
+	#--- APPROPRIATION ITEMS/TYPE
+	#-----------------------------------------------------------------------
+	IF (ELISANC (dmItem, 'CBMS 1 appropriation item', vsItem) = 1 % vsItem @= '-');
+		sType = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'appropriation type');
+		sProgAppropType = 'A010';
+		sProgAppropItem = 'A010-00014-01436';
+	ELSE;
+
+		#-----------------------------------------------------------------------
+		#--- IF IT IS NOT OLD CBMS 1 APPROPRIATIONS
+		#-----------------------------------------------------------------------
+		IF (vsAcc @= '9170000'  % vsAcc @= '9110000');
+			sProgAppropType = 'A001';
+			sProgAppropItem = 'A001-00001-05001';
+		ELSE;
+			IF (vsAcc @= '1280004');
+				sProgAppropType = 'A001';
+				sProgAppropItem = 'A001-00001-05000';
+			ELSE;
+				sProgAppropType = CELLGETS (cbProg, curHLYear, curScenario, sProg, 'appropriation type');
+				sProgAppropItem = CELLGETS (cbProg, curHLYear, curScenario, sProg, 'appropriation item');
+			ENDIF;
+		ENDIF;
+	ENDIF;
+
+	CELLPUTS (sProgAppropItem, cbID, curHLYear, curScenario, sNewID, 'appropriation item');
+	CELLPUTS (sProgAppropType, cbID, curHLYear, curScenario, sNewID, 'appropriation type');
+	CELLPUTS(sApplyParam, cbID, curHLYear, curScenario, sNewID, 'apply parameters');
+	CELLPUTS('ongoing', cbID, curHLYear, curScenario, sNewID, 'funding life');
+	CELLPUTS(sAdjType, cbID, curHLYear, curScenario, sNewID, 'Adjustment Type');
+	CELLPUTS(sControlType, cbID, curHLYear, curScenario, sNewID, 'Control Type');
+	CELLPUTS ('Y', cbID, curHLYear, curScenario, sNewID, 'use new cash flow derivation');
+
+
+
+	#******************************************************************************************************************
+	# **** GET DATE VALUES AND POST USER AND DATE STAMP
+	#******************************************************************************************************************
+	sDNow = TimST( Now, '\D'); 
+	sMNow = TimST( Now, '\m'); 
+	sYNow = TimST( Now, '\Y'); 
+
+	sDay = TRIM(SUBST(sDNow, 1,2));
+
+	IF (LONG (sDay) = 1);
+		sDay = '0' | sDay;
+	ELSE;
+		sDay = sDay;
+	ENDIF;
+
+	sMonth = TRIM(SUBST(sMNow, 1,2));
+
+	IF (LONG (sMonth) = 1);
+		sMonth = '0' | sMonth;
+	ELSE;
+		sMonth = sMonth;
+	ENDIF;
+
+	sYear = TRIM(SUBST(sYNow, 1,4));
+	sNow = sDay | '/' | sMonth | '/' | sYear;
+
+	CELLPUTS(sNow, cbID, curHLYear, curScenario, sNewID, 'created date');
+	CELLPUTS(sUser, cbID, curHLYear, curScenario, sNewID, 'created by');
+
+	#--- MARK THE NEW ID SO IT DOESN'T GET PROCESSED AGAIN
+	CELLPUTS ('Y', cbID, curHLYear, curScenario, sNewID, sIDMeasure);
+
+	#******************************************************************************************************************
+	#**** POPULATE PROGRAMME DETAILS CUBE WITH GENERATED DETAILS
+	#******************************************************************************************************************
+	IF (psAdjType @= 'Parameter');
+		CELLPUTS (sNow, cbProg, curHLYear, curScenario, vsProg, 'WCI Generated Date');
+		CELLPUTS (sUser, cbProg, curHLYear, curScenario, vsProg, 'WCI Generated By');
+	ELSE;
+		CELLPUTS (sNow, cbProg, curHLYear, curScenario, vsProg, 'ED Generated Date');
+		CELLPUTS (sUser, cbProg, curHLYear, curScenario, vsProg, 'ED Generated By');
+	ENDIF;
+
+ELSE;
+
+	#---------------------------------------------
+	#--- EXISTING ID
+	#---------------------------------------------
+
+	#-----------------------------------------------------------------------
+	#--- APPROPRIATION ITEMS/TYPE
+	#-----------------------------------------------------------------------
+	IF (ELISANC (dmItem, 'CBMS 1 appropriation item', vsItem) = 1 % vsItem @= '-');
+		sType = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'appropriation type');
+		sProgAppropType = 'A010';
+		sProgAppropItem = 'A010-00014-01436';
+	ELSE;
+		#-----------------------------------------------------------------------
+		#--- IF IT IS NOT OLD CBMS 1 APPROPRIATIONS
+		#-----------------------------------------------------------------------
+		IF (vsAcc @= '9170000'  % vsAcc @= '9110000');
+			sProgAppropType = 'A001';
+			sProgAppropItem = 'A001-00001-05001';
+		ELSE;
+			IF (vsAcc @= '1280004');
+				sProgAppropType = 'A001';
+				sProgAppropItem = 'A001-00001-05000';
+			ELSE;
+				sProgAppropType = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'appropriation type');
+				sProgAppropItem = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'appropriation item');
+			ENDIF;
+		ENDIF;
+	ENDIF;
+
+ENDIF;
+
+
+#*******************************************************************************************************************************************************
+#*** STEP 2 : POST DATA TO NEW VALUES IN AE ADJUSTMENT CUBE
+#*******************************************************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------
+#---- GET OFFSETTING PARAMETER ACCOUNT
+#---------------------------------------------------------------------------------------------------------
+sOffSetAcc = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'parameter account');
+sOffSetMA = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'parameter movement account');
+sOffSetRE = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'parameter related entity');
+
+#----------------------------------------------------------------------------
+#--- UPDATE SEP 2021 : ENSURE APPROP ACC USE NO JURISDICTION
+#----------------------------------------------------------------------------
+
+IF (sOffSetAcc @= '1280004' % sOffSetAcc @= '4100001' % sOffSetAcc @= '9110000' % sOffSetAcc @= '9170000');
+	sOffSetJur = '-';
+ELSE;
+	sOffSetJur = vsJur;
+ENDIF;
+
+#---------------------------------------------------------------------------------------------------------
+#---- GET OFFSETTING DCB ACCOUNT
+#---- Usually 9210000
+#---------------------------------------------------------------------------------------------------------
+sOffSetDCBAcc = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'parameter DCB account');
+sOffSetDCBMA = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'parameter DCB movement account');
+sOffSetDCBRE = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'parameter DCB related entity');
+
+#---------------------------------------------------------------------------------------------------------
+#---- GET OFFSETTING DCB ACCOUNT #2
+#---- Usually 9330000
+#---------------------------------------------------------------------------------------------------------
+sOffSetDCB2Acc = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'parameter DCB 2 account');
+sOffSetDCB2MA = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'parameter DCB 2 movement account');
+sOffSetDCB2RE = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'parameter DCB 2 related entity');
+
+#---------------------------------------------------------------------------------------------------------
+#---- GET OFFSETTING DCB ACCOUNT #3
+#--- Usually Capital Injection (4100003 / 7209)
+#---------------------------------------------------------------------------------------------------------
+sOffSetDCB3Acc = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'parameter DCB 3 account');
+sOffSetDCB3MA = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'parameter DCB 3 movement account');
+IF (DIMIX (dmMA, sOffSetDCB3MA) = 0);
+	sOffSetDCB3MA = '-';
+ENDIF;
+
+IF (sOffSetDCB3MA @<> '-');
+	sOffSetDCB3RE = ATTRS (dmMA, sOffSetDCB3MA, 'assumed related entity');
+ELSE;
+	IF (DIMIX (dmAcc, sOffSetDCB3Acc) <> 0);
+		sOffSetDCB3RE = ATTRS (dmAcc, sOffSetDCB3Acc, 'assumed related entity');
+	ENDIF;
+ENDIF;
+
+
+IF (DIMIX (dmRE, sOffSetDCB3RE) = 0);
+	sOffSetDCB3RE = '-';
+ENDIF;
+
+#---------------------------------------------------------------------------------------------------------
+#---- GET OFFSETTING DCB ACCOUNT #4
+#---- Usually Non-FInancial Assets New Additions  (5313001/721)
+#---------------------------------------------------------------------------------------------------------
+sOffSetDCB4Acc = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'parameter DCB 4 account');
+sOffSetDCB4MA = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'parameter DCB 4 movement account');
+
+IF (DIMIX (dmMA, sOffSetDCB4MA) = 0);
+	sOffSetDCB4MA = '-';
+ENDIF;
+
+
+IF (sOffSetDCB4MA @<> '-');
+	sOffSetDCB4RE = ATTRS (dmMA, sOffSetDCB4MA, 'assumed related entity');
+ELSE;
+	
+	IF (DIMIX (dmAcc, sOffSetDCB4Acc) <> 0);
+		sOffSetDCB4RE = ATTRS (dmAcc, sOffSetDCB4Acc, 'assumed related entity');
+	ENDIF;
+ENDIF;
+
+IF (DIMIX (dmRE, sOffSetDCB4RE) = 0);
+	sOffSetDCB4RE = '-';
+ENDIF;
+
+#----------------------------------------------------------------------------
+#--- UPDATE DATA
+#--- UPDATE SEP 2021 : sOFFSET JUR IS ADDED
+#----------------------------------------------------------------------------
+
+IF (CELLISUPDATEABLE (cbAE,  curHLYear, curScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, vsSPP, sMeasCode, sProgAppropType, vsMA, sProgAppropItem, vsProg, vsAcc, sNewID, vsJur, vsPer) = 1);
+	IF (SUBST(vsAcc, 1, 1) @<> '6');
+		#*** ONLY ADD ADJUSTMENTS FOR NON-CASH FLOW ACCOUNTS, SET SYSTEM DERIVED ACCOUNTS ***#
+		nOldValue = CELLGETN (cbAE, curHLYear, curScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, vsSPP, sMeasCode, sProgAppropType, vsMA, sProgAppropItem, vsProg, vsAcc, sNewID, vsJur, vsPer);
+		CELLPUTN (nOldValue + vnValue, cbAE, curHLYear, curScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, vsSPP, sMeasCode, sProgAppropType, vsMA, sProgAppropItem, vsProg, vsAcc, sNewID, vsJur, vsPer);
+
+		IF (vsAcc @= '9170000'  % vsAcc @= '9110000');
+			IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, vsSPP, sMeasCode, sProgAppropType, sOffSetDCBMA, sProgAppropItem, vsProg, sOffSetDCBAcc, sNewID, sOffSetJur, vsPer) = 1);
+				nOldValue = CELLGETN (cbAE, curHLYear, curScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, vsSPP, sMeasCode, sProgAppropType, sOffSetDCBMA, sProgAppropItem, vsProg, sOffSetDCBAcc, sNewID, sOffSetJur, vsPer);
+				CELLPUTN (nOldValue + vnValue, cbAE, curHLYear, curScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, vsSPP, sMeasCode, sProgAppropType, sOffSetDCBMA, sProgAppropItem, vsProg, sOffSetDCBAcc, sNewID, sOffSetJur, vsPer);
+			ENDIF;
+
+			IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, vsSPP, sMeasCode, sProgAppropType, sOffSetDCB2MA, sProgAppropItem, vsProg, sOffSetDCB2Acc, sNewID, sOffSetJur, vsPer) = 1);
+				nOldValue = CELLGETN (cbAE, curHLYear, curScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, vsSPP, sMeasCode, sProgAppropType, sOffSetDCB2MA, sProgAppropItem, vsProg, sOffSetDCB2Acc, sNewID, sOffSetJur, vsPer);
+				CELLPUTN (nOldValue + vnValue, cbAE, curHLYear, curScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, vsSPP, sMeasCode, sProgAppropType, sOffSetDCB2MA, sProgAppropItem, vsProg, sOffSetDCB2Acc, sNewID, sOffSetJur, vsPer);
+			ENDIF;
+
+			IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, sNewStatus, sOC, sOffSetDCB3RE, sFunc, sNewReason, vsSPP, sMeasCode, sProgAppropType, sOffSetDCB3MA, sProgAppropItem, vsProg, sOffSetDCB3Acc, sNewID, sOffSetJur, vsPer) =1);
+				nOldValue = CELLGETN (cbAE, curHLYear, curScenario, sNewStatus, sOC, sOffSetDCB3RE, sFunc, sNewReason, vsSPP, sMeasCode, sProgAppropType, sOffSetDCB3MA, sProgAppropItem, vsProg, sOffSetDCB3Acc, sNewID, sOffSetJur, vsPer);
+				CELLPUTN (nOldValue + vnValue, cbAE, curHLYear, curScenario, sNewStatus, sOC, sOffSetDCB3RE, sFunc, sNewReason, vsSPP, sMeasCode, sProgAppropType, sOffSetDCB3MA, sProgAppropItem, vsProg, sOffSetDCB3Acc, sNewID, sOffSetJur, vsPer);
+			ENDIF;
+
+			IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, sNewStatus, sOC, sOffSetDCB4RE, sFunc, sNewReason, vsSPP, sMeasCode, sProgAppropType, sOffSetDCB4MA, sProgAppropItem, vsProg, sOffSetDCB4Acc, sNewID, sOffSetJur, vsPer) = 1);
+				nOldValue = CELLGETN (cbAE, curHLYear, curScenario, sNewStatus, sOC, sOffSetDCB4RE, sFunc, sNewReason, vsSPP, sMeasCode, sProgAppropType, sOffSetDCB4MA, sProgAppropItem, vsProg, sOffSetDCB4Acc, sNewID, sOffSetJur, vsPer);
+				CELLPUTN (nOldValue + vnValue, cbAE, curHLYear, curScenario, sNewStatus, sOC, sOffSetDCB4RE, sFunc, sNewReason, vsSPP, sMeasCode, sProgAppropType, sOffSetDCB4MA, sProgAppropItem, vsProg, sOffSetDCB4Acc, sNewID, sOffSetJur, vsPer);
+			ENDIF;
+
+		ELSE;
+			IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, sNewStatus, sOC, sOffsetRE, sFunc, sNewReason, vsSPP, sMeasCode, sProgAppropType, sOffSetMA, sProgAppropItem, vsProg, sOffSetAcc, sNewID, sOffSetJur, vsPer) = 1);
+				nOldValue = CELLGETN (cbAE, curHLYear, curScenario, sNewStatus, sOC, sOffsetRE, sFunc, sNewReason, vsSPP, sMeasCode, sProgAppropType, sOffSetMA, sProgAppropItem, vsProg, sOffSetAcc, sNewID, sOffSetJur, vsPer);
+				CELLPUTN (nOldValue + vnValue, cbAE, curHLYear, curScenario, sNewStatus, sOC, sOffsetRE, sFunc, sNewReason, vsSPP, sMeasCode, sProgAppropType, sOffSetMA, sProgAppropItem, vsProg, sOffSetAcc, sNewID, sOffSetJur, vsPer);
+			ENDIF;
+		ENDIF;
+
+	ENDIF;
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbFE3, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmSPP, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmJur, sView);
+SUBSETDESTROY (dmItem, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmPer, sView);
+SUBSETDESTROY (dmFE3Meas, sView);
+
+
+
+#******************************************************************************************************************
+#*** REPLACE 'TEMP' WITH 'Y' IN AE ID DETAILS CUBE
+#*** THIS SHOULD PUT A FLAG SO THAT IT WONT CREATE PARAMATERS AGAIN 
+#******************************************************************************************************************
+sID = '0000A';
+IF (CELLISUPDATEABLE (cbID, curHLYear, curScenario, sID, sIDMeasure) = 1);
+	CELLPUTS ('Y', cbID, curHLYear, curScenario, sID, sIDMeasure);
+ENDIF;
+
+sID = '00FBO';
+IF (CELLISUPDATEABLE (cbID, curHLYear, curScenario, sID, sIDMeasure) = 1);
+	CELLPUTS ('Y', cbID, curHLYear, curScenario, sID, sIDMeasure);
+ENDIF;
+
+
+
+
+#endregion

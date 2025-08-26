@@ -1,0 +1,285 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_CDM extract ID",
+	"Elements":
+	[
+		{
+			"Name":"Total Extracts",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"E0001",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0002",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0003",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0004",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0005",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0006",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0007",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0008",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0009",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0010",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0011",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0012",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0013",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0014",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0015",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0016",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0017",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0018",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0019",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0020",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0021",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0022",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0023",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0024",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0025",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0026",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0027",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0028",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0029",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"E0030",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0001",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0002",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0003",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0004",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0005",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0006",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0007",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0008",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0009",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0010",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0011",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0012",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0013",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0014",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0015",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0016",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0017",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0018",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0019",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0020",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0021",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0022",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0023",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0024",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0025",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0026",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0027",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0028",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0029",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total Extracts",
+			"ComponentName":"E0030",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":[]
+}

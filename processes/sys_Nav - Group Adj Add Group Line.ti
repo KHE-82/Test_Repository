@@ -1,0 +1,297 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_Nav - Group Adj Add Group Line
+#**** DESCRIPTION:       This process is used for TM1 Web to navigate from Group Adj and Copy Exp To Cash
+#****
+#****		          
+#****                                
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    KG             Initial Revision
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+dmProg = ATTRS(dmVar, 'program dimension name', 'value');
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+IF (dmProg @= '');
+	dmProg = 'programme';
+ENDIF;
+snProg = dmProg;
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+dmAccTemp = 'account template';
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS
+#******************************************************************************************************************
+cbID = 'AE id details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmID = 'id';
+dmIDMeas = 'id measure';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT GROUPS CUBE
+#******************************************************************************************************************
+cbGroups = '}ClientGroups';
+dmGroups = '}Groups';
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** STOP PROCESS IF ID IS BLANK
+#******************************************************************************************************************
+IF (psID @= '');
+	PROCESSQUIT;
+ENDIF;
+
+#******************************************************************************************************************
+#*** IDENTIFY STATUS
+#******************************************************************************************************************
+sStatus = CELLGETS (cbID, psHLYear, psScenario, psID, 'status');
+
+
+#******************************************************************************************************************
+#*** VALIDATION CHECK RESETS
+#*** These validation checks are set to 0, to reset. 
+#*** 0 means valid, Greater than 0, means it is invalid
+#******************************************************************************************************************
+sErrProg = '';
+sErrAccTemp = '';
+sErrRE = '';
+sErrJur = '';
+
+nProgValid = 0;
+nAccTempValid = 0;
+nREValid = 0;
+nJurValid = 0;
+
+nCheck = 0;
+
+#*** Clear validate rules
+CELLPUTS (sErrProg, cbClient, sUser, 'group adj_program', 'validate');
+CELLPUTS (sErrAccTemp, cbClient, sUser, 'group adj_account template', 'validate');
+CELLPUTS (sErrRE, cbClient, sUser, 'group adj_related entity', 'validate');
+CELLPUTS (sErrJur, cbClient, sUser, 'group adj_jurisdiction', 'validate');
+
+
+#*****************************************************************************************************************************************************
+#**** STEP 1 - VALIDATE SELECTED ACCOUNTS
+#*****************************************************************************************************************************************************
+
+
+
+#------------------------------------------------------
+#--- Program
+#------------------------------------------------------
+IF (DIMIX (dmProg, psProg) = 0);
+	nProgValid = nProgValid + 1;
+	nCheck = nCheck + 1;
+	sErrProg = 'Please select a valid Programt';
+	CELLPUTS (sErrProg, cbClient, sUser, 'group adj_program', 'validate');
+	
+ENDIF;
+
+
+#------------------------------------------------------
+#--- Account Template
+#------------------------------------------------------
+IF (DIMIX (dmAccTemp, psAccTemp) = 0);
+	nAccTempValid = nAccTempValid + 1;
+	nCheck = nCheck + 1;
+	sErrAccTemp = 'Please select a valid account template';
+	CELLPUTS (sErrAccTemp, cbClient, sUser, 'group adj_account template', 'validate');
+	
+ENDIF;
+
+
+#------------------------------------------------------
+#--- Related Entity
+#------------------------------------------------------
+IF (DIMIX (dmRE, psRE) = 0);
+	nREValid = nREValid + 1;
+	nCheck = nCheck + 1;
+	sErrRE = 'Please select a valid related entity';
+	CELLPUTS (sErrRE, cbClient, sUser, 'group adj_related entity', 'validate');
+ENDIF;
+
+#------------------------------------------------------
+#--- Jurisdiction
+#------------------------------------------------------
+IF (DIMIX (dmJur, psJur) = 0);
+	nJurValid = nJurValid + 1;
+	nCheck = nCheck + 1;
+	sErrJur = 'Please select a valid jurisdiction';
+	CELLPUTS (sErrJur, cbClient, sUser, 'group adj_jurisdiction', 'validate');
+ENDIF;
+
+IF (psHLYear @<> curHLYear & psScenario @<> curScenario);
+	nCheck = nCheck + 1;
+ENDIF;
+
+
+#***********************************************************************************************************************
+#*** STATUS CHECK
+#*** ADDED FUNCTIONALITY 20160323
+#*** ONLY CERTAIN ACCESS CAN ADD ACCOUNTS BASED ON STATUS OF ADJUSTMENT
+#***********************************************************************************************************************
+sIDStatus = CELLGETS(cbID, psHLYear, psScenario, psID, 'status');
+#IF (sIDStatus @<> 'unauthorised' & sIDStatus @<> 'unbalanced' & sIDStatus @<> 'draft');
+IF (ELISANC (dmStatus, 'Total approved', sIDStatus) = 1);
+	nCheck = nCheck + 1;
+
+	sErrProg =  'Adjustment is not editable';
+	CELLPUTS (sErrProg, cbClient, sUser, 'group adj_program', 'validate');
+
+	sErrAccTemp = 'Adjustment is not editable';
+	CELLPUTS (sErrAccTemp, cbClient, sUser, 'group adj_account template', 'validate');
+
+	sErrRE = 'Adjustment is not editable';
+	CELLPUTS (sErrRE, cbClient, sUser, 'group adj_related entity', 'validate');
+
+	sErrJur =  'Adjustment is not editable';
+	CELLPUTS (sErrJur, cbClient, sUser, 'group adj_jurisdiction', 'validate');
+
+	PROCESSBREAK;
+
+ENDIF;
+
+
+
+#***********************************************************************************************************************
+#*** DO A CHECK IF THE SELECTED HLYEAR AND SCENARIO ARE CURRENT
+#*** IF NOT CURRENT, CANCEL THE PROCESS
+#***********************************************************************************************************************
+
+IF (nCheck > 0);
+
+	PROCESSBREAK;
+
+ELSE;
+
+	#******************************************************************************************************************
+	#*** SELECTED HLYEAR AND SCENARIO ARE CURRENT AND ALL OTHER FIELDS ARE OK
+	#*** DO VALIDATION CHECKS
+	#******************************************************************************************************************
+
+	#******************************************************************************************************************
+	#*** GET PRINCIPAL NAME OF SELECTED NAMES
+	#******************************************************************************************************************
+	sProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, psProg);
+	sAccTemp = DIMENSIONELEMENTPRINCIPALNAME (dmAccTemp, psAccTemp);
+	sRE = DIMENSIONELEMENTPRINCIPALNAME (dmRE, psRE);
+	sJur = DIMENSIONELEMENTPRINCIPALNAME (dmJur, psJur);
+
+
+	#******************************************************************************************************************
+	#*** EXECUTE PROCESS FOR COPYING EXP TO CASH
+	#******************************************************************************************************************
+	IF (psHLYear @= curHLYear & psScenario @= curScenario);
+		IF (sStatus @= 'draft' % sStatus @= 'unauthorised' % sStatus @= 'submitted' % sStatus @= 'unbalanced');
+			sProcess = 'AE_GrpAdj - Add New Line';
+			EXECUTEPROCESS (sProcess, 'psUser', psUser, 'psID', psID, 'psProg', sProg, 'psAccTemp', sAccTemp, 'psRE', sRE, 'psJur', sJur);
+		ENDIF;
+	ENDIF;
+ENDIF;
+
+
+
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

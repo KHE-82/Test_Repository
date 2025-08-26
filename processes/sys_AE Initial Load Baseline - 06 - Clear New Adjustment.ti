@@ -1,0 +1,194 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              sys_AE Initial Load Baseline - 02
+#**** DESCRIPTION:       This process will load a CBMS Upload file into GEUS for reconciliation purposes
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 13/06/2014    KG             Initial Revision
+#**** 08/08/2017	KG	Converting this process from AE_CBMS Reconciliations to AE_Reco - CBMSR Reconciliatio Upload
+#**** 2020 	KG	 Updated for New GEUS
+#*** 16/11/2020	KG	  Updated validations
+#****
+#***********************************************************************************************************************
+
+snProg = 'programme';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#*****************************************************************************
+#*** DECLARE CUBES AND DIMENSIONS***#
+#*****************************************************************************
+sCube = 'AE adjustments';
+cbID = 'AE id details';
+sView = '$RECO';
+sSubset = sView;
+
+cbProg = snProg | ' details';
+dmProg = snProg;
+
+cbID = 'AE id details';
+
+#*****************************************************************************
+#*** DECLARE AE ADJUSTMENTS DIMENSIONS ***#
+#*****************************************************************************
+dmID = 'id';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmReason = 'reason';
+dmType = 'appropriation type';
+dmItem = 'appropriation item';
+dmFunc = 'function';
+dmMeas = 'measure code';
+dmAcc = 'account';
+dmMA = 'movement account';
+dmSPP = 'spp';
+dmJur = 'jurisdiction';
+
+#*****************************************************************************
+#*** DECLARE SYSTEM VARIABLES
+#*****************************************************************************
+dmVar = 'variables';
+dmVar = 'variables'; 
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+#sImpFilePath = ATTRS(dmVar, 'sys_ImpFileExceptionLogs', ' value');
+sImpFilePath = 'upload error.csv';
+sDefOC = ATTRS(dmVar, 'AE Default Outcome', 'value');
+
+
+sScenario = 'CBMS';
+sStatus = 'data';
+sReason = 'Other variations not elsewhere defined';
+sID = '0000A';
+
+#*****************************************************************************
+#****DELETE EXISTING VIEWS AND SUBSETS
+#*****************************************************************************
+ViewDestroy(sCube, sView);
+ViewDestroy(cbID, sView);
+
+SubsetDestroy('headline year', sSubset);
+SubsetDestroy('scenario', sSubset);
+SubsetDestroy(dmProg, sSubset);
+SubsetDestroy(dmID, sSubset);
+
+
+#*****************************************************************************
+#****CREATE SUBSETS****#
+#*****************************************************************************
+# headline year
+SubsetCreate('headline year', sSubset);
+SubsetElementInsert('headline year', sSubset, psHLYear, 1);
+
+#*****************************************************************************
+# Scenario
+#*****************************************************************************
+SubsetCreate('scenario', sSubset);
+SubsetElementInsert('scenario', sSubset, psScenario, 1);
+
+#*****************************************************************************
+# Programme
+#*****************************************************************************
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( { [' | dmProg | '].['| psProg | '] }, ALL, RECURSIVE )}, 0)}';
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+#*****************************************************************************
+# ID
+#*****************************************************************************
+#SubsetCreate('id', sSubset);
+#SubsetElementInsert('id', sSubset, psID, 1);
+
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( { [' | dmID | '].['| psID | '] }, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+#*****************************************************************************
+#****BUILD VIEW
+#*****************************************************************************
+ViewCreate(sCube, sView);
+
+ViewSubsetAssign(sCube, sView, 'headline year', sSubset);
+ViewSubsetAssign(sCube, sView, 'scenario', sSubset);
+ViewSubsetAssign(sCube, sView, dmProg, sSubset);
+ViewSubsetAssign(sCube, sView, dmID, sSubset);
+
+ViewSetSkipZeroes(sCube, sView, 1);
+ViewSetSkipCalcs(sCube, sView, 1);
+ViewZeroOut(sCube, sView);
+
+
+#*****************************************************************************
+#****DELETE EXISTING VIEWS AND SUBSETS
+#*****************************************************************************
+ViewDestroy(sCube, sView);
+#SubsetDestroy('headline year', sSubset);
+#SubsetDestroy('scenario', sSubset);
+SubsetDestroy(dmProg, sSubset);
+#SubsetDestroy(dmID, sSubset);
+
+
+
+
+
+#*****************************************************************************
+#****BUILD VIEW
+#*****************************************************************************
+ViewCreate(cbID, sView);
+
+ViewSubsetAssign(cbID, sView, 'headline year', sSubset);
+ViewSubsetAssign(cbID, sView, 'scenario', sSubset);
+ViewSubsetAssign(cbID, sView, dmID, sSubset);
+
+
+ViewSetSkipZeroes(cbID, sView, 1);
+ViewSetSkipCalcs(cbID, sView, 1);
+ViewZeroOut(cbID, sView);
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*****************************************************************************
+#****DELETE EXISTING VIEWS AND SUBSETS
+#*****************************************************************************
+ViewDestroy(sCube, sView);
+ViewDestroy(cbID, sView);
+SubsetDestroy('headline year', sSubset);
+SubsetDestroy('scenario', sSubset);
+SubsetDestroy(dmProg, sSubset);
+SubsetDestroy(dmID, sSubset);
+
+#endregion

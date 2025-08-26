@@ -1,0 +1,175 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_Client - Update Meas Bulk Process Subset
+#**** DESCRIPTION:       This process will clear all flags and update subsets required for bulk processing
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    KG             Initial Revision
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS
+#******************************************************************************************************************
+cbID = 'AE id details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmID = 'id';
+dmIDMeas = 'id measure';
+
+#******************************************************************************************************************
+#*** DECLARE GOVERNMENT MEASURES DETAILS
+#******************************************************************************************************************
+cbMeasDet = 'government measures details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmMeasCode = 'measure code';
+dmMeasCodeDet = 'measure details';
+
+#******************************************************************************************************************
+#*** DECLARE BULK PROCESS CUBE
+#******************************************************************************************************************
+cbMeasBulk = 'government measures bulk processing';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT GROUPS CUBE
+#******************************************************************************************************************
+cbGroups = '}ClientGroups';
+dmGroups = '}Groups';
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED
+#******************************************************************************************************************
+sSubset = sUser | '_$sysMeasBulkList';
+
+#******************************************************************************************************************
+#*** CLEAR BULK PROCESS VALIDATION
+#******************************************************************************************************************
+CELLPUTS ('', cbClient, sUser, 'sys_meas bulk process', 'validate');
+
+#******************************************************************************************************************
+#*** GET CLIENT DETAILS IN USER DETAILS
+#******************************************************************************************************************
+sSelProcess = CELLGETS (cbClient, sUser, 'sys_meas bulk process', 'value');
+sOldProcess = CELLGETS (cbClient, sUser, 'sys_meas bulk process', 'old value');
+
+#******************************************************************************************************************
+#*** DESTROY VIEWS USED IN BULK PROCESS IF ANY
+#******************************************************************************************************************
+sView = sUser | '_$sysBulkPopulateFlags';
+VIEWDESTROY (cbMeasBulk, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmMeasCodeDet, sView);
+
+#******************************************************************************************************************
+#*** DESTROY SUBSET EXISTING SUBSET
+#*****************************************************************************************************************
+SUBSETDESTROY (dmMeasCode, sSubset);
+
+#******************************************************************************************************************
+#*** RECREATE SUBSET ***#
+#******************************************************************************************************************
+IF (psMDX @= '');
+	MDX = '{ [' | dmMeasCode | '].[M00000]}';
+ELSE;
+	MDX = psMDX;
+ENDIF;
+
+SUBSETCREATEBYMDX (sSubset, MDX);
+SUBSETMDXSET (dmMeasCode, sSubset , MDX);
+
+#******************************************************************************************************************
+#*** CLEAR FLAGS
+#******************************************************************************************************************
+sProcess = 'AE_Measure Bulk - Clear Flags';
+IF (sSelProcess @<> sOldProcess);
+	EXECUTEPROCESS (sProcess, 'psUser', sUser, 'psHLYear', psHLYear, 'psScenario', psScenario);
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** POST SELECTED PROCESS IN USER DETAILS
+#******************************************************************************************************************
+CELLPUTS (sSelProcess, cbClient, sUser, 'sys_meas bulk process', 'old value');
+
+#******************************************************************************************************************
+#*** RUN CLIENT PREFERENCE PICKLIST
+#******************************************************************************************************************
+sProcess = 'sys_Client - Update Client Prefrence Picklists';
+EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psHLYear', psHLYear, 'psScenario', psScenario);
+
+#******************************************************************************************************************
+#*** POST SELECTED PROCESS IN USER DETAILS
+#******************************************************************************************************************
+CELLPUTS (sSelProcess, cbClient, sUser, 'sys_meas bulk process', 'value');
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

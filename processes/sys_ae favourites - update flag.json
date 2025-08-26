@@ -1,0 +1,33 @@
+{
+	"@type":"Process",
+	"Name":"sys_ae favourites - update flag",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_ae favourites - update flag.ti",
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForServer":"account",
+		"dataSourceNameForClient":"account",
+		"subset":"SE_KG0020_$geuspvt"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vsElement",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "17561008630009"
+}

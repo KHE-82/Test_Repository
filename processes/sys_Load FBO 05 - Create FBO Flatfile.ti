@@ -1,0 +1,545 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              sys_Load FBO 05 - Create FBO Flatfile
+#**** DESCRIPTION:       
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 06/10/2017    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** DECLARE CUBES AND DIMENSIONS ***#
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+cbID = 'ae id details';
+
+cbProg = snProg | ' details';
+dmProg = snProg;
+
+#*** DECLARE SYSTEM VARIABLES
+dmClients = '}Clients';
+dmVar = 'variables'; 
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+
+sCube = cbAE;
+sView = '$CBMSRFBOFF';
+sSubset = sView;
+
+#sSourceStatus = 'Total approved';
+sSourceStatus = 'data';
+#sSourceID = 'Total IDs';
+sSourceID = '00FBO';
+sSourceReason = 'Total reason';
+sSourceMeasCode = 'Total Measures';
+sSourceAcc = '3800001';
+sSourceMA = 'Total movement';
+
+sSourceType = 'Total approp types';
+sSourceItem = 'Total approp item';
+
+sTargetStatus = 'data';
+sTargetID = '00FBO';
+sTargetReason = 'Other variations not elsewhere defined';
+sTargetMeasCode = 'M00000';
+sTargetAcc = '4100001';
+sTargetMA = '7205';
+
+
+nStartPerIndex = DIMIX (dmPer, psPeriod);
+nLastPerIndex = DIMIX (dmPer, '2045-2046');
+
+psProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, psProg);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- STEP 01 : OUTPUT FILE DETAILS
+#---------------------------------------------------------------------------------------------------------------------------
+
+# **** GET DATE VALUES ***#
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+sHNow = TimST (Now, '\h');
+sMinNow = TimST (Now, '\i');
+sSNow = TimST (Now, '\s');
+ 
+sDay = TRIM(SUBST(sDNow, 1,2));
+ 
+IF (LONG (sDay) = 1);
+     sDay = '0' | sDay;
+ELSE;
+     sDay = sDay;
+ENDIF;
+ 
+sMonth = TRIM(SUBST(sMNow, 1,2));
+ 
+IF (LONG (sMonth) = 1);
+     sMonth = '0' | sMonth;
+ELSE;
+     sMonth = sMonth;
+ENDIF;
+ 
+sYear = TRIM(SUBST(sYNow, 1,4));
+ 
+sNow = sYear | sMonth | sDay | sHNow | sMinNow | sSNow ;
+sSaveLocation =  ATTRS(dmVar, 'save location', 'value');
+sFile =  sSaveLocation | psProg | ' FBO flatfile ' | psPeriod | ' ' | sNow | '.csv';
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#--- STEP 02 : CREATE SOURCE VIEW
+#------------------------------------------------------------------------------------------------------------------------------------------
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbAE, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmStatus, sSubset);
+SUBSETDESTROY (dmOC, sSubset);
+SUBSETDESTROY (dmRE, sSubset);
+SUBSETDESTROY (dmFunc, sSubset);
+SUBSETDESTROY (dmReason, sSubset);
+SUBSETDESTROY (dmSPP, sSubset);
+SUBSETDESTROY (dmMeasCode, sSubset);
+SUBSETDESTROY (dmType, sSubset);
+SUBSETDESTROY (dmMA, sSubset);
+SUBSETDESTROY (dmItem, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmAcc, sSubset);
+SUBSETDESTROY (dmID, sSubset);
+SUBSETDESTROY (dmJur, sSubset);
+SUBSETDESTROY (dmPer, sSubset);
+
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, psSourceHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, psSourceScenario, 1);
+
+# Status
+SubsetCreate(dmStatus, sSubset);
+SubsetElementInsert(dmStatus, sSubset, sSourceStatus, 1);
+
+# Outcome
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmOC | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Function
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmFunc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Reason
+SubsetCreate(dmReason, sSubset);
+SubsetElementInsert(dmReason, sSubset, sSourceReason, 1);
+
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Measure Code
+SubsetCreate(dmMeasCode, sSubset);
+SubsetElementInsert(dmMeasCode, sSubset, sSourceMeasCode, 1);
+
+# Appropriation Type
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmType | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sSubset, MDX);
+
+SubsetCreate(dmType, sSubset);
+SubsetElementInsert(dmType, sSubset, sSourceType, 1);
+
+
+# Movement account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Appropriation item
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sSubset, MDX);
+
+SubsetCreate(dmItem, sSubset);
+SubsetElementInsert(dmItem, sSubset, sSourceItem, 1);
+
+# Programme
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( { [' | dmProg | '].[' | psProg | '] }, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+
+# Account
+#MDX = '{{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[9000130]}, ALL, RECURSIVE )}, 0)}, ASC)},{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[3800001]}, ALL, RECURSIVE )}, 0)}, ASC)},{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[9000850]}, ALL, RECURSIVE )}, 0)}, ASC)}, {TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[9000003]}, ALL, RECURSIVE )}, 0)}, ASC)} }';
+MDX = '{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[account].[3800001]}, ALL, RECURSIVE )}, 0)}, ASC)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+#SubsetCreate(dmAcc, sSubset);
+#SubsetElementInsert(dmAcc, sSubset, sSourceAcc, 1);
+
+# ID
+SubsetCreate(dmID, sSubset);
+SubsetElementInsert(dmID, sSubset, sSourceID, 1);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Period
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sSubset, MDX);
+
+SubsetCreate(dmPer, sSubset);
+SubsetElementInsert(dmPer, sSubset, psPeriod, 1);
+
+
+#****BUILD VIEW****#
+ViewCreate(sCube, sView);
+
+ViewSubsetAssign(sCube, sView, dmHLYear, sSubset);
+ViewSubsetAssign(sCube, sView, dmScenario, sSubset);
+ViewSubsetAssign(sCube, sView, dmStatus, sSubset);
+ViewSubsetAssign(sCube, sView, dmOC, sSubset);
+ViewSubsetAssign(sCube, sView, dmRE, sSubset);
+ViewSubsetAssign(sCube, sView, dmFunc, sSubset);
+ViewSubsetAssign(sCube, sView, dmReason, sSubset);
+ViewSubsetAssign(sCube, sView, dmSPP, sSubset);
+ViewSubsetAssign(sCube, sView, dmMeasCode, sSubset);
+ViewSubsetAssign(sCube, sView, dmType, sSubset);
+ViewSubsetAssign(sCube, sView, dmMA, sSubset);
+ViewSubsetAssign(sCube, sView, dmItem, sSubset);
+ViewSubsetAssign(sCube, sView, dmProg, sSubset);
+ViewSubsetAssign(sCube, sView, dmAcc, sSubset);
+ViewSubsetAssign(sCube, sView, dmID, sSubset);
+ViewSubsetAssign(sCube, sView, dmJur, sSubset);
+ViewSubsetAssign(sCube, sView, dmPer, sSubset);
+
+ViewExtractSkipZeroesSet (sCube, sView, 1);
+ViewExtractSkipCalcsSet (sCube, sView, 0);
+ViewExtractSkipRuleValuesSet (sCube, sView, 0);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+lHeaderCounter = 0;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#ITEMSKIP;
+
+
+#------------------------------------------------------------------------------------------------------------
+#--- CREATE ASCIIOUTPUT
+#--- sCol01 = Programme Code
+#--- sCol02 = Variation
+#--- sCol03 = Entry Period
+#--- sCol04 = Budget Round
+#--- sCol05 = Agency Code
+#--- sCol06 = Programme
+#--- sCol07 = Type
+#--- sCol08 = ControlType
+#--- sCol09 = Title
+#--- sCol10 = Status
+#--- sCol11 = Description
+#--- sCol12 = Outcome
+#--- sCol13 = Sub Function
+#--- sCol14 = Appropriation Type
+#--- sCol15 = Appropriation Item
+#--- sCol16 = Reason
+#--- sCol17 = Measure
+#--- sCol18 = Account
+#--- sCol19 = Movement Account
+#--- sCol20 = Related Entity
+#--- sCol21 = SPP
+#--- sCol22 = Jurisdiction
+#--- sCol23 = DR/CR
+#--- sCol24 = Financial Year Value
+#------------------------------------------------------------------------------------------------------------
+
+#------------------------------------------------------------------------------------------------------------
+#--- DEFINE DEFAULT VALUES
+#------------------------------------------------------------------------------------------------------------
+sDefaultItem = 'A010-00014-01436';
+sDefaultType = 'A010';
+
+
+
+#------------------------------------------------------------------------------------------------------------
+#--- DEFINE FILE NAME : DEFINED IN PROLOG
+#------------------------------------------------------------------------------------------------------------
+#sFile = 'FBO flatfile.csv';
+
+
+#------------------------------------------------------------------------------------------------------------
+#--- DEFINE HEADERS
+#------------------------------------------------------------------------------------------------------------
+sHeadCol01 = 'Programme Code';
+sHeadCol02 = 'Variation';
+sHeadCol03 = 'Entry Period';
+sHeadCol04 = 'Budget Round';
+sHeadCol05 = 'Agency Code';
+sHeadCol06 = 'Programme';
+sHeadCol07 = 'Type';
+sHeadCol08 = 'ControlType';
+sHeadCol09 = 'Title';
+sHeadCol10 = 'Status';
+sHeadCol11 = 'Description';
+sHeadCol12 = 'Outcome';
+sHeadCol13 = 'Sub Function';
+sHeadCol14 = 'Appropriation Type';
+sHeadCol15 = 'Appropriation Item';
+sHeadCol16 = 'Reason';
+sHeadCol17 = 'Measure';
+sHeadCol18 = 'Account';
+sHeadCol19 = 'Movement Account';
+sHeadCol20 = 'Related Entity';
+sHeadCol21 = 'SPP';
+sHeadCol22 = 'Jurisdiction';
+sHeadCol23 = 'DR/CR';
+sHeadCol24 = 'Financial Year Value';
+
+
+#------------------------------------------------------------------------------------------------------------
+#--- DEFINE VALUES
+#------------------------------------------------------------------------------------------------------------
+#-------------------------------------------
+#--- Column 01 : Programme Cube (TM1)
+#-------------------------------------------
+sCol01 = vsProg;
+
+#-------------------------------------------
+#--- Column 02 : Variation Number
+#-------------------------------------------
+sCol02 = 'FBO Adj';
+
+#-------------------------------------------
+#--- Column 03 : Entry period
+#-------------------------------------------
+sCol03 = SUBST (psSourceHLYear, 8,4);
+
+#-------------------------------------------
+#--- Column 04 : Budget Round
+#-------------------------------------------
+sCol04 = '';
+
+#-------------------------------------------
+#--- Column 05 : Agency Code
+#-------------------------------------------
+sCol05 = '15100';
+
+#-------------------------------------------
+#--- Column 06 : Programme Code
+#-------------------------------------------
+sCol06 = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'programme');
+
+
+#-------------------------------------------
+#--- Column 07 : Type
+#-------------------------------------------
+sCol07 = 'Estimate';
+
+#-------------------------------------------
+#--- Column 08 : Control Type
+#-------------------------------------------
+sCol08 = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'control type');
+#sCol08 = 'Administered';
+
+#-------------------------------------------
+#--- Column 09 : Title
+#-------------------------------------------
+sCol09 = vsProg | ' FBO - Administered';
+
+#-------------------------------------------
+#--- Column 10 : Status
+#-------------------------------------------
+sCol10 = '';
+
+#-------------------------------------------
+#--- Column 11 : Desciption
+#-------------------------------------------
+sCol11 = sCol09;
+
+#-------------------------------------------
+#--- Column 12 : Outcome
+#-------------------------------------------
+#sCol12 = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'outcome');
+sCol12 = vsOC;
+
+#-------------------------------------------
+#--- Column 13 : Function
+#-------------------------------------------
+#sCol13 = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'function');
+sCol13 = vsFunc;
+
+#-------------------------------------------
+#--- Column 14 : Appropriation Type
+#-------------------------------------------
+#sCol14 = vsType;
+sCol14 = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'appropriation type');
+IF (sCol14 @= '');
+	sCol14 = sDefaultType;
+ENDIF;
+
+#-------------------------------------------
+#--- Column 15 : Appropriation Item
+#-------------------------------------------
+#sCol15 = vsItem;
+sCol15 = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'appropriation item');
+IF (sCol15 @= '');
+	sCol15 = sDefaultItem;
+ENDIF;
+
+#-------------------------------------------
+#--- Column 16 : Reason
+#-------------------------------------------
+sCol16 = 'Balance Sheet or Related Entity';
+
+#-------------------------------------------
+#--- Column 17 : Measure Code
+#-------------------------------------------
+sCol17 = 'M00000';
+
+#-------------------------------------------
+#--- Column 18 : Account
+#-------------------------------------------
+sCol18 = vsAcc;
+
+#-------------------------------------------
+#--- Column 19 : Movement Account
+#-------------------------------------------
+sCol19 = vsMA;
+
+#-------------------------------------------
+#--- Column 20 : Related Entity
+#-------------------------------------------
+IF (vsMA @= '-');
+	sAssumedRE = ATTRS (dmAcc, vsAcc, 'assumed related entity');
+ELSE;
+	sAssumedRE = ATTRS (dmMA, vsMA, 'assumed related entity');
+ENDIF;
+
+IF (sAssumedRE @<> '' & vsRE @= '-');
+	sCol20 = sAssumedRE;
+ELSE;
+	sCol20 = vsRE;
+ENDIF;
+
+#-------------------------------------------
+#--- Column 21 : SPP
+#-------------------------------------------
+sCol21 = vsSPP;
+
+#-------------------------------------------
+#--- Column 22 : Jurisdiction
+#-------------------------------------------
+sCol22 = vsJur;
+
+#-------------------------------------------
+#--- Column 23 : DR/CR
+#-------------------------------------------
+sCol23 = 'DR';
+
+#-------------------------------------------
+#--- Column 24 : Financial Values
+#-------------------------------------------
+
+# Convert signage on flat file value
+IF (vsMA @= '-');
+	X = ATTRS(dmAcc, vsAcc, 'DR/CR');
+ELSE;
+	X = ATTRS(dmMA, vsMA, 'DR/CR');
+ENDIF;
+
+IF (X @= 'CR');
+	iConversion = -1;
+ELSE;
+	iConversion = 1;
+ENDIF;
+
+nNewValue = vnValue * iConversion;
+sCol24 = NUMBERTOSTRING (nNewValue);
+
+
+#------------------------------------------------------------------------------------------------------------
+#--- GENERATE OUTPUT
+#------------------------------------------------------------------------------------------------------------
+IF (lHeaderCounter = 0);
+	ASCIIOUTPUT (sFile, sHeadCol01, sHeadCol02, sHeadCol03, sHeadCol04, sHeadCol05, sHeadCol06, sHeadCol07, sHeadCol08, sHeadCol09, sHeadCol10, sHeadCol11, sHeadCol12, sHeadCol13, sHeadCol14, sHeadCol15, sHeadCol16, sHeadCol17, sHeadCol18, sHeadCol19, sHeadCol20, sHeadCol21, sHeadCol22, sHeadCol23, sHeadCol24);
+ENDIF;
+
+ASCIIOUTPUT (sFile, sCol01, sCol02, sCol03, sCol04, sCol05, sCol06, sCol07, sCol08, sCol09, sCol10, sCol11, sCol12, sCol13, sCol14, sCol15, sCol16, sCol17, sCol18, sCol19, sCol20, sCol21, sCol22, sCol23, sCol24);
+
+lHeaderCounter = lHeaderCounter + 1;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF (1=1);
+#****DELETE EXISTING VIEWS AND SUBSETS
+VIEWDESTROY (cbAE, sSubset);
+SUBSETDESTROY (dmHLYear, sSubset);
+SUBSETDESTROY (dmScenario, sSubset);
+SUBSETDESTROY (dmStatus, sSubset);
+SUBSETDESTROY (dmOC, sSubset);
+SUBSETDESTROY (dmRE, sSubset);
+SUBSETDESTROY (dmFunc, sSubset);
+SUBSETDESTROY (dmReason, sSubset);
+SUBSETDESTROY (dmSPP, sSubset);
+SUBSETDESTROY (dmMeasCode, sSubset);
+SUBSETDESTROY (dmType, sSubset);
+SUBSETDESTROY (dmMA, sSubset);
+SUBSETDESTROY (dmItem, sSubset);
+SUBSETDESTROY (dmProg, sSubset);
+SUBSETDESTROY (dmAcc, sSubset);
+SUBSETDESTROY (dmID, sSubset);
+SUBSETDESTROY (dmJur, sSubset);
+SUBSETDESTROY (dmPer, sSubset);
+ENDIF;
+
+#endregion

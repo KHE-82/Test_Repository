@@ -1,0 +1,40 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_spp adjustment measure",
+	"Elements":
+	[
+		{
+			"Name":"title",
+			"Type":"String"
+		},
+		{
+			"Name":"reason code",
+			"Type":"String"
+		},
+		{
+			"Name":"measure code",
+			"Type":"String"
+		},
+		{
+			"Name":"adj description",
+			"Type":"String"
+		},
+		{
+			"Name":"authority",
+			"Type":"String"
+		},
+		{
+			"Name":"value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"AE Adj",
+			"Type":"String"
+		},
+		{
+			"Name":"AE Adj Clear Flag",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

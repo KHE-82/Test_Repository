@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"sys_logging - clear",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_logging - clear.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561009040004"
+}

@@ -1,0 +1,168 @@
+{
+	"@type":"NativeView",
+	"Name":"Test Results ZERO SUPRESS ROWS",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Test Number')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Tested By')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Test Date')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Status')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Fixed By')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Fix Date')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Retest By')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('ReTest Date')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Number of tests')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Passed')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Failed')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Fixed')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('ReTested')"
+					},
+					{
+						"@id":"Dimensions('sys_application testing measure')/Hierarchies('sys_application testing measure')/Elements('Not Completed')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('Test ID')/Hierarchies('Test ID')"
+				},
+				"Expression":"TM1SubsetAll([Test ID])"
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_application')/Hierarchies('sys_application')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('GEUS Annual Estimates')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Homepage')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Adjustment')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - Edit Adj 01 - Header Details')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - New Adj 01 - Header Details')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - New Adj 02 - Program Favourite')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - New Adj 02 - Adjustment Entry')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - New Adj 03 - Authorise')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - New Adj 04 - Copy')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - New Adj 96 - Extract')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - New Adj 97 - Upload')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - New Adj 98 - Attachments')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - New Adj 99 - Validations')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - View Adj 01 - Header Details')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - Upload Template')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Group Data Entry')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Measures')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Reports')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Other Reports')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Analytical Reports')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Administration')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Flat File')"
+					},
+					{
+						"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Notes')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - New Adj 01 - Header Details')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":false,
+	"SuppressEmptyRows":false,
+	"FormatString":"0.#########"
+}

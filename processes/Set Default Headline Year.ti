@@ -1,0 +1,37 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+sDim = 'headline year';
+sSubset = 'Default';
+sHLYear = ATTRS('variables', 'headline year', 'value');
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+#SubsetDestroy('headline year', sSubset);
+SubsetDeleteAllElements('headline year', sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+#SubsetCreate('headline year', sSubset);
+SubsetElementInsert('headline year', sSubset, sHLYear, 1);
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

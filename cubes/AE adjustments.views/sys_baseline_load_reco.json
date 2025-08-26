@@ -1,0 +1,238 @@
+{
+	"@type":"NativeView",
+	"Name":"sys_baseline_load_reco",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('period')/Hierarchies('period')"
+				},
+				"Expression":"{TM1FILTERBYLEVEL(TM1SUBSETALL([period].[period]) , 0)}"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('scenario')/Hierarchies('scenario')"
+				},
+				"Expression":"{[scenario].[scenario].[CBMSR FBO Variance],[scenario].[scenario].[current],[scenario].[scenario].[CBMS-R FBO]}"
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('programme')/Hierarchies('programme')"
+				},
+				"Alias":"code and description",
+				"Expression":"{[programme].[programme].[Administered Programmes], [programme].[programme].[Departmental Programmes]}"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('account')/Hierarchies('account')"
+				},
+				"Alias":"code and description",
+				"Expression":"{[account].[account].[9002000], [account].[account].[1000001], [account].[account].[2000000], [account].[account].[3800001], [account].[account].[3900000], [account].[account].[5000000], [account].[account].[9000003], [account].[account].[6000000], [account].[account].[9000020], [account].[account].[9100000], [account].[account].[9200000], [account].[account].[9300000], [account].[account].[9000851], [account].[account].[9000860], [account].[account].[9000880]}"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('movement account')/Hierarchies('movement account')"
+				},
+				"Alias":"code and description",
+				"Expression":"{[movement account].[movement account].[Total movement]}"
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('headline year')/Hierarchies('headline year')"
+				},
+				"Expression":"{TM1SubsetAll([headline year])}"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('headline year')/Hierarchies('headline year')/Elements('HL2025-2026')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('status')/Hierarchies('status')"
+				},
+				"Expression":"{TM1SubsetAll([status])}"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('status')/Hierarchies('status')/Elements('data')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('outcome')/Hierarchies('outcome')"
+				},
+				"Expression":"{[outcome].[outcome].[Total outcomes]}"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('outcome')/Hierarchies('outcome')/Elements('Total outcomes')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('function')/Hierarchies('function')"
+				},
+				"Expression":"{[function].[function].[Total functions]}"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('function')/Hierarchies('function')/Elements('Total functions')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('reason')/Hierarchies('reason')"
+				},
+				"Expression":"{[reason].[reason].[Total reason], [reason].[reason].[Government decision or measure], [reason].[reason].[Slippage in budget measure], [reason].[reason].[Change in interest rates], [reason].[reason].[Changes in price & wage indices], [reason].[reason].[Changes in number of unemployment beneficiaries], [reason].[reason].[25% of male total AWE commitment], [reason].[reason].[Changes in interest or foreign exchange rates], [reason].[reason].[PDI Changes], [reason].[reason].[Changes in beneficiary numbers excluding unemployment], [reason].[reason].[Program specific - beneficiary or rate changes], [reason].[reason].[Program specific - other], [reason].[reason].[Borrowings], [reason].[reason].[Equity Injections], [reason].[reason].[Application of efficiency dividend], [reason].[reason].[Receipts from independent sources], [reason].[reason].[Approved movement of funds between years], [reason].[reason].[Self balancing transfers between same year], [reason].[reason].[Section 32 Transfers], [reason].[reason].[Eliminations], [reason].[reason].[Changes/Restatement of Opening Balances], [reason].[reason].[Creation of the New 3rd Forward Year Estimates'], [reason].[reason].[Competitive neutrality], [reason].[reason].[Provisional Estimate], [reason].[reason].[Other], [reason].[reason].[Other variations not elsewhere defined], [reason].[reason].[27th Period], [reason].[reason].[Departmental Capital Budget (DCB) - Temporary Adjustments], [reason].[reason].[Balance Sheet or Related Entity]}"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('reason')/Hierarchies('reason')/Elements('Total reason')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('spp')/Hierarchies('spp')"
+				},
+				"Expression":"{[spp].[spp].[Total SPP], [spp].[spp].[-]}"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('Total SPP')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('measure code')/Hierarchies('measure code')"
+				},
+				"Alias":"CBMS",
+				"Expression":"{[measure code].[measure code].[Total Measures], [measure code].[measure code].[M00000], [measure code].[measure code].[M00001], [measure code].[measure code].[M00002], [measure code].[measure code].[M00003], [measure code].[measure code].[M00004], [measure code].[measure code].[M00005], [measure code].[measure code].[M00006], [measure code].[measure code].[M00007], [measure code].[measure code].[M00008], [measure code].[measure code].[M00009], [measure code].[measure code].[M00010], [measure code].[measure code].[M00011], [measure code].[measure code].[M00012], [measure code].[measure code].[M00013], [measure code].[measure code].[M00014], [measure code].[measure code].[M00015], [measure code].[measure code].[M00016], [measure code].[measure code].[M00017], [measure code].[measure code].[M00018], [measure code].[measure code].[M00019], [measure code].[measure code].[M00020]}"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('Total Measures')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')"
+				},
+				"Expression":"{TM1SubsetAll([appropriation type])}"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('appropriation type')/Hierarchies('appropriation type')/Elements('Total approp types')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')"
+				},
+				"Expression":"{TM1SubsetAll([appropriation item])}"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('Total approp item')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('id')/Hierarchies('id')"
+				},
+				"Expression":"{TM1SubsetAll([id])}"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('id')/Hierarchies('id')/Elements('Total IDs')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')"
+				},
+				"Expression":"{[jurisdiction].[jurisdiction].[Total jurisdictions]}"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('jurisdiction')/Hierarchies('jurisdiction')/Elements('Total jurisdictions')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('related entity')/Hierarchies('related entity')"
+				},
+				"Expression":"{TM1SubsetAll([related entity])}"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('Total related entity')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":true,
+	"SuppressEmptyRows":true,
+	"FormatString":""
+}

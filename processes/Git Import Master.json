@@ -1,0 +1,15 @@
+{
+	"@type":"Process",
+	"Name":"Git Import Master",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"Git Import Master.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[],
+	"UID": "17561008610003",
+	"VariablesUIData": [],
+	"UIData": "_ParameterConstraints=e30=\f"
+}

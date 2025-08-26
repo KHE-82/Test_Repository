@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"sys_Process Administration - Clear Flags",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_Process Administration - Clear Flags.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[],
+	"UID": "1756100914000"
+}

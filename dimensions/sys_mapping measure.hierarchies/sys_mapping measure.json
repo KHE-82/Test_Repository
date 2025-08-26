@@ -1,0 +1,20 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_mapping measure",
+	"Elements":
+	[
+		{
+			"Name":"flag",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"old flag",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"description",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

@@ -1,0 +1,319 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               	geus_ME - Import Approved Profiles 02 : Annual Budget
+#**** DESCRIPTION:       	This process loads the exported profiles from geus by process ' sys_ME Setup - Export Annual Budget To BMS'
+#****			This process is triggered from the Monthly Estimates main menu 
+#****			This is also a copy of the existing process in BMS 'geus_import_ApprovedProfiles'
+#****                                  	It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  	Date		Initials	Comments
+#****  	====		======	=========
+#****	23/05/2018	KG	Initial Revision
+#****	04/07/2018	KG	Activated process
+#****	20/03/2020	KG	Updated process relating to Pre-ERC Upload
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- DECLARE CUBES & DIMENSIONS
+#---------------------------------------------------------------------------------------------------------------------------
+cbCal = 'calendar';
+cbAdmin = 'administered';
+dmYear = 'Year';
+dmScenario = 'Scenario';
+dmAcc = 'account admin';
+dmState = 'state of origin';
+dmOrg = 'org code';
+dmCC = 'Cost Centre Admin';
+dmProj = 'Project';
+dmMonth = 'Month';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- DECLARE SYSTEM VARIABLES
+#--- Assign File Path for source data from entries stored in the variables cube
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variable';
+sCorpPath = ATTRS(dmVar,'Server Path','value');
+sFilePath = ATTRS(dmVar,'geus approved annual budget file path','value');
+sOutputFile = ATTRS(dmVar, 'GEUS import path client', 'value') | 'Programmes in GEUS not in BMS.cma';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- VARIABLES USED FOR PROCESS
+#---------------------------------------------------------------------------------------------------------------------------
+sObject = 'Import Profiles';
+nCounter = 0;
+sState ='01';
+sOrg ='10';
+sCC ='000000';
+sProj ='000';
+nValueconst = 1000;
+sVVCS = '123:042-03';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- CLEAR VALIDATION
+#---------------------------------------------------------------------------------------------------------------------------
+ATTRPUTS ('', dmVar, 'geus monthly estimates upload validation', 'value');
+nAccValid = 0;
+nTotalValid = 0;
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- DEFINE WHICH SCENARIO TO POST
+#---------------------------------------------------------------------------------------------------------------------------
+sCashScenario = 'Revised Budget Estimates Cash';
+
+IF (psScenario @= 'Revised Budget Estimates');
+	sCashScenario = 'Revised Budget Estimates Cash';
+ENDIF;
+
+IF(psScenario @= 'Pre-ERC');
+	sCashScenario = 'Pre-ERC Cash';
+ENDIF;
+
+IF(psScenario @= 'MYEFO');
+	sCashScenario = 'MYEFO Cash';
+ENDIF;
+
+IF(psScenario @= 'Budget');
+	sCashScenario = 'Budget Cash';
+ENDIF;
+
+IF(psScenario @= 'Forecast');
+	sCashScenario = 'Cash Payments Forecast';
+ENDIF;
+
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#---- STEP 1 : CLEAR PART OF THE CUBE BEFORE LOADING DATA
+#---  Check if the counter is 0 - this ensures the cube is only cleared once
+#---------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY(cbAdmin, sObject);
+SUBSETDESTROY(dmYear, sObject);
+SUBSETDESTROY(dmScenario, sObject);
+SUBSETDESTROY(dmMonth, sObject);
+SUBSETDESTROY(dmAcc, sObject);
+
+#---------------------------------------------------------------------------------------------------
+#--- Create new subsets
+#---------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------
+#--- Year
+#-------------------------------------------------------------
+SUBSETCREATE(dmYear, sObject);
+SUBSETELEMENTINSERT(dmYear, sObject, psYear, 1);
+
+#-------------------------------------------------------------
+#--- Scenario
+#-------------------------------------------------------------
+SUBSETCREATE(dmScenario, sObject);
+SUBSETELEMENTINSERT(dmScenario, sObject, psScenario, 1);
+SUBSETELEMENTINSERT(dmScenario, sObject, sCashScenario, 2);
+
+#-------------------------------------------------------------
+#--- Month
+#-------------------------------------------------------------
+SUBSETCREATE(dmMonth, sObject);
+SUBSETELEMENTINSERT(dmMonth, sObject, 'Jun', 1);
+
+#---------------------------------------------------------------------------------------------------
+#--- Create VIews and Assign Subsets
+#---------------------------------------------------------------------------------------------------
+VIEWCREATE(cbAdmin, sObject);
+VIEWSUBSETASSIGN(cbAdmin, sObject, dmYear, sObject);
+VIEWSUBSETASSIGN(cbAdmin, sObject, dmScenario, sObject);
+VIEWSUBSETASSIGN(cbAdmin, sObject, dmMonth, sObject);
+
+#--------------------------------------------------------------------------------------
+#--- Clear Data in cube view
+#--------------------------------------------------------------------------------------
+VIEWZEROOUT(cbAdmin, sObject);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY(cbAdmin, sObject);
+SUBSETDESTROY(dmYear, sObject);
+SUBSETDESTROY(dmScenario, sObject);
+SUBSETDESTROY(dmMonth, sObject);
+SUBSETDESTROY(dmAcc, sObject);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- DECLARE DATASOURCE
+#---------------------------------------------------------------------------------------------------------------------------
+#DataSourceNameForServer = sCorpPath | sFilePath;
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- CLEAR VALIDATION
+#---------------------------------------------------------------------------------------------------------------------------
+ATTRPUTS ('', dmVar, 'geus monthly estimates upload validation', 'value');
+nAccValid = 0;
+nTotalValid = 0;
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- RESET Validations
+#---------------------------------------------------------------------------------------------------------------------------
+nAccValid = 0;
+
+
+IF (vsProg @= '123:044-03');
+	ITEMSKIP;
+ENDIF;
+
+sAccount = ATTRS(dmAcc, vsProg, 'budget account');
+IF(DIMIX(dmAcc, sAccount)=0);
+	nAccValid = nAccValid + 1;
+ASCIIOUTPUT ('account mapping is invalid A.txt', vsProg, sAccount);
+ENDIF;
+
+#--------------------------------------------------------------------------------------
+#--- Check that all programmes exist in the account admin dimension.  Output errors to a log file
+#--------------------------------------------------------------------------------------
+IF(DIMIX(dmAcc,vsProg)=0);
+
+	nAccValid = nAccValid+ 1;
+ASCIIOUTPUT ('account does not exist in account admin B.txt', vsProg);
+ELSE;
+	#--------------------------------------------------------------------------------------
+	#--- Check whether the budget account attribute is blank
+	#--------------------------------------------------------------------------------------
+	sAccount = ATTRS(dmAcc, vsProg, 'budget account');
+	IF(sAccount @= '');
+		nAccValid = nAccValid+ 1;	
+ASCIIOUTPUT ('there is no mapping C.txt', vsProg, sAccount);
+	ELSE;
+		IF (DIMIX(dmAcc, sAccount)=0);
+			nAccValid = nAccValid+ 1;
+ASCIIOUTPUT ('invalid entry of account mapping D.txt', vsProg, sAccount);
+		ENDIF;
+	ENDIF;
+ENDIF;
+
+
+
+#--------------------------------------------------------------------------------------
+#--- Check Validation
+#--------------------------------------------------------------------------------------
+nTotalValid = nTotalValid + nAccValid;
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF (nTotalValid > 0);
+	ATTRPUTS ('FAIL', dmVar, 'geus monthly estimates upload validation', 'value');
+	#ITEMSKIP;
+ELSE;
+	ATTRPUTS ('PASS', dmVar, 'geus monthly estimates upload validation', 'value');
+ENDIF;
+
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- DEFINE WHICH SCENARIO TO POST
+#---------------------------------------------------------------------------------------------------------------------------
+sCashScenario = 'Revised Budget Estimates Cash';
+
+IF (psScenario @= 'Revised Budget Estimates');
+	sCashScenario = 'Revised Budget Estimates Cash';
+ENDIF;
+
+IF(psScenario @= 'Pre-ERC');
+	sCashScenario = 'Pre-ERC Cash';
+ENDIF;
+
+IF(psScenario @= 'MYEFO');
+	sCashScenario = 'MYEFO Cash';
+ENDIF;
+
+IF(psScenario @= 'Budget');
+	sCashScenario = 'Budget Cash';
+ENDIF;
+
+IF(psScenario @= 'Forecast');
+	sCashScenario = 'Cash Payments Forecast';
+ENDIF;
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** This IF statement has been created because the programme structure in BMS for RGH is different to GEUS
+#---------------------------------------------------------------------------------------------------------------------------
+IF((vsProg @= '123:010-02') & (vsJur @<>'-'));
+	vsProg =  vsProg | vsJur;
+ENDIF;
+
+#-------------------------------------------------------------------------------------------------
+#--- GET Budget Account based on geus programme code
+#-------------------------------------------------------------------------------------------------
+
+#--------------------------------
+#--- HARD CODE ERROR - 19/07/2019 for programme
+#--------------------------------
+IF (vsProg @= '123:044-03');
+	#ITEMSKIP;
+	sAccount = '86715';
+ELSE;
+	sAccount = ATTRS(dmAcc, vsProg, 'budget account');
+ENDIF;
+IF(DIMIX(dmAcc, sAccount)=0);
+	sMessage = 'The Budget Account '|sAccount|' of '| vsProg | ' does not exist in the BMS Account Admin Dimension';
+	ItemReject(sMessage);
+ENDIF;
+
+IF(DIMIX(dmMonth, vsPeriod)=0);
+	vsPeriod = 'Jun';
+ENDIF;
+
+
+#---------------------------------------------------------------------------------------------------------------------
+#---- POST DATA
+#---------------------------------------------------------------------------------------------------------------------
+IF (SUBST(vsAcc,1,1) @= '2');
+	#----------------------------------------------------------------------
+	#--- Post GEUS Expense accounts to selected scenario
+	#----------------------------------------------------------------------
+	IF(CellIsUpdateable(cbAdmin, psYear, psScenario, sState, sOrg, sAccount, sCC, sProj, 'Jun')=1);
+		nOldValue = CELLGETN(cbAdmin, psYear, psScenario, sState, sOrg, sAccount, sCC, sProj, 'Jun');
+		CELLPUTN(nOldValue + (vnValue * nValueconst), cbAdmin, psYear, psScenario, sState, sOrg, sAccount, sCC, sProj, 'Jun');
+		ASCIIOUTPUT ('test.csv', cbAdmin, psYear, psScenario, sState, sOrg, sAccount, sCC, sProj, 'Jun');
+	ENDIF;
+
+ELSE;
+	#----------------------------------------------------------------------
+	#--- Post GEUS other accounts (mainly cash flow to CASH scenarios
+	#----------------------------------------------------------------------
+	IF(CellIsUpdateable(cbAdmin, psYear, sCashScenario,sState, sOrg, sAccount, sCC, sProj, 'Jun') = 1);
+		nOldCashValue = CELLGETN(cbAdmin, psYear, sCashScenario, sState, sOrg, sAccount, sCC, sProj, 'Jun');
+		CELLPUTN(nOldCashValue + (vnValue * nValueconst), cbAdmin, psYear, sCashScenario, sState, sOrg, sAccount, sCC, sProj, 'Jun');
+		#ASCIIOUTPUT ('test.csv', cbAdmin, psYear, sCashScenario, sState, sOrg, sAccount, sCC, sProj, 'Jun');
+	ENDIF;
+
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+#endregion

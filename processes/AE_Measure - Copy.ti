@@ -1,0 +1,362 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Measure - Copy
+#**** DESCRIPTION:       This process creates a copy of the selected Measure
+#****			
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 10/09/2015    KG             Initial Revision
+#**** 2019	KG	  Updated for NEW GEUS
+#***  2020	KG	  Made additional enhancements
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+
+#******************************************************************************************************************
+#*** DECLARE GOVERNMENT MEASURES DETAILS CUBE DIMENSIONS
+#******************************************************************************************************************
+cbMeas = 'government measures details';
+dmGovtMeas = 'measure details';
+
+dmMeasType = 'measure type';
+dmMeasFundType = 'measure fund type';
+
+
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS CUBE DIMENSIONS
+#******************************************************************************************************************
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+dmCtrlType = 'control type';
+dmFavID = 'favourites_id';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sNoMeasCode = ATTRS(dmVar, 'No Measure Code', 'value');
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** VARIABLES USED 
+#******************************************************************************************************************
+sStatus = 'unauthorised';
+sAdjType = 'Manual';
+
+#*****************************************************************************************************************************************************
+#**** STEP 0 - CHECK IF VALID MEASURE CODE
+#*****************************************************************************************************************************************************
+sErr = '';
+CELLPUTS (sErr, cbClient, psUser, 'geus measure code', 'validate');
+
+IF (DIMIX (dmMeasCode, psMeasCode) = 0);
+	sErr = 'Please go back to the measure list and select a valid measure code.';
+	CELLPUTS (sErr, cbClient, psUser, 'geus measure code', 'validate');
+	PROCESSQUIT;
+ENDIF;
+
+#*****************************************************************************************************************************************************
+#**** STEP 1 - GET CLIENT DETAILS & ID DETAILS
+#*****************************************************************************************************************************************************
+sActive = ATTRS (dmMeasCode, psMeasCode, 'Active');
+sStatus = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'status');
+sCBMSMeasCode = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'CBMS Measure Code');
+sTitle = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'measure title') | ' (Copy of measure ' | psMeasCode | ')';
+sPubTitle = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'measure published title');
+sDesc = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'measure description') | ' (Copy of measure ' | psMeasCode | ')';
+sMeasType = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'measure type');
+sFundLife = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'funding life');
+sCostingID = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'costing ID');
+sProg = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'related programme code');
+sGovtDec = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'government decision');
+sDecDay = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'sys_decision day');
+sDecMth = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'sys_decision month');
+sDecYear = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'sys_decision year');
+sStartDay = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'sys_start day');
+sStartMth = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'sys_start month');
+sStartYear = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'sys_start year');
+sEndDay = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'sys_end day');
+sEndMth = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'sys_end month');
+sEndYear = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'sys_end year');
+sTerminatingYear = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'sys_terminating year');
+sDisplayTerminatingYear = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'sys_display terminating year');
+sNotForPublication = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'not for publication');
+sElectionCommit = CELLGETS (cbMeas, psHLYear, psScenario, psMeasCode, 'election commitment');
+
+#*****************************************************************************************************************************************************
+#**** STEP 2 - POST TO NEW MEASURE CODE
+#*****************************************************************************************************************************************************
+#******************************************************************************************************************
+#*** GET NEXT MEASURE ID
+#******************************************************************************************************************
+sPreFix = 'M';
+nNewID = CELLGETN (cbMeas, curHLYear, curScenario, 'Total Measures', 'used') + 1;
+sNewID = NUMBERTOSTRING (nNewID);
+sNewID = sPreFix | FILL ('0', 5 - Long(sNewID)) | sNewID;
+
+
+#******************************************************************************************************************
+#*** EXECUTE NEXT PROCESS
+#*** RUN PROCESS TO CREATE NEW SYSTEM ID
+#******************************************************************************************************************
+IF (DIMIX (dmMeasCode, sNewID) = 0);
+	sProcess = 'AE_Create Measure Code';
+	EXECUTEPROCESS (sProcess, 'psUser', sUser, 'psID', sNewID);
+ENDIF;
+
+#******************************************************************************************************************
+#*** POST ENTERED DATA IN AE ID DETAIL CUBE
+#*** ALSO STORE WITHIN SYS CLIENT PREFERENCE CUBE
+#******************************************************************************************************************
+
+#******************************************************************************************************************
+#*** GOVERNMENT MEASURES DETAILS CUBE POSTING
+#******************************************************************************************************************
+CELLPUTN (1, cbMeas, curHLYear, curScenario, sNewID, 'used');
+CELLPUTS ('draft', cbMeas, curHLYear, curScenario, sNewID, 'status');
+
+#******************************************************************************************************************
+# **** GET DATE VALUES AND POST USER AND DATE STAMP
+#******************************************************************************************************************
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+
+sDay = TRIM(SUBST(sDNow, 1,2));
+
+IF (LONG (sDay) = 1);
+	sDay = '0' | sDay;
+ELSE;
+	sDay = sDay;
+ENDIF;
+
+sMonth = TRIM(SUBST(sMNow, 1,2));
+
+IF (LONG (sMonth) = 1);
+	sMonth = '0' | sMonth;
+ELSE;
+	sMonth = sMonth;
+ENDIF;
+
+sYear = TRIM(SUBST(sYNow, 1,4));
+sNow = sDay | '/' | sMonth | '/' | sYear;
+
+CELLPUTS(sNow, cbMeas, curHLYear, curScenario, sNewID, 'created date');
+CELLPUTS(sUser, cbMeas, curHLYear, curScenario, sNewID, 'created by');
+
+
+#******************************************************************************************************************
+#*** GET PRINCIPAL ELEMENT NAME FROM PARAMETERS
+#******************************************************************************************************************
+sMeasType = DIMENSIONELEMENTPRINCIPALNAME (dmMeasType, sMeasType);
+sFundLife = DIMENSIONELEMENTPRINCIPALNAME (dmMeasFundType, sFundLife);
+
+sProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, sProg);
+IF (DIMIX (dmProg, sProg) <> 0);
+	sProgDesc = ATTRS (dmProg, sProg, 'code and description');
+ELSE;
+	sProgDesc = '';
+ENDIF;
+
+#******************************************************************************************************************
+#*** POST METADATA OF ADJUSTMENT IN AE ID DETAIL
+#******************************************************************************************************************
+IF (sCBMSMeasCode @= 'TBA' % sCBMSMeasCode @= '');
+	sCBMSMeasCode = 'TBA';
+ELSE;
+	sCBMSMeasCode = sCBMSMeasCode;
+ENDIF;
+
+
+
+
+
+CELLPUTS (sCBMSMeasCode,  cbMeas, curHLYear, curScenario, sNewID, 'CBMS Measure Code');
+CELLPUTS (sTitle, cbMeas, curHLYear, curScenario, sNewID, 'measure title');
+IF (sPubTitle @= '');
+	CELLPUTS (sPubTitle, cbMeas, curHLYear, curScenario, sNewID, 'measure published title');
+ELSE;
+	CELLPUTS (sTitle, cbMeas, curHLYear, curScenario, sNewID, 'measure title');
+ENDIF;		
+CELLPUTS (sDesc, cbMeas, curHLYear, curScenario, sNewID, 'measure description');
+CELLPUTS (sMeasType, cbMeas, curHLYear, curScenario, sNewID, 'measure type');
+CELLPUTS (sFundLife, cbMeas, curHLYear, curScenario, sNewID, 'funding life');
+CELLPUTS (sCostingID, cbMeas, curHLYear, curScenario, sNewID, 'costing ID');
+CELLPUTS (sProg, cbMeas, curHLYear, curScenario, sNewID, 'related programme code');
+CELLPUTS (sGovtDec, cbMeas, curHLYear, curScenario, sNewID, 'government decision');
+
+#-------------------------------------------------------------------------
+#--- Decision Date
+#-------------------------------------------------------------------------
+CELLPUTS (sDecDay, cbMeas, curHLYear, curScenario, sNewID, 'sys_decision day');
+CELLPUTS (sDecMth, cbMeas, curHLYear, curScenario, sNewID, 'sys_decision month');
+CELLPUTS (sDecYear, cbMeas, curHLYear, curScenario, sNewID, 'sys_decision year');
+
+#-------------------------------------------------------------------------
+#--- Start Date
+#-------------------------------------------------------------------------
+CELLPUTS (sStartDay, cbMeas, curHLYear, curScenario, sNewID, 'sys_start day');
+CELLPUTS (sStartMth, cbMeas, curHLYear, curScenario, sNewID, 'sys_start month');
+CELLPUTS (sStartYear, cbMeas, curHLYear, curScenario, sNewID, 'sys_start year');
+
+#-------------------------------------------------------------------------
+#--- End Date
+#-------------------------------------------------------------------------
+CELLPUTS (sEndDay, cbMeas, curHLYear, curScenario, sNewID, 'sys_end day');
+CELLPUTS (sEndMth, cbMeas, curHLYear, curScenario, sNewID, 'sys_end month');
+CELLPUTS (sEndYear, cbMeas, curHLYear, curScenario, sNewID, 'sys_end year');
+
+#-------------------------------------------------------------------------
+#--- End Terminating/Termination Year
+#-------------------------------------------------------------------------
+IF (sFundLife @= 'terminating' & sEndYear @<> ''); 
+
+	#------------------------------------------------------------------------------------------
+	#--- System Terminating Year (1 Year forward after end year)
+	#------------------------------------------------------------------------------------------
+	nTerminatingYear = STRINGTONUMBER (sEndYear) + 1;
+	sTerminatingYear = NUMBERTOSTRING (nTerminatingYear);
+	sTerminatingYear = sEndYear | '-' | sTerminatingYear;
+	CELLPUTS (sTerminatingYear, cbMeas, curHLYear, curScenario, sNewID, 'sys_terminating year');
+
+	#------------------------------------------------------------------------------------------
+	#--- System DisplayTerminating Year (1 Year before end year)
+	#------------------------------------------------------------------------------------------
+	nDisplayTerminatingYear = STRINGTONUMBER (sEndYear) - 1;
+	sDisplayTerminatingYear = NUMBERTOSTRING (nDisplayTerminatingYear);
+	sDisplayTerminatingYear = sDisplayTerminatingYear | '-' | sEndYear;
+
+	IF (CELLISUPDATEABLE (cbMeas, curHLYear, curScenario, sNewID, 'sys_display terminating year') = 1);
+		CELLPUTS (sDisplayTerminatingYear, cbMeas, curHLYear, curScenario, sNewID, 'sys_display terminating year');
+	ENDIF;
+
+ENDIF;
+
+CELLPUTS (sNotForPublication, cbMeas, curHLYear, curScenario, sNewID, 'not for publication');
+
+CELLPUTS (sElectionCommit, cbMeas, curHLYear, curScenario, sNewID, 'election commitment');
+
+#-------------------------------------------------------------------------
+#--- UPDATE MEASURE CODE ATTRIBUTES
+#-------------------------------------------------------------------------
+ATTRPUTS (sTitle, dmMeasCode, sNewID, 'title');
+ATTRPUTS (curHLYear, dmMeasCode, sNewID, 'Budget Round Created');
+ATTRPUTS ('Y', dmMeasCode, sNewID, 'Active');
+ATTRPUTS(sFundLife, dmMeasCode, sNewID, 'Funding Life');
+
+IF (sCBMSMeasCode @= 'TBA' % sCBMSMeasCode @= '');
+	ATTRPUTS ('', dmMeasCode, sNewID, 'CBMS');
+ELSE;
+	ATTRPUTS ('', dmMeasCode, sNewID, 'CBMS');
+ENDIF;
+
+ATTRPUTS (sTerminatingYear, dmMeasCode, sNewID, 'Termination Year');
+#ATTRPUTS (sTerminatingYear, dmMeasCode, sNewID, 'Terminating Year');
+
+
+#----------------------------------------------------------------------------
+#--- IDENTIFY MEASURE AS CURRENTLY CREATED (BOTH ELEMENT ATTRIBUTES AND GMD CUBE
+#----------------------------------------------------------------------------
+CELLPUTS ('Y', cbMeas, curHLYear, curScenario, sNewID, 'current');
+ATTRPUTS ('Y', dmMeasCode, sNewID, 'current');
+
+#-------------------------------------------------------------------------
+#--- UPDATE CLIENT PREFERENCE
+#-------------------------------------------------------------------------
+CELLPUTS (curHLYear, cbClient, sUser, 'geus hlyear', 'value');
+CELLPUTS (curScenario, cbClient, sUser, 'geus scenario', 'value');
+CELLPUTS (sNewID, cbClient, sUser, 'geus measure code', 'value');
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#endregion

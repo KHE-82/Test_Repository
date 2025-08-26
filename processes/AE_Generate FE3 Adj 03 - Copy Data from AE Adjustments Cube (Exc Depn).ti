@@ -1,0 +1,667 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Generate FE3 Adj 03 - Copy Data from AE Adjustments Cube (Exc Depn)
+#**** DESCRIPTION:       This process copies the data (excluding Depn) from FE2 and post into FE3.
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 14/05/2014    KG             Initial Revision
+#**** 13/08/2014    KG             Update to Include No Meas Code for Adjustments
+#****  06/08/2018	KG	   Just create a copy of the original journal.
+#**** 26/09/2018	KG	  Some data have dirty data such as multiple outcomes in an adjustment. This is just to group certain fields into one.
+#**** 09/10/2018	KG	  Seems  like DSS had issue with Reason Code for FE3, so added new variable for Reason Code for the cube view
+#***********************************************************************************************************************
+
+#**** DECLARE CUBES ****#
+snProg = 'programme';
+sCubeProgDet = snProg | ' details';
+dmID = 'id';
+dmAcc = 'account';
+
+
+#**** DECLARE VARIABLES ****#
+sCube = 'AE adjustments';
+sView = '$CreateFE3';
+sSubset = sView;
+sHLYear = ATTRS ('variables', 'headline year', 'value');
+sScenario = 'current';
+sStatus = 'Total approved';
+sTotalOC = 'Total outcomes';
+sID ='Total IDs';
+sMeasCode = 'Total Measures';
+sSourceReason = 'Total Reason';
+
+#*** DECLARE DIMENSIONS ***#
+dmPer = 'period';
+dmMeasCode = 'measure code';
+
+
+#sPeriod = DIMNM('Period',DIMIX('Period',SUBST(sHLYear, 3, 9))+2);
+
+sPYPeriod = DIMNM(dmPer,DIMIX(dmPer, psFE3Year) -2);
+
+sProgSubSet = 'ProgsforFE3';
+#sNewReason = 'Creation of the New 3rd Forward Year Estimates''';
+sNewReason = '1033';
+#sNewReason = ATTRS ('variables', 'creation of fe3 reason code', 'value');
+sNewStatus = 'Data';
+dmTmpID = 'tmp_ID_tmp';
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy (sCube, sView);
+SubsetDestroy ('headline year', sSubset);
+SubsetDestroy ('scenario', sSubset);
+SubsetDestroy ('status', sSubset);
+SubsetDestroy ('outcome', sSubset);
+SubsetDestroy ('related entity', sSubset);
+SubsetDestroy ('function', sSubset);
+SubsetDestroy ('reason', sSubset);
+SubsetDestroy ('SPP', sSubset);
+SubsetDestroy ('measure code', sSubset);
+SubsetDestroy ('appropriation type', sSubset);
+SubsetDestroy ('movement account', sSubset);
+SubsetDestroy ('appropriation item', sSubset);
+#SubsetDestroy (snProg, sSubset);
+SubsetDestroy ('account', sSubset);
+SubsetDestroy ('ID', sSubset);
+SubsetDestroy ('jurisdiction', sSubset);
+SubsetDestroy ('period', sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate('headline year', sSubset);
+SubsetElementInsert('headline year', sSubset, sHLYear, 1);
+
+# Scenario
+SubsetCreate('scenario', sSubset);
+SubsetElementInsert('scenario', sSubset, sScenario, 1);
+
+# Status
+SubsetCreate('status', sSubset);
+SubsetElementInsert('status', sSubset, sStatus, 1);
+
+# Outcome
+sDim = 'outcome';
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sSubset, MDX);
+
+SubsetCreate(sDim, sSubset);
+SubsetElementInsert(sDim, sSubset, sTotalOC, 1);
+
+
+# Related entity
+sDim = 'related entity';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+
+# Function
+sDim = 'function';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Reason
+sDim = 'reason';
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sSubset, MDX);
+
+SubsetCreate('reason', sSubset);
+SubsetElementInsert('reason', sSubset, sSourceReason, 1);
+
+# SPP
+sDim = 'spp';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Measure Code
+sDim = 'measure code';
+#*********************************************************************************************************************************************
+#*** ADD MDX CODE TO EXCLUDE MEASURES THAT IS TERMINATING ***#
+#MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | sDim | '] )}, 0)}, [' | sDim | '].[Termination Year] <> "' | psFE2Year | '")}';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+
+# Appropriation Type
+sDim = 'appropriation type';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Movement Account
+sDim = 'movement account';
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | sDim | '] )}, 0)}, [' | sDim | '].[flat file] <> "N")}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Appropriation Item
+sDim = 'appropriation item';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Programme
+sDim = snProg;
+#  We now grab the programme subset we created in the last process
+
+# Account
+sDim = 'account';
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | sDim | '] )}, 0)}, [' | sDim | '].[flat file] <> "N")}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# ID
+sDim = 'id';
+SubsetCreate(sDim, sSubset);
+SubsetElementInsert(sDim, sSubset, sID, 1);
+
+# Jurisdiction
+sDim = 'jurisdiction';
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | sDim | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Period
+sDim = 'period';
+SubsetCreate(sDim, sSubset);
+SUBSETELEMENTINSERT (sDim, sSubset, sPYPeriod, 1);
+SUBSETELEMENTINSERT (sDim, sSubset, psFE2Year, 2);
+
+
+#****BUILD VIEW****#
+ViewCreate (sCube, sView);
+
+ViewSubsetAssign (sCube, sView, 'headline year', sSubset);
+ViewSubsetAssign (sCube, sView, 'scenario', sSubset);
+ViewSubsetAssign (sCube, sView, 'status', sSubset);
+ViewSubsetAssign (sCube, sView, 'outcome', sSubset);
+ViewSubsetAssign (sCube, sView, 'related entity', sSubset);
+ViewSubsetAssign (sCube, sView, 'function', sSubset);
+ViewSubsetAssign (sCube, sView, 'reason', sSubset);
+ViewSubsetAssign (sCube, sView, 'SPP', sSubset);
+ViewSubsetAssign (sCube, sView, 'measure code', sSubset);
+ViewSubsetAssign (sCube, sView, 'appropriation type', sSubset);
+ViewSubsetAssign (sCube, sView, 'movement account', sSubset);
+ViewSubsetAssign (sCube, sView, 'appropriation item', sSubset);
+ViewSubsetAssign (sCube, sView, snProg, sProgSubSet);
+ViewSubsetAssign (sCube, sView, 'account', sSubset);
+ViewSubsetAssign (sCube, sView, 'ID', sSubset);
+ViewSubsetAssign (sCube, sView, 'jurisdiction', sSubset);
+ViewSubsetAssign (sCube, sView, 'period', sSubset);
+
+
+ViewSuppressZeroesSet (sCube, sView,1);
+ViewExtractSkipZeroesSet (sCube, sView, 1);
+ViewExtractSkipCalcsSet (sCube, sView, 0);
+
+
+DATASOURCETYPE = 'VIEW';
+DatasourceCubeview=sView;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#**********************************************************************************************************************************************************************************
+#*** STEP 1 : DECLARE VARIABLES USED IN DATA TAB
+#**********************************************************************************************************************************************************************************
+#------------------------------------------------------------------
+#---- UPDATE SEP 2018 
+#--- Since I grouped Outcome, now get information from Programme Details for outcome
+#------------------------------------------------------------------
+vsOC = CellGetS (sCubeProgDet, vsHLYear, vsScenario, vsProg, 'outcome');
+
+#*** ADD DATA TO ADJUSTMENTS CUBE BASED ON THE SELECTED FE3 YEAR ***#
+sFE1Period = DIMNM(dmPer,DIMIX(dmPer, psFE3Year) -2);
+sFE2Period = DIMNM(dmPer,DIMIX(dmPer, psFE3Year) -1);
+sFE3Period = psFE3Year;
+
+#*** BALANCE ID ***#
+sBalID = 'Total IDs';
+
+# *** USE NO MEASURE CODE ***#
+sNoMeasCode = 'M00000';
+sMeasCode = DIMNM(dmMeasCode, DIMIX (dmMeasCode, vsMeasCode));
+
+sIDProg = vsProg| vsAppropType | vsAppropItem | vsFunc | vsSPP;
+IF(Dimix(dmTmpID, sIDProg)=0);
+	ITEMSKIP;
+Endif;
+
+sID = ATTRS (dmTmpID, sIDProg, 'ID');
+
+#******************************************************************************************************************
+#*** CHECK IF ID EXIST
+#*** IF IT DOESNT EXIST, MEANS ADJUSTMENT WAS EXCLUDED
+#******************************************************************************************************************
+IF (DIMIX (dmID, sID) = 0);
+	ITEMSKIP;
+ENDIF;
+
+#***************************************************************************************************
+# *** SKIP PROCECSS IF ITS FE1 AND NOT PART OF NET ASSETS
+#***************************************************************************************************
+
+IF (ELISANC (dmAcc, '3800001', vsAcc) <> 1);
+	IF (vsPeriod @= sFE1Period);
+		ITEMSKIP;
+	ENDIF;
+ELSE;
+	IF (vsPeriod @= sFE1Period);
+		IF (vsMA @<> '-');
+			ITEMSKIP;
+		ENDIF;
+	ENDIF;
+ENDIF;
+
+#**********************************************************************************************************************************************************************************
+#*** STEP 2 : FE3 CREATION PROCESS
+#*** THIS PROCESS USUALLY INVOLVES SOME VALIDATION CHECKS DEPENDING ON MEASURE CODES
+#**********************************************************************************************************************************************************************************
+
+#*** COMMENCE PROCESS OF FE3 CREATION
+IF (sMeasCode @= 'M00000');
+
+#***************************************************************************************************
+#*** NO MEASURE CODES ****#
+#***
+#*** DO CALCULATIONS RELATING TO NO MEASURE CODES 
+#*** ASSUMING THESE ARE BASELINE DATA AND ARE ONGOING
+#***
+#***************************************************************************************************
+
+	#**** IF ITS NOT CASH FLOW, OR GRANTS OTHER ****#
+	IF((SUBST(vsAcc, 1, 1) @<> '6') & (vsAcc @<> '2330008') &  (vsAcc @<>'2330009'));
+	
+		#**** DO PROCESS IF ITS BALANCE SHEET ACCOUNTS ***# 
+	     	IF((SUBST(vsAcc, 1, 1) @= '3') % (SUBST(vsAcc, 1, 1) @= '4') % (SUBST(vsAcc, 1, 1) @= '5'));
+
+			#*** CHECK IF IT HAS A MOVEMENT ACCOUNT ***#
+#			IF (vsMA @<> '-' & vsMA @<> '7153'  & vsMA @<> '7121');
+			IF (vsMA @<> '-');
+
+				#***************************************************************************************************
+				#*** BALANCE SHEET WITH MOVEMENT ACCOUNT CODES ****#
+				#***
+				#*** DO CALCULATIONS FOR ALL BALANCE SHEET ITEMS ***#
+				#*** THIS PROCESS CALCULATES THE ACCRUAL FACTOR OF THE BALANCE SHEET 
+				#***************************************************************************************************
+
+				#***************************************************************************************************
+				#*** BALANCE SHEET ****#
+				#*** FE3 = FE2 + (FE2 - FE1)
+				#*** 
+				#***************************************************************************************************
+
+				#**** GET EXISTING FE DATA
+				nFE1Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc,'Total reason',vsSpp, vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE1Period);
+				nFE2Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc,'Total reason',vsSpp, vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE2Period);
+				nFE3Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc, 'Total reason',vsSpp,vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE3Period);
+
+				#**** GET EXISTING POSTED DAT
+				nAddData = CELLGETN (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period);
+				
+				#*** WHAT TO DO WHEN NO MEASURE (SUPPOSE TO BE ONGOING) HAS FE3 AMOUNT???? 
+				IF (nFE3Data <> 0);
+					#**** THIS JUST CLEARS FE3 (NO FE3 ADJ)
+				                #nCalcFE3Data =  (Value - nFE2Data) + nAddData;
+
+					#*** REVERSE FE2 DATA
+					#nCalcFE3Data =  (-Value + nAddData) * -1;
+
+					#*** THIS ONE JUST COPIES FE2
+					nCalcFE3Data = (nAddData + Value);
+
+					#*** THIS ONE TAKES VARIANCE OF FE3 AND FE2 SO END BALANCE EQUALS TO FE2
+					#nCalcFE3Data = (nAddData - nFE3Data + Value);
+
+
+
+				ELSE;
+                         				nCalcFE3Data = (nAddData + Value);
+                    			ENDIF; 
+
+				IF (CELLISUPDATEABLE (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period) = 1);
+					CellPutN( nCalcFE3Data, sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period);
+				ENDIF;
+			ELSE;
+				IF (vsMA @= '-');
+					#***************************************************************************************************
+					#*** NO MOVEMENT ACCOUNT CODES ****#
+					#***
+					#*** DO CALCULATIONS FOR ALL BALANCE SHEET ITEMS ***#
+					#*** THIS PROCESS CALCULATES THE ACCRUAL FACTOR OF THE BALANCE SHEET 
+					#*** PROCESS DISABLED TO CALCULATE ACCRUALS IN HEALTH AS REQUESTED BY IAN TUCKER 20151014
+					#***************************************************************************************************
+	
+					#**** GET EXISTING FE DATA
+					nFE1Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc, 'Total reason',vsSpp,vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE1Period);
+					nFE2Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc, 'Total reason',vsSpp,vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE2Period);
+					nFE3Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc, 'Total reason',vsSpp,vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE3Period);
+
+					#**** GET EXISTING POSTED DATA
+					nAddData = CELLGETN (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period);
+
+					nCalcFE3Data = (nAddData + (nFE2Data - nFE1Data));         
+
+
+					#***************************************************************************************************
+					# *** DO A CHECK ON CURRENT FE1 DATA AND 
+					#**** IF DATA EXISTS IN FE2, SKIP AS IT WILL BE USED IN THE NEXT SET OF LINES FOR CURRENT FE2 DATA
+					# *** THIS CODE IS TO ENSURE THAT IF THERE IS DATA IN FE1, AND NO DATA IN FE2, THAT IT STILL CALCULATES AS TM1 SUPPRESS ZEROES
+					#***************************************************************************************************
+					IF (vsPeriod @= sFE1Period);
+
+						nFE2Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc, 'Total reason',vsSpp,vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE2Period);
+
+						IF (nFE2Data <> 0);
+							ITEMSKIP;
+						ELSE;
+							nCalcFE3Data = (nAddData + (nFE2Data - nFE1Data));         
+						ENDIF;
+
+					ENDIF;
+
+					IF (CELLISUPDATEABLE (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period) = 1);
+						CellPutN( nCalcFE3Data, sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period);
+						ASCIIOUTPUT('kgtest1.txt', NUMBERTOSTRING(nCalcFE3Data), NUMBERTOSTRING(nFE2Data), NUMBERTOSTRING(nFE1Data), NUMBERTOSTRING( nAddData), vsAcc, vsMA, vsPeriod);
+					ENDIF;          
+				ENDIF;
+			ENDIF;
+		ELSE;
+
+			#***************************************************************************************************
+			#*** INCOME STATEMENTS ****#
+			#***
+			#*** 
+			#*** 
+			#***************************************************************************************************
+
+			#IF (SUBST(vsAcc, 1, 3) @<> '224');
+
+				#*** EXPENSE ACCOUNTS ***#
+				# *** DO A CHECK ON EXISTING FE3 DATA
+				nFE2Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc,'Total reason',vsSpp, vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE2Period);
+				nFE3Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc,'Total reason',vsSpp, vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE3Period);
+
+				#*** GET EXISTING POSTED DATA
+				 nAddData = CELLGETN( sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period);
+
+				#*** WHAT TO DO WHEN NO MEASURE (SUPPOSE TO BE ONGOING) HAS FE3 AMOUNT???? 
+				IF (nFE3Data <> 0);
+
+					#**** THIS JUST CLEARS FE3 (NO FE3 ADJ)
+				                #nCalcFE3Data =  (Value - nFE2Data) + nAddData;
+
+					#*** THIS ONE JUST COPIES FE2
+					nCalcFE3Data = (nAddData + Value);
+
+					#*** THIS ONE TAKES VARIANCE OF FE3 AND FE2 SO END BALANCE EQUALS TO FE2
+					#nCalcFE3Data = (nAddData - nFE3Data + Value);
+
+				ELSE;
+                	         			nCalcFE3Data = (nAddData + Value);
+                    			ENDIF; 
+			                
+				
+				#*** POST DATA
+				IF (CELLISUPDATEABLE (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period) = 1);
+					CellPutN(nCalcFE3Data,  sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period);
+#					ASCIIOUTPUT('kgtest1.txt', NUMBERTOSTRING(nCalcFE3Data), NUMBERTOSTRING(nFE2Data), NUMBERTOSTRING( nAddData), vsAcc, vsMA);
+				ENDIF;
+          			#ENDIF;
+		ENDIF;
+
+	ELSE;
+
+		#***************************************************************************************************
+		#*** CASH FLOWS ****#
+		#***
+		#*** DO CALCULATIONS RELATING TO CASH FLOW ACCOUNTS ***#
+		#*** DISABLE COPY OF CASH FLOW. LET SYSTEM DERIVE AS REQUESTED BY IAN TUCKER 20151014
+		#***************************************************************************************************
+
+		IF (SUBST(vsAcc, 1, 1) @= '6');
+
+			# *** DO A CHECK ON EXISTING FE3 DATA
+			nFE2Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc,'Total reason',vsSpp, vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE2Period);
+			nFE3Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc,'Total reason',vsSpp, vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE3Period);
+
+			#*********************************************
+               			#*** GET EXISTING POSTED DATA
+               			nAddData = CELLGETN( sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period);
+
+			#*** WHAT TO DO WHEN NO MEASURE (SUPPOSE TO BE ONGOING) HAS FE3 AMOUNT???? 
+               			IF (nFE3Data <> 0);
+				#**** IF THERE IS FE3 DATA
+     
+				#**** THIS JUST CLEARS FE3 (NO FE3 ADJ)
+				#nCalcFE3Data =  (Value - nFE2Data) + nAddData;
+
+				#*** THIS ONE JUST COPIES FE2
+				nCalcFE3Data = (nAddData + Value);
+
+				#*** THIS ONE TAKES VARIANCE OF FE3 AND FE2 SO END BALANCE EQUALS TO FE2
+				#nCalcFE3Data = (nAddData - nFE3Data + Value);
+
+			ELSE;
+				nCalcFE3Data = (nAddData + Value);
+			ENDIF; 
+			
+			#*** POST DATA
+
+			IF (CELLISUPDATEABLE (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period) = 1);
+#				CellPutN(nCalcFE3Data,  sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period);
+			ENDIF;
+		ENDIF;
+	ENDIF;
+
+ELSE;
+
+#***************************************************************************************************
+#*** MEASURE CODES ****#
+#***
+#*** DO CALCULATIONS RELATING TO MEASURE CODES AND IF THERE IS AN FE3 AMOUNT DO NOT COPY ***#
+#***
+#***************************************************************************************************
+
+	#**** IF ITS NOT CASH FLOW, OR GRANTS OTHER ****#
+	IF((SUBST(vsAcc, 1, 1) @<> '6') & (vsAcc @<> '2330008') &  (vsAcc @<>'2330009') & SUBST(vsAcc, 1, 3) @<> '224');
+	
+		#**** DO PROCESS IF ITS BALANCE SHEET ACCOUNTS ***# 
+	     	IF((SUBST(vsAcc, 1, 1) @= '3') % (SUBST(vsAcc, 1, 1) @= '4') % (SUBST(vsAcc, 1, 1) @= '5'));
+
+			#*** CHECK IF IT HAS A MOVEMENT ACCOUNT ***#
+#			IF (vsMA @<> '-' & vsMA @<> '7153'  & vsMA @<> '7121');
+			IF (vsMA @<> '-' );
+
+				#***************************************************************************************************
+				#*** BALANCE SHEET WITH MOVEMENT ACCOUNT CODES ****#
+				#***
+				#*** DO CALCULATIONS FOR ALL BALANCE SHEET ITEMS ***#
+				#*** THIS PROCESS CALCULATES THE ACCRUAL FACTOR OF THE BALANCE SHEET 
+				#***************************************************************************************************
+
+
+				#**** GET EXISTING FE DATA
+				nFE2Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc,'Total reason',vsSpp, vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE2Period);
+				nFE3Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc, 'Total reason',vsSpp,vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE3Period);
+
+				#**** GET EXISTING POSTED DATA
+				nAddData = CELLGETN (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period);
+				
+				#*** CLEAR OUT FE2 AMOUNT FROM FE2 DATA SO IT DOES NOT GET CARRIED ACCROSS OR SKIPITEM
+				IF (nFE3Data <> 0);
+				                #nCalcFE3Data =  (Value - nFE2Data) + nAddData;
+					nCalcFE3Data = (nAddData + Value);
+					#ITEMSKIP;
+				ELSE;
+                         				nCalcFE3Data = (nAddData + Value);
+                    			ENDIF; 
+
+				IF (CELLISUPDATEABLE (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period) = 1);
+					CellPutN( nCalcFE3Data, sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period);
+				ENDIF;
+			ELSE;
+
+				IF (vsMA @= '-');
+					#***************************************************************************************************
+					#*** NO MOVEMENT ACCOUNT CODES ****#
+					#***
+					#*** DO CALCULATIONS FOR ALL BALANCE SHEET ITEMS ***#
+					#*** THIS PROCESS CALCULATES THE ACCRUAL FACTOR OF THE BALANCE SHEET 
+					#*** DISABLE FUNCTION AS NOT REQUIRED BY HEALTH
+					#***************************************************************************************************
+
+					#**** GET EXISTING FE DATA
+					nFE1Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc, 'Total reason',vsSpp,vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE1Period);
+					nFE2Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc, 'Total reason',vsSpp,vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE2Period);
+					nFE3Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc, 'Total reason',vsSpp,vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE3Period);
+
+					#**** GET EXISTING POSTED DATA
+					nAddData = CELLGETN (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period);
+
+					nCalcFE3Data = (nAddData + (nFE2Data - nFE1Data));         
+
+
+					#***************************************************************************************************
+					# *** DO A CHECK ON CURRENT FE1 DATA AND 
+					#**** IF DATA EXISTS IN FE2, SKIP AS IT WILL BE USED IN THE NEXT SET OF LINES FOR CURRENT FE2 DATA
+					# *** THIS CODE IS TO ENSURE THAT IF THERE IS DATA IN FE1, AND NO DATA IN FE2, THAT IT STILL CALCULATES AS TM1 SUPPRESS ZEROES
+					#***************************************************************************************************
+					IF (vsPeriod @= sFE1Period);
+
+					nFE2Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc, 'Total reason',vsSpp,vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE2Period);
+
+						IF (nFE2Data <> 0);
+							ITEMSKIP;
+						ELSE;
+							nCalcFE3Data = (nAddData + (nFE2Data - nFE1Data));         
+						ENDIF;
+
+					ENDIF;
+
+
+	
+					IF (CELLISUPDATEABLE (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period) = 1);
+						CellPutN( nCalcFE3Data, sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period);
+					ENDIF;          
+				ENDIF;
+			ENDIF;
+		ELSE;
+
+			#***************************************************************************************************
+			#*** INCOME STATEMENTS ****#
+			#***
+			#*** 
+			#*** 
+			#***************************************************************************************************
+
+			#IF (SUBST(vsAcc, 1, 3) @<> '224');
+
+				#*** EXPENSE ACCOUNTS ***#
+				# *** DO A CHECK ON EXISTING FE3 DATA
+				nFE2Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc,'Total reason',vsSpp, vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE2Period);
+				nFE3Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc,'Total reason',vsSpp, vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE3Period);
+
+				#*** GET EXISTING POSTED DATA
+				 nAddData = CELLGETN( sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period);
+
+				#*** CLEAR OUT FE2 AMOUNT FROM FE2 DATA SO IT DOES NOT GET CARRIED ACCROSS OR SKIPITEM
+				IF (nFE3Data <> 0);
+					#nCalcFE3Data =  (Value - nFE2Data) + nAddData;
+					nCalcFE3Data = (nAddData + Value);
+					#ITEMSKIP;
+
+				ELSE;
+                	         			nCalcFE3Data = (nAddData + Value);
+                    			ENDIF; 
+                            
+				#*** POST DATA
+				IF (CELLISUPDATEABLE (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period) = 1);
+					CellPutN(nCalcFE3Data,  sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period);
+				ENDIF;
+          			#ENDIF;
+		ENDIF;
+
+	ELSE;
+
+		#***************************************************************************************************
+		#*** CASH FLOWS ****#
+		#***
+		#*** DO CALCULATIONS RELATING TO CASH FLOW ACCOUNTS ***#
+		#*** DISABLE FUNCTION AS NOT REQUIRED BY HEALTH
+		#***************************************************************************************************
+
+		IF (SUBST(vsAcc, 1, 1) @= '6');
+
+			# *** DO A CHECK ON EXISTING FE3 DATA
+			nFE2Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc,'Total reason',vsSpp, vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE2Period);
+			nFE3Data = CELLGETN (sCube, sHLYear,sScenario,'Total approved',vsOC,vsRE,vsFunc,'Total reason',vsSpp, vsMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc, sBalID ,vsJur,sFE3Period);
+
+			#*********************************************
+               			#*** GET EXISTING POSTED DATA
+               			nAddData = CELLGETN( sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period);
+
+			#*** CLEAR OUT FE2 AMOUNT FROM FE2 DATA SO IT DOES NOT GET CARRIED ACCROSS OR SKIPITEM
+               			IF (nFE3Data <> 0);
+				#**** IF THERE IS FE3 DATA
+                    			#nCalcFE3Data =  (Value - nFE2Data) + nAddData;
+				nCalcFE3Data = (nAddData + Value);
+				ITEMSKIP;
+			ELSE;
+				nCalcFE3Data = (nAddData + Value);
+			ENDIF; 
+			
+			#*** POST DATA
+
+			IF (CELLISUPDATEABLE (sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period) = 1);
+#				CellPutN(nCalcFE3Data,  sCube, sHLYear,sScenario,sNewStatus,vsOC,vsRE,vsFunc,sNewReason,vsSpp,sNoMeasCode, vsAppropType,vsMA,vsAppropItem,vsProg,vsAcc,sID,vsJur,sFE3Period);
+			ENDIF;
+		ENDIF;
+	ENDIF;
+
+
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF (1 = 1);
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy (sCube, sView);
+SubsetDestroy ('headline year', sSubset);
+SubsetDestroy ('scenario', sSubset);
+SubsetDestroy ('status', sSubset);
+SubsetDestroy ('outcome', sSubset);
+SubsetDestroy ('related entity', sSubset);
+SubsetDestroy ('function', sSubset);
+SubsetDestroy ('reason', sSubset);
+SubsetDestroy ('SPP', sSubset);
+SubsetDestroy ('measure code', sSubset);
+SubsetDestroy ('appropriation type', sSubset);
+SubsetDestroy ('movement account', sSubset);
+SubsetDestroy ('appropriation item', sSubset);
+#SubsetDestroy (snProg, sSubset);
+SubsetDestroy ('account', sSubset);
+SubsetDestroy ('ID', sSubset);
+SubsetDestroy ('jurisdiction', sSubset);
+SubsetDestroy ('period', sSubset);
+ENDIF;
+
+#endregion

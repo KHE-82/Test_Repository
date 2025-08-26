@@ -1,0 +1,2587 @@
+{
+	"@type":"Subset",
+	"Name":"Admin$ExportAEMeasureCode",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00000')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00001')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00002')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00003')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00004')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00005')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00006')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00007')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00008')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00009')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00010')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00011')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00012')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00013')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00014')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00015')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00016')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00017')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00018')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00019')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00020')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00021')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00022')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00023')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00024')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00025')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00026')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00027')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00028')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00029')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00030')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00031')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00032')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00033')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00034')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00035')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00036')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00037')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00038')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00039')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00040')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00041')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00042')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00043')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00044')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00045')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00046')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00047')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00048')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00049')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00050')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00051')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00052')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00053')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00054')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00055')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00056')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00057')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00058')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00059')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00060')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00061')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00062')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00063')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00064')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00065')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00066')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00067')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00068')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00069')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00070')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00071')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00072')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00073')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00074')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00075')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00076')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00077')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00078')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00079')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00080')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00081')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00082')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00083')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00084')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00085')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00086')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00087')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00088')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00089')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00090')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00091')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00092')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00093')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00094')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00095')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00096')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00097')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00098')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00099')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00100')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00101')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00102')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00103')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00104')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00105')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00106')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00107')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00108')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00109')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00110')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00111')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00112')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00113')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00114')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00115')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00116')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00117')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00118')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00119')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00120')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00121')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00122')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00123')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00124')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00125')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00126')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00127')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00128')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00129')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00130')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00131')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00132')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00133')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00134')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00135')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00136')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00137')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00138')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00139')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00140')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00141')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00142')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00143')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00144')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00145')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00146')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00147')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00148')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00149')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00150')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00151')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00152')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00153')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00154')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00155')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00156')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00157')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00158')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00159')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00160')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00161')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00162')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00163')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00164')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00165')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00166')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00167')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00168')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00169')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00170')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00171')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00172')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00173')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00174')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00175')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00176')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00177')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00178')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00179')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00180')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00181')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00182')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00183')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00184')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00185')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00186')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00187')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00188')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00189')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00190')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00191')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00192')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00193')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00194')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00195')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00196')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00197')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00198')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00199')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00200')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00201')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00202')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00203')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00204')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00205')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00206')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00207')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00208')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00209')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00210')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00211')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00212')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00213')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00214')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00215')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00216')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00217')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00218')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00219')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00220')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00221')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00222')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00223')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00224')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00225')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00226')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00227')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00228')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00229')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00230')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00231')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00232')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00233')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00234')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00235')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00236')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00237')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00238')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00239')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00240')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00241')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00242')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00243')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00244')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00245')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00246')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00247')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00248')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00249')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00250')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00251')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00252')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00253')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00254')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00255')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00256')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00257')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00258')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00259')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00260')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00261')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00262')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00263')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00264')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00265')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00266')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00267')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00268')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00269')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00270')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00271')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00272')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00273')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00274')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00275')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00276')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00277')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00278')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00279')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00280')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00281')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00282')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00283')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00284')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00285')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00286')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00287')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00288')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00289')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00290')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00291')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00292')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00293')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00294')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00295')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00296')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00297')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00298')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00299')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00300')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00301')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00302')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00303')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00304')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00305')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00306')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00307')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00308')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00309')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00310')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00311')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00312')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00313')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00314')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00315')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00316')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00317')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00318')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00319')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00320')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00321')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00322')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00323')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00324')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00325')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00326')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00327')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00328')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00329')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00330')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00331')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00332')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00333')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00334')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00335')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00336')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00337')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00338')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00339')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00340')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00341')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00342')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00343')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00344')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00345')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00346')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00347')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00348')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00349')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00350')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00351')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00352')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00353')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00354')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00355')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00356')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00357')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00358')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00359')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00360')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00361')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00362')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00363')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00364')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00365')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00366')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00367')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00368')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00369')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00370')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00371')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00372')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00373')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00374')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00375')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00376')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00377')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00378')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00379')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00380')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00381')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00382')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00383')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00384')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00385')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00386')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00387')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00388')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00389')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00390')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00391')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00392')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00393')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00394')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00395')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00396')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00397')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00398')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00399')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00400')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00401')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00402')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00403')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00404')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00405')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00406')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00407')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00408')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00409')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00410')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00411')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00412')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00413')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00414')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00415')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00416')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00417')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00418')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00419')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00420')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00421')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00422')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00423')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00424')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00425')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00426')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00427')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00428')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00429')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00430')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00431')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00432')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00433')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00434')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00435')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00436')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00437')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00438')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00439')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00440')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00441')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00442')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00443')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00444')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00445')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00446')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00447')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00448')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00449')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00450')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00451')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00452')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00453')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00454')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00455')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00456')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00457')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00458')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00459')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00460')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00461')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00462')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00463')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00464')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00465')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00466')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00467')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00468')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00469')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00470')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00471')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00472')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00473')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00474')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00475')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00476')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00477')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00478')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00479')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00480')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00481')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00482')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00483')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00484')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00485')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00486')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00487')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00488')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00489')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00490')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00491')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00492')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00493')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00494')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00495')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00496')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00497')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00498')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00499')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00500')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00501')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00502')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00503')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00504')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00505')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00506')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00507')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00508')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00509')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00510')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00511')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00512')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00513')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00514')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00515')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00516')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00517')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00518')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00519')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00520')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00521')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00522')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00523')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00524')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00525')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00526')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00527')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00528')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00529')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00530')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00531')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00532')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00533')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00534')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00535')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00536')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00537')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00538')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00539')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00540')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00541')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00542')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00543')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00544')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00545')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00546')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00547')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00548')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00549')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00550')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00551')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00552')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00553')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00554')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00555')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00556')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00557')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00558')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00559')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00560')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00561')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00562')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00563')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00564')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00565')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00566')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00567')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00568')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00569')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00570')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00571')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00572')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00573')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00574')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00575')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00576')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00577')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00578')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00579')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00580')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00581')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00582')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00583')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00584')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00585')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00586')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00587')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00588')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00589')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00590')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00591')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00592')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00593')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00594')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00595')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00596')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00597')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00598')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00599')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00600')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00601')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00602')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00603')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00604')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00605')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00606')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00607')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00608')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00609')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00610')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00611')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00612')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00613')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00614')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00615')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00616')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00617')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00618')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00619')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00620')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00621')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00622')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00623')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00624')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00625')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00626')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00627')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00628')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00629')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00630')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00631')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00632')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00633')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00634')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00635')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00636')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00637')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00638')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00639')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00640')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00641')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00642')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00643')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00644')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00645')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00646')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00647')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00648')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00649')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00650')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00651')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00652')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00653')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00654')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00655')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00656')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00657')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00658')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00659')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00660')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00661')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00662')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00663')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00664')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00665')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00666')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00667')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00668')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00669')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00670')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00671')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00672')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00673')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00674')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00675')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00676')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00677')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00678')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00679')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00680')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00681')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00682')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00683')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00684')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00685')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00686')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00687')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00688')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00689')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00690')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00691')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00692')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00693')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00694')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00695')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00696')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00697')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00698')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00699')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00700')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00701')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00702')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00703')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00704')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00705')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00706')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00707')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00708')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00709')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00710')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00711')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00712')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00713')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00714')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00715')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00716')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00717')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00718')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00719')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00720')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00721')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00722')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00723')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00724')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00725')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00726')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00727')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00728')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00729')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00730')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00731')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00732')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00733')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00734')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00735')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00736')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00737')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00738')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00739')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00740')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00741')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00742')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00743')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00744')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00745')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00746')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00747')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00748')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00749')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00750')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00751')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00752')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00753')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00754')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00755')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00756')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00757')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00758')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00759')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00760')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00761')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00762')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00763')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00764')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00765')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00766')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00767')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00768')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00769')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00770')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00771')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00772')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00773')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00774')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00775')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00776')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00777')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00778')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00779')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00780')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00781')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00782')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00783')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00784')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00785')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00786')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00787')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00788')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00789')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00790')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00791')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00792')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00793')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00794')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00795')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00796')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00797')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00798')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00799')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00800')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00801')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00802')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00803')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00804')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00805')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00806')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00807')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00808')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00809')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00810')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00811')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00812')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00813')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00814')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00815')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00816')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00817')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00818')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00819')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00820')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00821')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00822')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00823')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00824')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00825')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00826')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00827')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00828')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00829')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00830')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00831')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00832')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00833')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00834')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00835')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00836')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00837')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00838')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00839')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00840')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00841')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00842')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00843')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00844')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00845')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00846')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00847')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00848')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00849')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00850')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00851')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00852')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00853')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00854')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00855')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00856')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00857')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00858')"
+		},
+		{
+			"@id":"Dimensions('measure code')/Hierarchies('measure code')/Elements('M00859')"
+		}
+	]
+}

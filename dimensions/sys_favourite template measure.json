@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_favourite template measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_favourite template measure.hierarchies/sys_favourite template measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_favourite template measure')/Hierarchies('sys_favourite template measure')"
+	}
+}

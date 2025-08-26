@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"period",
+	"Hierarchies@Code.links":
+	[
+		"period.hierarchies/period.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('period')/Hierarchies('period')"
+	}
+}

@@ -1,0 +1,77 @@
+FEEDSTRINGS;
+SKIPCHECK;
+
+## Rule 00001
+['Workbook Name'] = S:
+#SYNTAX - DB(cube name,Dimension 1 [element name], Dimension 2 [element name - all if omitted]);
+DB('sys_application',!sys_application,'Workbook');
+
+## Rule 00002
+['Number of Tests'] = N:
+if (DB('sys_application testing',!sys_application,!Test ID, 'Test Number') @<>'',
+1,
+STET);
+
+## Rule 00003
+['Passed'] = N:
+if (DB('sys_application testing',!sys_application,!Test ID, 'Status') @='Pass',
+1,
+STET);
+
+## Rule 00004
+['Failed'] = N:
+if (DB('sys_application testing',!sys_application,!Test ID, 'Status') @='Fail',
+1,
+STET);
+
+## Rule 00005
+['Fixed'] = N:
+if (DB('sys_application testing',!sys_application,!Test ID, 'Fixed By') @<>'',
+1,
+STET);
+
+## Rule 00006
+['reTested'] = N:
+if (DB('sys_application testing',!sys_application,!Test ID, 'ReTest By') @<>'',
+1,
+STET);
+
+## Rule 00007
+['reTest Required'] = N:
+DB('sys_application testing',!sys_application,!Test ID, 'Fixed') - DB('sys_application testing',!sys_application,!Test ID, 'ReTested');
+
+
+
+
+
+
+
+
+## Rule 00008
+# If Test number has no status, set Not Completed to 1
+['Not Completed'] = N:
+if ((DB('sys_application testing',!sys_application,!Test ID, 'Test Number') @<>'' &
+DB('sys_application testing',!sys_application,!Test ID, 'Status') @='Fixed' &
+DB('sys_application testing',!sys_application,!Test ID, 'retestBy') @=''),
+1,
+if ((DB('sys_application testing',!sys_application,!Test ID, 'Test Number') @<>'' &
+DB('sys_application testing',!sys_application,!Test ID, 'Status') @=''),
+1,
+STET));
+
+
+
+FEEDERS;
+## Rule 00001
+#['sys_Application'] => ['Workbook Name'];
+## Rule 00002
+
+#['Status']=>[sys_application testing measure:'Passed'];
+['Test Number'] => ['Number of tests'];
+['Status'] => ['Passed'];
+['Status'] => ['Failed'];
+['Status'] => ['Not Completed'];
+['Fixed By'] => ['Fixed'];
+['Retest By'] => ['ReTested'];
+['Retest By'] => ['ReTested'];
+[{'Fixed', 'ReTested'}] => ['ReTest REquired'];

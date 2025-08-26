@@ -1,0 +1,33 @@
+{
+	"@type":"Process",
+	"Name":"}src_clients_export",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"}src_clients_export.ti",
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForServer":"}Clients",
+		"dataSourceNameForClient":"}Clients",
+		"subset":"All"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pOutputDir",
+			"Prompt":"Output Directory",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vClient",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		}
+	],
+	"UID": "17561009220003"
+}

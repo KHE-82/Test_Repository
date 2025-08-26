@@ -1,0 +1,74 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#############
+##
+##  Creates a AE Fast Entry Cube suitable for use with GEUS 2.0
+
+sCube = 'AE Fast Entry';
+
+sDIM1BY = 'headline year';
+sDIM2UR = 'scenario';
+sDIM3ST = 'status';
+sDIM4RA = 'related entity';
+sDIM5Re = 'reason';
+sDIM6MC = 'measure code';
+sDIM7SP = 'spp';
+sDIM8AT = 'appropriation type';
+sDIM9AI = 'appropriation item';
+sDIM10P = 'program';
+sDIM11A = 'account';
+sDIM11MA = 'movement account';
+sDIM12ID = 'ID';
+sDIM13Jur = 'jurisdiction';
+sDIM14Per = 'period';
+
+sDIM15CFA ='account_cf';
+sDIM16CFO ='account_other';
+sDIM17CFM ='cash flow measure';
+
+sDIM18MA = 'monthly actuals measure';
+
+sDIM19CC = 'cost centre';
+sDIM20PT = 'project';
+sDIM21NM = 'nominal';
+sDIM22MM = 'actuals mapping measure';
+
+sDIM23VI = 'validation id';
+
+
+sDIM25CFM ='AE adjustments measure';
+sDIM26FL = 'funding life';
+
+sDim27AEAc = 'AE account template';
+sDim28AAEc = 'AE Account template measures';
+
+
+
+##Deprecated Function - CubeSetLogChanges in Tm1V12
+#CubeSetLogChanges(sCube, 1);
+
+CubeCreate(sCube, sDIM1BY,sDIM2UR,sDIM3ST,sDIM4RA,'function',sDIM11MA,sDIM10P,sDIM11A,sDIM12ID,sDIM13Jur,sDIM14Per);
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

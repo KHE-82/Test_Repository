@@ -1,0 +1,27 @@
+{
+	"@type":"Process",
+	"Name":"AE_ParameterAndED_01",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_ParameterAndED_01.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"Admin",
+			"Type":"String"
+		},
+		{
+			"Name":"psAdjType",
+			"Prompt":"",
+			"Value":"parameter",
+			"Type":"String"
+		}
+	],
+	"Variables":[],
+	"UID": "17561008490000"
+}

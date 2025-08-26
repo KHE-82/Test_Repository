@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_ME_Account Template",
+	"Alias":"ME Title",
+	"Expression":"{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [account template] )}, 0)}, [account template].[ME Used] = 1.000000)}"
+}
