@@ -1,0 +1,5 @@
+"flag","AS","picklist","static:0:1"
+"movement account mapping","AS","picklist","subset:movement account:sys_all-n"
+"related entity mapping","AS","picklist","subset:related entity:sys_all-n"
+"jurisdiction mapping","AS","picklist","subset:jurisdiction:sys_all-n"
+"factor","AS","picklist","static:-1:0:1"

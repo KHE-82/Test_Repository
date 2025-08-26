@@ -1,0 +1,24 @@
+"current","AS","Format","b:#,##0;(#,##0)CO|0|Y"
+"MYEFO","AS","estimate","Y"
+"MYEFO","AS","no rules","Y"
+"MYEFO","AS","Format","b:#,##0;(#,##0)CO|0|Y"
+"Additional Estimates","AS","estimate","Y"
+"Additional Estimates","AS","no rules","Y"
+"Additional Estimates","AS","Format","b:#,##0;(#,##0)CO|0|Y"
+"Pre-ERC","AS","estimate","Y"
+"Pre-ERC","AS","no rules","Y"
+"Pre-ERC","AS","Format","b:#,##0;(#,##0)CO|0|Y"
+"Budget","AS","estimate","Y"
+"Budget","AS","no rules","Y"
+"Budget","AS","Format","b:#,##0;(#,##0)CO|0|Y"
+"Actual","AS","Format","b:#,##0;(#,##0)CO|0|Y"
+"Actual Adjustments","AS","Format","b:#,##0;(#,##0)CO|0|Y"
+"CBMS","AS","Format","b:#,##0;(#,##0)CO|0|Y"
+"CBMS RECO","AS","Format","b:#,##0;(#,##0)CO|0|Y"
+"PEFO","AS","estimate","Y"
+"PEFO","AS","no rules","Y"
+"PEFO","AS","Format","b:#,##0;(#,##0)CO|0|Y"
+"Adjusted Actual","AS","Format","b:#,##0;(#,##0)CO|0|Y"
+"MA CBMS RECO","AS","Format","b:#,##0;(#,##0)CO|0|Y"
+"MA CBMS","AS","Format","b:#,##0;(#,##0)CO|0|Y"
+"ACM","AS","Format","b:#,##0;(#,##0)CO|0|Y"

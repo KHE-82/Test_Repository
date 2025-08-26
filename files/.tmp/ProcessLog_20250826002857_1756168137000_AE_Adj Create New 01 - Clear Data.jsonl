@@ -1,0 +1,3 @@
+{"id":1,"level":"info","name":"AE_Adj Create New 01 - Clear Data","message":"Process \"AE_Adj Create New 01 - Clear Data\" executed by user \"kgimena@excelerated.com.au\" with parameters: (psUser = \"*\")"}
+{"id":1,"level":"error","name":"AE_Adj Create New 01 - Clear Data","message":"Error: Prolog procedure line (73): Could not create dynamic subset: \nExpected a member name but found system. expression:\n{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [sys_client preference] )}, 0)}, [sys_client preference].[system] = \"\")}"}
+{"id":1,"level":"info","name":"AE_Adj Create New 01 - Clear Data","message":"Process execution aborted with errors."}

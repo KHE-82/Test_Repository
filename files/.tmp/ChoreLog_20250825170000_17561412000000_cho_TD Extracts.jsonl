@@ -1,0 +1,10 @@
+{"id":1,"level":"info","name":"sys_TD Extract - All","message":"Process \"sys_TD Extract - All\" executed by user \"R*cho_TD Extracts\"."}
+{"id":1,"level":"info","name":"sys_TD Extract - AE Adjustment","message":"Process \"sys_TD Extract - AE Adjustment\" executed by Process \"sys_TD Extract - All\" via ExecuteProcess with parameters: (psUser = \"*\" ,psHLYear = \"*\" ,psScenario = \"*\")"}
+{"id":1,"level":"error","name":"sys_TD Extract - AE Adjustment","message":"Error: Prolog procedure line (260): Could not create dynamic subset: \nExpected a member name but found type. expression:\n{{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [period] )}, 0)}, [period].[type] = \"annual\")},[0000-0000]}"}
+{"id":1,"level":"info","name":"sys_TD Extract - AE Adjustment","message":"Process execution aborted with errors."}
+{"id":1,"level":"info","name":"sys_TD Extract - Measure Code Attribute","message":"Process \"sys_TD Extract - Measure Code Attribute\" executed by Process \"sys_TD Extract - All\" via ExecuteProcess."}
+{"id":1,"level":"error","name":"sys_TD Extract - Measure Code Attribute","message":"\"M00001\",\"Budget Round Created\",\"HL2025-26 Budget\",Data Source line (1) Error: Data procedure line (12): File 's:\\prod\\DCCEEW_TM1\\Data\\model_upload\\DCCEEW_TM1\\Upload\\ GEUS Top Down - Measure Details Extract.csv' not found."}
+{"id":1,"level":"info","name":"sys_TD Extract - Measure Code Attribute","message":"Process execution aborted with errors."}
+{"id":1,"level":"error","name":"sys_TD Extract - All","message":"Error: Prolog procedure line (108):  Errors occurred during execution of process 'sys_TD Extract - AE Adjustment'.  Check error log file for that process for more details"}
+{"id":1,"level":"error","name":"sys_TD Extract - All","message":"Error: Prolog procedure line (115):  Errors occurred during execution of process 'sys_TD Extract - Measure Code Attribute'.  Check error log file for that process for more details"}
+{"id":1,"level":"info","name":"sys_TD Extract - All","message":"Process execution finished with minor errors."}
