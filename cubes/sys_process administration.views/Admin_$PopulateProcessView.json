@@ -1,0 +1,26 @@
+{
+	"@type":"NativeView",
+	"Name":"Admin_$PopulateProcessView",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('sys_process administration measure')/Hierarchies('sys_process administration measure')/Subsets('Admin_$PopulateProcessView')"
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('}Processes')/Hierarchies('}Processes')/Subsets('Admin_$PopulateProcessView')"
+			}
+		}
+	],
+	"Titles":[],
+	"SuppressEmptyColumns":true,
+	"SuppressEmptyRows":true,
+	"FormatString":"0.00"
+}

@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"$ME_FlatFile",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('id')/Hierarchies('id')/Elements('0000B')"
+		}
+	]
+}

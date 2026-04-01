@@ -1,0 +1,37 @@
+{
+	"@type":"Process",
+	"Name":"sys_ae favourites - update flag",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_ae favourites - update flag.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"VarType=32€ColType=827€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForClient":"account",
+		"dataSourceNameForServer":"account",
+		"subset":"SE_KG0020_$geuspvt"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vsElement",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		}
+	]
+}

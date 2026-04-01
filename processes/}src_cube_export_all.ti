@@ -1,0 +1,32 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+If( SUBST(V1, 1, 1) @= '}' );
+  nIsControl = 1;
+Else;
+ nIsControl = 0;
+EndIf;
+
+If( (nIsControl = 1 & pIncludeControlObjects <> 0) % (nIsControl = 0));
+  ExecuteProcess('}src_cube_export', 'pCubeName', V1, 'pStructureOnly', 1, 'pIncludeSecurity', pIncludeSecurity, 'pOutputDir', pOutputDir);
+EndIf;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

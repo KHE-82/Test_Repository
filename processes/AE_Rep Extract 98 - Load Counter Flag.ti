@@ -1,0 +1,516 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Rep Extract 98 - Load Counter Flag
+#**** DESCRIPTION:       This process creates a view and loads the flagged adjustments from AE Adjustments
+#****			
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 20/09/2017    KG             Initial Revision
+#**** 24/01/2024   BL             Modified process for sys_Extract Report cube
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+cbClient = 'sys_client preference';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYS_EXTRACT REPORT CUBE***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbSXR = 'sys_Extract Report';
+dmRowID ='row id';
+dmSXRMeas = 'sys_report extract measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE ATTRIBUTE CUBES ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbEAAcc = '}ElementAttributes_Account';
+dmEAAcc = '}ElementAttributes_Account';
+
+cbEAProg = '}ElementAttributes_Programme';
+dmEAProg = '}ElementAttributes_programme';
+
+cbEAMeasCode = '}ElementAttributes_measure code';
+dmEAMeasCode = '}ElementAttributes_measure code';
+
+cbEAMA = '}ElementAttributes_movement account';
+dmEAMA = '}ElementAttributes_movement account';
+
+cbEAItem = '}ElementAttributes_appropriation item';
+dmEAItem = '}ElementAttributes_appropriation item';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+sMaxRow = ATTRS (dmVar, 'sys_rep extract max rows', 'value');
+nMaxVarRow = STRINGTONUMBER (sMaxRow);
+IF (nMaxVarRow = 0);
+	nMaxRow = 5000;
+ELSE;
+	nMaxRow = nMaxVarRow;
+ENDIF;
+
+
+
+
+#******************************************************************************************************************
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#******************************************************************************************************************
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sCurScenarioBudRound = ATTRS(dmVar, 'current budget round', 'value');
+sNoMeasCode = ATTRS(dmVar, 'No Measure Code', 'value');
+sDefFavID = ATTRS(dmVar, 'Default favourite id template', 'value');
+
+
+#******************************************************************************************************************
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#******************************************************************************************************************
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sNoMeasCode = ATTRS(dmVar, 'No Measure Code', 'value');
+sDefFavID = ATTRS(dmVar, 'Default favourite id template', 'value');
+
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED FOR VIEWS
+#******************************************************************************************************************
+#IF (psScenario@= 'current');
+#	sTargetStage = SUBST(psHLYear, 3,9) | ' ' | sCurScenarioBudRound;
+#ELSE;
+#	sTargetStage = SUBST(psHLYear, 3,9) | ' ' | psScenario;
+#ENDIF;
+
+#IF (DIMIX (dmStage, sTargetStage) = 0);
+#	PROCESSQUIT;
+#ENDIF;
+
+
+
+CubeSetLogChanges(cbSXR , 0);
+
+#******************************************************************************************************************
+#***** EXPORT VARIABLES
+#******************************************************************************************************************
+IF (psScenario @= 'current');
+	sSelStage = ATTRS(dmVar, 'current budget round', 'value');
+ELSE;
+	sSelStage = psScenario;
+ENDIF;
+
+IF (sSelStage @= '');
+	sSelStage = psScenario;
+ENDIF;
+
+MetadataCounter = 0;
+DataCounter = 0;
+lCounter = 0;
+
+#*****************************************************************************************************************************************************
+#****  STEP 1 - CLEAR TARGET SYS_EXTRACT REPORT VIEW
+#*****************************************************************************************************************************************************
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+sView = sUser | ' $ExtractRptTarget';
+sSubset = sView;
+#-------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbSXR, sView);
+
+SUBSETDESTROY (dmClients, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmRowID, sView);
+SUBSETDESTROY (dmPer, sView);
+SUBSETDESTROY (dmSXRMeas, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+
+#Client
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmClients | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# HLYear
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmHLYear | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Scenario
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmScenario | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Row ID
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRowID | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Period
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# SXR Measure
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSXRMEas | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** BUILD VIEW
+#-------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbSXR, sView);
+VIEWSUBSETASSIGN (cbSXR, sView, dmClients, sView);
+VIEWSUBSETASSIGN (cbSXR, sView, dmHLYear, sView);
+VIEWSUBSETASSIGN (cbSXR, sView, dmScenario, sView);
+VIEWSUBSETASSIGN (cbSXR, sView, dmRowID, sView);
+VIEWSUBSETASSIGN (cbSXR, sView, dmPer, sView);
+VIEWSUBSETASSIGN (cbSXR, sView, dmSXRMeas, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+# *** DEFINE VIEW EXTRACT
+#-------------------------------------------------------------------------------------------------------------
+ViewExtractSkipZeroesSet(cbSXR, sView, 1);
+ViewSuppressZeroesSet(cbSXR, sView, 1);
+ViewExtractSkipCalcsSet(cbSXR, sView, 1);
+
+#-------------------------------------------------------------------------------------------------------------
+# ***ZERO OUT CUBE
+#-------------------------------------------------------------------------------------------------------------
+VIEWZEROOUT(cbSXR, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbSXR, sView);
+
+SUBSETDESTROY (dmClients, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmRowID, sView);
+SUBSETDESTROY (dmPer, sView);
+SUBSETDESTROY (dmSXRMeas, sView);
+
+
+#*****************************************************************************************************************************************************
+#*** STEP 2 - CREATE SOURCE VIEW ***#
+#*****************************************************************************************************************************************************
+sAEView = sUser | ' $SysExtractRpt';
+sSubset = sAEView;
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmOC, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmFunc, sAEView);
+SUBSETDESTROY (dmReason, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmType, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+
+#******************************************************************************************************************
+#*** CREATE SUBSETS
+#******************************************************************************************************************
+# headline year
+SubsetCreate(dmHLYear, sAEView);
+SubsetElementInsert(dmHLYear, sAEView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sAEView);
+SubsetElementInsert(dmScenario, sAEView, psScenario, 1);
+
+#IF (psFullHLExtract @= 'N');
+#	SUBSETCREATE (dmScenario, sAEView);
+#	SUBSETELEMENTINSERT (dmScenario, sAEView, psScenario, 1);
+#ELSE;
+#	MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmScenario | '].[sys_BudgetRound]}, ALL, RECURSIVE )}, 0)}';
+#	SUBSETCREATEBYMDX (sAEView, MDX);
+#ENDIF;
+
+# Status
+#SUBSETCREATE (dmStatus, sAEView);
+#SUBSETELEMENTINSERT (dmStatus, sSubset, 'data', 1);
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmStatus | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Outcome
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmOC | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Function
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmFunc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Reason
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmReason | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Measure Code
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Appropriation Type
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmType | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Movement Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Appropriation Item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmProg | '].[' | psProg | '] }, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# ID
+IF( psExtractType @='Adjusted Base');
+	MDX = '{[id].[0000A]}';
+ELSE;
+	MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmID | '] )}, 0)}';
+ENDIF;
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+
+# Period
+#MDX = '{{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}, [' | dmPer | '].[type] = "annual")},[' | dmPer | '].[0000-0000]}';
+MDX = '{[' | dmPer | '].[0000-0000]}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+
+
+#******************************************************************************************************************
+#*** BUILD VIEW ***#
+#******************************************************************************************************************
+VIEWCREATE (cbAE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmHLYear, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmScenario, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmStatus, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmOC, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmRE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmFunc, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmReason, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmSPP, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMeasCode, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmType, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMA, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmItem, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmProg, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmAcc, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmID, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmJur, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmPer, sAEView);
+
+
+#******************************************************************************************************************
+# *** DEFINE VIEW EXTRACT
+#******************************************************************************************************************
+VIEWEXTRACTSKIPZEROESSET (cbAE, sAEView, 1);
+VIEWEXTRACTSKIPRULEVALUESSET (cbAE, sAEView, 1);
+VIEWEXTRACTSKIPCALCSSET (cbAE, sAEView, 1);
+
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sAEView;
+
+#******************************************************************************************************************
+#***DEFINE PERIOD BLOCK
+#******************************************************************************************************************
+
+sPer = '0000-0000';
+sHeadlineYearPeriod = SUBST(psHLYear, 3, 9);
+sPer00 = DIMNM(dmPer, DIMIX(dmPer, sHeadlineYearPeriod) -2);
+sPer01 = DIMNM(dmPer, DIMIX(dmPer, sHeadlineYearPeriod) -1);
+sPer02 = sHeadlineYearPeriod;
+sPer03 = DNEXT (dmPer, sPer02);
+sPer04 = DNEXT (dmPer, sPer03);
+sPer05 = DNEXT (dmPer, sPer04);
+sPer06 = DNEXT (dmPer, sPer05);
+sPer07 = DNEXT (dmPer, sPer06);
+sPer08 = DNEXT (dmPer, sPer07);
+sPer09 = DNEXT (dmPer, sPer08);
+sPer10 = DNEXT (dmPer, sPer09);
+sPer11 = DNEXT (dmPer, sPer10);
+sPer12 = DNEXT (dmPer, sPer11);
+sPer13 = DNEXT (dmPer, sPer12);
+sPer14 = DNEXT (dmPer, sPer13);
+sPer15 = DNEXT (dmPer, sPer14);
+sPer16 = DNEXT (dmPer, sPer15);
+
+lCounter = 0;
+nRowIDNum = 1;
+nAdjIDRowCount = 0;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+
+
+
+
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+nUsed = CellGetN( cbSXR, psUSer, vsHLYear, vsScenario, 'Total Rows', '0000-0000', 'Counter');
+nRowNext = nUsed +1;
+sRowID = NumberToString(nRowNext);
+sRowID = Fill('0', 4-Long(sRowID)) | sRowID;
+
+
+IF (nRowNext>nMaxRow);
+	sMsg = 'Error: This extract has reached the maxium row limit (' | NumberTostring(nMaxRow) | '). It is estimated to require ' | numbertostring(nRowNext)|  ' rows. Please re-select the paramters and try again.';
+	ASCIIOUTPUT ('checkmsg.txt', sMsg, sUser);
+	CELLPUTS( sMsg,cbClient, sUser, 'rep_programme','validate');
+	PROCESSBREAK;
+ELSE;
+
+	#*****************************************************************************************************************************************************
+	#** LOAD COUNTER
+	#*****************************************************************************************************************************************************
+	IF (CELLISUPDATEABLE (cbSXR, psUSer, vsHLYear, vsScenario, sRowID, sPer, 'Counter') = 1);
+		CELLPUTN (1, cbSXR, psUSer, vsHLYear, vsScenario, sRowID, sPer, 'Counter');
+	ENDIF;
+ENDIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#IF(1=1);
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmOC, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmFunc, sAEView);
+SUBSETDESTROY (dmReason, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmType, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+
+#ENDIF;
+
+CubeSetLogChanges(cbSXR , 1);
+
+
+sPer = '0000-0000';
+sRow = 'Total Rows';
+
+nCount = CELLGETN ( cbSXR, psUSer, psHLYear, psScenario, sRow, sPer, 'Counter');
+
+#ASCIIOUTPUT ('checkcounear.txt', NUMBERTOSTRING (nCount));
+#endregion

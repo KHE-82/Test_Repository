@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"ME reporting measure",
+	"Hierarchies@Code.links":
+	[
+		"ME reporting measure.hierarchies/ME reporting measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('ME reporting measure')/Hierarchies('ME reporting measure')"
+	}
+}

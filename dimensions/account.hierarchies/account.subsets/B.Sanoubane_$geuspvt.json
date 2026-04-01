@@ -1,0 +1,13 @@
+{
+	"@type":"Subset",
+	"Name":"B.Sanoubane_$geuspvt",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2300002')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		}
+	]
+}

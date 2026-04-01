@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_all-n",
+	"Alias":"description",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {TM1SUBSETALL( [ME phasing method] )}, ALL, RECURSIVE )}, 0)}"
+}

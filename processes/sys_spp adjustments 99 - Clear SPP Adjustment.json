@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"sys_spp adjustments 99 - Clear SPP Adjustment",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_spp adjustments 99 - Clear SPP Adjustment.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"Admin",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

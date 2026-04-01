@@ -1,0 +1,210 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#	Define Variables
+#------------------------------------------------------------------------------------------------------------------------------------------
+#**********Dimensions
+dmAccount = 'account';
+dmAEParameters = 'AE parameters and FE3 calculation measure';
+dmAppropItem = 'appropriation item';
+dmAppropType = 'appropriation type';
+dmFavourites = 'favourites_id';
+dmFavMeas = 'favourites_measure';
+dmMeasureCode = 'measure code';
+dmReason = 'reason';
+dmReportingStage = 'reporting stage';
+dmAEReportingStage = 'sys_ae reporting stage measure';
+dmClientPref = 'sys_client preference';
+dmProcessAdmin = 'sys_process administration measure';
+dmProcessReturn = 'sys_process return codes';
+dmSetDefaultAccount = 'sys_set default account measure';
+dmValidation = 'validation id';
+dmVariables = 'variables';
+dmFollowUpMeas = 'AE note register measure';
+dmAccTemp = 'account template';
+dmIDMeas = 'id measure';
+dmMeasDet = 'measure details';
+dmReportExt = 'sys_report extract type';
+dmControlType = 'control type';
+dmSysClientFavAppMeas = 'sys_client favourite application measure';
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#	Create Attributes and Insert Values for Each Dimensions and Elements
+#------------------------------------------------------------------------------------------------------------------------------------------
+#Use Paramerts input to create Attributes and insert elements
+#ATTRINSERT (psAccount, '', psDescription, psType);
+#IF (psValue @= '');
+#ATTRPUTN (pnValue, psDimension, psElement, psAttributeName);
+#ELSE;
+#ATTRPUTS (psValue, psDimension, psElement, psAttributeName);
+#ENDIF;
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+dmClients = '}Clients';
+ATTRINSERT (dmClients, '', 'GEUS User Name', 'A');
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#dmAccount = 'account';
+ATTRINSERT (dmAccount, '', 'default movement account', 'S');
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#dmAEParameters = 'AE parameters and FE3 calculation measure';
+ATTRINSERT (dmAEParameters, '', 'Desc', 'S');
+
+ATTRPUTS ('Creation of FE3 that is an exact copy of FE2', dmAEParameters, 'step 1 value', 'Desc');
+ATTRPUTS ('Reversals of any terminating measures', dmAEParameters, 'step 2 value', 'Desc');
+ATTRPUTS ('Reversals of Step 1 value if a value already exists in FE3', dmAEParameters, 'step 3 value', 'Desc');
+ATTRPUTS ('Total FE3 amount calculated', dmAEParameters, 'Total FE3 adjustment value', 'Desc');
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#dmAppropItem = 'appropriation item';
+ATTRINSERT (dmAppropItem, '', 'disabled', 'S');
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#dmAppropType = 'appropriation type';
+ATTRINSERT (dmAppropType, '', 'CBMS-R Flag', 'S');
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#dmFavourites = 'favourites_id';
+ATTRINSERT (dmFavourites, '', 'title', 'S');
+ATTRINSERT (dmFavourites, '', 'description', 'A');
+ATTRINSERT (dmFavourites, '', 'code and description', 'A');
+ATTRINSERT (dmFavourites, '', 'use program details', 'S');
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+# Favourites Measures
+ATTRINSERT (dmFavMeas, '', 'picklist', 'S');
+ATTRPUTS ('static:1:0', dmFavMeas, 'flag', 'picklist');
+ATTRPUTS ('subset:movement account:sys_all-n', dmFavMeas, 'movement account mapping', 'picklist');
+ATTRPUTS ('subset:related entity:sys_all-n', dmFavMeas, 'related entity mapping', 'picklist');
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#dmMeasureCode = 'measure code';
+ATTRINSERT (dmMeasureCode, '', 'sys_GEUS terminating year', 'S');
+ATTRINSERT (dmMeasureCode, '', 'sys_display terminating year', 'S');
+ATTRINSERT (dmMeasureCode, '', 'current', 'S');
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#dmReason = 'reason';
+ATTRINSERT (dmReason, '', 'measure optional', 'S');
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#dmReportingStage = 'reporting stage';
+ATTRINSERT (dmReportingStage, '', 'AE stage description', 'A');
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#dmAEReportingStage = 'sys_ae reporting stage measure';
+ATTRINSERT (dmAEReportingStage, '', 'picklist', 'S');
+
+ATTRPUTS ('subset:headline year:sys_all-n', dmAEReportingStage, 'Headline Year', 'picklist');
+ATTRPUTS ('subset:scenario:sys_budgetround', dmAEReportingStage, 'Scenario', 'picklist');
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#dmClientPref = 'sys_client preference';
+ATTRINSERT (dmClientPref, '', 'system', 'S');
+
+ATTRPUTS ('Y', dmClientPref, 'geus hlyear', 'system');
+ATTRPUTS ('Y', dmClientPref, 'geus scenario', 'system');
+ATTRPUTS ('Y', dmClientPref, 'geus adj', 'system');
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#dmProcessAdmin = 'sys_process administration measure';
+ATTRINSERT (dmProcessAdmin, '', 'picklist', 'S');
+
+ATTRPUTS ('static:1:0', dmProcessAdmin, 'active flag', 'picklist');
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#dmProcessReturn = 'sys_process return codes';
+ATTRINSERT (dmProcessReturn, '', 'description', 'A');
+
+ATTRPUTS ('0 - ProcessExitNormal', dmProcessReturn, '0', 'description');
+ATTRPUTS ('5 - ProcessExitWithMessage', dmProcessReturn, '5', 'description');
+ATTRPUTS ('6 - ProcessExitMinorError', dmProcessReturn, '6', 'description');
+ATTRPUTS ('7 - ProcessExitByBreak', dmProcessReturn, '7', 'description');
+ATTRPUTS ('8 - ProcessExitByQuit', dmProcessReturn, '8', 'description');
+ATTRPUTS ('10 - ProcessExitSeriousError', dmProcessReturn, '10', 'description');
+ATTRPUTS ('11 - ProcessExitOnInit', dmProcessReturn, '11', 'description');
+ATTRPUTS ('16 - ProcessExitByChoresQuit', dmProcessReturn, '16', 'description');
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#dmSetDefaultAccount = 'sys_set default account measure';
+ATTRINSERT (dmSetDefaultAccount, '', 'picklist', 'S');
+
+ATTRPUTS ('static:0:1', dmSetDefaultAccount, 'flag', 'picklist');
+#------------------------------------------------------------------------------------------------------------------------------------------
+#dmValidation = 'validation id';
+ATTRINSERT (dmValidation, '', 'use', 'S');
+ATTRINSERT (dmValidation, '', 'calculation', 'S');
+ATTRINSERT (dmValidation, '', 'description', 'A');
+ATTRINSERT (dmValidation, '', 'code and description', 'A');
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+#dmVariables = 'variables';
+ATTRINSERT (dmVariables, '', 'importance', 'S');
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+# Note Register
+ATTRINSERT (dmFollowUpMeas, '', 'picklist', 'S');
+ATTRPUTS ('static:Open:Complete', dmFollowUpMeas, 'Status', 'picklist');
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+# Account Template
+ATTRINSERT (dmAccTemp, '', 'sys_ID', 'S');
+ATTRINSERT (dmAccTemp, '', 'code and description', 'A');
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+# ID Measure
+ATTRINSERT (dmIDMeas, '', 'picklist', 'S');
+ATTRPUTS ('static:0:1', dmIDMeas, 'ViewID', 'picklist');
+ATTRPUTS ('static:Y', dmIDMeas, 'bulk processing flag', 'picklist');
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+# Measure Details
+ATTRINSERT (dmMeasDet, '', 'picklist', 'S');
+ATTRPUTS ('subset:measure fund type:sys_all-n', dmMeasDet, 'funding life', 'picklist');
+ATTRPUTS ('subset:measure type:sys_all-n', dmMeasDet, 'measure type', 'picklist');
+ATTRPUTS ('static:Administered:Departmental', dmMeasDet, 'control type', 'picklist');
+ATTRPUTS ('static:Y', dmMeasDet, 'bulk processing flag', 'picklist');
+ATTRPUTS ('static:PBS:PAES:PSAES:MYEFO', dmMeasDet, 'publication round', 'picklist');
+
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+ATTRINSERT (dmReportExt, '', 'alternate description', 'A');
+ATTRPUTS ('Closing Balance', dmReportExt, 'Adjusted Base', 'alternate description');
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+# Control Type
+ATTRINSERT (dmControlType, '', 'control type', 'S');
+ATTRPUTS ('Administered',  dmControlType, 'Administered', 'control type');
+ATTRPUTS ('Departmental',  dmControlType, 'Departmental', 'control type');
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+dmSysClientFavAppMeas = 'sys_client favourite application measure';
+ATTRINSERT (dmSysClientFavAppMeas, '', 'picklist', 'S');
+ATTRPUTS ('static:1:0', dmSysClientFavAppMeas, 'flag', 'picklist');
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

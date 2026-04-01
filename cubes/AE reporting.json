@@ -1,0 +1,67 @@
+{
+	"@type":"Cube",
+	"Name":"AE reporting",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('reporting stage')"
+		},
+		{
+			"@id":"Dimensions('status')"
+		},
+		{
+			"@id":"Dimensions('outcome')"
+		},
+		{
+			"@id":"Dimensions('related entity')"
+		},
+		{
+			"@id":"Dimensions('function')"
+		},
+		{
+			"@id":"Dimensions('reason')"
+		},
+		{
+			"@id":"Dimensions('spp')"
+		},
+		{
+			"@id":"Dimensions('measure code')"
+		},
+		{
+			"@id":"Dimensions('appropriation type')"
+		},
+		{
+			"@id":"Dimensions('movement account')"
+		},
+		{
+			"@id":"Dimensions('appropriation item')"
+		},
+		{
+			"@id":"Dimensions('programme')"
+		},
+		{
+			"@id":"Dimensions('account')"
+		},
+		{
+			"@id":"Dimensions('id')"
+		},
+		{
+			"@id":"Dimensions('jurisdiction')"
+		},
+		{
+			"@id":"Dimensions('period')"
+		},
+		{
+			"@id":"Dimensions('AE reporting measure')"
+		}
+	],
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('AE reporting measure')"
+	},
+	"TimeDimension":
+	{
+		"@id":"Dimensions('period')"
+	},
+	"Views@Code.links":[]
+}

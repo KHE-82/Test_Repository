@@ -1,0 +1,378 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               ME Generate Profiles 01 - Identify Entered Data
+#**** DESCRIPTION:       This process creates a view from the ME Reporting Cube to be used for generating a profile
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 18/04/2019    KG             Initial Revision
+#****  02/06/2022	KG	  Added process to CHECK REVIEW STATUS to prevent users from generating profiles - CURRENTLY DISABLED
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE MONTHLY ESTIMATES REPORTING CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+cbME = 'ME reporting';
+dmMEMeas = 'ME reporting measure';
+#cbME = 'ME4_adjustments';
+#dmMEMeas = 'ME4_adjustments_measure';
+
+#--------------------------------------------------------------------------------------------------------------------------
+#*** DIMENSION ATTRIBUTES
+#--------------------------------------------------------------------------------------------------------------------------
+dmReasonAttr = '}ElementAttributes_reason';
+dmAccAttr = '}ElementAttributes_account';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAM DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+dmProgMeas = snProg | ' measure';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE ME BALANCE SHEET CUBE (ACCOUNT TEMPLATE)
+#---------------------------------------------------------------------------------------------------------------------------
+cbMEBS = 'ME balance sheet';
+dmAccTemp = 'account template';
+dmAccBS = 'account_bs';
+dmMEBSMeas = 'balance sheet measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+	sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+	sUser = TM1User();
+ENDIF;
+
+sMEView = sUser | '_$MEGenProf';
+sMEMeas = 'value';
+
+sProgView = sUser | '_$ClearMEProg';
+sProgMeas = 'ME clear profiles flag';
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CLEAR PROGRAM DETAILS CLEAR ME FLAG
+#*****************************************************************************************************************************************************
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbProg, sProgVIew);
+SUBSETDESTROY (dmHLYear, sProgView);
+SUBSETDESTROY (dmScenario, sProgView);
+SUBSETDESTROY (dmProg, sProgView);
+SUBSETDESTROY (dmProgMeas, sProgView);
+
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sProgView);
+SubsetElementInsert(dmHLYear, sProgView, curHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sProgView);
+SubsetElementInsert(dmScenario, sProgView, curScenario, 1);
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {' | dmProg | '].[' | psProg | ']}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sProgView, MDX);
+
+# Prog Measure
+SubsetCreate(dmProgMEas, sProgView);
+SubsetElementInsert(dmProgMEas, sProgView, sProgMeas, 1);
+
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbProg, sProgView);
+VIEWSUBSETASSIGN (cbProg, sProgView, dmHLYear, sProgView);
+VIEWSUBSETASSIGN (cbProg, sProgView, dmScenario, sProgView);
+VIEWSUBSETASSIGN (cbProg, sProgView, dmProg, sProgView);
+VIEWSUBSETASSIGN (cbProg, sProgView, dmProgMeas, sProgView);
+
+#*** ZERO OUT CUBE ***#
+VIEWZEROOUT (cbProg, sProgView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbProg, sProgVIew);
+SUBSETDESTROY (dmHLYear, sProgView);
+SUBSETDESTROY (dmScenario, sProgView);
+SUBSETDESTROY (dmProg, sProgView);
+SUBSETDESTROY (dmProgMeas, sProgView);
+
+
+
+#*****************************************************************************************************************************************************
+#*** STEP 2 - CREATE SOURCE VIEW FROM ME REPORTING
+#*****************************************************************************************************************************************************
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbME, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+SUBSETDESTROY (dmRE, sMEView);
+SUBSETDESTROY (dmSPP, sMEView);
+SUBSETDESTROY (dmMA, sMEView);
+SUBSETDESTROY (dmProg, sMEView);
+SUBSETDESTROY (dmItem, sMEView);
+SUBSETDESTROY (dmAcc, sMEView);
+SUBSETDESTROY (dmID, sMEView);
+SUBSETDESTROY (dmJur, sMEView);
+SUBSETDESTROY (dmPer, sMEView);
+SUBSETDESTROY (dmMEMeas, sMEView);
+
+
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sMEView);
+SubsetElementInsert(dmHLYear, sMEView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sMEView);
+SubsetElementInsert(dmScenario, sMEView, psScenario, 1);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Movement Account
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}, [' | dmMA |'].[editable] = "")}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {' | dmProg | '].[' | psProg | ']}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Account
+MDX = '{{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[9000130]}, ALL, RECURSIVE )}, 0)},{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[3800001]}, ALL, RECURSIVE )}, 0)},{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[9000003]}, ALL, RECURSIVE )}, 0)}} ';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# ID
+SubsetCreate(dmID, sMEView);
+SubsetElementInsert(dmID, sMEView, psID, 1);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Month
+#MDX = '{ EXCEPT( {FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer |'] )}, 0)}, [' | dmPer |'].[type] = "nMonth")}, { [' | dmPer |'].[P00] }) }';
+MDX = '{ EXCEPT( {FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer |'] )}, 0)}, [' | dmPer |'].[type] = "Month")}, { [' | dmPer |'].[P0] }) }';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# ME Measure
+SubsetCreate(dmMEMEas, sMEView);
+SubsetElementInsert(dmMEMEas, sMEView, sMEMeas, 1);
+
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbME, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmHLYear, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmScenario, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmRE, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmSPP, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmMA, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmProg, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmItem, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmAcc, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmID, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmJur, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmPer, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmMEMEas, sMEView);
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbME, sMEView, 1);
+ViewSuppressZeroesSet(cbME, sMEView, 1);
+ViewExtractSkipCalcsSet(cbME, sMEView, 0);
+ViewExtractSkipRuleValuesSet (cbME, sMEView, 0);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sMEView;
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** COUNTER TO DETERMINE NOT TO CLEAR DATA SETS
+#---------------------------------------------------------------------------------------------------------------------------
+nCounter = 0;
+sOldProg = '';
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF (vsMeas @= 'value');
+
+	#----------------------------------------------------------------------
+	#---UPDATE COUNTER TO DETERMINE IF DATA SHOULD BE WIPED
+	#--- NO LONGER USED AS SOME ACCOUNTS WERE REPEATING WHICH MEANT PROGRAM WERE IN DIFFERENT ROW AND WAS NOT SEQUENTIAL
+	#--- CAUSING IT TO CLEAR EVEN IF WE DIDNT WANT TO
+	#----------------------------------------------------------------------
+	IF (sOldProg @<> vsProg);
+		#nCounter = 0;
+	ELSE;
+		#nCounter = nCounter + 1;
+	ENDIF;
+
+	#------------------------------------------------------------------------
+	#--- CHECK REVIEW STATUS
+	#--- DO NOT ALLOW GENERATION OF STATUS WHEN IT HAS BEEN REVIEWED
+	#------------------------------------------------------------------------
+	sReviewStatus = CELLGETS (cbME, psHLYear, psScenario,'-','-','-', vsProg,'-','account template', '00001','-','P0', 'reviewed by');
+
+	IF (sReviewStatus @<> '');
+		#sOldProg = vsProg;
+		#ITEMSKIP;
+	ENDIF;
+
+	#------------------------------------------------------------------------
+	#--- CHECK COUNTER FOR CLEARING
+	#------------------------------------------------------------------------
+	nCounter = CELLGETN (cbProg, curHLYear, curScenario, vsProg, sProgMeas);
+
+	#------------------------------------------------------------------------
+	#--- IDENTIFY ACCOUNT TEMPLATE
+	#------------------------------------------------------------------------
+	sProgAccTemp = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'ME balance sheet template');
+
+	IF (DIMIX (dmAccTemp, sProgAccTemp) <> 0);
+		sProgAccTemp = DIMENSIONELEMENTPRINCIPALNAME (dmAccTemp, sProgAccTemp);
+
+		#-----------------------------------------------------------------------------------------------------------------------
+		#--- POPULATE CLEAR ME MEASURE FLAG FOR PROGRAM
+		#-----------------------------------------------------------------------------------------------------------------------
+		CELLPUTN (1, cbProg, curHLYear, curScenario, vsProg, sProgMeas);
+
+
+		sProcess = 'ME Generate Profiles 02 - Get Mapping Data';
+		EXECUTEPROCESS (sProcess, 
+			'psUser', psUser,
+			'psHLYear', vsHLYear,
+			'psScenario', vsScenario,
+			'psRE', vsRE,
+			'psSPP', vsSPP,
+			'psMA', vsMA, 
+			'psProg', vsProg,
+			'psItem', vsItem,
+			'psAcc', vsAcc,
+			'psID', vsID,
+			'psJur', vsJur,
+			'psPer', vsPer,
+			'pnValue', vnValue,
+			'pnCounter',  nCounter);
+	ELSE;
+		ASCIIOUTPUT ('missing template for program.txt', vsProg, sProgAccTemp);
+		ITEMSKIP;
+	ENDIF;
+
+
+	#ASCIIOUTPUT ('account template.txt', sOldProg, vsProg, sProgAccTemp, vsRE, vsSPP, vsMA, vsItem, vsAcc, vsID, vsJur, vsPer, NUMBERTOSTRING (vnValue));
+	#------------------------------------------------------------------
+	#--- GET OLD PROGRAM
+	#------------------------------------------------------------------
+	sOldProg = vsProg;
+	
+
+
+ENDIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbME, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+SUBSETDESTROY (dmRE, sMEView);
+SUBSETDESTROY (dmSPP, sMEView);
+SUBSETDESTROY (dmMA, sMEView);
+SUBSETDESTROY (dmProg, sMEView);
+SUBSETDESTROY (dmItem, sMEView);
+SUBSETDESTROY (dmAcc, sMEView);
+SUBSETDESTROY (dmID, sMEView);
+SUBSETDESTROY (dmJur, sMEView);
+SUBSETDESTROY (dmPer, sMEView);
+SUBSETDESTROY (dmMEMeas, sMEView);
+#endregion

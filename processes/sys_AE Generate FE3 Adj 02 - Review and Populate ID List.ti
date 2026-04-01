@@ -1,0 +1,493 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              sys_AE Generate FE3 Adj 02 - Review and Populate ID List
+#**** DESCRIPTION:       This process creates a view of the from the AE parameters and FE3 calculation cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 12/05/2014    KG             Initial Revision
+#**** 2019	KG	Update for NEW GEUS
+#***********************************************************************************************************************
+#  
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CALCULATION CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+cbFE3 = 'AE parameters and FE3 calculation';
+dmFE3Meas = 'AE parameters and FE3 calculation measure';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+
+curHLYear = ATTRS(dmVar, 'headline year', 'value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sNoMeasCode = ATTRS(dmVar, 'No Measure Code', 'value');
+sNewReason = ATTRS(dmVar, 'FE3 Reason Code', 'value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+sView = sUser | '_$CreatedFE3Adj02';
+sSubset = sView;
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED FOR VIEWS
+#******************************************************************************************************************
+sStatus = 'Total approved';
+sReason = 'Total reason';
+sOC = 'Total outcomes';
+sFunc = 'Total functions';
+sType = 'Total approp types';
+sID = 'Total IDs';
+
+
+#******************************************************************************************************************
+#*** DEFAULT POSTING DATA
+#******************************************************************************************************************
+sNewStatus = 'data';
+
+sPostStatus = 'unauthorised';
+sManualCF = '';
+sAdjType = 'Generated';
+sMeas = 'original value';
+
+
+
+#----------------------------------------------------------
+#--- GET Periods to transfer data
+#----------------------------------------------------------
+sRBPeriod = DIMNM(dmPer,DIMIX(dmPer, psFE3Year) - 4);
+sNBPeriod = DIMNM(dmPer,DIMIX(dmPer, psFE3Year) -3);
+sFE1Period = DIMNM(dmPer,DIMIX(dmPer, psFE3Year) -2);
+sFE2Period = psFE2Year;
+sFE3Period = psFE3Year;
+
+
+sIDMeasure = 'fe3 adjustment generated';
+
+lCounter = 0;
+
+IF (psFE3Meas @= 'step 1 value');
+	sPrefixTitle = 'FE3 for ';
+ELSE;
+	IF (psFE3Meas @= 'step 2 value');
+		sPrefixTitle = 'FE3 reversal of terminating measures for ';
+	ELSE;
+		IF (psFE3Meas @= 'step 3 value');
+			sPrefixTitle = 'FE3 reversal of existing FE3 for ';
+
+		ELSE;
+			sPrefixTitle = 'FE3 other adjustment for ';
+		ENDIF;
+	ENDIF;
+
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** DECLARE TEMPORARY DIMENSION
+#******************************************************************************************************************
+dmTmpID = '}tmp_ID_tmp ' | sUser;
+
+
+#-------------------------------------------------
+#--- sPYPeriod is sFE1Period
+#-------------------------------------------------
+sPYPeriod = DIMNM(dmPer,DIMIX(dmPer, psFE3Year) -2);
+
+sRBPeriod = '2017-2018';
+sNBPeriod = '2018-2019';
+sFE1Period = '2019-2020';
+sFE2Period = '2020-2021';
+sFE3Period = '2021-2022';
+
+
+#***********************************************************************************************************************
+#--- STEP 1 - CREATE SOURCE VIEW
+#***********************************************************************************************************************
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbFE3, sView);
+
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmSPP, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmJur, sView);
+SUBSETDESTROY (dmItem, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmPer, sView);
+SUBSETDESTROY (dmFE3Meas, sView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** CREATE SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+
+# Programme
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmProg | '].[' | psProg | '] }, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmProg, sView, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+
+# Account
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}, [' | dmAcc | '].[flat file] <> "N")}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmAcc, sView, MDX);
+
+# Movement account
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sView, MDX);
+
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}, [' | dmMA |'].[editable] = "")}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Appropriation item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Measure Code
+IF (psCreateAdjByMeasures @= 'Yes' % psCreateAdjByMeasures @= 'Y');
+	MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+ELSE;
+	MDX = '{[' | dmMeasCode | '].[Total Measures]}';
+ENDIF;
+SUBSETCREATEBYMDX (sView, MDX);
+
+# ID
+SUBSETCREATE (dmID, sView);
+SUBSETELEMENTINSERT (dmID, sView, sID, 1);
+
+# Period
+SUBSETCREATE (dmPer, sView);
+SUBSETELEMENTINSERT (dmPer, sView, psFE3Year, 1);
+
+
+# FE3 Adjustment Measure
+SUBSETCREATE (dmFE3Meas, sView);
+SUBSETELEMENTINSERT (dmFE3Meas, sView, psFE3Meas, 1);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** CREATE VIEW
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbFE3, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmProg, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmSPP, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmAcc, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmMA, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmRE, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmJur, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmItem, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmMeasCode, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmID, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmPer, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmFE3Meas, sView);
+
+
+ViewExtractSkipZeroesSet (cbFE3, sView, 1);
+ViewExtractSkipCalcsSet (cbFE3, sView, 0);
+ViewExtractSkipRuleValuesSet (cbFE3, sView, 0);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- DEFINE DATA SOURCE
+#---------------------------------------------------------------------------------------------------------------------------
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#******************************************************************************************************************
+#*** IF PROGRAM  IS NOT N LEVEL
+#******************************************************************************************************************
+IF (DTYPE (dmProg, vsProg) @<> 'N');
+	ITEMSKIP;
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** CHECK IF THERE IS AN FE3 FLAG AGAINST THIS PROGRAM
+#******************************************************************************************************************
+sCheckFE3Flag = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'Generate FE3');
+
+IF (sCheckFE3Flag @<> 'Y');
+	ITEMSKIP;
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** FIND NEXT AVAILABLE ID FOR PROGRAM
+#******************************************************************************************************************
+
+IF (psCreateAdjByMeasures @= 'Yes' % psCreateAdjByMeasures @= 'Y');
+	sIDProg = vsProg | vsMeasCode | vsItem;
+	#sIDProg = vsProg | vsMeasCode;
+
+ELSE;
+	sIDProg = vsProg | vsItem;
+	#sIDProg = vsProg;
+
+ENDIF;
+
+
+IF (DIMIX (dmTmpID, sIDProg) = 0);
+	DIMENSIONELEMENTINSERT (dmTmpID, '', sIDProg, 'N');
+	lCounter = lCounter + 1;
+ENDIF;
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF (DTYPE(dmProg, vsProg) @<> 'N');
+	ITEMSKIP;
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** CHECK IF THERE IS AN FE3 FLAG AGAINST THIS PROGRAM
+#******************************************************************************************************************
+sCheckFE3Flag = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'Generate FE3');
+
+IF (sCheckFE3Flag @<> 'Y');
+	ITEMSKIP;
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** FIND NEXT AVAILABLE ID FOR PROGRAM
+#******************************************************************************************************************
+IF (psCreateAdjByMeasures @= 'Yes' % psCreateAdjByMeasures @= 'Y');
+	sIDProg = vsProg | vsMeasCode | vsItem;
+	#sIDProg = vsProg | vsMeasCode;
+
+ELSE;
+	sIDProg = vsProg | vsItem;
+	#sIDProg = vsProg;
+
+ENDIF;
+
+
+IF (DIMIX (dmTmpID, sIDProg) = 0);
+	ITEMSKIP;
+ENDIF;
+
+sNewID = ATTRS (dmTmpID, sIDProg, 'ID');
+
+#******************************************************************************************************************
+#*** GET PROGRAM DETAILS
+#******************************************************************************************************************
+sApplyParam = 'Y';
+sSPP = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'SPP');
+sOC = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'outcome');
+sFunc = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'function');
+sControlType = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'control type');
+
+#******************************************************************************************************************
+#*** TEST IF WE NEED A NEW ID
+#******************************************************************************************************************
+IF (sNewID @= '');
+
+	#******************************************************************************************************************
+	#*** EXECUTE NEXT PROCESS
+	#*** RUN PROCESS TO CREATE NEW SYSTEM ID
+	#******************************************************************************************************************
+	StringGlobalVariable ('NextID');
+
+	sNewIDProcess = 'AE_Adj - Assign New ID';	
+	sProcess = 'sys_Queue - Add Process to Queue';
+	EXECUTEPROCESS(sProcess, 'psTI', sNewIDProcess, 'psParams','psUser;' | sUser);
+
+	sNewID = NextID;
+
+	ATTRPUTS (sNewID, dmTmpID, sIDProg, 'ID');
+	sProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, vsProg);
+	ATTRPUTS (vsProg, dmTmpID, sIDProg , 'program');
+
+ 	ATTRPUTS (vsItem, dmTmpID, sIDProg, 'Appropriation');
+ 	ATTRPUTS (sFunc, dmTmpID, sIDProg , 'Function');
+
+
+	#******************************************************************************************************************
+	#*** POPULATE THE AE ID DETAIL CUBE
+	#******************************************************************************************************************
+	sCBMSMeasCode = ATTRS (dmMeasCode, vsMeasCode, 'CBMS');
+	IF (vsMeasCode @= sNoMeasCode % vsMeasCode @= 'Total Measures');
+		sNewTitle = vsProg | ' - FE3 Base Funding';
+	ELSE;
+		sNewTitle = vsProg | ' - FE3 Measure ' | sCBMSMeasCode;
+	ENDIF;
+
+
+	CELLPUTS(sProg, cbID, curHLYear, curScenario, sNewID, snProg | ' code');
+	sProgDesc = ATTRS (dmProg, sProg, 'code and description');
+	CELLPUTS(sProgDesc, cbID, curHLYear, curScenario, sNewID, snProg | 'description');
+
+	CELLPUTS(SUBST (sNewTitle, 1, 60), cbID, curHLYear, curScenario, sNewID, 'title');
+	CELLPUTS('(' | sNewID | ')' | ' ' | sNewTitle, cbID, curHLYear, curScenario, sNewID, 'description');
+	CELLPUTS(sNewTitle, cbID, curHLYear, curScenario, sNewID, 'comments');
+	CELLPUTS(sPostStatus,cbID, curHLYear, curScenario, sNewID, 'status');
+	CELLPUTS(sNewReason, cbID, curHLYear, curScenario, sNewID, 'reason');
+	CELLPUTS(sOC, cbID, curHLYear, curScenario, sNewID, 'outcome');
+	CELLPUTS(sFunc, cbID, curHLYear, curScenario, sNewID, 'function');
+	CELLPUTS(sSPP, cbID, curHLYear, curScenario, sNewID, 'SPP');
+
+	IF (psCreateAdjByMeasures @= 'Yes' % psCreateAdjByMeasures @= 'Y');
+		sNewMeas = DIMENSIONELEMENTPRINCIPALNAME (dmMeasCode, vsMeasCode);
+		
+	ELSE;
+		sNewMeas = DIMENSIONELEMENTPRINCIPALNAME (dmMeasCode, sNoMeasCode);
+
+	ENDIF;
+	
+	CELLPUTS(sNewMeas, cbID, curHLYear, curScenario, sNewID, 'measure');
+
+	CELLPUTS(vsItem, cbID, curHLYear, curScenario, sNewID, 'appropriation item');
+	IF (ELISANC (dmItem, 'CBMS 1 appropriation item', vsItem) = 1);
+		sType = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'appropriation type');
+		sType = 'A010';
+		sItem = 'A010-00014-01436';
+	ELSE;
+		sItem = DIMENSIONELEMENTPRINCIPALNAME (dmItem, vsItem);
+		sType = SUBST (sItem, 1, 4);
+
+	ENDIF;
+
+	CELLPUTS(sType,cbID, curHLYear, curScenario, sNewID, 'appropriation type');
+	CELLPUTS(sApplyParam, cbID, curHLYear, curScenario, sNewID, 'apply parameters');
+	CELLPUTS('ongoing', cbID, curHLYear, curScenario, sNewID, 'funding life');
+	CELLPUTS(sAdjType, cbID, curHLYear, curScenario, sNewID, 'Adjustment Type');
+	CELLPUTS(sControlType, cbID, curHLYear, curScenario, sNewID, 'Control Type');
+	CELLPUTS ('Y', cbID, curHLYear, curScenario, sNewID, 'use new cash flow derivation');
+
+
+	#******************************************************************************************************************
+	# **** GET DATE VALUES AND POST USER AND DATE STAMP
+	#******************************************************************************************************************
+	sDNow = TimST( Now, '\D'); 
+	sMNow = TimST( Now, '\m'); 
+	sYNow = TimST( Now, '\Y'); 
+
+	sDay = TRIM(SUBST(sDNow, 1,2));
+
+	IF (LONG (sDay) = 1);
+		sDay = '0' | sDay;
+	ELSE;
+		sDay = sDay;
+	ENDIF;
+
+	sMonth = TRIM(SUBST(sMNow, 1,2));
+
+	IF (LONG (sMonth) = 1);
+		sMonth = '0' | sMonth;
+	ELSE;
+		sMonth = sMonth;
+	ENDIF;
+
+	sYear = TRIM(SUBST(sYNow, 1,4));
+	sNow = sDay | '/' | sMonth | '/' | sYear;
+
+	CELLPUTS(sNow, cbID, curHLYear, curScenario, sNewID, 'created date');
+	CELLPUTS(sUser, cbID, curHLYear, curScenario, sNewID, 'created by');
+
+	#******************************************************************************************************************
+	#**** POPULATE PROGRAMME DETAILS CUBE WITH GENERATED DETAILS
+	#******************************************************************************************************************
+	CELLPUTS (sNow, cbProg, curHLYear, curScenario, vsProg, 'FE3 Generated Date');
+	CELLPUTS (sUser, cbProg, curHLYear, curScenario, vsProg, 'FE3 Generated By');
+
+ENDIF;
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

@@ -1,0 +1,55 @@
+{
+	"@type":"Process",
+	"Name":"}src_dim_export",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"}src_dim_export.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"VarType=32€ColType=827€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1DimensionSubset",
+		"dataSourceNameForClient":"}Dimensions",
+		"dataSourceNameForServer":"}Dimensions",
+		"subset":"All"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pDimName",
+			"Prompt":"The name of the dimension",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"pStructureOnly",
+			"Prompt":"Only export the dimension attributes",
+			"Value":0,
+			"Type":"Numeric"
+		},
+		{
+			"Name":"pIncludeSecurity",
+			"Prompt":"Include the security on the dimension",
+			"Value":1,
+			"Type":"Numeric"
+		},
+		{
+			"Name":"pOutputDir",
+			"Prompt":"The directory to export the file to",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vElement",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		}
+	]
+}

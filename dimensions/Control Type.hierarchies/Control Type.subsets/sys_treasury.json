@@ -1,0 +1,13 @@
+{
+	"@type":"Subset",
+	"Name":"sys_treasury",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('Control Type')/Hierarchies('Control Type')/Elements('Administered')"
+		},
+		{
+			"@id":"Dimensions('Control Type')/Hierarchies('Control Type')/Elements('Departmental')"
+		}
+	]
+}

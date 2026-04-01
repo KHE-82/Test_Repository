@@ -1,0 +1,321 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_AE Generate ParameterAndED Adj 01 - Create View
+
+#*** DESCRIPTION:       This process will create a view for the parameters and efficiency dividend adjustments
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 28/04/2014    KG             Initial Revision
+#**** 31/10/2020	KG	  Added 9110000 as part of view as some agencies use this account
+#**** SEP 2021	KG	  Changes made whether the agency wants to use APPROPS or EXP as offsetting accounts
+#****
+#***********************************************************************************************************************
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CALCULATION CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+cbFE3 = 'AE parameters and FE3 calculation';
+dmFE3Meas = 'AE parameters and FE3 calculation measure';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+
+curHLYear = ATTRS(dmVar, 'headline year', 'value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sNoMeasCode = ATTRS(dmVar, 'No Measure Code', 'value');
+sNewReason = ATTRS(dmVar, 'FE3 Reason Code', 'value');
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+
+sView = sUser | '_$parameters01';
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED FOR VIEWS
+#******************************************************************************************************************
+sStatus = 'Total approved';
+sReason = 'Total reason';
+sOC = 'Total outcomes';
+sFunc = 'Total functions';
+sType = 'Total approp types';
+sID = 'Total IDs';
+
+
+#******************************************************************************************************************
+#*** DEFAULT POSTING DATA
+#******************************************************************************************************************
+sNewStatus = 'data';
+
+sPostStatus = 'unuthorised';
+sManualCF = '';
+sAdjType = 'Generated';
+sMeas = 'original value';
+
+IF (psAdjType @= 'parameter');
+	sSourceMeas = 'Total parameter adjustment value';
+ELSE;
+	sSourceMeas = 'Total efficiency dividend adjustment value';
+ENDIF;
+
+
+#***********************************************************************************************************************
+#--- STEP 1 - CREATE SOURCE VIEW
+#***********************************************************************************************************************
+#---------------------------------------------------------------------------------------------------------------------------
+#****DELETE EXISTING VIEWS AND SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbFE3, sView);
+
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmSPP, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmJur, sView);
+SUBSETDESTROY (dmItem, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmPer, sView);
+SUBSETDESTROY (dmFE3Meas, sView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** CREATE SUBSETS
+#---------------------------------------------------------------------------------------------------------------------------
+
+# Programme
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmProg | '].[' | psProg | '] }, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmProg, sView, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+
+# Account
+#MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}, [' | dmAcc | '].[flat file] <> "N")}';
+
+#----------------------------------------------------
+#--- USE IF WANT APPROP AS OFFSETTING
+#----------------------------------------------------
+MDX = '{{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[2000000]}, ALL, RECURSIVE )}, 0)},{{[' | dmAcc | '].[9170000]},{[' | dmAcc | '].[9110000]}}}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmAcc, sView, MDX);
+
+
+#----------------------------------------------------
+#--- USE IF WANT EXP AS OFFSETTING
+#----------------------------------------------------
+#SubsetCreate(dmAcc, sView);
+#SubsetElementInsert(dmAcc, sView, '1280004', 1);
+#SubsetElementInsert(dmAcc, sView, '4100001', 2);
+#SubsetElementInsert(dmAcc, sView, '9170000', 3);
+#SubsetElementInsert(dmAcc, sView, '9110000', 4);
+
+
+
+# Movement account
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sView, MDX);
+
+#MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}, [' | dmMA |'].[editable] = "")}';
+#SUBSETCREATEBYMDX (sView, MDX);
+
+SubsetCreate(dmMA,sView);
+SubsetElementInsert(dmMA, sView, '-', 1);
+#SubsetElementInsert(dmMA, sView, '7593', 2);
+#SubsetElementInsert(dmMA, sView, '7594', 3);
+#SubsetElementInsert(dmMA, sView, '7598', 4);
+#SubsetElementInsert(dmMA, sView, '7599', 5);
+
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Appropriation item
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+#SUBSETCREATEBYMDX (sView, MDX);
+
+MDX = '{{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmItem | '].[001]}, ALL, RECURSIVE )}, 0)},{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmItem | '].[100]}, ALL, RECURSIVE )}, 0)},{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmItem | '].[002]}, ALL, RECURSIVE )}, 0)}}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Measure Code
+IF (psCreateAdjByMeasures @= 'Yes' % psCreateAdjByMeasures @= 'Y');
+	MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMeasCode | '] )}, 0)}';
+ELSE;
+	MDX = '{[' | dmMeasCode | '].[Total Measures]}';
+ENDIF;
+SUBSETCREATEBYMDX (sView, MDX);
+
+# ID
+SUBSETCREATE (dmID, sView);
+SUBSETELEMENTINSERT (dmID, sView, sID, 1);
+
+# Period
+sHLPer = SUBST(CurHLYear, 3, 9);
+
+#---------------------------------------------------------------------------------------------------------------------------
+# Get period elements
+#---------------------------------------------------------------------------------------------------------------------------
+Period00 = DIMNM(dmPer, DIMIX(dmPer, sHLPer) -1);
+Period01 = DNEXT(dmPer, Period00);
+Period02 = DNEXT(dmPer, Period01);
+Period03 = DNEXT(dmPer, Period02);
+Period04 = DNEXT(dmPer, Period03);
+
+
+Period05 = DNEXT(dmPer, Period04);
+Period06 = DNEXT(dmPer, Period05);
+Period07 = DNEXT(dmPer, Period06);
+Period08 = DNEXT(dmPer, Period07);
+Period09 = DNEXT(dmPer, Period08);
+Period10 = DNEXT(dmPer, Period09);
+Period11 = DNEXT(dmPer, Period10);
+Period12 = DNEXT(dmPer, Period11);
+Period13 = DNEXT(dmPer, Period12);
+Period14 = DNEXT(dmPer, Period13);
+Period15 = DNEXT(dmPer, Period14);
+Period16 = DNEXT(dmPer, Period15);
+
+#-------------------------------
+#--- NEW : Only Selected 5 Years 
+#-------------------------------
+SubsetCreate(dmPer,sView);
+SubsetElementInsert(dmPer, sView, Period00, 1);
+SubsetElementInsert(dmPer, sView, Period01, 2);
+SubsetElementInsert(dmPer, sView, Period02, 3);
+SubsetElementInsert(dmPer, sView, Period03, 4);
+SubsetElementInsert(dmPer, sView, Period04, 5);
+
+
+
+
+# FE3 Adjustment Measure
+SUBSETCREATE (dmFE3Meas, sView);
+SUBSETELEMENTINSERT (dmFE3Meas, sView, sSourceMeas, 1);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** CREATE VIEW
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbFE3, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmProg, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmSPP, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmAcc, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmMA, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmRE, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmJur, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmItem, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmMeasCode, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmID, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmPer, sView);
+VIEWSUBSETASSIGN (cbFE3, sView, dmFE3Meas, sView);
+
+
+ViewExtractSkipZeroesSet (cbFE3, sView, 1);
+ViewExtractSkipCalcsSet (cbFE3, sView, 0);
+ViewExtractSkipRuleValuesSet (cbFE3, sView, 0);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#--- DEFINE DATA SOURCE
+#---------------------------------------------------------------------------------------------------------------------------
+#DATASOURCETYPE = 'VIEW';
+#DATASOURCECUBEVIEW = sView;
+
+#******************************************************************************************************************
+#***  BUILD TEMPORARY DIMENSION & ASSIGN VARIABLES
+#*** BUILD A DIMENSION TO STORE IDS SO WE DONT KEEP GETTING NEW ONES
+#******************************************************************************************************************
+sProcess = 'sys_Temp Dimension - Create Temporary Dimensions';
+EXECUTEPROCESS(sProcess);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

@@ -1,0 +1,26 @@
+{
+	"@type":"Cube",
+	"Name":"AE id details",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('headline year')"
+		},
+		{
+			"@id":"Dimensions('scenario')"
+		},
+		{
+			"@id":"Dimensions('id')"
+		},
+		{
+			"@id":"Dimensions('id measure')"
+		}
+	],
+	"Rules@Code.link":"AE id details.rules",
+	"Views@Code.links":
+	[
+		"AE id details.views/$Split.json",
+		"AE id details.views/Default.json",
+		"AE id details.views/Total IDs Used.json"
+	]
+}

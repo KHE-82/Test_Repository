@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"programme measure",
+	"Hierarchies@Code.links":
+	[
+		"programme measure.hierarchies/programme measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('programme measure')/Hierarchies('programme measure')"
+	}
+}

@@ -1,0 +1,110 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Grp_Adj - Add New Line
+#**** DESCRIPTION:       This process will add new program and related entity accounts to the current group adjustment screen
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 19/02/2014    KG             Initial Revision
+#****  09/12/2020	KG	  Since we are using the web, just pre-populate RE and Jur if blank
+#***********************************************************************************************************************
+
+#*** DECLARE VARIABLES CURRENT CUBE ***#
+snProg = 'programme';
+cbAE = 'AE group adjustment entry';
+dmHLYear = 'headline year';
+dmScen = 'scenario';
+dmstatus = 'status';
+dmRE = 'related entity';
+dmProg = snProg;
+dmAccType = 'account type';
+dmAccTemp = 'account template';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+dmMeas = 'group adjustment measure';
+
+dmMeasCode = 'measure code';
+dmVar = 'variables';
+dmClients = '}Clients';
+
+cbID = 'AE id details';
+sPerFlag = '0000-0000';
+
+#*** DECLARE VARIABLES USED FOR MAPPING ***#
+cbAccTemp = 'AE account template';
+dmAccTempMeas = 'account template measure';
+sRecType = 'data entry';
+sAcc = 'account template';
+sMA = '-';
+
+cbProgDet = snProg | ' details';
+
+#*** DECLARE SYSTEM VARIABLES ***#
+curHLYear = ATTRS(dmVar, 'headline year', 'value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sUser = TM1User();
+sUserID = ATTRS(dmClients, sUser, 'geus_id');
+sStatus = 'data';
+
+#*** GET PRINCIPAL NAME OF ELEMENT ***#
+psProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, psProg);
+IF (psRE @= '');
+	psRE = '-';
+ENDIF;
+psRE = DIMENSIONELEMENTPRINCIPALNAME (dmRE, psRE);
+
+IF (psJur @= '');
+	psJur = '-';
+ENDIF;
+psJur = DIMENSIONELEMENTPRINCIPALNAME (dmJur, psJur);
+sMeasCode = CELLGETS (cbID, curHLYear, curScenario, psID, 'measure');
+sMeasCode = DIMENSIONELEMENTPRINCIPALNAME (dmMeas, sMeasCode);
+
+
+     #**** STEP - POPULATE GROUP ADJ ENTRY ***#
+
+    #*** POPULATE FLAG ON ALL ACCOUNT GROUPS BY TEMPLATE ***#
+     nDimSiz = DIMSIZ(dmAccType);
+     lCounter = 1;
+     WHILE (lCounter <= nDimSiz);
+          sAccType = DIMNM(dmAccType, lCounter);
+          IF (DTYPE (dmAccType, sAccType) @= 'N');
+               #**** CHECK IN ACCOUNT TEMPLATE CUBE IF VALUE HAS BEEN FLAGGED
+               nAccGroup = CELLGETN (cbAccTemp, psAccTemp, sRecType, sAccType, sAcc, sMA, 'flag');
+               IF (nAccGroup <>0);
+                    CELLPUTN( 1, cbAE, curHLYear, curScenario, sStatus, psRE, sMeasCode, psProg, sAccType, psAccTemp, psID, psJur, sPerFlag, 'flag');
+               ENDIF;
+               asciioutput('kg1.txt', sAccType, psAccTemp, psID);
+          ENDIF;
+          lCounter = lCounter + 1;
+     END;
+
+
+
+#ENDIF;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

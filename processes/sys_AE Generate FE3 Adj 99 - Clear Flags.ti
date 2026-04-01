@@ -1,0 +1,114 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:              sys_AE Generate FE3 Adj 99 - Clear Flags
+#**** DESCRIPTION:       This process runs all processes associated to FE3 and indexation
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 12/05/2014    KG             Initial Revision
+#**** 2019	KG	Update for NEW GEUS
+#***********************************************************************************************************************
+
+
+#******************************************************************************************************************
+#**** DECLARE CUBES ****#
+#******************************************************************************************************************
+snProg = 'programme';
+sCube = snProg | ' details';
+
+#******************************************************************************************************************
+#*** DECLARE DIMENSIONS ***#
+#******************************************************************************************************************
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmProg = snProg;
+dmMeas = snProg | ' measure';
+
+
+#******************************************************************************************************************
+#**** DECLARE VARIABLES ****#
+#******************************************************************************************************************
+sView = '$ClearFE3';
+sSubset = sView;
+
+sHLYear = ATTRS ('variables', 'headline year', 'value');
+sScenario = 'current';
+
+#******************************************************************************************************************
+#****DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+ViewDestroy (sCube, sView);
+SubsetDestroy (dmHLYear, sSubset);
+SubsetDestroy (dmScenario, sSubset);
+SubsetDestroy (dmProg, sSubset);
+SubsetDestroy (dmMeas, sSubset);
+
+#******************************************************************************************************************
+#****CREATE SUBSETS****#
+#******************************************************************************************************************
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, sHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, sScenario, 1);
+
+# Programme
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+MDX = '{TM1SUBSETALL( [' | dmProg | '] )}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Programme Measure
+SubsetCreate(dmMeas, sSubset);
+SubsetElementInsert(dmMeas, sSubset, 'Generate FE3', 1);
+SubsetElementInsert(dmMeas, sSubset, 'sys_IndexRep flag', 2);
+
+#******************************************************************************************************************
+#****BUILD VIEW****#
+#******************************************************************************************************************
+ViewCreate (sCube, sView);
+ViewSubsetAssign (sCube, sView, dmHLYear, sSubset);
+ViewSubsetAssign (sCube, sView, dmScenario, sSubset);
+ViewSubsetAssign (sCube, sView, dmProg, sSubset);
+ViewSubsetAssign (sCube, sView, dmMeas, sSubset);
+
+#******************************************************************************************************************
+#*** CLEAR THE VIEW ***#
+#******************************************************************************************************************
+VIEWZEROOUT (sCube, sView);
+
+#******************************************************************************************************************
+#****DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+ViewDestroy (sCube, sView);
+SubsetDestroy (dmHLYear, sSubset);
+SubsetDestroy (dmScenario, sSubset);
+SubsetDestroy (dmProg, sSubset);
+SubsetDestroy (dmMeas, sSubset);
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

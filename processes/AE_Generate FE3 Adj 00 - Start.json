@@ -1,0 +1,75 @@
+{
+	"@type":"Process",
+	"Name":"AE_Generate FE3 Adj 00 - Start",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_Generate FE3 Adj 00 - Start.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"VariablesUIData":
+	[
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€",
+		"VarType=32€ColType=827€"
+	],
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForClient":"programme details",
+		"dataSourceNameForServer":"programme details",
+		"view":"$CreateFE3II"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psFE2Year",
+			"Prompt":"",
+			"Value":"2018-2019",
+			"Type":"String"
+		},
+		{
+			"Name":"psFE3Year",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vsHLYear",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsScenario",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsProg",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vsProgMeas",
+			"Type":"String",
+			"Position":4,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"Value",
+			"Type":"String",
+			"Position":5,
+			"StartByte":0,
+			"EndByte":0
+		}
+	]
+}

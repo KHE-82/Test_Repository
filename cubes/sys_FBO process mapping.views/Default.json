@@ -1,0 +1,128 @@
+{
+	"@type":"NativeView",
+	"Name":"Default",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_FBO process mapping measure')/Hierarchies('sys_FBO process mapping measure')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_FBO process mapping measure')/Hierarchies('sys_FBO process mapping measure')/Elements('Source Account')"
+					},
+					{
+						"@id":"Dimensions('sys_FBO process mapping measure')/Hierarchies('sys_FBO process mapping measure')/Elements('Source Movement Account')"
+					},
+					{
+						"@id":"Dimensions('sys_FBO process mapping measure')/Hierarchies('sys_FBO process mapping measure')/Elements('Target Account')"
+					},
+					{
+						"@id":"Dimensions('sys_FBO process mapping measure')/Hierarchies('sys_FBO process mapping measure')/Elements('Target Movement Account')"
+					},
+					{
+						"@id":"Dimensions('sys_FBO process mapping measure')/Hierarchies('sys_FBO process mapping measure')/Elements('Description')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('001')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('002')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('003')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('004')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('005')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('006')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('007')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('008')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('009')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('010')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('011')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('012')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('013')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('014')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('015')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('016')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('017')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('018')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('019')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('020')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('021')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('022')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('023')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('024')"
+					},
+					{
+						"@id":"Dimensions('sys_extract row id')/Hierarchies('sys_extract row id')/Elements('025')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":[],
+	"SuppressEmptyColumns":false,
+	"SuppressEmptyRows":false,
+	"FormatString":"0.#########"
+}

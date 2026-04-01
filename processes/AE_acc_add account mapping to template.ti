@@ -1,0 +1,68 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_acc_add account mapping to template
+#**** DESCRIPTION:       This process will add the selected accounts and map to the account template selected
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 26/03/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** DECLARE CUBES & DIMENSIONS ***#
+
+cbAccTemp = 'AE account template';
+dmAccTemp = 'account template';
+dmRecType = 'account template record type';
+dmAccType = 'account type';
+dmAcc = 'account';
+dmMA = 'movement account';
+dmTempMeas = 'account template measure';
+dmClients = '}Clients';
+
+# *** IDENTIFY CURRENT USER ***#
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sUser) + 1;
+     sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+     sUser = TM1User();
+ENDIF;
+
+
+IF (psDRAcc @<> '' & psDRMA @<> '' & pnDRFactor <> 0);
+     #*** Populate DR Accounts Flag ***#
+     CELLPUTN(pnDRFactor, cbAccTemp, psAccTemp, psRecType, psAccType, psDRAcc, psDRMA, 'factor');
+ENDIF;
+
+IF (psCRAcc @<> '' & psCRMA @<> '' & pnCRFactor <> 0); 
+     CELLPUTN(pnCRFactor, cbAccTemp, psAccTemp, psRecType, psAccType, psCRAcc, psCRMA, 'factor');
+ENDIF;
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

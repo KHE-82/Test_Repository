@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"Diane Humes $NewAdj03",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1SUBSETALL( [appropriation item] )}, 0)}"
+}

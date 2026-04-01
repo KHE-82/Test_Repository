@@ -1,0 +1,11 @@
+{
+	"@type":"Subset",
+	"Name":"Total Expenses",
+	"Alias":"code and description",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2000000')"
+		}
+	]
+}

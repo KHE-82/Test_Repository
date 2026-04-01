@@ -1,0 +1,12 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_spp agency mapping measure",
+	"Elements":
+	[
+		{
+			"Name":"flag",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_ME Flatfile Extract",
+	"Alias":"code and description",
+	"Expression":"{{[programme].[Administered Programmes]},{[programme].[Departmental Programmes]},{FILTER( {TM1DRILLDOWNMEMBER( {[programme].[Total Programmes]}, ALL, RECURSIVE )}, [programme].[CBMS Level Program] = \"Y\")}}"
+}

@@ -1,0 +1,845 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Adj Bulk - Process Journals
+#**** DESCRIPTION:       This process manages which process to execute during the bulk process function	
+#****
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    	KG           Initial Revision
+#**** 2019    	KG	Updated Validation
+#**** 2020	KG	Made Fixes in DATA Tab
+#**** 2020	KG 	Made changes for Group Adjustment Processes
+#**** 09/12/2020	KG	Added changes for Group Adjustment Processes
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS
+#******************************************************************************************************************
+cbID = 'AE id details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmID = 'id';
+dmIDMeas = 'id measure';
+
+sMeasure = 'bulk processing flag';
+
+#******************************************************************************************************************
+#*** DECLARE BULK PROCESS CUBE
+#******************************************************************************************************************
+cbBulk = 'AE bulk processing';
+
+#******************************************************************************************************************
+#*** DECLARE PROCESS SECURITY CUBE
+#******************************************************************************************************************
+cbProcessSec = '}ProcessSecurity';
+
+#******************************************************************************************************************
+#*** DECLARE VALIDATION CUBE
+#******************************************************************************************************************
+cbValid = 'AE validations';
+dmValidID = 'validation id';
+dmPer = 'period';
+dmValidMeas = 'AE validation measure';
+
+sPer = 'Total years';
+sValidID = 'Total';
+sValidMeas = 'value';
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED
+#******************************************************************************************************************
+sView = sUser | '_$sysBulkProcess';
+sSubset = sUser | '_$sysBulkList';
+sPrintSubset = sUser | '_$sysBulkPrintList';
+nMaxPrintCounter = 20;
+
+
+#******************************************************************************************************************
+#*** ADD VALIDATION TO ENSURE A PROCESS IS SELECTED
+#******************************************************************************************************************
+IF (psProcess @='');
+	CELLPUTS ('FAIL',cbClient, sUser, 'sys_bulk process', 'validate');
+	PROCESSQUIT;
+ENDIF;
+
+
+
+
+#******************************************************************************************************************
+#*** STEP 1 - CREATE VIEW AND CLEAR OUT ALL FLAGS
+#******************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbBulk, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmIDMeas, sView);
+
+
+#******************************************************************************************************************
+#*** CREATE SUBSETS
+#******************************************************************************************************************
+# Client
+SUBSETCREATE (dmClient, sView);
+SUBSETELEMENTINSERT (dmClient, sView, sUser, 1);
+
+# Headline Year
+SUBSETCREATE (dmHLYear, sView);
+SUBSETELEMENTINSERT (dmHLYear, sView, psHLYear, 1);
+
+# Scenario
+SUBSETCREATE (dmScenario, sView);
+SUBSETELEMENTINSERT (dmScenario, sView, psScenario, 1);
+
+# ID
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmID | '] )}, 0)}';
+MDX = '{ EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmID | '] )}, 0)}, { [' | dmID | '].[0000A], [' | dmID | '].[0000B], [' | dmID | '].[00FBO], [' | dmID | '].[cash flow] }) }';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmID, sView , MDX);
+
+# ID Measure
+SUBSETCREATE (dmIDMeas, sView);
+SUBSETELEMENTINSERT (dmIDMeas, sView, sMeasure, 1);
+
+#******************************************************************************************************************
+#*** BUILD VIEW
+#******************************************************************************************************************
+VIEWCREATE (cbBulk, sView);
+VIEWSUBSETASSIGN (cbBulk, sView, dmClient, sView);
+VIEWSUBSETASSIGN (cbBulk, sView, dmHLYear, sView);
+VIEWSUBSETASSIGN (cbBulk, sView, dmScenario, sView);
+VIEWSUBSETASSIGN (cbBulk, sView, dmID, sView);
+VIEWSUBSETASSIGN (cbBulk, sView, dmIDMeas, sView);
+
+VIEWSETSKIPZEROES (cbBulk, sView, 1);
+VIEWSUPPRESSZEROESSET( cbBulk, sView, 1);
+VIEWSETSKIPCALCS (cbBulk, sView, 1);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+#******************************************************************************************************************
+#*** STEP 2 - IDENTIFY WHICH PROCESS TO USE FOR THE ADJUSTMENT
+#*** FIND OUT WHAT PROCESS THE USER SELECTED
+
+# Unauthorised to draft
+# draft to submitted
+# draft to approved
+# draft to approved non-flat file
+# draft to CBMS
+# submitted to approved
+# submitted to approved non-flat file
+# submitted to CBMS
+# approved to CBMS
+# approved non-flat file to CBMS
+# Unbalanced to approved
+# Unbalanced to approved non-flat file
+# Unbalanced to CBMS
+# Reject - submitted
+# Reject - approved
+# Reject - approved non-flat file
+# Reject - CBMS
+# Copy
+# Reverse
+# Copy and Reverse
+# Delete - unauthorised
+# Delete - draft
+
+# Demote draft to Unauthorised
+# Unbalanced to Unauthorised
+#******************************************************************************************************************
+
+#******************************************************************************************************************
+#*** GET SELECTED PROCESS
+#******************************************************************************************************************
+sSelProcess = CELLGETS (cbClient, sUser,  'sys_bulk process', 'value');
+
+#******************************************************************************************************************
+#*** LIST OF AVAILABLE PROCESSES
+#****************************************************************************************************************** 
+sPrcCopy = 'AE_Adj - Copy Adjustment';
+sPrcDel = 'AE_Adj - Delete Adjustment';
+sPrcRev = 'AE_Adj - Reverse Adjustment';
+sPrcAuth = 'AE Auth Adj - Authorise Adjustment';
+sPrcPrint = '';
+sPrcFF = 'AE_FlatFile 01 - Load ID to sys_Extract';
+
+#--------------------------------------------------------
+#--- GROUP PROCESSES
+#--------------------------------------------------------
+sPrcGrpCopy = 'AE_GrpAdj_CopyAdjustment';
+sPrcGrpDel = 'AE_GrpAdj_DeleteAdjustment';
+sPrcGrpRev = 'AE_GrpAdj_ReverseAdjustment';
+
+lCounter = 0;
+
+#******************************************************************************************************************
+#*** STEP 3 - PERFORM VALIDATIONS
+#******************************************************************************************************************
+
+#******************************************************************************************************************
+#*** STOP PROCESS IF PROCESS IS BLANK
+#****************************************************************************************************************** 
+
+IF (sSelProcess @= '' & psProcess @='');
+	ASCIIOUTPUT ('processquitA.txt', sSelProcess, psProcess);
+	PROCESSQUIT;
+ELSE;
+
+	sOldProcess = CELLGETS (cbClient, sUser, 'sys_bulk process', 'old value');
+	#******************************************************************************************************************
+	#*** STOP PROCESS IF PROCESS IS NOT THE SAME AS THE SELECTED PROCESS
+	#****************************************************************************************************************** 
+
+	IF (sOldProcess @<> psProcess);
+	ASCIIOUTPUT ('processquitB.txt', sSelProcess, psProcess);
+		PROCESSQUIT;
+	ENDIF;
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** STEP 4 - BULK PRINT SUBSETS
+#******************************************************************************************************************
+SUBSETDESTROY (dmID, sPrintSubset);
+CELLPUTS ('',cbClient, sUser, 'sys_bulk process', 'validate');
+lPrintCounter = 1;
+
+
+
+#******************************************************************************************************************
+#*** STEP 5 - FLATFILE CREATION - CLEAR USER FF
+#******************************************************************************************************************
+
+#******************************************************************************************************************
+#*** FLATFILE CREATION
+#******************************************************************************************************************
+IF (sSelProcess @= 'Flat File Creation');
+	sProcess = 'AE_FlatFile 99 - Clear sys_Extract';
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psHLYear', psHLYear, 'psScenario', psScenario);
+ENDIF;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#******************************************************************************************************************
+#*** CHECK IF CURRENT HEADLINE YEAR AND SCENARIO
+#******************************************************************************************************************
+IF (psHLYear @= curHLYear & psScenario @= curScenario);
+
+ELSE;
+	IF (sSelProcess @<> 'Print' & sSelProcess @<> 'Copy' & sSelProcess @<> 'Reverse' & sSelProcess @<> 'Copy and Reverse');
+		CELLPUTS ('FAIL',cbClient, sUser, 'sys_bulk process', 'validate');
+		CELLPUTS('', cbClient, sUser, 'sys_bulk process comment', 'value');
+		PROCESSERROR;
+		ITEMSKIP;
+	ENDIF;
+
+ENDIF;
+
+#******************************************************************************************************************
+#*** GET ADJUSTMENT TYPE
+#******************************************************************************************************************
+sAdjType = CELLGETS (cbID, psHLYear, psScenario, vsID, 'adjustment type');
+
+
+#******************************************************************************************************************
+#*** GET PREVIOUS COMMENTS
+#*** ONLY USED FOR REJECTING PURPOSES
+#******************************************************************************************************************
+sOldComment = CELLGETS (cbID, curHLYear, curScenario, vsID, 'approver comments');
+
+#******************************************************************************************************************
+#*** RUN PROCESSES
+#******************************************************************************************************************
+
+#******************************************************************************************************************
+#*** UNAUTHORISED TO AGENCY DRAFT
+#******************************************************************************************************************
+IF (sSelProcess @= 'Unauthorised to draft');
+	sProcess = sPrcAuth;
+	#sChangeStatus = 'draft';
+	#IF (sOldComment @<> '');
+	#	sNewComment = sOldComment | ' ';
+	#ELSE;
+		sNewComment = '';
+	#ENDIF;
+
+	#******************************************************************************************************************
+	#*** CHECK VALIDATIONS VALUE OF ACCOUNTS
+	#******************************************************************************************************************
+	nValidation = CELLGETN (cbValid, vsHLYear, vsScenario, sValidID, vsID, sPer);
+
+	IF (nValidation <> 0);
+		#******************************************************************************************************************
+		#*** VALIDATION FAILED
+		#******************************************************************************************************************
+		sChangeStatus = 'unbalanced';
+	ELSE;
+
+		#******************************************************************************************************************
+		#*** VALIDATION PASSED
+		#******************************************************************************************************************
+		sChangeStatus = 'draft';
+	ENDIF;
+
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** DRAFT TO SUBMITTED
+#******************************************************************************************************************
+IF (sSelProcess @= 'draft to submitted');
+	sProcess = sPrcAuth;
+	sChangeStatus = 'submitted';
+
+	IF (sOldComment @<> '');
+		sNewComment = sOldComment | ' ';
+	ELSE;
+		sNewComment = '';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+
+
+#******************************************************************************************************************
+#*** DRAFT TO APPROVED
+#******************************************************************************************************************
+IF (sSelProcess @= 'draft to approved');
+	sProcess = sPrcAuth;
+	sChangeStatus = 'approved';
+
+	IF (sOldComment @<> '');
+		sNewComment = sOldComment | ' ';
+	ELSE;
+		sNewComment = '';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+
+
+#******************************************************************************************************************
+#*** DRAFT TO APPROVED NON-FLAT FILE
+#******************************************************************************************************************
+IF (sSelProcess @= 'draft to approved non-flat file');
+	sProcess = sPrcAuth;
+	sChangeStatus = 'approved non-flat file';
+
+	IF (sOldComment @<> '');
+		sNewComment = sOldComment | ' ';
+	ELSE;
+		sNewComment = '';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+
+
+
+#******************************************************************************************************************
+#*** DRAFT TO CBMS
+#******************************************************************************************************************
+IF (sSelProcess @= 'draft to CBMS');
+	sProcess = sPrcAuth;
+	sChangeStatus = 'CBMS';
+
+	IF (sOldComment @<> '');
+		sNewComment = sOldComment | ' ';
+	ELSE;
+		sNewComment = '';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+
+
+#******************************************************************************************************************
+#*** SUBMITTED TO APPROVED
+#******************************************************************************************************************
+IF (sSelProcess @= 'submitted to approved');
+	sProcess = sPrcAuth;
+	sChangeStatus = 'approved';
+
+	IF (sOldComment @<> '');
+		sNewComment = sOldComment | ' ';
+	ELSE;
+		sNewComment = '';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+
+
+
+#******************************************************************************************************************
+#*** SUBMITTED TO APPROVED NON-FLAT FILE
+#******************************************************************************************************************
+IF (sSelProcess @= 'submitted to approved non-flat file');
+	sProcess = sPrcAuth;
+	sChangeStatus = 'approved non-flat file';
+
+	IF (sOldComment @<> '');
+		sNewComment = sOldComment | ' ';
+	ELSE;
+		sNewComment = '';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+
+
+#******************************************************************************************************************
+#*** SUBMITTED TO CBMS
+#******************************************************************************************************************
+IF (sSelProcess @= 'submitted to CBMS');
+	sProcess = sPrcAuth;
+	sChangeStatus = 'CBMS';
+
+	IF (sOldComment @<> '');
+		sNewComment = sOldComment | ' ';
+	ELSE;
+		sNewComment = '';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** APPROVED TO CBMS
+#******************************************************************************************************************
+IF (sSelProcess @= 'approved to CBMS');
+	sProcess = sPrcAuth;
+	sChangeStatus = 'CBMS';
+
+	IF (sOldComment @<> '');
+		sNewComment = sOldComment | ' ';
+	ELSE;
+		sNewComment = '';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** APPROVED NON-FLAT FILE TO CBMS
+#******************************************************************************************************************
+IF (sSelProcess @= 'approved non-flat file to CBMS');
+	sProcess = sPrcAuth;
+	sChangeStatus = 'CBMS';
+
+	IF (sOldComment @<> '');
+		sNewComment = sOldComment | ' ';
+	ELSE;
+		sNewComment = '';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** UNBALANCED TO APPROVED
+#******************************************************************************************************************
+IF (sSelProcess @= 'Unbalanced to approved');
+	sProcess = sPrcAuth;
+	sChangeStatus = 'approved';
+
+	IF (sOldComment @<> '');
+		sNewComment = sOldComment | ' This adjustment was authorised from an unbalanced status.';
+	ELSE;
+		sNewComment = 'This adjustment was authorised from an unbalanced status';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+
+
+#******************************************************************************************************************
+#*** UNBALANCED TO APPROVED NON-FLAT FILE
+#******************************************************************************************************************
+IF (sSelProcess @= 'Unbalanced to approved non-flat file');
+	sProcess = sPrcAuth;
+	sChangeStatus = 'approved non-flat file';
+
+	IF (sOldComment @<> '');
+		sNewComment = sOldComment | ' This adjustment was authorised from an unbalanced status.';
+	ELSE;
+		sNewComment = 'This adjustment was authorised from an unbalanced status';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** UNBALANCED TO CBMS
+#******************************************************************************************************************
+IF (sSelProcess @= 'Unbalanced to CBMS');
+	sProcess = sPrcAuth;
+	sChangeStatus = 'CBMS';
+
+	IF (sOldComment @<> '');
+		sNewComment = sOldComment | ' This adjustment was authorised from an unbalanced status.';
+	ELSE;
+		sNewComment = 'This adjustment was authorised from an unbalanced status';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+
+
+
+#******************************************************************************************************************
+#*** REJECT SUBMITTED
+#******************************************************************************************************************
+IF (sSelProcess @= 'Reject - submitted');
+	sNewComment = CELLGETS(cbClient, sUser, 'sys_bulk process comment', 'value');
+
+	sProcess = sPrcAuth;
+	sChangeStatus = 'draft';
+	IF (sOldComment @<> '');
+#		sNewComment = sOldComment | ' please review adjustment (bulk reverse)';
+	ELSE;
+#		sNewComment = 'Please review adjustment (bulk reverse)';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+
+
+#******************************************************************************************************************
+#*** REJECT APPROVED
+#******************************************************************************************************************
+IF (sSelProcess @= 'Reject - approved');
+	sNewComment = CELLGETS(cbClient, sUser, 'sys_bulk process comment', 'value');
+
+	sProcess = sPrcAuth;
+	sChangeStatus = 'draft';
+	IF (sOldComment @<> '');
+#		sNewComment = sOldComment | ' please review adjustment (bulk reverse)';
+	ELSE;
+#		sNewComment = 'Please review adjustment (bulk reverse)';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+
+
+#******************************************************************************************************************
+#*** REJECT APPROVED NON-FLAT FILE
+#******************************************************************************************************************
+IF (sSelProcess @= 'Reject - approved non-flat file');
+	sNewComment = CELLGETS(cbClient, sUser, 'sys_bulk process comment', 'value');
+
+	sProcess = sPrcAuth;
+	sChangeStatus = 'draft';
+	IF (sOldComment @<> '');
+
+#		sNewComment = sOldComment | ' please review adjustment (bulk reverse)';
+	ELSE;
+#		sNewComment = 'Please review adjustment (bulk reverse)';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** REJECT CBMS
+#******************************************************************************************************************
+IF (sSelProcess @= 'Reject - CBMS');
+	sNewComment = CELLGETS(cbClient, sUser, 'sys_bulk process comment', 'value');
+
+	sProcess = sPrcAuth;
+	sChangeStatus = 'draft';
+	IF (sOldComment @<> '');
+
+#		sNewComment = sOldComment | ' please review adjustment (bulk reverse)';
+	ELSE;
+#		sNewComment = 'Please review adjustment (bulk reverse)';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** COPY
+#******************************************************************************************************************
+IF (sSelProcess @= 'Copy');
+	sProcess = sPrcCopy;
+	sProg = CELLGETS (cbID, vsHLYear, vsScenario, vsID, snProg | ' code');
+
+	IF (sAdjType @= 'Group');
+		EXECUTEPROCESS(sPrcGrpCopy, 'psUser', psUser, 'psHLYear', vsHLYear, 'psScenario', vsScenario, 'psID', vsID);
+	ELSE;
+		EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psHLYear', vsHLYear, 'psScenario', vsScenario, 'psID', vsID, 'psProg', sProg);
+	ENDIF;
+
+
+ENDIF;
+
+#******************************************************************************************************************
+#*** REVERSE
+#******************************************************************************************************************
+IF (sSelProcess @= 'Reverse');
+	sProcess = sPrcRev;
+	sProg = CELLGETS (cbID, vsHLYear, vsScenario, vsID, snProg | ' code');
+
+	IF (sAdjType @= 'Group');
+		EXECUTEPROCESS(sPrcGrpRev, 'psUser', psUser, 'psHLYear', vsHLYear, 'psScenario', vsScenario, 'psID', vsID);
+	ELSE;
+		EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psHLYear', vsHLYear, 'psScenario', vsScenario, 'psID', vsID, 'psProg', sProg);
+	ENDIF;
+
+ENDIF;
+
+#******************************************************************************************************************
+#*** COPY & REVERSE
+#******************************************************************************************************************
+IF (sSelProcess @= 'Copy and Reverse');
+	sProcess = sPrcCopy;
+	sProcess1 = sPrcRev;
+
+	sProg = CELLGETS (cbID, vsHLYear, vsScenario, vsID, snProg | ' code');
+
+
+	IF (sAdjType @= 'Group');
+		EXECUTEPROCESS(sPrcGrpCopy, 'psUser', psUser, 'psHLYear', vsHLYear, 'psScenario', vsScenario, 'psID', vsID);
+		EXECUTEPROCESS(sPrcGrpRev, 'psUser', psUser, 'psHLYear', vsHLYear, 'psScenario', vsScenario, 'psID', vsID);
+	ELSE;
+
+		EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psHLYear', vsHLYear, 'psScenario', vsScenario, 'psID', vsID, 'psProg', sProg);
+		EXECUTEPROCESS(sProcess1, 'psUser', psUser, 'psHLYear', vsHLYear, 'psScenario', vsScenario, 'psID', vsID, 'psProg', sProg);
+
+	ENDIF;
+
+ENDIF;
+
+#******************************************************************************************************************
+#*** PRINT JOURNALS
+#******************************************************************************************************************
+IF (sSelProcess @= 'Print');
+	sProcess = sPrcPrint;
+	IF (lCounter = 0);
+		SUBSETCREATE (dmID, sPrintSubset);
+#		EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psHLYear', vsHLYear, 'psScenario', vsScenario, 'psID', vsID);
+	ENDIF;
+
+	#****************************************************************************************
+	#*** ADD ID TO BULK PRINT SUBSET
+	#****************************************************************************************
+	sCheckTitle = CELLGETS (cbID, vsHLYear, vsScenario, vsID, 'title');
+	IF (sCheckTitle @<> '');
+		SUBSETELEMENTINSERT (dmID, sPrintSubset, vsID, lPrintCounter);
+
+		IF (lPrintCounter > nMaxPrintCounter);
+			sValidate = 'FAIL';
+		ELSE;
+			sValidate = '';
+		ENDIF;
+
+		lPrintCounter = lPrintCounter + 1;
+	ENDIF;
+	CELLPUTS (NUMBERTOSTRING (lPrintCounter), cbClient, sUser, 'sys_bulk process count', 'value');
+
+ENDIF;
+
+#******************************************************************************************************************
+#*** FLATFILE CREATION
+#******************************************************************************************************************
+IF (sSelProcess @= 'Flat File Creation');
+	sProcess = sPrcFF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psHLYear', vsHLYear, 'psScenario', vsScenario, 'psID', vsID);
+ENDIF;
+
+
+
+#******************************************************************************************************************
+#*** DELETE UNAUTHORISED JOURNALS
+#******************************************************************************************************************
+IF (sSelProcess @= 'Delete - unauthorised');
+	sProcess = sPrcDel;
+	sProg = CELLGETS (cbID, vsHLYear, vsScenario, vsID, snProg | ' code');
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psHLYear', vsHLYear, 'psScenario', vsScenario, 'psID', vsID, 'psProg', sProg);
+
+	IF (sAdjType @= 'Group');
+		EXECUTEPROCESS(sPrcGrpDel, 'psUser', psUser, 'psHLYear', vsHLYear, 'psScenario', vsScenario, 'psID', vsID);
+	ENDIF;
+
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** DELETE AGENCY DRAFT JOURNALS
+#******************************************************************************************************************
+IF (sSelProcess @= 'Delete - draft');
+	sProcess = sPrcDel;
+	sProg = CELLGETS (cbID, vsHLYear, vsScenario, vsID, snProg | ' code');
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psHLYear', vsHLYear, 'psScenario', vsScenario, 'psID', vsID, 'psProg', sProg);
+
+	IF (sAdjType @= 'Group');
+		EXECUTEPROCESS(sPrcGrpDel, 'psUser', psUser, 'psHLYear', vsHLYear, 'psScenario', vsScenario, 'psID', vsID);
+	ENDIF;
+
+
+ENDIF;
+
+
+#******************************************************************************************************************
+#*** UNAUTHORISED
+#******************************************************************************************************************
+IF (sSelProcess @= 'Demote draft to unauthorised');
+	sProcess = sPrcAuth;
+	sChangeStatus = 'unauthorised';
+
+	IF (sOldComment @<> '');
+		sNewComment = sOldComment | ' ';
+	ELSE;
+		sNewComment = '';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+
+
+#******************************************************************************************************************
+#*** UNAUTHORISED
+#******************************************************************************************************************
+IF (sSelProcess @= 'Unbalanced to unauthorised');
+	sProcess = sPrcAuth;
+	sChangeStatus = 'unauthorised';
+
+	IF (sOldComment @<> '');
+		sNewComment = sOldComment | ' ';
+	ELSE;
+		sNewComment = '';
+	ENDIF;
+	EXECUTEPROCESS(sProcess, 'psUser', psUser, 'psID', vsID, 'psStatus', sChangeStatus, 'psComment', sNewComment);
+ENDIF;
+
+#******************************************************************************************************************
+#*** COUNTER
+#******************************************************************************************************************
+lCounter = lCounter + 1;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#******************************************************************************************************************
+#*** PUT COUNTER IN CLIENT DETAILS
+#******************************************************************************************************************
+CELLPUTS (NUMBERTOSTRING (lCounter), cbClient, psUser, 'sys_bulk process count', 'value');
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbBulk, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmIDMeas, sView);
+
+#******************************************************************************************************************
+#*** RUN PROCESS TO CLEAR THE FLAGS
+#******************************************************************************************************************
+EXECUTEPROCESS('AE_Adj Bulk - Clear Flags', 'psUser', psUser, 'psHLYear', psHLYear, 'psScenario', psScenario);
+
+#******************************************************************************************************************
+#*** DELETE BULK PRINT SUBSETS
+#******************************************************************************************************************
+sUser = TM1User();
+
+IF (psProcess @= 'Print');
+	IF (lCounter = 0);
+		CELLPUTS ('FAIL',cbClient, sUser, 'sys_bulk process', 'validate');
+		CELLPUTS('', cbClient, sUser, 'sys_bulk process comment', 'value');
+		PROCESSERROR;
+	ELSE;
+		#--------------------------------------------------------
+		#---- IF VALIDATION FAILED, BREAK PROCESS
+		#--------------------------------------------------------
+		CELLPUTS (sValidate,cbClient, sUser, 'sys_bulk process', 'validate');
+		IF (sValidate @= 'FAIL');
+			CELLPUTS('', cbClient, sUser, 'sys_bulk process comment', 'value');
+			PROCESSERROR;
+		ENDIF;
+	
+	ENDIF;
+
+ENDIF;
+
+#******************************************************************************************************************
+#*** CLEAR APPROVER COMMENTS 
+#******************************************************************************************************************
+CELLPUTS('', cbClient, sUser, 'sys_bulk process comment', 'value');
+
+#endregion

@@ -1,0 +1,189 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Archive_09 - Index Cube_Populate Target Scenario
+#**** DESCRIPTION:       This process copies data in the index cube from the CURRENT scenario into the target scenario, after clearing the target scenario
+#****	 	          It then copies the current cumulative index into the previous cumulative index element
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 12/05/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE INDEX CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbIndex = 'index';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE CASHFLOW CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbCF= 'AE cash flow';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE GOVERNMENT MEASURE CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbMeas = 'government measures';
+dmMeasDet = 'measure details';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE GOVERNMENT MEASURE DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbMeasDet = 'government measures details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE GROUP ADJUSTMENT ENTRY CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbGrp = 'AE group adjustment entry';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+
+#sHLYear = ATTRS(dmVar, 'archive year', 'old value');
+#sScenario = ATTRS(dmVar, 'archive scenario', 'old value');
+sTargetHLYear = ATTRS(dmVar, 'archive year', 'value');
+sTargetScenario = ATTRS(dmVar, 'archive scenario', 'value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sUser) + 1;
+     sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+     sUser = TM1User();
+ENDIF;
+
+
+#sView = '$Archive';
+sView = '$ArchiveClear';
+sSubset = sView;
+
+
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy(cbIndex, sView);
+SubsetDestroy(dmHLYear, sSubset);
+SubsetDestroy(dmScenario, sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, sTargetHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, sTargetScenario, 1);
+
+#****BUILD VIEW****#
+ViewCreate(cbIndex, sView);
+
+ViewSubsetAssign(cbIndex, sView, dmHLYear, sSubset);
+ViewSubsetAssign(cbIndex, sView, dmScenario, sSubset);
+
+ViewSetSkipZeroes(cbIndex, sView, 1);
+ViewSetSkipCalcs(cbIndex, sView, 1);
+ViewZeroOut(cbIndex, sView);
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy(cbIndex, sView);
+SubsetDestroy(dmHLYear, sSubset);
+SubsetDestroy(dmScenario, sSubset);
+
+#*** DECLARE DATA SOURCE VIEW
+sAEView = '$Archive';
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sAEView;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+# copy data to the target scenario
+# this command is deliberately on the metadata tab because the commands on the data tab is clearing data that may 
+# be required for rules in the source view 
+
+     CellPutN(NVALUE, cbIndex, sTargetHLYear, sTargetScenario, vsIndex, vsMeasure, vsPeriod);
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+# zero out the current scenario
+IF (CellIsUpdateable(cbIndex, vsHLYear, vsScenario, vsIndex, vsMeasure, vsPeriod) = 1);
+     CellPutN(0, cbIndex, vsHLYear, vsScenario, vsIndex, vsMeasure, vsPeriod);
+ENDIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+cbIndex = 'index';
+sView = '$Archive';
+sSubset = sView;
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy(cbIndex, sView);
+SubsetDestroy(dmHLYear, sSubset);
+SubsetDestroy(dmScenario, sSubset);
+#endregion

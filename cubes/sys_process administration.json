@@ -1,0 +1,22 @@
+{
+	"@type":"Cube",
+	"Name":"sys_process administration",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('}Processes')"
+		},
+		{
+			"@id":"Dimensions('sys_process administration measure')"
+		}
+	],
+	"Rules@Code.link":"sys_process administration.rules",
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('sys_process administration measure')"
+	},
+	"Views@Code.links":
+	[
+
+	]
+}

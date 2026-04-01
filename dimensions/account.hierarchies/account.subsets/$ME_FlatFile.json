@@ -1,0 +1,19 @@
+{
+	"@type":"Subset",
+	"Name":"$ME_FlatFile",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9000510')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9000515')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9000520')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9000525')"
+		}
+	]
+}

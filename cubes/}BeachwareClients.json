@@ -1,0 +1,14 @@
+{
+	"@type":"Cube",
+	"Name":"}BeachwareClients",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('}Clients')"
+		},
+		{
+			"@id":"Dimensions('}BeachwareClients')"
+		}
+	],
+	"Views@Code.links":[]
+}

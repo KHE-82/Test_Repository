@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"Admin_$FE3Step03",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('AE parameters and FE3 calculation measure')/Hierarchies('AE parameters and FE3 calculation measure')/Elements('FE3 Calculation value')"
+		}
+	]
+}

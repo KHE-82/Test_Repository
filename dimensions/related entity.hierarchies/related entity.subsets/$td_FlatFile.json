@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"$td_FlatFile",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('related entity')/Hierarchies('related entity')/Elements('Total related entity')"
+		}
+	]
+}

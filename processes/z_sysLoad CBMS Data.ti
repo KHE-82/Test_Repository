@@ -1,0 +1,650 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+snProg = 'programme';
+
+#*** DECLARE CUBES AND DIMENSIONS***#
+sCube = 'AE adjustments';
+sView = '$LoadCBMS';
+sSubset = sView;
+
+cbProg = snProg | ' details';
+dmProg = snProg;
+
+cbID = 'AE id details';
+
+#*** DECLARE AE ADJUSTMENTS DIMENSIONS ***#
+dmID = 'id';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmReason = 'reason';
+dmType = 'appropriation type';
+dmItem = 'appropriation item';
+dmFunc = 'function';
+dmMeas = 'measure code';
+dmAcc = 'account';
+dmMA = 'movement account';
+dmSPP = 'spp';
+
+sOldTitle = '';
+sOldCBMS = '';
+sOldID = '';
+
+
+cbID = 'AE id details';
+
+#*** DECLARE SYSTEM VARIABLES
+dmVar = 'variables'; 
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+sScenario = 'CBMS';
+sStatus = 'data';
+
+sHLYear = psHLYear;
+sScenario = psScenario;
+
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy(sCube, sView);
+SubsetDestroy('headline year', sSubset);
+SubsetDestroy('scenario', sSubset);
+SubsetDestroy(dmProg, sSubset);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate('headline year', sSubset);
+SubsetElementInsert('headline year', sSubset, sHLYear, 1);
+
+# Scenario
+SubsetCreate('scenario', sSubset);
+SubsetElementInsert('scenario', sSubset, sScenario, 1);
+
+
+# Programme
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( { [' | dmProg | '].[Departmental Programmes] }, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+#****BUILD VIEW****#
+ViewCreate(sCube, sView);
+
+ViewSubsetAssign(sCube, sView, 'headline year', sSubset);
+ViewSubsetAssign(sCube, sView, 'scenario', sSubset);
+ViewSubsetAssign(sCube, sView, dmProg, sSubset);
+
+ViewSetSkipZeroes(sCube, sView, 1);
+ViewSetSkipCalcs(sCube, sView, 1);
+ViewZeroOut(sCube, sView);
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy(sCube, sView);
+SubsetDestroy('headline year', sSubset);
+SubsetDestroy('scenario', sSubset);
+SubsetDestroy(dmProg, sSubset);
+
+#*** NOW DELETE ID DETAILS CUBE ***#
+
+
+
+#*** FILE VALIDATION FLAG VARIABLES
+nLine = 1;
+nTotalValid = 0;
+
+nValid = 0;
+nTotalValid = 0;
+
+sOutputFile = 'cbms dept upload failed.csv';
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#ITEMSKIP;
+
+IF (vsStatus @<> 'financeapproved');
+     ITEMSKIP;
+ENDIF;
+
+IF (vsOC @= '9173' & vsType @= 'Appropriation Bill 1');
+     vsProg = 'DEP:01:01:01';
+ENDIF;
+
+IF (vsOC @= '9173' & vsType @= 'Appropriation Type - Unallocated');
+     vsProg = 'DEP:01:01:02';
+ENDIF;
+
+IF (vsOC @= '9173' & vsType @= 'Receipts/Payments from/to Independent Sources - FMA Act s31, FMA Reg 15 - F2008C00384 (FMA only)');
+     vsProg = 'DEP:01:01:03';
+ENDIF;
+
+IF (vsOC @= '9173' & vsType @= 'Appropriation Bill 1 - Capital Budget (DCB) - - Non Operating');
+     vsProg = 'DEP:01:01:04:01';
+ENDIF;
+
+IF (vsOC @= '9173' & vsType @= 'Bill 2 - Non Operating - Equity Injection');
+     vsProg = 'DEP:01:01:04:02';
+ENDIF;
+
+IF (vsOC @= '9174' & vsType @= 'Appropriation Bill 1');
+     vsProg = 'DEP:02:01:01';
+ENDIF;
+
+IF (vsOC @= '9174' & vsType @= 'Appropriation Type - Unallocated');
+     vsProg = 'DEP:02:01:02';
+ENDIF;
+
+IF (vsOC @= '9174' & vsType @= 'Receipts/Payments from/to Independent Sources - FMA Act s31, FMA Reg 15 - F2008C00384 (FMA only)');
+     vsProg = 'DEP:02:01:03';
+ENDIF;
+
+IF (vsOC @= '9174' & vsType @= 'Appropriation Bill 1 - Capital Budget (DCB) - - Non Operating');
+     vsProg = 'DEP:02:01:04:01';
+ENDIF;
+
+IF (vsOC @= '9174' & vsType @= 'Bill 2 - Non Operating - Equity Injection');
+     vsProg = 'DEP:02:01:04:02';
+ENDIF;
+
+
+#*** PERFORM A VALIDATION TEST ***#
+nProgValid = 0;
+nOCValid = 0;
+nMeasValid = 0;
+nReasValid = 0;
+nFuncValid = 0;
+nMAValid = 0;
+nAccValid = 0;
+nItemValid = 0;
+nTypeValid = 0;
+nREValid  = 0;
+nSPPValid = 0;
+
+#*************************************************************************************************************************************#
+#**** DEFAULT ACCOUNTS ****#
+
+# Get movement account element
+IF (vsMA @= '');
+     vsMA = '-';
+ELSE;
+     vsMA = vsMA;
+ENDIF;
+
+# Get related entity element
+IF (vsRE @= '');
+     vsRE = '-';
+ELSE;
+     vsRE = vsRE;
+ENDIF;
+
+# Get SPP element
+IF (vsSPP @= '');
+     vsSPP = '-';
+ELSE;
+     vsSPP = vsSPP;
+ENDIF;
+
+# Get jurisdiction element
+IF (vsJur @= '');
+     vsJur = '-';
+ELSE;
+     vsJur = vsJur;
+ENDIF;
+
+#* Get Appropriation Item elemnent
+IF (vsItem @= '');
+     vsItem = '-';
+ELSE;
+     vsItem = vsItem;
+ENDIF;
+
+IF (vsReason @= 'Central processes - new estimates round' % vsReason @= 'Changes/Restatement of Opening Balances');
+    vsReason = 'Other variations not elsewhere defined';
+ENDIF;
+
+#* Get Measure Code Element
+IF (vsMeasCode @= '');
+     vsMeasCode = 'M00000';
+ELSE;
+     vsMeasCode = vsMeasCode;
+ENDIF;
+
+
+#*************************************************************************************************************************************#
+#**** VALIDATION CHECKS ****#
+
+#*** Check Programme
+IF (DIMIX (dmProg, vsProg) = 0);
+          nProgValid = nProgValid + 1;
+ELSE;
+     sCtrlTypeCheck = CELLGETS (cbProg, curHLYear, curScenario, vsProg, 'Control Type');
+     IF (sCtrlTypeCheck @<> vsControlType);
+          nProgValid = nProgValid + 1;     
+     ENDIF;
+ENDIF;
+
+#*** Check Outcome
+IF (DIMIX (dmOC, vsOC) = 0);
+     nOCValid = nOCValid + 1;
+ENDIF;
+
+#*** Check Measure
+IF (DIMIX (dmMeas, vsMeasCode) = 0);
+     nMeasValid = nMeasValid + 1;
+ENDIF;
+
+#*** Check Reason
+IF (DIMIX (dmReason, vsReason) = 0);
+     nReasValid = nReasValid + 1;
+ENDIF;
+
+#*** Check Function
+IF (DIMIX (dmFunc, vsFunc) = 0);
+     nFuncValid = nFuncValid + 1;
+ENDIF;
+
+#*** Check MA
+IF (DIMIX (dmMA, vsMA) = 0);
+     nMAValid = nMAValid + 1;
+ENDIF;
+
+#*** Check Account
+IF (DIMIX (dmAcc, vsAcc) = 0);
+     nAccValid = nAccValid + 1;
+ENDIF;
+
+#*** Check Appropriation Item
+IF (DIMIX (dmItem, vsItem) = 0);
+     nItemValid = nItemValid + 1;
+ENDIF;
+
+#*** Check Appropriation Type
+IF (DIMIX (dmType, vsType) = 0);
+     nTypeValid = nTypeValid + 1;
+ENDIF;
+
+#*** Check Related Entity
+IF (DIMIX (dmRE, vsRE) = 0);
+     nREValid = nREValid + 1;
+ENDIF;
+
+#*** Check SPP
+IF (DIMIX (dmSPP, vsSPP) = 0);
+     nSPPValid = nSPPValid + 1;
+ENDIF;
+
+
+#*************************************************************************************************************************************#
+#**** VALIDATION CHECKS ****#
+
+nValid = nProgValid + nOCValid + nMeasValid + nReasValid + nFuncValid +  nMAValid + nAccValid +  nTypeValid + nItemValid + nREValid + nSPPValid;
+nTotalValid = nTotalValid + nValid;
+IF (nValid > 0);
+#**** VALIDATION FAILED ***#
+     IF (nProgValid > 0);
+#          ASCIIOUTPUT (sOutputFile, 'Programme Code error on line ', NUMBERTOSTRING(nLine), vsProg, vsControlType);
+     ENDIF;
+
+     IF (nMeasValid > 0);
+          ASCIIOUTPUT ('cbms dept upload failed.csv', 'Measure Code error on line ', NUMBERTOSTRING(nLine), vsMeasCode);
+     ENDIF;
+
+     IF (nReasValid > 0);
+          ASCIIOUTPUT ('cbms dept upload failed.csv', 'Reason Code error on line ', NUMBERTOSTRING(nLine), vsReason);
+     ENDIF;
+
+     IF (nOCValid > 0);
+          ASCIIOUTPUT ('cbms dept upload failed.csv', 'Outcome Code error on line ', NUMBERTOSTRING(nLine), vsOC);
+     ENDIF;
+
+     IF (nFuncValid > 0);
+          ASCIIOUTPUT ('cbms dept upload failed.csv', 'Function Code error on line ', NUMBERTOSTRING(nLine), vsFunc);
+     ENDIF;
+
+     IF (nMAValid > 0);
+          ASCIIOUTPUT ('cbms dept upload failed.csv', 'Movement Account Code error on line ', NUMBERTOSTRING(nLine), vsMA);
+     ENDIF;
+
+     IF (nAccValid > 0);
+          ASCIIOUTPUT ('cbms dept upload failed.csv', 'Account Code error on line ', NUMBERTOSTRING(nLine), vsAcc);
+     ENDIF;
+
+     IF (nTypeValid > 0);
+          ASCIIOUTPUT ('cbms dept upload failed.csv', 'Appropriation Type error on line ', NUMBERTOSTRING(nLine), vsType);
+     ENDIF;
+
+     IF (nItemValid > 0);
+          ASCIIOUTPUT ('cbms dept upload failed.csv', 'Appropriation Item error on line ', NUMBERTOSTRING(nLine), vsItem);
+     ENDIF;
+
+     IF (nREValid > 0);
+          ASCIIOUTPUT ('cbms dept upload failed.csv', 'Related Entity error on line ', NUMBERTOSTRING(nLine), vsRE);
+     ENDIF;
+
+     IF (nSPPValid > 0);
+          ASCIIOUTPUT ('cbms dept upload failed.csv', 'SPP error on line ', NUMBERTOSTRING(nLine), vsSPP);
+     ENDIF;
+
+ELSE;
+
+#*** VALIDATION PASSED ****#
+# Do Nothing
+
+ENDIF;
+
+     nLine = nLine + 1;
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#ITEMSKIP;
+
+
+IF (vsStatus @<> 'financeapproved');
+     ITEMSKIP;
+ENDIF;
+
+
+# Account
+IF (vsAcc @= '3322001' % vsAcc @= '3322002');
+     ItemSkip;
+ENDIF;
+
+
+IF (vsSystemDerived @= 'TRUE' & vsMA @<> '7201');
+#IF ((SUBST(vsAcc, 1, 1) @= '6') & (vsSystemDerived @= 'TRUE'));
+     ItemSkip;
+ENDIF;
+
+sControlType = 'Departmental';
+
+
+
+IF (vsOC @= '9173' & vsType @= 'Appropriation Bill 1');
+     vsProg = 'DEP:01:01:01';
+ENDIF;
+
+IF (vsOC @= '9173' & vsType @= 'Appropriation Type - Unallocated');
+     vsProg = 'DEP:01:01:02';
+ENDIF;
+
+IF (vsOC @= '9173' & vsType @= 'Receipts/Payments from/to Independent Sources - FMA Act s31, FMA Reg 15 - F2008C00384 (FMA only)');
+     vsProg = 'DEP:01:01:03';
+ENDIF;
+
+IF (vsOC @= '9173' & vsType @= 'Appropriation Bill 1 - Capital Budget (DCB) - - Non Operating');
+     vsProg = 'DEP:01:01:04:01';
+ENDIF;
+
+IF (vsOC @= '9173' & vsType @= 'Bill 2 - Non Operating - Equity Injection');
+     vsProg = 'DEP:01:01:04:02';
+ENDIF;
+
+IF (vsOC @= '9174' & vsType @= 'Appropriation Bill 1');
+     vsProg = 'DEP:02:01:01';
+ENDIF;
+
+IF (vsOC @= '9174' & vsType @= 'Appropriation Type - Unallocated');
+     vsProg = 'DEP:02:01:02';
+ENDIF;
+
+IF (vsOC @= '9174' & vsType @= 'Receipts/Payments from/to Independent Sources - FMA Act s31, FMA Reg 15 - F2008C00384 (FMA only)');
+     vsProg = 'DEP:02:01:03';
+ENDIF;
+
+IF (vsOC @= '9174' & vsType @= 'Appropriation Bill 1 - Capital Budget (DCB) - - Non Operating');
+     vsProg = 'DEP:02:01:04:01';
+ENDIF;
+
+IF (vsOC @= '9174' & vsType @= 'Bill 2 - Non Operating - Equity Injection');
+     vsProg = 'DEP:02:01:04:02';
+ENDIF;
+
+
+# Get period elements
+#Period01 = SUBST(psHLYear, 3, 9);
+#Period00 = DIMNM('period', DIMIX('period', Period01) -1);
+#Period02 = DNEXT('period', Period01);
+
+Period02 = SUBST(psHLYear, 3, 9);
+Period01 = DIMNM('period', DIMIX('period', Period02) -1);
+Period00 = DIMNM('period', DIMIX('period', Period01) -1);
+
+Period03 = DNEXT('period', Period02);
+Period04 = DNEXT('period', Period03);
+Period05 = DNEXT('period', Period04);
+Period06 = DNEXT('period', Period05);
+Period07 = DNEXT('period', Period06);
+Period08 = DNEXT('period', Period07);
+Period09 = DNEXT('period', Period08);
+Period10 = DNEXT('period', Period09);
+Period11 = DNEXT('period', Period10);
+Period12 = DNEXT('period', Period11);
+Period13 = DNEXT('period', Period12);
+Period14 = DNEXT('period', Period13);
+Period15 = DNEXT('period', Period14);
+Period16 = DNEXT('period', Period15);
+
+
+#********************************************************************************************
+#**** DEFAULT ACCOUNTS ****#
+
+# Get movement account element
+IF (vsMA @= '');
+     vsMA = '-';
+ELSE;
+     vsMA = vsMA;
+ENDIF;
+
+# Get related entity element
+IF (vsRE @= '');
+     vsRE = '-';
+ELSE;
+     vsRE = vsRE;
+ENDIF;
+
+# Get SPP element
+IF (vsSPP @= '');
+     vsSPP = '-';
+ELSE;
+     vsSPP = vsSPP;
+ENDIF;
+
+# Get jurisdiction element
+IF (vsJur @= '');
+     vsJur = '-';
+ELSE;
+     vsJur = vsJur;
+ENDIF;
+
+
+# Get Appropriation Item
+IF (vsItem @='');
+     vsItem =  '-';
+ENDIF;
+
+#* Get Measure Code Element
+IF (vsMeasCode @= '');
+     vsMeasCode = 'M00000';
+ELSE;
+     vsMeasCode = vsMeasCode;
+ENDIF;
+
+IF (vsReason @= 'Central processes - new estimates round' % vsReason @= 'Changes/Restatement of Opening Balances');
+    vsReason = 'Other variations not elsewhere defined';
+ENDIF;
+
+#sNewID = NUMBERTOSTRING(sAdjID);
+
+sCheckCBMSVar = vsCBMSVar | vsProg | vsOC | vsFunc | vsType | vsItem | vsSPP | vsReason | vsMeasCode | vsTitle;
+
+# GET A NEW ID
+#IF (sOldCBMS @<> vsCBMSVar);
+IF (sOldCBMS @<> sCheckCBMSVar);
+
+     sNewID = '00000' | TRIM(STR(CELLGETN (cbID, sHLYear, sScenario, 'Total IDs', 'Used') + 1, 5, 0));
+     sNewID = SUBST (sNewID, LONG (sNewID) - 4, 5);
+
+     IF (LONG(sNewID) = 1);
+          sNewID = '0000' | sNewID;
+     ENDIF;
+
+     IF (LONG(sNewID) = 2);
+          sNewID = '000' | sNewID;
+     ENDIF;
+
+     IF (LONG(sNewID) = 3);
+          sNewID = '00' | sNewID;
+     ENDIF;
+
+     IF (LONG(sNewID) = 4);
+          sNewID = '0' | sNewID;
+     ENDIF;
+
+     IF (LONG(sNewID) = 5);
+          sNewID = sNewID;
+     ENDIF;
+
+     sID = sNewID;
+
+ELSE;
+
+     sID = sOldID;
+     sNewID = sID;
+
+ENDIF;
+
+IF (vsCBMSVar @= '0000A');
+     sID = '0000A';
+     sNewID = '0000A';
+ENDIF;
+
+IF (vsCBMSVar @= '00FBO');
+     sID = '00FBO';
+     sNewID = '00FBO';
+ENDIF;
+
+
+
+
+IF (P00 = 0 & P01 = 0 & P02 = 0 & P03 = 0 & P04 = 0 & P05 = 0 & P06 = 0 & P07 = 0 & P08 = 0 & P09 = 0 & P10 = 0 & P11 = 0 & P12 = 0 & P13 = 0 & P14 = 0) ;
+     nZeroCheck = P00 + P01 + P02 + P03 + P04 + P05 + P06 + P07 + P08 + P09 + P10 + P11 + P12  + P13 + P14;
+ENDIF;
+
+IF (vsCBMSVar @<> '0000A' & vsCBMSVar @<> '00FBO');
+
+     #*** Import Data Into ID Details Cube
+     CELLPUTN(1,cbID, sHLYear, sScenario, sNewID, 'used');
+     CELLPUTS('Y', cbID, sHLYear, sScenario, sNewID, 'disagree cashflow');
+     CELLPUTS(vsProg, cbID, sHLYear, sScenario, sNewID,  snProg | ' code');
+     sProgDesc = ATTRS(dmProg, vsProg, 'code and description');
+     CELLPUTS(sProgDesc, cbID, sHLYear, sScenario, sNewID, snProg | ' description');
+     CELLPUTS(vsTitle, cbID, sHLYear, sScenario, sNewID, 'title');
+     CELLPUTS('(' | sNewID | ') ' | vsDesc, cbID, sHLYear, sScenario, sNewID, 'description');
+     CELLPUTS('approved',cbID, sHLYear, sScenario, sNewID, 'status');
+     CELLPUTS(vsReason, cbID, sHLYear,sScenario, sNewID, 'reason');
+     CELLPUTS(vsOC, cbID, sHLYear, sScenario, sNewID, 'outcome');
+     CELLPUTS(vsFunc, cbID, sHLYear, sScenario, sNewID, 'function');
+     CELLPUTS(vsSPP, cbID, sHLYear, sScenario, sNewID, 'SPP');
+     CELLPUTS(vsItem, cbID, sHLYear, sScenario, sNewID, 'appropriation item');
+     CELLPUTS(vsType,cbID, sHLYear, sScenario, sNewID, 'appropriation type');
+     CELLPUTS('ongoing',cbID, sHLYear, sScenario, sNewID, 'funding life');
+     CELLPUTS(vsMeasCode,cbID, sHLYear, sScenario, sNewID, 'measure');
+     CELLPUTS(vsCBMSVar, cbID, sHLYear, sScenario, sNewID, 'CBMS ID');
+ 
+     CELLPUTS('Manual', cbID, sHLYear, sScenario, sNewID, 'Adjustment Type');
+     CELLPUTS(sControlType, cbID, sHLYear, sScenario, sNewID, 'Control Type');
+
+ENDIF;
+
+# Get existing value from cube
+OldP00 = CellGetN(sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period00);
+OldP01 = CellGetN(sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period01);
+OldP02 = CellGetN(sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period02);
+OldP03 = CellGetN(sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period03);
+OldP04 = CellGetN(sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period04);
+OldP05 = CellGetN(sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period05);
+OldP06 = CellGetN(sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period06);
+OldP07 = CellGetN(sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period07);
+OldP08 = CellGetN(sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period08);
+OldP09 = CellGetN(sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period09);
+OldP10 = CellGetN(sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period10);
+OldP11 = CellGetN(sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period11);
+OldP12 = CellGetN(sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period12);
+OldP13 = CellGetN(sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period13);
+OldP14 = CellGetN(sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period14);
+
+# Convert signage on flat file value
+IF (vsMA @= '-');
+     X = ATTRS(dmAcc, vsAcc, 'DR/CR');
+ELSE;
+     X = ATTRS(dmMA, vsMA, 'DR/CR');
+ENDIF;
+
+     IF (X @= 'CR');
+         iConversion = -1;
+     ELSE;
+          iConversion = 1;
+     ENDIF;
+
+NP00 = P00 * iConversion;
+NP01 = P01 * iConversion;
+NP02 = P02 * iConversion;
+NP03 = P03 * iConversion;
+NP04 = P04 * iConversion;
+NP05 = P05 * iConversion;
+NP06 = P06 * iConversion;
+NP07 = P07 * iConversion;
+NP08 = P08 * iConversion;
+NP09 = P09 * iConversion;
+NP10 = P10 * iConversion;
+NP11 = P11 * iConversion;
+NP12 = P12 * iConversion;
+NP13 = P13 * iConversion;
+NP14 = P14 * iConversion;
+
+# Get program element (deliberately at this position rather than at the beginning with the other elements)
+sElType = DTYPE(dmProg, vsProg);
+WHILE (sElType @= 'C');
+     vsProg = ELCOMP(dmProg, vsProg, 1);
+     sElType = DTYPE(dmProg, vsProg);
+END;
+
+IF (CellisUpdateable(sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period01) = 1);
+
+     CellPutN(OldP00 + NP00, sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period00);
+     CellPutN(OldP01 + NP01, sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period01);
+     CellPutN(OldP02 + NP02, sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period02);
+     CellPutN(OldP03 + NP03, sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period03);
+     CellPutN(OldP04 + NP04, sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period04);
+     CellPutN(OldP05 + NP05, sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period05);
+     CellPutN(OldP06 + NP06, sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period06);
+     CellPutN(OldP07 + NP07, sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period07);
+     CellPutN(OldP08 + NP08, sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period08);
+     CellPutN(OldP09 + NP09, sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period09);
+     CellPutN(OldP10 + NP10, sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period10);
+     CellPutN(OldP11 + NP11, sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period11);
+     CellPutN(OldP12 + NP12, sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period12);
+     CellPutN(OldP13 + NP13, sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period13);
+     CellPutN(OldP14 + NP14, sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, sID, vsJur, Period14);
+
+ENDIF;
+
+
+
+sOldCBMS = sCheckCBMSVar;
+sOldID = sID;
+
+#sOldCBMS = vsCBMSVar;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

@@ -1,0 +1,340 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+cbProg = snProg | ' details';
+
+
+#*** DECLARE ID DETAILS CUBE DIMENSIONS
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+dmVar = 'variables';
+
+
+sObject  = '$LoadAEAdj';
+sAEView = '$LoadAEAdj';
+
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CLEAR ADJUSTMENTS CUBE VIEW ***#
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+#SUBSETDESTROY (dmStatus, sAEView);
+
+
+#****CREATE SUBSETS****#
+# headline year
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmHLYear | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Status
+#SubsetCreate(dmStatus, sAEView);
+#SubsetElementInsert(dmStatus, sAEView, 'data', 1);
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbAE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmHLYear, sAEView);
+#VIEWSUBSETASSIGN (cbAE, sAEView, dmStatus, sAEView);
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbAE, sAEView, 1);
+ViewSuppressZeroesSet(cbAE, sAEView, 1);
+#ViewExtractSkipCalcsSet(cbAE, sAEView, 1);
+VIEWZEROOUT (cbAE, sAEView);
+
+sOutputFile = 'adjustment upload failed.csv';
+
+nLine = 1;
+nValid = 0;
+nTotalValid = 0;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF (vsID @= '0000A' % vsID @= '0000B');
+     ITEMSKIP;
+ENDIF;
+
+
+sTitle = CELLGETS (cbID, vsHLYear, vsScenario, vsID, 'title');
+sProg = CELLGETS (cbID, vsHLYear, vsScenario, vsID, 'programme code');
+
+
+IF (vsStatus @= 'data');
+     IF (DIMIX (dmProg, sProg) <> 0 & sTitle @<> '');
+          sProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, sProg);
+     ELSE;
+         nLine = nLine + 1;
+         ITEMSKIP;
+     ENDIF;
+ELSE;
+         nLine = nLine + 1;
+     ITEMSKIP;
+ENDIF;
+
+#*** PERFORM A VALIDATION TEST ***#
+nOCValid = 0;
+nMeasValid = 0;
+nReasValid = 0;
+nFuncValid = 0;
+nMAValid = 0;
+nAccValid = 0;
+nItemValid = 0;
+nTypeValid = 0;
+nREValid  = 0;
+nSPPValid = 0;
+
+#*************************************************************************************************************************************#
+#**** DEFAULT ACCOUNTS ****#
+
+# Get movement account element
+IF (vsMA @= '');
+     vsMA = '-';
+ELSE;
+     vsMA = vsMA;
+ENDIF;
+
+# Get related entity element
+IF (vsRE @= '');
+     vsRE = '-';
+ELSE;
+     vsRE = vsRE;
+ENDIF;
+
+# Get SPP element
+IF (vsSPP @= '');
+     vsSPP = '-';
+ELSE;
+     vsSPP = vsSPP;
+ENDIF;
+
+# Get jurisdiction element
+IF (vsJur @= '');
+     vsJur = '-';
+ELSE;
+     vsJur = vsJur;
+ENDIF;
+
+#* Get Appropriation Item elemnent
+IF (vsItem @= '');
+     vsItem = '-';
+ELSE;
+     vsItem = vsItem;
+ENDIF;
+
+IF (vsReason @= 'Other');
+    vsReason = 'Other variations not elsewhere defined';
+ELSE;
+     vsReason = vsReason;
+ENDIF;
+
+
+#*************************************************************************************************************************************#
+#**** VALIDATION CHECKS ****#
+#*** Check Outcome
+IF (DIMIX (dmOC, vsOC) = 0);
+     nOCValid = nOCValid + 1;
+ENDIF;
+
+#*** Check Reason
+IF (DIMIX (dmReason, vsReason) = 0);
+     nReasValid = nReasValid + 1;
+ENDIF;
+
+#*** Check Function
+IF (DIMIX (dmFunc, vsFunc) = 0);
+     nFuncValid = nFuncValid + 1;
+ENDIF;
+
+#*** Check MA
+IF (DIMIX (dmMA, vsMA) = 0);
+     nMAValid = nMAValid + 1;
+ENDIF;
+
+#*** Check Account
+IF (DIMIX (dmAcc, vsAcc) = 0);
+     nAccValid = nAccValid + 1;
+ENDIF;
+
+#*** Check Appropriation Item
+IF (DIMIX (dmItem, vsItem) = 0);
+     nItemValid = nItemValid + 1;
+ENDIF;
+
+#*** Check Appropriation Type
+IF (DIMIX (dmType, vsType) = 0);
+     nTypeValid = nTypeValid + 1;
+ENDIF;
+
+#*** Check Related Entity
+IF (DIMIX (dmRE, vsRE) = 0);
+     nREValid = nREValid + 1;
+ENDIF;
+
+#*** Check SPP
+IF (DIMIX (dmSPP, vsSPP) = 0);
+     nSPPValid = nSPPValid + 1;
+ENDIF;
+
+
+#*************************************************************************************************************************************#
+#**** VALIDATION CHECKS ****#
+
+nValid = nOCValid + nReasValid + nFuncValid +  nMAValid + nAccValid +  nTypeValid + nItemValid + nREValid + nSPPValid;
+nTotalValid = nTotalValid + nValid;
+IF (nValid > 0);
+#**** VALIDATION FAILED ***#
+
+     IF (nReasValid > 0);
+          ASCIIOUTPUT (sOutputFile, 'Reason Code error on line ', NUMBERTOSTRING(nLine), vsReason);
+     ENDIF;
+
+     IF (nOCValid > 0);
+          ASCIIOUTPUT (sOutputFile, 'Outcome Code error on line ', NUMBERTOSTRING(nLine), vsOC);
+     ENDIF;
+
+     IF (nFuncValid > 0);
+          ASCIIOUTPUT (sOutputFile, 'Function Code error on line ', NUMBERTOSTRING(nLine), vsFunc);
+     ENDIF;
+
+     IF (nMAValid > 0);
+          ASCIIOUTPUT (sOutputFile, 'Movement Account Code error on line ', NUMBERTOSTRING(nLine), vsMA);
+     ENDIF;
+
+     IF (nAccValid > 0);
+          ASCIIOUTPUT (sOutputFile, 'Account Code error on line ', NUMBERTOSTRING(nLine), vsAcc);
+     ENDIF;
+
+     IF (nTypeValid > 0);
+          ASCIIOUTPUT (sOutputFile, 'Appropriation Type error on line ', NUMBERTOSTRING(nLine), vsType);
+     ENDIF;
+
+     IF (nItemValid > 0);
+          ASCIIOUTPUT (sOutputFile, 'Appropriation Item error on line ', NUMBERTOSTRING(nLine), vsItem);
+     ENDIF;
+
+     IF (nREValid > 0);
+          ASCIIOUTPUT (sOutputFile, 'Related Entity error on line ', NUMBERTOSTRING(nLine), vsRE);
+     ENDIF;
+
+     IF (nSPPValid > 0);
+          ASCIIOUTPUT (sOutputFile, 'SPP error on line ', NUMBERTOSTRING(nLine), vsSPP);
+     ENDIF;
+
+ELSE;
+
+#*** VALIDATION PASSED ****#
+# Do Nothing
+
+ENDIF;
+
+     nLine = nLine + 1;
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#**** SKIP LINE IF DIMENSIONS ARENT VALID ***#
+IF (nTotalValid > 0);
+#     ITEMSKIP;
+ENDIF;
+
+
+sTitle = CELLGETS (cbID, vsHLYear, vsScenario, vsID, 'title');
+sProg = CELLGETS (cbID, vsHLYear, vsScenario, vsID, 'programme code');
+
+IF (DIMIX (dmProg, vsProg) <> 0);
+     IF ((vsID @= '0000A' % vsID @= '0000B') & sProg @= 'multiple');
+#          sProg =  ATTRS (dmProg, vsProg, 'programme mapping');
+          sProg = vsProg; 
+     ELSE;
+          sProg = sProg;
+     ENDIF;
+ELSE;
+     sProg = sProg;
+ENDIF;
+
+IF (vsReason @= 'Other');
+    vsReason = 'Other variations not elsewhere defined';
+ELSE;
+     vsReason = vsReason;
+ENDIF;
+
+IF ((vsID @<> '0000A' & vsID @<> '0000B'));
+     sReason = CELLGETS (cbID, vsHLYear, vsScenario, vsID, 'reason');
+     IF (sReason @= vsReason);
+          vsReason = vsReason;
+     ELSE;
+          vsReason = sReason;
+     ENDIF;
+ENDIF;
+
+
+sMeasCode = CELLGETS (cbID, vsHLYear, vsScenario, vsID, 'measure');
+
+IF (sMeasCode @= '' % sMeasCode @= 'multiple');
+     sMeasCode = 'M00000';
+ENDIF;
+
+IF (DIMIX (dmMeasCode, sMeasCode) = 0);
+    ASCIIOUTPUT ('load adjustments cube data - missing education measure.csv', vsHLYear, vsScenario, vsID, sTitle, sMeasCode);
+    sMeasCode = 'M00000';
+ELSE;
+     sMeasCode = sMeasCode;
+ENDIF;
+
+
+     IF (DIMIX (dmProg, sProg) <> 0 & sTitle @<> '');
+          sProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, sProg);
+          IF (CELLISUPDATEABLE (cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, sMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, vsID, vsJur, vsPeriod) = 1);
+               nOldValue = CELLGETN (cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, sMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, vsID, vsJur, vsPeriod);
+               CELLPUTN (nOldValue + Value, cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, sMeasCode, vsType, vsMA, vsItem, sProg, vsAcc, vsID, vsJur, vsPeriod);
+          ENDIF;
+         #ASCIIOUTPUT ('load adjustments cube data - data.csv', vsHLYear, vsScenario, vsStatus, vsID, sTitle, sProg, vsAcc, vsPeriod);
+
+     ELSE;
+         ASCIIOUTPUT ('load adjustments cube data - excluded data.csv', vsHLYear, vsScenario, vsID, sTitle, sProg);
+     ENDIF;
+
+
+
+
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

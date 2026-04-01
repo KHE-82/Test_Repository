@@ -1,0 +1,23 @@
+{
+	"@type":"Subset",
+	"Name":"sys_Programme Reporting",
+	"Alias":"code and description",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9000500')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9000510')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9000515')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9000520')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9000525')"
+		}
+	]
+}

@@ -1,0 +1,364 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               ME Apply Phasing
+#**** DESCRIPTION:       This process creates a view and applies phasing to the selected line
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 18/04/2019    KG             Initial Revision
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE MONTHLY ESTIMATES REPORTING CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+cbME = 'ME reporting';
+dmMEMeas = 'ME reporting measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE ME PHASING CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+cbMEPhase = 'ME phasing method';
+dmMEPhaseMethod = 'ME phasing method';
+dmMEPhaseMeas = 'ME phasing method measure';
+
+#--------------------------------------------------------------------------------------------------------------------------
+#*** DIMENSION ATTRIBUTES
+#--------------------------------------------------------------------------------------------------------------------------
+dmReasonAttr = '}ElementAttributes_reason';
+dmAccAttr = '}ElementAttributes_account';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAM DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+dmProgMeas = snProg | ' measure';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE ME BALANCE SHEET CUBE (ACCOUNT TEMPLATE)
+#---------------------------------------------------------------------------------------------------------------------------
+cbMEBS = 'ME balance sheet';
+dmAccTemp = 'account template';
+dmAccBS = 'account_bs';
+dmMEBSMeas = 'balance sheet measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+
+IF (SUBST(sUser,1,3) @= 'CAM');
+	sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+	sUser = TM1User();
+ENDIF;
+
+sMEView = sUser | '_$MEApplyPhasing';
+sMEMeas = 'Phasing Method';
+sRpTMeas = 'value';
+
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CREATE SOURCE VIEW FROM ME REPORTING
+#*****************************************************************************************************************************************************
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbME, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+SUBSETDESTROY (dmRE, sMEView);
+SUBSETDESTROY (dmSPP, sMEView);
+SUBSETDESTROY (dmMA, sMEView);
+SUBSETDESTROY (dmProg, sMEView);
+SUBSETDESTROY (dmItem, sMEView);
+SUBSETDESTROY (dmAcc, sMEView);
+SUBSETDESTROY (dmID, sMEView);
+SUBSETDESTROY (dmJur, sMEView);
+SUBSETDESTROY (dmPer, sMEView);
+SUBSETDESTROY (dmMEMeas, sMEView);
+
+
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sMEView);
+SubsetElementInsert(dmHLYear, sMEView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sMEView);
+SubsetElementInsert(dmScenario, sMEView, psScenario, 1);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Movement Account
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}, [' | dmMA |'].[editable] = "")}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {' | dmProg | '].[' | psProg | ']}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Account
+MDX = '{{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[9000130]}, ALL, RECURSIVE )}, 0)},{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[3800001]}, ALL, RECURSIVE )}, 0)},{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmAcc | '].[9000003]}, ALL, RECURSIVE )}, 0)}} ';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# ID
+SubsetCreate(dmID, sMEView);
+SubsetElementInsert(dmID, sMEView, psID, 1);
+
+# Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# Month
+#MDX = '{ EXCEPT( {FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer |'] )}, 0)}, [' | dmPer |'].[type] = "nMonth")}, { [' | dmPer |'].[P00] }) }';
+#MDX = '{ EXCEPT( {FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer |'] )}, 0)}, [' | dmPer |'].[type] = "Month")}, { [' | dmPer |'].[P0] }) }';
+MDX = '{ [' | dmPer |'].[P0] }) }';
+SUBSETCREATEBYMDX (sMEView, MDX);
+
+# ME Measure
+SubsetCreate(dmMEMEas, sMEView);
+SubsetElementInsert(dmMEMEas, sMEView, sMEMeas, 1);
+
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbME, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmHLYear, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmScenario, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmRE, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmSPP, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmMA, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmProg, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmItem, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmAcc, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmID, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmJur, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmPer, sMEView);
+VIEWSUBSETASSIGN (cbME, sMEView, dmMEMEas, sMEView);
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbME, sMEView, 1);
+ViewSuppressZeroesSet(cbME, sMEView, 1);
+ViewExtractSkipCalcsSet(cbME, sMEView, 1);
+ViewExtractSkipRuleValuesSet (cbME, sMEView, 1);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sMEView;
+
+
+#******************************************************************************************************************
+#*** COUNTERS AND MONTHS
+#******************************************************************************************************************
+lHeaderCounter = 0;
+sMonth01 = 'Jul';
+sMonth02 = 'Aug';
+sMonth03 = 'Sep';
+sMonth04 = 'Oct';
+sMonth05 = 'Nov';
+sMonth06 = 'Dec';
+sMonth07 = 'Jan';
+sMonth08 = 'Feb';
+sMonth09 = 'Mar';
+sMonth10 = 'Apr';
+sMonth11 = 'May';
+sMonth12 = 'Jun';
+
+nMonthCounter = 1;
+nLastMonthCounter = 12;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#----------------------------------------------
+#---- GET MFC PHASING METHOD % BY MONTH
+#----------------------------------------------
+IF (SUBST(vsValue, 1, 2) @= 'M0');
+	sPhaseMethod = SUBST(vsValue, 1, 4);
+ELSE;
+	sPhaseMethod = DIMENSIONELEMENTPRINCIPALNAME (dmMEPhaseMethod, vsValue);
+ENDIF;
+
+
+IF (DIMIX (dmMEPhaseMethod, sPhaseMethod) = 0);
+	ASCIIOUTPUT ('invalid phasing method selected.txt', vsHLYear, vsScenario,vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsJur,  sPhaseMethod);
+	ITEMSKIP;
+ELSE;
+
+ASCIIOUTPUT ('phasing method selected.txt', vsHLYear, vsScenario,vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, vsJur,  sPhaseMethod);
+	#----------------------------------------------
+	#---- GET ANNUAL BUDGET
+	#----------------------------------------------
+	nAnnualBudget = CELLGETN(cbME, psHLYear, psScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, '0000A', vsJur, 'Jun YTD', sRptMeas);
+
+	nMonthCounter = 1;
+	WHILE (nMonthCounter <= nLastMonthCounter);
+		IF (nMonthCounter = 1);
+			sMonth = 'Jul';
+		ELSEIF(nMonthCounter = 2);
+			sMonth = 'Aug';
+		ELSEIF(nMonthCounter = 3);
+			sMonth = 'Sep';
+		ELSEIF(nMonthCounter = 4);
+			sMonth = 'Oct';
+		ELSEIF(nMonthCounter = 5);
+			sMonth = 'Nov';
+		ELSEIF(nMonthCounter = 6);
+			sMonth = 'Dec';
+		ELSEIF(nMonthCounter = 7);
+			sMonth = 'Jan';
+		ELSEIF(nMonthCounter = 8);
+			sMonth = 'Feb';
+		ELSEIF(nMonthCounter = 9);
+			sMonth = 'Mar';
+		ELSEIF(nMonthCounter = 10);
+			sMonth = 'Apr';
+		ELSEIF(nMonthCounter = 11);
+			sMonth = 'May';
+		ELSEIF(nMonthCounter = 12);
+			sMonth = 'Jun';
+		ENDIF;
+
+		#----------------------------------------------
+		#---- GET PHASING %
+		#----------------------------------------------
+		nFactor = 100;
+		nMonthPhase% = CELLGETN (cbMEPhase, sPhaseMethod, sMonth, 'value') / nFactor;
+
+		#----------------------------------------------
+		#---- APPLY PHASING
+		#----------------------------------------------
+		IF (ELISANC (dmAcc, '3800001', vsAcc) = 0);
+			nPhaseAmount = ROUNDP(nAnnualBudget * nMonthPhase%,0);
+		ELSE;
+			nOBAL = CELLGETN(cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, '00001', vsJur, 'P0', sRptMeas);
+			nRemAmount = nAnnualBudget - nOBAL;
+			nPhaseAmount = ROUNDP(nRemAmount * nMonthPhase%,0);
+		ENDIF;
+
+		#----------------------------------------------
+		#---- IDENTIFY MONTH IF IT IS LOCKED
+		#----------------------------------------------
+		sMonthLock = ATTRS (dmPer, sMonth, 'me phasing lock');
+
+		#----------------------------------------------
+		#---- GET EXISTING DATA
+		#----------------------------------------------
+		nOldValue = CELLGETN(cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, '00001', vsJur, sMonth, sRptMeas);
+		#----------------------------------------------
+		#---- POST DATA
+		#----------------------------------------------
+		IF (sMonthLock @= '');
+			#----------------------------------------------
+			#---- MONTH IS NOT LOCK AND PHASING IS NOT 0%
+			#----------------------------------------------
+#			IF (nMonthPhase% <> 0);
+				IF (CELLISUPDATEABLE (cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, '00001', vsJur, sMonth, sRptMeas) = 1);
+					CELLPUTN (nPhaseAmount, cbME, vsHLYear, vsScenario, vsRE, vsSPP, vsMA, vsProg, vsItem, vsAcc, '00001', vsJur, sMonth, sRptMeas);
+				ENDIF;
+#			ENDIF;
+		ENDIF;
+
+		nMonthCounter = nMonthCounter + 1;
+	END;
+
+ENDIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbME, sMEView);
+SUBSETDESTROY (dmHLYear, sMEView);
+SUBSETDESTROY (dmScenario, sMEView);
+SUBSETDESTROY (dmRE, sMEView);
+SUBSETDESTROY (dmSPP, sMEView);
+SUBSETDESTROY (dmMA, sMEView);
+SUBSETDESTROY (dmProg, sMEView);
+SUBSETDESTROY (dmItem, sMEView);
+SUBSETDESTROY (dmAcc, sMEView);
+SUBSETDESTROY (dmID, sMEView);
+SUBSETDESTROY (dmJur, sMEView);
+SUBSETDESTROY (dmPer, sMEView);
+SUBSETDESTROY (dmMEMeas, sMEView);
+#endregion

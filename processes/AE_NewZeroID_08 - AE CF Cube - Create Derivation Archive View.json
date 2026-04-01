@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"AE_NewZeroID_08 - AE CF Cube - Create Derivation Archive View",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_NewZeroID_08 - AE CF Cube - Create Derivation Archive View.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[]
+}

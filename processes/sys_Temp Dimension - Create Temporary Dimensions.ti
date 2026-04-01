@@ -1,0 +1,108 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               	sys_Temp Dimension - Create Temporary Dimensions
+#**** DESCRIPTION:       	This process will will be create temporary dimensions for flatfile uploads
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 12/05/2014    KG             Initial Revision
+#**** 2019	KG	Update for NEW GEUS
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** DECLARE TEMPORARY DIMENSION
+#******************************************************************************************************************
+dmTmpID = '}tmp_ID_tmp ' | sUser;
+
+
+#******************************************************************************************************************
+#*** DECLARE TEMPORARY DIMENSION
+#******************************************************************************************************************
+#dmTmpID = 'tmp_ID_tmp FF ' | sUser ;
+dmTmpID = '}tmp_ID_tmp ' | sUser ;
+dmTmpIDAttr = '}ElementAttirbutes_' | dmTmpID;
+
+
+#******************************************************************************************************************
+#***  BUILD TEMPORARY DIMENSION & ASSIGN VARIABLES
+#***  Build a dimension to store IDs so we don't keep getting new ones
+#******************************************************************************************************************
+
+IF (DIMENSIONEXISTS (dmTmpID) = 1);
+	DimensionDeleteAllElements (dmTmpID);
+
+	IF (DIMIX (dmTmpIDAttr, 'Prog') = 0);
+		ATTRINSERT (dmTmpID, '', 'Program', 'S');
+	ENDIF;
+
+	IF (DIMIX (dmTmpIDAttr, 'ID') = 0);
+		ATTRINSERT (dmTmpID, '', 'ID', 'S');
+	ENDIF;
+
+	IF (DIMIX (dmTmpIDAttr, 'Appropriation') = 0);
+		ATTRINSERT (dmTmpID, '', 'Appropriation', 'S');
+	ENDIF;
+
+	IF (DIMIX (dmTmpIDAttr, 'Function') = 0);
+		ATTRINSERT (dmTmpID, '', 'Function', 'S');
+	ENDIF;
+
+ELSE;
+	DIMENSIONCREATE (dmTmpID);
+	ATTRINSERT (dmTmpId, '', 'Program', 'S');
+	ATTRINSERT (dmTmpID, '', 'ID', 'S');
+	ATTRINSERT (dmTmpID, '', 'Appropriation', 'S');
+	ATTRINSERT (dmTmpID, '', 'Function', 'S');
+
+ENDIF;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

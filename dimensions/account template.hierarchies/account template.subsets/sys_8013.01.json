@@ -1,0 +1,35 @@
+{
+	"@type":"Subset",
+	"Name":"sys_8013.01",
+	"Alias":"title",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00001')"
+		},
+		{
+			"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00002')"
+		},
+		{
+			"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00003')"
+		},
+		{
+			"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00004')"
+		},
+		{
+			"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00005')"
+		},
+		{
+			"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00006')"
+		},
+		{
+			"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00007')"
+		},
+		{
+			"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00008')"
+		},
+		{
+			"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00009')"
+		}
+	]
+}

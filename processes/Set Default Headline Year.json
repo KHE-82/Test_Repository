@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"Set Default Headline Year",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"Set Default Headline Year.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[]
+}

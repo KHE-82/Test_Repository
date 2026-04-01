@@ -1,0 +1,21 @@
+{
+	"@type":"Cube",
+	"Name":"sys_application",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('sys_application')"
+		},
+		{
+			"@id":"Dimensions('sys_application measure')"
+		}
+	],
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('sys_application measure')"
+	},
+	"Views@Code.links":
+	[
+		"sys_application.views/Default.json"
+	]
+}

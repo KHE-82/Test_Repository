@@ -1,0 +1,621 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_push pumpkin - Generic
+#**** DESCRIPTION:       This process extracts AE Adjustment to sys_pumpkin cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2020                  KG             Initial Revision
+
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#--------------------------------------------------------------------------------------------------------------------------
+#*** DIMENSION ATTRIBUTES
+#--------------------------------------------------------------------------------------------------------------------------
+dmReasonAttr = '}ElementAttributes_reason';
+dmAccAttr = '}ElementAttributes_account';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+cbID = 'AE id details';
+#---------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+cbProg = snProg | ' details';
+#---------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE EXTRACT CUBE
+cbProg = snProg | ' details';
+#---------------------------------------------------------------------------------------------------------------------------
+cbExtract = 'sys_push pumpkin';
+dmRowID = 'sys_extract row id';
+dmExtractMeas = cbExtract | ' measure';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+sHLYear = ATTRS(dmVar,'headline year','value');
+sScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+
+sAEView = sUser | '_$pushpumkin';
+sStatus = 'Total approved';
+sOC = 'Total outcomes';
+sRE = 'Total related entity';
+sFunc = 'Total functions';
+sReason = 'Total reason';
+sSPP = 'Total SPP';
+sMeas = 'Total Measures';
+sType = 'Total approp types';
+sMA ='Total movement';
+sItem = 'Total approp item';
+
+#*****************************************************************************************************# 
+#*********** Different Account Group - psAccGrp to determin what account to use********# 
+#*****************************************************************************************************# 
+IF( psAccGrp @= 'Exp');
+	sAcc = '2000000';
+Elseif( psAccGrp @= 'CF');
+	sAcc = '6212000';
+Else;
+	sAcc = '3800001';
+Endif;
+#*****************************************************************************************************# 
+
+sTotalID = 'Total IDs';
+sIDOpBal = '00000';
+sIDNewAdj = 'New Adjustments';
+sJur='Total jurisdictions';
+sPer = 'Total years';
+sTotalRow = 'Total Rows';
+
+sPA = Dimnm(dmPer, Dimix(dmPer, Subst(psHLYear,3,9))-2);
+sRB = Dimnm(dmPer, Dimix(dmPer, Subst(psHLYear,3,9))-1);
+sNB = Dimnm(dmPer, Dimix(dmPer, Subst(psHLYear,3,9))-0);
+sFE1 = Dimnm(dmPer, Dimix(dmPer, Subst(psHLYear,3,9))+1);
+sFE2 = Dimnm(dmPer, Dimix(dmPer, Subst(psHLYear,3,9))+2);
+sFE3 = Dimnm(dmPer, Dimix(dmPer, Subst(psHLYear,3,9))+3);
+
+
+sIDMeas01 = 'Title';
+sIDMeas02 = 'function';
+sIDMeas03 = 'reason';
+sIDMeas04 = 'CBMS measure code';
+sProgDetMeas01 = 'appropriation type';
+sProgDetMeas02 = 'Outcome';
+sExtractMeas01 = 'used';
+sExtractMeas02 = 'Appropriation Type';
+sExtractMeas03 = 'Account';
+sExtractMeas04 = 'ID';
+sExtractMeas05 = 'Title';
+sExtractMeas06 = 'SubFunction';
+sExtractMeas07 = 'Reason';
+sExtractMeas08 = 'Measure';
+sExtractPA = 'PA';
+sExtractNB = 'NB';
+sExtractRB = 'RB';
+sExtractFE1 = 'FE1';
+sExtractFE2 = 'FE2';
+sExtractFE3 = 'FE3';
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CLEAR SYS PUIMPKIN CUBE ***#
+#*****************************************************************************************************************************************************
+#*****************************************************************************************************# 
+#***********Only Exp need to clear the target as it was the beginning of report       ********# 
+#*****************************************************************************************************# 
+
+If( psAccGrp @= 'Exp');
+	#---------------------------------------------------------------------------------------------------------------------------
+	#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+	#---------------------------------------------------------------------------------------------------------------------------
+	VIEWDESTROY (cbExtract, sAEView);
+	SUBSETDESTROY (dmClients, sAEView);
+
+	#---------------------------------------------------------------------------------------------------------------------------
+	#****CREATE SUBSETS****#
+	#---------------------------------------------------------------------------------------------------------------------------
+	# Client
+	SubsetCreate(dmClients, sAEView);
+	SubsetElementInsert(dmClients, sAEView, sUser, 1);
+
+
+	#---------------------------------------------------------------------------------------------------------------------------
+	#****BUILD VIEW****#
+	#---------------------------------------------------------------------------------------------------------------------------
+	VIEWCREATE (cbExtract, sAEView);
+	VIEWSUBSETASSIGN (cbExtract, sAEView, dmClients, sAEView);
+
+	VIEWZEROOUT (cbExtract, sAEView);
+
+	#---------------------------------------------------------------------------------------------------------------------------
+	#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+	#---------------------------------------------------------------------------------------------------------------------------
+	#---------------------------------------------------------------------------------------------------------------------------
+	VIEWDESTROY (cbExtract, sAEView);
+	SUBSETDESTROY (dmClients, sAEView);
+
+Endif;
+
+#*****************************************************************************************************************************************************
+#*** STEP 2 - CREATE SOURCE VIEW
+#*****************************************************************************************************************************************************
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmOC, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmFunc, sAEView);
+SUBSETDESTROY (dmReason, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmType, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS****#
+#---------------------------------------------------------------------------------------------------------------------------
+# headline year
+SubsetCreate(dmHLYear, sAEView);
+SubsetElementInsert(dmHLYear, sAEView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sAEView);
+SubsetElementInsert(dmScenario, sAEView, psScenario, 1);
+
+# Status
+SubsetCreate(dmStatus, sAEView);
+SubsetElementInsert(dmStatus, sAEView, sStatus, 1);
+
+# Outcome
+SubsetCreate(dmOC, sAEView);
+SubsetElementInsert(dmOC, sAEView, sOC, 1);
+
+# Related Entity
+SubsetCreate(dmRE, sAEView);
+SubsetElementInsert(dmRE, sAEView, sRE, 1);
+
+# Function
+SubsetCreate(dmFunc, sAEView);
+SubsetElementInsert(dmFunc, sAEView, sFunc, 1);
+
+# Reason
+SubsetCreate(dmReason, sAEView);
+SubsetElementInsert(dmReason, sAEView, sReason, 1);
+
+# SPP
+SubsetCreate(dmSpp, sAEView);
+SubsetElementInsert(dmSpp, sAEView, sSpp, 1);
+
+# Measure Code
+SubsetCreate(dmMeasCode, sAEView);
+SubsetElementInsert(dmMeasCode, sAEView, sMeas, 1);
+
+
+# Appropriation Type
+SubsetCreate(dmType, sAEView);
+SubsetElementInsert(dmType, sAEView, sType, 1);
+
+
+# Movement Account
+SubsetCreate(dmMA, sAEView);
+SubsetElementInsert(dmMA, sAEView, sMA, 1);
+
+
+# Appropriation Item
+SubsetCreate(dmItem, sAEView);
+SubsetElementInsert(dmItem, sAEView, sItem, 1);
+
+
+# Programme
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmProg | '].[' | psProg | ']}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+SUBSETMDXSET (dmProg, sAEView, '');
+
+# Account
+SubsetCreate(dmAcc, sAEView);
+SubsetElementInsert(dmAcc, sAEView, sAcc, 1);
+
+
+# ID
+MDX= '{[' | dmID | '].[' | sTotalID |']}+{[' | dmID | '].[' | sIDOpBal |']}+{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[' | dmID | '].[' | sIDNewAdj | ']}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+SUBSETMDXSET (dmID, sAEView, '');
+
+
+# Jurisdiction
+SubsetCreate(dmJur, sAEView);
+SubsetElementInsert(dmJur, sAEView, sJur, 1);
+
+# Period
+SubsetCreate(dmPer, sAEView);
+SubsetElementInsert(dmPer, sAEView, sPer, 1);
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#****BUILD VIEW****#
+#---------------------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbAE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmHLYear, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmScenario, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmStatus, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmOC, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmRE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmFunc, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmReason, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmSPP, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMeasCode, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmType, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmMA, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmItem, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmProg, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmAcc, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmID, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmJur, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmPer, sAEView);
+
+ViewSuppressZeroesSet (cbAE, sAEView,1);
+ViewExtractSkipZeroesSet (cbAE, sAEView, 1);
+ViewExtractSkipCalcsSet (cbAE, sAEView, 0);
+ViewExtractSkipRuleValuesSet (cbAE, sAEView, 0);
+
+DataSourceType='View';
+DatasourceCubeview=sAEView;
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#---------------------------------------------------------------------------------------------------------------------------
+#**** GET METADATA
+#---------------------------------------------------------------------------------------------------------------------------
+IF(psAccGrp @= 'Exp');
+	sExtractAcc = Attrs(dmAcc, vsAcc, 'description');
+	nScan =  scan('Expense', sExtractAcc);
+	nLong = Long('Expense');
+	sExtractAcc = Subst(sExtractAcc,nScan,nLong);
+ELSEIF(psAccGrp @='CF');
+	sExtractAcc = Attrs(dmAcc, vsAcc, 'description');
+	nScan =  scan('Cash', sExtractAcc);
+	nLong = Long('Cash');
+	sExtractAcc = Subst(sExtractAcc,nScan,nLong);
+ELSE;
+	sExtracAcc= ' Account N/A';
+
+ENDIF;
+
+
+
+sExtractTitle = CELLGETS(cbID, vsHLYear, vsScenario,vsID, sIDMeas01);	
+sExtractFunc = CELLGETS(cbProg, vsHLYear, vsScenario,vsProg, sIDMeas02);
+
+sExtractReason = CELLGETS(cbID, vsHLYear, vsScenario,vsID, sIDMeas03);
+IF( DIMIX(dmReason, sExtractReason) <>0);
+	sExtractReason = ATTRS(dmReason,sExtractReason, 'CBMS');	
+ENDIF;
+
+	
+sExtractMeas = CELLGETS(cbID, vsHLYear, vsScenario,vsID, sIDMeas04);	
+IF( DIMIX(dmMeasCode, sExtractMeas) <>0);
+	sExtractMeas = ATTRS(dmMeasCode,sExtractMeas, 'CBMS code and description');	
+ENDIF;
+
+sExtractType = CELLGETS(cbProg, vsHLYear,vsScenario,vsProg, sProgDetMeas01);
+
+sExtractOC = CELLGETS(cbProg, vsHLYear,vsScenario,vsProg, sProgDetMeas02);
+IF(DIMIX(dmOC,sOC) =0);
+	sExtractOC = ELCOMP(dmOC, sOC, 1);
+ENDIF;
+
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#**** GET FIN DATA
+#---------------------------------------------------------------------------------------------------------------------------
+
+nPA = CELLGETN(cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE,vsFunc,vsReason,vsSPP, vsMeas, vsType, vsMA,vsItem, vsPRog, vsAcc, vsID, vsJur, sPA);
+nRB = CELLGETN(cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE,vsFunc,vsReason,vsSPP, vsMeas, vsType, vsMA,vsItem, vsPRog, vsAcc, vsID, vsJur, sRB);
+nNB = CELLGETN(cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE,vsFunc,vsReason,vsSPP, vsMeas, vsType, vsMA,vsItem, vsPRog, vsAcc, vsID, vsJur, sNB);
+nFE1 = CELLGETN(cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE,vsFunc,vsReason,vsSPP, vsMeas, vsType, vsMA,vsItem, vsPRog, vsAcc, vsID, vsJur, sFE1);
+nFE2 = CELLGETN(cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE,vsFunc,vsReason,vsSPP, vsMeas, vsType, vsMA,vsItem, vsPRog, vsAcc, vsID, vsJur, sFE2);
+nFE3 = CELLGETN(cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE,vsFunc,vsReason,vsSPP, vsMeas, vsType, vsMA,vsItem, vsPRog, vsAcc, vsID, vsJur, sFE3);
+
+
+#asciioutput('source - ' | psAccGrp | '.csv' ,vsHLYear,
+#vsScenario,
+#vsStatus,
+#vsOC,
+#vsRE,
+#vsFunc,
+#vsReason,
+#vsSPP,
+#vsMeas,
+#vsType,
+#vsMA,
+#vsItem,
+#vsProg,
+#vsAcc,
+#vsID,
+#vsJur,
+#vsPer,
+#NumberToString(vnValue), sExtractAcc, sExtractTitle,sExtractFunc,sExtractReason,sExtractMeas, sType);
+
+#---------------------------------------------------------------------------------------------------------------------------
+#**** POPULATE SYS_PUSH PUMPKIN CUBE
+#---------------------------------------------------------------------------------------------------------------------------
+
+IF( psAccGrp @= 'Exp');
+
+#************************************************************************************#
+#********* Approp Type only apprear once above Expense group**********#
+#************************************************************************************#
+
+#**************Line 1 - Appropriation Type *************************************#
+	nUsed = 0;
+	sCurRow = NumberToString( nUsed +1);
+	sCurRow = Fill('0', 3-Long(sCurRow)) | sCurRow;
+
+
+	CELLPUTS( sExtractType, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas02);
+	CELLPUTN(1,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas01);
+ENDIF;
+
+
+#**************Line 2 - Opening Bal *************************************#
+IF(vsID @=sIDOpBal);
+
+	nUsed = CELLGETN( cbExtract, sUser, sExtractOC,vsProg,sTotalRow,sExtractMeas01);
+	sCurRow = NumberToString( nUsed +1);
+	sCurRow = Fill('0', 3-Long(sCurRow)) | sCurRow;
+
+	IF(sExtractTitle @='');
+		sExtractTitle = 'Opening baseline';
+	ENDIF;
+	
+	IF(sExtractReason @='');
+		sExtractReason = 'Other variations not elsewhere defined';
+	ENDIF;
+
+	CELLPUTS( sExtractAcc, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas03);
+	CELLPUTS( vsID, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas04);
+	CELLPUTS( sExtractTitle, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas05);
+	CELLPUTS( sExtractFunc, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas06);
+	CELLPUTS( sExtractReason, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas07);
+	CELLPUTS( sExtractMeas, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas08);
+	CELLPUTN(1,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas01);
+	CELLPUTN(nPA,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractPA);
+	CELLPUTN(nRB,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractRB);
+	CELLPUTN(nNB,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractNB);
+	CELLPUTN(nFE1,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractFE1);
+	CELLPUTN(nFE2,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractFE2);
+	CELLPUTN(nFE3,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractFE3);
+ENDIF;
+
+#**************Line n - New Adjustment *************************************#
+IF(ELISANC(dmID, sIDNewAdj, vsID)=1);
+
+	nUsed = CELLGETN( cbExtract, sUser, sExtractOC,vsProg,sTotalRow,sExtractMeas01);
+	sCurRow = NumberToString( nUsed +1);
+	sCurRow = Fill('0', 3-Long(sCurRow)) | sCurRow;
+
+	IF(sExtractTitle @='');
+		sExtractTitle = 'Title cannot be found';
+	ENDIF;
+	
+	IF(sExtractReason @='');
+		sExtractReason = 'Reason cannot be found';
+	ENDIF;
+
+	CELLPUTS( sExtractAcc, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas03);
+	CELLPUTS( vsID, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas04);
+	CELLPUTS( sExtractTitle, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas05);
+	CELLPUTS( sExtractFunc, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas06);
+	CELLPUTS( sExtractReason, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas07);
+	CELLPUTS( sExtractMeas, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas08);
+	CELLPUTN(1,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas01);
+	CELLPUTN(nPA,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractPA);
+	CELLPUTN(nRB,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractRB);
+	CELLPUTN(nNB,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractNB);
+	CELLPUTN(nFE1,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractFE1);
+	CELLPUTN(nFE2,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractFE2);
+	CELLPUTN(nFE3,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractFE3);
+ENDIF;
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#**************Line End - Closing Bal *************************************#
+IF(vsID @=sTotalID);
+
+	#---------------------------------------------------------------------------------------------------------------------------
+	#**** GET METADATA
+	#---------------------------------------------------------------------------------------------------------------------------
+	IF(psAccGrp @= 'Exp');
+		sExtractAcc = Attrs(dmAcc, vsAcc, 'description');
+		nScan =  scan('Expense', sExtractAcc);
+		nLong = Long('Expense');
+		sExtractAcc = Subst(sExtractAcc,nScan,nLong);
+	ELSEIF(psAccGrp @='CF');
+		sExtractAcc = Attrs(dmAcc, vsAcc, 'description');
+		nScan =  scan('Cash', sExtractAcc);
+		nLong = Long('Cash');
+		sExtractAcc = Subst(sExtractAcc,nScan,nLong);
+	ELSE;
+		sExtracAcc= ' Account N/A';
+	ENDIF;
+
+
+	sExtractTitle = CELLGETS(cbID, vsHLYear, vsScenario,vsID, sIDMeas01);	
+	sExtractFunc = CELLGETS(cbProg, vsHLYear, vsScenario,vsProg, sIDMeas02);
+
+	sExtractReason = CELLGETS(cbID, vsHLYear, vsScenario,vsID, sIDMeas03);
+
+	IF( DIMIX(dmReason, sExtractReason) <>0);
+		sExtractReason = ATTRS(dmReason,sExtractReason, 'CBMS');	
+	ENDIF;
+
+	
+	sExtractMeas = CELLGETS(cbID, vsHLYear, vsScenario,vsID, sIDMeas04);	
+	IF( DIMIX(dmMeasCode, sExtractMeas) <>0);
+		sExtractMeas = ATTRS(dmMeasCode,sExtractMeas, 'CBMS code and description');	
+	ENDIF;
+
+	sExtractType = CELLGETS(cbProg, vsHLYear,vsScenario,vsProg, sProgDetMeas01);
+
+	sExtractOC = CELLGETS(cbProg, vsHLYear,vsScenario,vsProg, sProgDetMeas02);
+	IF(DIMIX(dmOC,sOC) =0);
+		sExtractOC = ELCOMP(dmOC, sOC, 1);
+	ENDIF;
+
+	#---------------------------------------------------------------------------------------------------------------------------
+	#**** GET FIN DATA
+	#---------------------------------------------------------------------------------------------------------------------------
+
+	nPA = CELLGETN(cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE,vsFunc,vsReason,vsSPP, vsMeas, vsType, vsMA,vsItem, vsPRog, vsAcc, vsID, vsJur, sPA);
+	nRB = CELLGETN(cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE,vsFunc,vsReason,vsSPP, vsMeas, vsType, vsMA,vsItem, vsPRog, vsAcc, vsID, vsJur, sRB);
+	nNB = CELLGETN(cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE,vsFunc,vsReason,vsSPP, vsMeas, vsType, vsMA,vsItem, vsPRog, vsAcc, vsID, vsJur, sNB);
+	nFE1 = CELLGETN(cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE,vsFunc,vsReason,vsSPP, vsMeas, vsType, vsMA,vsItem, vsPRog, vsAcc, vsID, vsJur, sFE1);
+	nFE2 = CELLGETN(cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE,vsFunc,vsReason,vsSPP, vsMeas, vsType, vsMA,vsItem, vsPRog, vsAcc, vsID, vsJur, sFE2);
+	nFE3 = CELLGETN(cbAE, vsHLYear, vsScenario, vsStatus, vsOC, vsRE,vsFunc,vsReason,vsSPP, vsMeas, vsType, vsMA,vsItem, vsPRog, vsAcc, vsID, vsJur, sFE3);
+
+	#---------------------------------------------------------------------------------------------------------------------------
+	#**** POPULATE SYS_PUSH PUMPKIN CUBE
+	#---------------------------------------------------------------------------------------------------------------------------
+	nUsed = CELLGETN( cbExtract, sUser, sExtractOC,vsProg,sTotalRow,sExtractMeas01);
+	sCurRow = NumberToString( nUsed +1);
+	sCurRow = Fill('0', 3-Long(sCurRow)) | sCurRow;
+
+	nCurRow = StringToNumber(sCurRow);
+	nNextRow = nCurRow +1;
+	sNextRow = NumberToString( nNextRow);
+	sNextRow = Fill('0', 3-Long(sNextRow)) | sNextRow;
+
+
+	IF(sExtractTitle @='');
+		sExtractTitle = 'Closing baseline';
+	ENDIF;
+	
+	IF(sExtractReason @='');
+		sExtractReason = 'Other variations not elsewhere defined';
+	ENDIF;
+
+	CELLPUTS( sExtractAcc, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas03);
+	CELLPUTS( vsID, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas04);
+	CELLPUTS( sExtractTitle, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas05);
+	CELLPUTS( sExtractFunc, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas06);
+	CELLPUTS( sExtractReason, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas07);
+	CELLPUTS( sExtractMeas, cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas08);
+	CELLPUTN(1,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractMeas01);
+	CELLPUTN(nPA,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractPA);
+	CELLPUTN(nRB,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractRB);
+	CELLPUTN(nNB,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractNB);
+	CELLPUTN(nFE1,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractFE1);
+	CELLPUTN(nFE2,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractFE2);
+	CELLPUTN(nFE3,cbExtract, sUser,sExtractOC,vsProg,sCurRow,sExtractFE3);
+	CELLPUTN(1,cbExtract, sUser,sExtractOC,vsProg,sNextRow,sExtractMeas01);
+ENDIF;
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+IF(1=1);
+VIEWDESTROY (cbAE, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmOC, sAEView);
+SUBSETDESTROY (dmRE, sAEView);
+SUBSETDESTROY (dmFunc, sAEView);
+SUBSETDESTROY (dmReason, sAEView);
+SUBSETDESTROY (dmSPP, sAEView);
+SUBSETDESTROY (dmMeasCode, sAEView);
+SUBSETDESTROY (dmType, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmItem, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+SUBSETDESTROY (dmJur, sAEView);
+SUBSETDESTROY (dmPer, sAEView);
+ENDIF;
+
+#endregion

@@ -1,0 +1,153 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_FlatFile 98 - Create FF From Adj Extract Screen
+#**** DESCRIPTION:       This process creates a view for the flatfile generation
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 02/08/2017    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+cbID = 'AE id details';
+#---------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+cbProg = snProg | ' details';
+#---------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE EXTRACT CUBE
+cbProg = snProg | ' details';
+#---------------------------------------------------------------------------------------------------------------------------
+cbExtract = 'sys_extract';
+dmRowID = 'sys_extract row id';
+dmFFScenario = 'sys_flatfile scenario';
+dmExtractMeas = 'sys_flatfile measure';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+sHLYear = ATTRS(dmVar,'headline year','value');
+sScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sTM1User = TM1User();
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+
+
+#sObject  = sUser | '_$FlatFile';
+sAEView = sUser | '_$FlatFile';
+#sAEView = '$FlatFile';
+sFFScenario = 'upload';
+sStatus = CELLGETS (cbID, psHLYear, psScenario, psID, 'status');
+
+
+
+IF (sStatus @<> 'approved');
+	PROCESSQUIT;
+ENDIF;
+
+#*****************************************************************************************************************************************************
+#*** CALL PROCESSES
+#*****************************************************************************************************************************************************
+
+#-------------------------------------------------------------------
+#---- CLEAR EXTRACT CUBE
+#-------------------------------------------------------------------
+sProcess = 'AE_FlatFile 99 - Clear sys_Extract';
+EXECUTEPROCESS (sProcess, 'psUser', psUser, 'psHLYear', psHLYear, 'psScenario', psScenario);
+
+#-------------------------------------------------------------------
+#---- POPULATE EXTRACT CUBE
+#-------------------------------------------------------------------
+sProcess = 'AE_FlatFile 01 - Load ID to sys_Extract';
+EXECUTEPROCESS (sProcess, 'psUser', psUser, 'psHLYear', psHLYear, 'psScenario', psScenario, 'psID', psID);
+
+#-------------------------------------------------------------------
+#---- GENERATE CBMSR FF EXTRACT
+#-------------------------------------------------------------------
+sProcess = 'AE_FlatFile 02 - Generate CBMS-R Extract';
+EXECUTEPROCESS (sProcess, 'psUser', psUser, 'psHLYear', psHLYear, 'psScenario', psScenario);
+
+#-------------------------------------------------------------------
+#---- CLEAR EXTRACT CUBE
+#-------------------------------------------------------------------
+sProcess = 'AE_FlatFile 99 - Clear sys_Extract';
+EXECUTEPROCESS (sProcess, 'psUser', psUser, 'psHLYear', psHLYear, 'psScenario', psScenario);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

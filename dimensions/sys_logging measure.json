@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_logging measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_logging measure.hierarchies/sys_logging measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_logging measure')/Hierarchies('sys_logging measure')"
+	}
+}

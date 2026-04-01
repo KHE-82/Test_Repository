@@ -1,0 +1,27 @@
+{
+	"@type":"Process",
+	"Name":"geus_ME - Import Approved Profiles 00",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"geus_ME - Import Approved Profiles 00.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psYear",
+			"Prompt":"",
+			"Value":"2018-2019",
+			"Type":"String"
+		},
+		{
+			"Name":"psScenario",
+			"Prompt":"",
+			"Value":"Budget",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

@@ -1,0 +1,105 @@
+{
+	"@type":"NativeView",
+	"Name":"Default",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('account template measure')/Hierarchies('account template measure')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('account template measure')/Hierarchies('account template measure')/Elements('flag')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('account template')/Hierarchies('account template')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00001')"
+					},
+					{
+						"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00002')"
+					},
+					{
+						"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00003')"
+					},
+					{
+						"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00004')"
+					},
+					{
+						"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00005')"
+					},
+					{
+						"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00006')"
+					},
+					{
+						"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00007')"
+					},
+					{
+						"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00008')"
+					},
+					{
+						"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00009')"
+					},
+					{
+						"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00010')"
+					},
+					{
+						"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00011')"
+					},
+					{
+						"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00012')"
+					},
+					{
+						"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00013')"
+					},
+					{
+						"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00014')"
+					},
+					{
+						"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00015')"
+					},
+					{
+						"@id":"Dimensions('account template')/Hierarchies('account template')/Elements('00016')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('programme')/Hierarchies('programme')"
+				},
+				"Alias":"code and description",
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('cash flow')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":[],
+	"SuppressEmptyColumns":true,
+	"SuppressEmptyRows":true,
+	"FormatString":"0.#########"
+}

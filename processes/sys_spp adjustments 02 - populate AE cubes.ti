@@ -1,0 +1,610 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_spp adjustments 02 - populate AE cubes
+#**** DESCRIPTION:       This process will create subsets in the account template for program
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    KG             Initial Revision
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#******************************************************************************************************************
+#*** DECLARE SYS_SPP AGENCY MAPPING CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbSppAg='sys_spp agency mapping';
+dmHLyear = 'headline year';
+dmScenario = 'scenario';
+dmSpp = 'spp';
+dmSysAg = 'sys_agency';
+dmSppAgMeas = ' sys_spp agency mapping measure';
+
+#******************************************************************************************************************
+#*** DECLARE SYS_SPP AGENCY MAPPING CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbSppAdj = 'sys_spp adjustment';
+dmAccTyp = 'Account Type';
+dmSppAdjMeas = cbSppAdj | ' measure';
+
+sMeas01 = 'Reason Code';
+sMeas02 = 'Measure Code';
+sMeas03 = 'adj description';
+sMeas04 = 'authority';
+sMeas05 = 'AE Adj';
+sMeas06 = 'AE Adj Clear Flag';
+
+sVal = 'value';
+
+sTyp = 'Total account groups';
+sPer = 'Total years';
+sJur = 'Total jurisdictions';
+sRE = '49800';
+sItemStdMeas = 'spp_adj_appropriation item_standard';
+sItemSAMeas = 'spp_adj_appropriation item_special account';
+sStatus = 'data';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE GOVERNMENT MEASURE DETAILS CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbMeas = 'government measures details';
+
+
+#--------------------------------------------------------------------------------------------------------------------------
+#*** DIMENSION ATTRIBUTES
+#--------------------------------------------------------------------------------------------------------------------------
+dmReasonAttr = '}ElementAttributes_reason';
+dmAccAttr = '}ElementAttributes_account';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+cbID = 'AE id details';
+#---------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+cbProg = snProg | ' details';
+#---------------------------------------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE EXTRACT CUBE
+cbProg = snProg | ' details';
+#---------------------------------------------------------------------------------------------------------------------------
+cbExtract = 'sys_push pumpkin';
+dmRowID = 'sys_extract row id';
+dmExtractMeas = cbExtract | ' measure';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#*** DECLARE ACCOUNT TEMPLATE CUBE ***#
+cbAccTemp = 'AE account template';
+dmAccTemp = 'account template';
+dmAccTempRecType = 'account template record type';
+dmAccType = 'account type';
+dmAccTempMeas = 'account template measure';
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+curRound = ATTRS(dmVar, 'current budget round', 'value');
+dmProg = ATTRS(dmVar, 'program dimension name', 'value');
+
+#******************************************************************************************************************
+#*** DECLARE AE ACCOUNT TEMPLATE MAPPING
+#******************************************************************************************************************
+cbAccTempMap = 'AE account template mapping';
+dmAccTemp = 'account template';
+IF (dmProg @= '');
+	dmProg = 'programme';
+ENDIF;
+dmAccTempMapMeas = 'account template measure';
+
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT GROUPS CUBE
+#******************************************************************************************************************
+cbGroups = '}ClientGroups';
+dmGroups = '}Groups';
+
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED
+#******************************************************************************************************************
+sPro = GETProcessName();
+sAEView = sUser | '_' | sPro;
+
+#******************************************************************************************************************
+#*** DERIVED VALUE
+#******************************************************************************************************************
+#sSPP = ATTRS(dmSpp,psSpp,'code and description');
+#sProg = ATTRS(dmProg, psSPP,'Treasury level 3 program');
+#sSysAg = ATTRS(dmSysAg, psSysAg, 'description');
+#sAgPBS = ATTRS(dmSPP, psSPP, 'agency PBS program');
+#sName =  ATTRS(dmSysAg, psSysAg, 'agency contact'); 
+#sNumber = ATTRS(dmSysAg,  psSysAg, 'contact number'); 
+#sEmail = ATTRS(dmSysAg,  psSysAg, 'contact email');
+
+sAccTemp = CELLGETS(cbProg, CurHLYear, curScenario, psProg,'default account template');
+
+nRow = 1;
+
+sNewID = CELLGETS(cbSppAdj,sUser,psProg,psSpp,sJur,psAccTyp,psAdjID,sPer,sMeas05);
+sClearFlag = CELLGETS(cbSppAdj,sUser,psProg,psSpp,sJur,psAccTyp,psAdjID,sPer,sMeas06);
+
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+#*** DECLARE SUBSETS AND VIEWS ***#
+nNUM = RAND;
+sNUM = NUMBERTOSTRING (nNUM);
+sNUM = SUBST(sNUM, 3, 6);
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CREATE SOURCE VIEW OF AE ADJUSTMENT CUBE TO CLEAR DATA ***#
+#IF (curHLYear @<> psHLYear & curScenario @<> psScenario);
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbAE, sAEView);
+VIEWDESTROY (cbID, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+
+#****CREATE SUBSETS****#
+# headline year
+SubsetCreate(dmHLYear, sAEView);
+SubsetElementInsert(dmHLYear, sAEView, curHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sAEView);
+SubsetElementInsert(dmScenario, sAEView, curScenario, 1);
+
+# Status
+SubsetCreate(dmStatus, sAEView);
+SubsetElementInsert(dmStatus, sAEView, 'data', 1);
+
+# ID
+SubsetCreate(dmID, sAEView);
+SubsetElementInsert(dmID, sAEView, sNewID, 1);
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbAE, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmHLYear, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmScenario, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmStatus, sAEView);
+VIEWSUBSETASSIGN (cbAE, sAEView, dmID, sAEView);
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbAE, sAEView, 1);
+ViewSuppressZeroesSet(cbAE, sAEView, 1);
+ViewExtractSkipCalcsSet(cbAE, sAEView, 1);
+
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbID, sAEView);
+VIEWSUBSETASSIGN (cbID, sAEView, dmHLYear, sAEView);
+VIEWSUBSETASSIGN (cbID, sAEView, dmScenario, sAEView);
+VIEWSUBSETASSIGN (cbID, sAEView, dmID, sAEView);
+
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbID, sAEView, 1);
+ViewSuppressZeroesSet(cbID, sAEView, 1);
+ViewExtractSkipCalcsSet(cbID, sAEView, 1);
+
+
+
+#*** CLEAR VIEW  - One AE ADJUSTMENT ONLY CLEAR ONCE***#
+IF (sClearFlag @<>'Y');
+    VIEWZEROOUT (cbAE, sAEView);
+     VIEWZEROOUT (cbID, sAEView);
+     CELLPUTS('Y',cbSppAdj,sUser,psProg,psSpp,sJur,psAccTyp,psAdjID,sPer,sMeas06);
+ENDIF;
+
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbAE, sAEView);
+VIEWDESTROY (cbID, sAEView);
+SUBSETDESTROY (dmHLYear, sAEView);
+SUBSETDESTROY (dmScenario, sAEView);
+SUBSETDESTROY (dmStatus, sAEView);
+SUBSETDESTROY (dmID, sAEView);
+
+#*****************************************************************************************************************************************************
+#*** STEP 2 - CREATE SOURCE VIEW OF ACCOUNT TEMPLATES ***#
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbAccTemp, sAEView);
+SUBSETDESTROY (dmAccTemp, sAEView);
+SUBSETDESTROY (dmAccTempRecType, sAEView);
+SUBSETDESTROY (dmAccType, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmAccTempMeas, sAEView);
+
+#****CREATE SUBSETS****#
+
+# Account Template
+SubsetCreate(dmAccTemp, sAEView);
+SubsetElementInsert(dmAccTemp, sAEView, sAccTemp, 1);
+
+#****CREATE SUBSETS****#
+# Account Template Recprd Type
+SubsetCreate(dmAccTempRecType, sAEView);
+SubsetElementInsert(dmAccTempRecType, sAEView, 'mapping', 1);
+
+#****CREATE SUBSETS****#
+# Account Type
+SubsetCreate(dmAccType, sAEView);
+SubsetElementInsert(dmAccType, sAEView, psAccTyp, 1);
+
+# Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Movement Account
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Account Template Measure
+SubsetCreate(dmAccTempMeas, sAEView);
+SubsetElementInsert(dmAccTempMeas, sAEView, 'factor', 1);
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbAccTemp, sAEView);
+VIEWSUBSETASSIGN (cbAccTemp, sAEView, dmAccTemp, sAEView);
+VIEWSUBSETASSIGN (cbAccTemp, sAEView, dmAccTempRecType, sAEView);
+VIEWSUBSETASSIGN (cbAccTemp, sAEView, dmAccType, sAEView);
+VIEWSUBSETASSIGN (cbAccTemp, sAEView, dmAcc, sAEView);
+VIEWSUBSETASSIGN (cbAccTemp, sAEView, dmMA, sAEView);
+VIEWSUBSETASSIGN (cbAccTemp, sAEView, dmAccTempMeas, sAEView);
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbAccTemp, sAEView, 1);
+ViewSuppressZeroesSet(cbAccTemp, sAEView, 1);
+ViewExtractSkipCalcsSet(cbAccTemp, sAEView, 1);
+
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sAEView;
+
+
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#asciioutput('sourceAcc.csv', vsAcctemp,vsAccTempRecType,
+#vsAccTyp,
+#vsAcc,
+#vsMA,
+#vsMeas,
+#numbertostring(vnValue),psSpp,'502');
+
+
+#*** IF THERE IS NO MAPPING THEN SKIP LINE ***#
+IF (vsMeas @<> 'factor' & vnValue = 0);
+     ITEMSKIP;
+ENDIF;
+    
+#**** GET ID DETAILS DATA ***#
+
+sReason = CELLGETS (cbSppAdj,sUser,psProg,psSpp,sJur,sTyp,psAdjID,sPer,sMeas01);
+sMeasCode = CELLGETS (cbSppAdj,sUser,psProg,psSpp,sJur,sTyp,psAdjID,sPer,sMeas02);
+sReason = DIMENSIONELEMENTPRINCIPALNAME (dmReason, sReason);
+sMeasCode = DIMENSIONELEMENTPRINCIPALNAME (dmMeasCode, sMeasCode);
+sDesc = CELLGETS (cbSppAdj,sUser,psProg,psSpp,sJur,sTyp,psAdjID,sPer,sMeas03);
+sAuth = CELLGETS (cbSppAdj,sUser,psProg,psSpp,sJur,sTyp,psAdjID,sPer,sMeas04);
+
+sSPPDesc = ATTRS(dmSPP,psSPP,'code and description');
+IF(LONG(sSppDesc) > 20);
+	sSPPDesc = psSpp;
+ENDIF;
+
+sAdjID = SUBST(psAdjID, 4,2);
+sTitle = 'TSY Admin - '| sSPPDesc |' - ' | curHLYear | ' ' | curRound | ' - ADJ' | sAdjID | ' - ' | psAccTyp;
+
+
+IF( sAuth @<>'');
+	sDesc = '(' | sNewID | ') ' | sDesc | '  - Authority:'| sAuth;  
+ELSE;
+	sDesc = '(' | sNewID | ') ' | sDesc;
+ENDIF;
+
+sAdjSts = 'unauthorised';
+sAdjTyp = 'manual';
+
+
+
+
+
+#*** GET PROGRAMME DETAILS DATA ***#
+sOC = CELLGETS (cbProg, curHLYear, curScenario, psProg, 'outcome');
+sFunc = CELLGETS (cbProg, curHLYear,curScenario, psProg, 'function');
+#sType = CELLGETS (cbProg, curHLYear, curScenario, psProg, 'appropriation type');
+
+#sSPP =  CELLGETS (cbProg, curHLYear, curScenario, psProg, 'spp');
+sItemStd = CELLGETS (cbProg, curHLYear, curScenario, psProg, sItemStdMeas);
+sItemSA = CELLGETS (cbProg, curHLYear, curScenario, psProg, sItemSAMeas);
+
+IF(sItemStd @='');
+	sItem = CELLGETS (cbProg, curHLYear, curScenario, psProg, 'appropriation item');
+ELSE;
+	sItem = sItemStd;
+ENDIF;
+
+sType = SUBST(sItem,1,4);
+sTypeSA = SUBST(sItemSA,1,4);
+
+
+
+#*** GET DIMENSION PRINCIPAL NAME ***#
+sOC = DIMENSIONELEMENTPRINCIPALNAME (dmOC, sOC);
+sFunc = DIMENSIONELEMENTPRINCIPALNAME (dmFunc, sFunc);
+sType = DIMENSIONELEMENTPRINCIPALNAME (dmType, sType);
+sItem = DIMENSIONELEMENTPRINCIPALNAME (dmItem, sItem);
+sItemSA = DIMENSIONELEMENTPRINCIPALNAME (dmItem, sItemSA);
+
+#sSPP = DIMENSIONELEMENTPRINCIPALNAME (dmSPP, sSPP);
+
+
+
+#*************************************************************************************
+#*** NOW CHECK IF ACCOUNT SELECTED HAS A MOVEMENT ACCOUNT ENABLED
+
+sAccMACheck = ATTRS (dmAcc, vsAcc, 'movement account required');
+
+IF (sAccMACheck @<> 'Y');
+     #*** RELATED ENTITY CHECK FOR NON BALANCE SHEET/MOVEMENT ACCOUNT CODES
+     sAccRECheck = ATTRS (dmAcc, vsAcc, 'related entity enabled'); 
+     sAccRE = ATTRS (dmAcc, vsAcc, 'assumed related entity');
+
+     IF (sAccRECheck @= 'Y');
+     #*** RELATED ENTITY IS ENABLED ***#
+          IF (sAccRE @= '');
+               #*** ASSUMED RELATED ENTITY IS BLANK, SO USE USER ENTERED ***#
+               sNewRE = '-';
+          ELSE;
+               #*** ELSE SYSTEM DERIVED RELATED ENTITY
+               sNewRE = sRE;
+          ENDIF;
+     ELSE;
+          #*** NO RELATED ENTITY
+         sNewRE = '-'; 
+     ENDIF;
+
+ELSE;
+
+     #*** RELATED ENTITY CHECK FOR BALANCE SHEET/MOVEMENT ACCOUNT CODES
+     sMARECheck = ATTRS (dmMA, vsMA, 'related entity enabled'); 
+     sMARE = ATTRS (dmMA, vsMA, 'assumed related entity');
+
+     IF (sMARECheck @= 'Y');
+     #*** RELATED ENTITY IS ENABLED ***#
+          IF (sMARE @= '');
+               #*** ASSUMED RELATED ENTITY IS BLANK, SO USE USER ENTERED ***#
+               sNewRE ='-';
+          ELSE;
+               #*** ELSE SYSTEM DERIVED RELATED ENTITY
+               sNewRE = sMARE;
+          ENDIF;
+     ELSE;
+          IF (sMARE @<> '');
+               sNewRE = sMARE;
+          ELSE;
+               #*** NO RELATED ENTITY
+              sNewRE = '-'; 
+          ENDIF;
+     ENDIF;
+
+ENDIF;
+
+
+#*************************************************************************************
+#*** NOW CHECK IF ACCOUNT SELECTED HAS A JURISDICTION REQUIRED
+
+sAccJurCheck = ATTRS (dmAcc, vsAcc, 'jurisdiction required');
+IF (sAccJurCheck @<> 'Y');
+     psJur = '-';
+ENDIF;
+
+#*************************************************************************************
+#*** DO DATA ENTRY ***#
+nFactor = vnValue;
+
+IF (vsMeas @= 'factor');
+
+     IF (CELLISUPDATEABLE (cbAE, curHLYear, curScenario, sStatus, sOC, sNewRE, sFunc, sReason, psSPP, sMeasCode, sType, vsMA, sItem, psProg, vsAcc, sNewID, psJur, psPer) = 1);
+		IF( scan('900086', vsAcc) =0); 
+			#asciioutput('data' | sNewID | '.csv',cbAE, curHLYear, curScenario, sStatus, sOC, sNewRE, sFunc, sReason, psSPP, sMeasCode, sType, vsMA, sItem, psProg, vsAcc, sNewID, psJur, psPer,numbertostring(pnValue * nFactor));
+			CELLINCREMENTN( pnValue * nFactor,cbAE, curHLYear, curScenario, sStatus, sOC, sNewRE, sFunc, sReason, psSPP, sMeasCode, sType, vsMA, sItem, psProg, vsAcc, sNewID, psJur, psPer);
+		ELSE;
+			CELLINCREMENTN( pnValue * nFactor,cbAE, curHLYear, curScenario, sStatus, sOC, sNewRE, sFunc, sReason, psSPP, sMeasCode, sTypeSA, vsMA, sItemSA, psProg, vsAcc, sNewID, psJur, psPer);
+			#asciioutput('data' | sNewID | '.csv',cbAE, curHLYear, curScenario, sStatus, sOC, sNewRE, sFunc, sReason, psSPP, sMeasCode, sTypeSA, vsMA, sItemSA, psProg, vsAcc, sNewID, psJur, psPer,numbertostring(pnValue));
+		ENDIF;
+     ENDIF;
+
+ENDIF;
+
+
+
+
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+VIEWDESTROY (cbAccTemp, sAEView);
+SUBSETDESTROY (dmAccTemp, sAEView);
+SUBSETDESTROY (dmAccTempRecType, sAEView);
+SUBSETDESTROY (dmAccType, sAEView);
+SUBSETDESTROY (dmAcc, sAEView);
+SUBSETDESTROY (dmMA, sAEView);
+SUBSETDESTROY (dmAccTempMeas, sAEView);
+
+
+IF( 1=1);
+
+#******************************************************************************************************************
+#*** POST INTO AE ID DETAIL DATA
+#******************************************************************************************************************
+
+CELLPUTS(psProg, cbID, curHLYear, curScenario, sNewID, snProg | ' code');
+sProgDesc = ATTRS (dmProg, psProg, 'code and description');
+CELLPUTS(sProgDesc, cbID, curHLYear, curScenario, sNewID, snProg | ' description');
+
+CELLPUTS(sTitle, cbID, curHLYear, curScenario, sNewID, 'title');
+
+CELLPUTS(sDesc, cbID, curHLYear, curScenario, sNewID, 'description');
+#CELLPUTS(cpcomments, cbID, curHLYear, curScenario, sNewID, 'comments');
+CELLPUTS('unauthorised',cbID, curHLYear, curScenario, sNewID, 'status');
+CELLPUTS(sReason, cbID, curHLYear, curScenario, sNewID, 'reason');
+CELLPUTS(sOC, cbID, curHLYear, curScenario, sNewID, 'outcome');
+CELLPUTS(sFunc, cbID, curHLYear, curScenario, sNewID, 'function');
+CELLPUTS(psSPP, cbID, curHLYear, curScenario, sNewID, 'SPP');
+sNewMeas = DIMENSIONELEMENTPRINCIPALNAME (dmMeasCode, sMeasCode);
+CELLPUTS(sNewMeas, cbID, curHLYear, curScenario, sNewID, 'measure');
+
+CELLPUTS(sItem, cbID, curHLYear, curScenario, sNewID, 'appropriation item');
+CELLPUTS(sType,cbID, curHLYear, curScenario, sNewID, 'appropriation type');
+CELLPUTS('Y', cbID, curHLYear, curScenario, sNewID, 'apply parameters');
+#CELLPUTS(cpFundLife, cbID, curHLYear, curScenario, sNewID, 'funding life');
+#CELLPUTS(cpparamgen,cbID, curHLYear, curScenario, sNewID, 'parameter adjustment generated');
+CELLPUTS('Y', cbID, curHLYear, curScenario, sNewID, 'disagree cashflow');
+CELLPUTS(sAdjTyp, cbID, curHLYear, curScenario, sNewID, 'Adjustment Type');
+CELLPUTS('Administered', cbID, curHLYear, curScenario, sNewID, 'Control Type');
+
+#*** ADDITIONAL METADATA ***#
+IF( sNewMeas @<>'M00000');
+	sFundLife = 'terminating';
+
+ELSE;
+	sFundLife = 'ongoing';
+ENDIF;
+
+sEndDate = CELLGETS(cbMeas, curHLYear, curScenario,sNewMeas,'end date');
+sGovDec =CELLGETS(cbMeas, curHLYear, curScenario,sNewMeas,'government decision');
+sGovDecDate = CELLGETS(cbMeas, curHLYear, curScenario,sNewMeas,'decision date');
+
+CELLPUTS(sFundLife, cbID, curHLYear, curScenario, sNewID, 'funding life');	
+CELLPUTS(sEndDate, cbID, curHLYear, curScenario, sNewID, 'end date');
+CELLPUTS(sGovDec, cbID, curHLYear, curScenario, sNewID, 'government decision');
+CELLPUTS(sGovDecDate, cbID, curHLYear, curScenario, sNewID, 'government decision date');
+
+
+#******************************************************************************************************************
+# **** GET DATE VALUES AND POST USER AND DATE STAMP
+#******************************************************************************************************************
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+
+sDay = TRIM(SUBST(sDNow, 1,2));
+
+IF (LONG (sDay) = 1);
+	sDay = '0' | sDay;
+ELSE;
+	sDay = sDay;
+ENDIF;
+
+sMonth = TRIM(SUBST(sMNow, 1,2));
+
+IF (LONG (sMonth) = 1);
+	sMonth = '0' | sMonth;
+ELSE;
+	sMonth = sMonth;
+ENDIF;
+
+sYear = TRIM(SUBST(sYNow, 1,4));
+sNow = sDay | '/' | sMonth | '/' | sYear;
+
+CELLPUTS(sNow, cbID, curHLYear, curScenario, sNewID, 'created date');
+CELLPUTS(sUser, cbID, curHLYear, curScenario, sNewID, 'created by');
+
+CELLPUTS ('Y', cbID, curHLYear, curScenario, sNewID, 'use new cash flow derivation');
+CELLPUTN (1, cbID, curHLYear, curScenario, sNewID, 'used');
+ENDIF;
+#endregion

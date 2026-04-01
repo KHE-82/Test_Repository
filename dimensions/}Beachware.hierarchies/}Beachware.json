@@ -1,0 +1,12 @@
+{
+	"@type":"Hierarchy",
+	"Name":"}Beachware",
+	"Elements":
+	[
+		{
+			"Name":"PROPERTYNAME",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

@@ -1,0 +1,19 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_flatfile scenario",
+	"Elements":
+	[
+		{
+			"Name":"upload",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"legacy",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"sys_flatfile scenario.subsets/Kelly Hackett_$MEFlatFileExtract.json"
+	]
+}

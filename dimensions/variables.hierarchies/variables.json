@@ -1,0 +1,499 @@
+{
+	"@type":"Hierarchy",
+	"Name":"variables",
+	"Elements":
+	[
+		{
+			"Name":"sys_BARS Export Directory",
+			"Type":"String"
+		},
+		{
+			"Name":"picture path",
+			"Type":"String"
+		},
+		{
+			"Name":"agency code",
+			"Type":"String"
+		},
+		{
+			"Name":"headline year",
+			"Type":"String"
+		},
+		{
+			"Name":"headline scenario",
+			"Type":"String"
+		},
+		{
+			"Name":"id",
+			"Type":"String"
+		},
+		{
+			"Name":"measure id",
+			"Type":"String"
+		},
+		{
+			"Name":"approp type",
+			"Type":"String"
+		},
+		{
+			"Name":"approp item",
+			"Type":"String"
+		},
+		{
+			"Name":"reason",
+			"Type":"String"
+		},
+		{
+			"Name":"outcome",
+			"Type":"String"
+		},
+		{
+			"Name":"function",
+			"Type":"String"
+		},
+		{
+			"Name":"spp",
+			"Type":"String"
+		},
+		{
+			"Name":"save location",
+			"Type":"String"
+		},
+		{
+			"Name":"ME save location",
+			"Type":"String"
+		},
+		{
+			"Name":"archive year",
+			"Type":"String"
+		},
+		{
+			"Name":"archive scenario",
+			"Type":"String"
+		},
+		{
+			"Name":"parameter reason code",
+			"Type":"String"
+		},
+		{
+			"Name":"efficiency dividend reason code",
+			"Type":"String"
+		},
+		{
+			"Name":"validation status",
+			"Type":"String"
+		},
+		{
+			"Name":"Favourites 01",
+			"Type":"String"
+		},
+		{
+			"Name":"Favourites 02",
+			"Type":"String"
+		},
+		{
+			"Name":"Favourites 03",
+			"Type":"String"
+		},
+		{
+			"Name":"Favourites 04",
+			"Type":"String"
+		},
+		{
+			"Name":"Favourites 05",
+			"Type":"String"
+		},
+		{
+			"Name":"Favourites 06",
+			"Type":"String"
+		},
+		{
+			"Name":"Favourites 07",
+			"Type":"String"
+		},
+		{
+			"Name":"Favourites 08",
+			"Type":"String"
+		},
+		{
+			"Name":"Favourites 09",
+			"Type":"String"
+		},
+		{
+			"Name":"Favourites 10",
+			"Type":"String"
+		},
+		{
+			"Name":"budget round",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"BUDGET",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MYEFO",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"PREERC",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"PEFO",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ME year",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ME Actuals Period",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ME Scenario",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ME File Path",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ME Archive Year",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ME Archive Scenario",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_ME Upload Directory",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MA headline year",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MA period",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"AE Default Outcome",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"AE Default Function",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"AE Detault SPP",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"AE Default App Type",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"AE Default App Item",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"No MA",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"No Jur",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"No RE",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Default Cash Flow account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_Data Directory",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_Backup Directory",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_Export Directory Costings",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_Costings Export Directory",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_CostingsImport Directory",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_ImpFileExceptionLogs",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_ImpFileValidation",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MA error log path",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_ME ExportDirectory",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"WorkersComp Acc",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"WorkersComp RE",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SuperAnn Acc",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"SuperAnn RE",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"WorkersComp Reason Code",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_zerofin_acc1",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_zerofin_acc2",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_CBMSR GoLive",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_CBMSR GoLive Headline Year",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"current budget round",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"No Measure Code",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Default favourite id template",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"No SPP",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_Database Name",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_file transfer directory",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_ASCII Directory",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_upload directory",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_CBMS Upload directory",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_shared directory",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_Web URL",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_Web URL Linked Folder",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_TD Extract Location",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_GEUSAdmin01 Name",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_GEUSAdmin02 Name",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_GEUSAdmin01 Contact",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_GEUSAdmin02 Contact",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_TM1Admin01 Name",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_TM1Admin02 Name",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_TM1Admin01 Contact",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_TM1Admin02 Contact",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_NewsLine01",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_NewsLine02",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_NewsLine03",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE3 reason code",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE2 Period",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE3 Period",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"program dimension name",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_Meas List Operating Account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_Meas List Capital Account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_Meas List Movement Account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_Meas List Underlying Cash Account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_Meas List Fiscal Balance Account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_Meas List Resourcing Account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_Meas List Adjustment Status",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE3 prefix title",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"parameter prefix title",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"efficiency dividend prefix title",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"progtrf_Equity Movement Account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"progtrf_Gross Value Movement Account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"progtrf_Acc Depn Movement Account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"progtrf_Gross Value ROU Movement Account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"progtrf_Acc Depn ROU Movement Account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_Transaction Listing From",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_Transaction Listing To",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_rep extract max rows",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"budget round",
+			"ComponentName":"BUDGET",
+			"Weight":1
+		},
+		{
+			"ParentName":"budget round",
+			"ComponentName":"MYEFO",
+			"Weight":1
+		},
+		{
+			"ParentName":"budget round",
+			"ComponentName":"PREERC",
+			"Weight":1
+		},
+		{
+			"ParentName":"budget round",
+			"ComponentName":"PEFO",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":[]
+}

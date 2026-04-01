@@ -1,0 +1,24 @@
+{
+	"@type":"Cube",
+	"Name":"sys_application testing",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('sys_application')"
+		},
+		{
+			"@id":"Dimensions('Test ID')"
+		},
+		{
+			"@id":"Dimensions('sys_application testing measure')"
+		}
+	],
+	"Rules@Code.link":"sys_application testing.rules",
+	"Views@Code.links":
+	[
+		"sys_application testing.views/All FAil.json",
+		"sys_application testing.views/Default.json",
+		"sys_application testing.views/Number of Tests is ZERO.json",
+		"sys_application testing.views/Test Results ZERO SUPRESS ROWS.json"
+	]
+}

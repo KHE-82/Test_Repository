@@ -1,0 +1,20 @@
+{
+	"@type":"Subset",
+	"Name":"}ME_Validation",
+	"Alias":"code and description",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('3800001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4000000')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('5000000')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('3000000')"
+		}
+	]
+}

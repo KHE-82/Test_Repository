@@ -1,0 +1,640 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Adj - Extract Adj as flatfile
+#**** DESCRIPTION:       This process creates a view and creates a flatfile of the selected adjustment
+#****			
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 16/08/2016    KG             Initial Revision - Copy of AE_Adj Copy Adj
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS CUBE DIMENSIONS
+#******************************************************************************************************************
+cbID = 'AE id details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmID = 'id';
+dmIDMeas = 'id measure';
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+
+#******************************************************************************************************************
+#*** DECLARE PROGRAMME DETAILS CUBE
+#******************************************************************************************************************
+cbProg = snProg | ' details';
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+dmCtrlType = 'control type';
+dmFavID = 'favourites_id';
+
+#******************************************************************************************************************
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#******************************************************************************************************************
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+curBudgetRound = ATTRS(dmVar, 'current budget round', 'value');
+sNoMeasCode = ATTRS(dmVar, 'No Measure Code', 'value');
+sDefFavID = ATTRS(dmVar, 'Default favourite id template', 'value');
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED FOR VIEWS
+#******************************************************************************************************************
+sView = sUser | ' $ExtFFAdj';
+sStatus = 'data';
+sPeriod = 'Total years';
+
+#******************************************************************************************************************
+#*** DEFAULT POSTING DATA
+#******************************************************************************************************************
+
+
+#*****************************************************************************************************************************************************
+#**** STEP 1 - CREATE SOURCE VIEW
+#**** THIS PROCESS RELIES ON THE OLD VALUES TO TRANSFER THE DATA TO NEW VALUES
+#*****************************************************************************************************************************************************
+
+#******************************************************************************************************************
+#*** USER DETAILS & AE ID DETAILS
+#******************************************************************************************************************
+
+sTitle = CELLGETS (cbID, psHLYear, psScenario, psID, 'title');
+sDesc = CELLGETS (cbID, psHLYear, psScenario, psID, 'description');
+
+sProg = CELLGETS (cbID, psHLYear, psScenario, psID, snProg | ' code');
+sReason = CELLGETS (cbID, psHLYear, psScenario, psID, 'reason');
+sOC = CELLGETS (cbID, psHLYear, psScenario, psID, 'outcome');
+sMeasCode = CELLGETS (cbID, psHLYear, psScenario, psID, 'measure');
+sFunc = CELLGETS (cbID, psHLYear, psScenario, psID, 'function');
+sSPP = CELLGETS (cbID, psHLYear, psScenario, psID, 'spp');
+sType = CELLGETS (cbID, psHLYear, psScenario, psID, 'appropriation type');
+sItem = CELLGETS (cbID, psHLYear, psScenario, psID, 'appropriation item');
+sFavID =  CELLGETS (cbID, psHLYear, psScenario, psID, 'account favourite template');
+sManualCF = CELLGETS(cbID, psHLYear, psScenario, psID, 'disagree cashflow');
+sAdjType = CELLGETS(cbID, psHLYear, psScenario, psID, 'adjustment type');
+
+#******************************************************************************************************************
+#*** DEFINE PERIODS
+#*** DEPENDING ON WHICH HLYEAR AND SCENARIO CHOSEN, PERIODS WILL ALWAYS BE DIFFERENT ON FLAT FILE
+#******************************************************************************************************************
+sPer01 = SUBST(psHLYear, 3, 9);
+sPer00 = DIMNM(dmPer, DIMIX(dmPer, sPer01) -1);
+sPer02 = DNEXT (dmPer, sPer01);
+sPer03 = DNEXT (dmPer, sPer02);
+sPer04 = DNEXT (dmPer, sPer03);
+sPer05 = DNEXT (dmPer, sPer04);
+sPer06 = DNEXT (dmPer, sPer05);
+sPer07 = DNEXT (dmPer, sPer06);
+sPer08 = DNEXT (dmPer, sPer07);
+sPer09 = DNEXT (dmPer, sPer08);
+sPer10 = DNEXT (dmPer, sPer09);
+sPer11 = DNEXT (dmPer, sPer10);
+sPer12 = DNEXT (dmPer, sPer11);
+sPer13 = DNEXT (dmPer, sPer12);
+sPer14 = DNEXT (dmPer, sPer13);
+sPer15 = DNEXT (dmPer, sPer14);
+sPer16 = DNEXT (dmPer, sPer15);
+
+#******************************************************************************************************************
+# **** GET TITLE HEADINGS - TO UPDATE
+#******************************************************************************************************************
+sCol01 = 'TM1 GEUS Program';
+sCol02 = 'Variation No';
+sCol03 = 'Entry Period';
+sCol04 = 'Budget Round';
+sCol05 = 'Agency Code';
+sCol06 = 'CBMS Prog';
+sCol07 = 'Type';
+sCol08 = 'Control Type';
+sCol09 = 'Title';
+sCol10 = 'Status';
+sCol11 = 'Description';
+sCol12 = 'Outcome';
+sCol13 = 'SubFunction';
+sCol14 = 'Appropriation Type';
+sCol15 = 'Appropriation Item';
+sCol16 = 'Reason';
+sCol17 = 'Measure Code';
+sCol18 = 'Account';
+sCol19 = 'Movement Account';
+sCol20 = 'Related Entityt';
+sCol21 = 'SPP';
+sCol22 = 'Jurisdiction';
+sCol23 = 'DR/CR';
+sCol24 = 'Revised Budget (RB)';
+sCol25 = 'Next Year Budget (NB)';
+sCol26 = 'Forward Estimate 1';
+sCol27 = 'Forward Estimate 2';
+sCol28 = 'Forward Estimate 3';
+sCol29 = 'Forward Estimate 4';
+sCol30 = 'Forward Estimate 5';
+sCol31 = 'Forward Estimate 6';
+sCol32 = 'Forward Estimate 7';
+sCol33 = 'Forward Estimate 8';
+sCol34 = 'Forward Estimate 9';
+sCol35 = 'Forward Estimate 10';
+sCol36 = 'Forward Estimate 11';
+sCol37 = 'Forward Estimate 12';
+sCol38 = 'Forward Estimate 13';
+
+
+
+#******************************************************************************************************************
+#*** DATE TIMESTAMPS
+#******************************************************************************************************************
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+sHNow = TimST (Now, '\h');
+sMinNow = TimST (Now, '\i');
+sSNow = TimST (Now, '\s');
+ 
+sDay = TRIM(SUBST(sDNow, 1,2));
+ 
+IF (LONG (sDay) = 1);
+     sDay = '0' | sDay;
+ELSE;
+     sDay = sDay;
+ENDIF;
+ 
+sMonth = TRIM(SUBST(sMNow, 1,2));
+ 
+IF (LONG (sMonth) = 1);
+     sMonth = '0' | sMonth;
+ELSE;
+     sMonth = sMonth;
+ENDIF;
+ 
+sYear = TRIM(SUBST(sYNow, 1,4));
+ 
+sNow = sYear | sMonth | sDay | sHNow | sMinNow | sSNow ;
+
+
+#******************************************************************************************************************
+#***** EXPORT FLAT FILE VARIABLES
+#******************************************************************************************************************
+
+MetadataCounter = 0;
+DataCounter = 0;
+lCounter = 0;
+
+sExpDirectory = ATTRS(dmVar,'save location','value');
+sFileName = sExpDirectory | sUser | ' ' | psID | ' Adjustment Extract ' | sNow | '.csv';
+
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbAE, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmStatus, sView);
+SUBSETDESTROY (dmOC, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmFunc, sView);
+SUBSETDESTROY (dmReason, sView);
+SUBSETDESTROY (dmSPP, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmType, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmItem, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmJur, sView);
+SUBSETDESTROY (dmPer, sView);
+
+
+#******************************************************************************************************************
+#*** CREATE SUBSETS
+#******************************************************************************************************************
+# Headline Year
+SUBSETCREATE (dmHLYear, sView);
+SUBSETELEMENTINSERT (dmHLYear, sView, psHLYear, 1);
+
+# Scenario
+SUBSETCREATE (dmScenario, sView);
+SUBSETELEMENTINSERT (dmScenario, sView, psScenario, 1);
+
+
+# Status 
+SUBSETCREATE (dmStatus, sView);
+SUBSETELEMENTINSERT (dmStatus, sView, sStatus, 1);
+
+# Outcome
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmOC | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmOC, sView, MDX);
+
+#SUBSETCREATE (dmOC, sView);
+#SUBSETELEMENTINSERT (dmOC, sView, sOC, 1);
+
+# Related Entity
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRE | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmRE, sView, MDX);
+
+# Function
+SUBSETCREATE (dmFunc, sView);
+SUBSETELEMENTINSERT (dmFunc, sView, sFunc, 1);
+
+# Reason
+SUBSETCREATE (dmReason, sView);
+SUBSETELEMENTINSERT (dmReason, sView, sReason, 1);
+
+# SPP
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmSPP | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmSPP, sView, MDX);
+
+# Measure Code
+SUBSETCREATE (dmMeasCode, sView);
+SUBSETELEMENTINSERT (dmMeasCode, sView, sMeasCode, 1);
+
+# Appropriation Type
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmType | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmType, sView, MDX);
+
+# Movement Account
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}';
+#MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}, [' | dmMA |'].[editable] = "")}';
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmMA | '] )}, 0)}, [' | dmMA | '].[flat file] @<> "N")}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmMA, sView, MDX);
+
+# Appropriation Item
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmItem | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmItem, sView, MDX);
+
+# Programme
+SUBSETCREATE (dmProg, sView);
+SUBSETELEMENTINSERT (dmProg, sView, sProg, 1);
+
+# Account
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)}';
+MDX = '{FILTER( {TM1SORT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAcc | '] )}, 0)} , ASC)}, [' | dmAcc | '].[flat file] @<> "N")}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmAcc, sView, MDX);
+
+# ID
+SUBSETCREATE (dmID, sView);
+SUBSETELEMENTINSERT (dmID, sView, psID, 1);
+
+#  Jurisdiction
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmJur | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+SUBSETMDXSET (dmJur, sView, MDX);
+
+# Period
+SUBSETCREATE (dmPer, sView);
+SUBSETELEMENTINSERT (dmPer, sView, sPeriod, 1);
+
+#******************************************************************************************************************
+#*** BUILD VIEW
+#******************************************************************************************************************
+VIEWCREATE (cbAE, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmHLYear, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmScenario, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmStatus, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmOC, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmRE, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmFunc, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmReason, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmSPP, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmMeasCode, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmType, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmMA, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmItem, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmProg, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmAcc, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmID, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmJur, sView);
+VIEWSUBSETASSIGN (cbAE, sView, dmPer, sView);
+
+VIEWEXTRACTSKIPZEROESSET (cbAE, sView, 1);
+VIEWEXTRACTSKIPRULEVALUESSET (cbAE, sView, 0);
+VIEWEXTRACTSKIPCALCSSET (cbAE, sView, 0);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+
+lCounter = 0;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+lCounter = lCounter + 1;
+
+#******************************************************************************************************************
+#**** PREPARATION OF FLAT FILE
+
+#*** sCol01 = 'TM1 GEUS Program';
+#*** sCol02 = 'Variation No';
+#*** sCol03 = 'Entry Period';
+#*** sCol04 = 'Budget Round';
+#*** sCol05 = 'Agency Code';
+#*** sCol06 = 'CBMS Prog';
+#*** sCol07 = 'Type';
+#*** sCol08 = 'Control Type';
+#*** sCol09 = 'Title';
+#*** sCol10 = 'Status';
+#*** sCol11 = 'Description';
+#*** sCol12 = 'Outcome';
+#*** sCol13 = 'SubFunction';
+#*** sCol14 = 'Appropriation Type';
+#*** sCol15 = 'Appropriation Item';
+#*** sCol16 = 'Reason';
+#*** sCol17 = 'Measure Code';
+#*** sCol18 = 'Account';
+#*** sCol19 = 'Movement Account';
+#*** sCol20 = 'Related Entityt';
+#*** sCol21 = 'SPP';
+#*** sCol22 = 'Jurisdiction';
+#*** sCol23 = 'DR/CR';
+#*** sCol24 = 'Estimated Outcome';
+#*** sCol25 = 'Annual Budget';
+#*** sCol26 = 'Forward Estimate 1';
+#*** sCol27 = 'Forward Estimate 2';
+#*** sCol28 = 'Forward Estimate 3';
+#*** sCol29 = 'Forward Estimate 4';
+#*** sCol30 = 'Forward Estimate 5';
+#*** sCol31 = 'Forward Estimate 6';
+#*** sCol32 = 'Forward Estimate 7';
+#*** sCol33 = 'Forward Estimate 8';
+#*** sCol34 = 'Forward Estimate 9';
+#*** sCol35 = 'Forward Estimate 10';
+#*** sCol36 = 'Forward Estimate 11';
+#*** sCol37 = 'Forward Estimate 12';
+#*** sCol38 = 'Forward Estimate 13';
+
+
+sCBMSProg = CELLGETS (cbProg, vsHLYear, vsScenario, vsProg, snProg);
+sControlType = CELLGETS (cbProg, vsHLYear, vsScenario, vsProg, 'control type');
+sCBMSMeasCode = ATTRS (dmMeasCode, vsMeasCode, 'CBMS');
+
+IF (vsMA @= '-');
+	sDRCR = ATTRS (dmAcc, vsAcc, 'DR/CR');
+ELSE;
+	sDRCR = ATTRS (dmMA, vsMA, 'DR/CR');
+ENDIF;
+
+IF (sDRCR @= 'CR');
+	nFactor = -1;
+ELSE;
+	nFactor = 1;
+ENDIF;
+
+
+#******************************************************************************************************************
+# **** GET EXISTING VALUES
+#******************************************************************************************************************
+nValueP00 = CELLGETN (cbAE,  vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer00) * nFactor;
+nValueP01 = CELLGETN (cbAE,  vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer01) * nFactor;
+nValueP02 = CELLGETN (cbAE,  vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer02) * nFactor;
+nValueP03 = CELLGETN (cbAE,  vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer03) * nFactor;
+nValueP04 = CELLGETN (cbAE,  vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer04) * nFactor;
+nValueP05 = CELLGETN (cbAE,  vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer05) * nFactor;
+nValueP06 = CELLGETN (cbAE,  vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer06) * nFactor;
+nValueP07 = CELLGETN (cbAE,  vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer07) * nFactor;
+nValueP08 = CELLGETN (cbAE,  vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer08) * nFactor;
+nValueP09 = CELLGETN (cbAE,  vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer09) * nFactor;
+nValueP10 = CELLGETN (cbAE,  vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer10) * nFactor;
+nValueP11 = CELLGETN (cbAE,  vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer11) * nFactor;
+nValueP12 = CELLGETN (cbAE,  vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer12) * nFactor;
+nValueP13 = CELLGETN (cbAE,  vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer13) * nFactor;
+nValueP14 = CELLGETN (cbAE,  vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer14) * nFactor;
+#nValueP15 = CELLGETN (cbAE,  vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer15) * nFactor;
+#nValueP16 = CELLGETN (cbAE,  vsHLYear, vsScenario, vsStatus, vsOC, vsRE, vsFunc, vsReason, vsSPP, vsMeasCode, vsType, vsMA, vsItem, vsProg, vsAcc, vsID, vsJur, sPer16) * nFactor;
+
+#******************************************************************************************************************
+# **** POPULATE FIELDS FOR FLATFILE
+#******************************************************************************************************************
+
+sCol01Value = vsProg;
+sCol02Value = '''' | vsID;
+sCol03Value = vsHLYear;
+sCol04Value = curBudgetRound;
+sCol05Value = '';
+sCol06Value = sCBMSProg;
+sCol07Value = '';
+sCol08Value = sControlType;
+sCol09Value = sTitle;
+sCol10Value = '';
+sCol11Value = sDesc;
+sCol12Value = vsOC;
+sCol13Value = vsFunc;
+sCol14Value = vsType;
+sCol15Value = vsItem;
+sCol16Value = vsReason;
+sCol17Value = sCBMSMeasCode;
+sCol18Value = vsAcc;
+sCol19Value = vsMA;
+sCol20Value = vsRE;
+sCol21Value = vsSPP;
+sCol22Value = vsJur;
+sCol23Value = sDRCR;
+sCol24Value = NUMBERTOSTRING (nValueP00);
+sCol25Value = NUMBERTOSTRING (nValueP01);
+sCol26Value = NUMBERTOSTRING (nValueP02);
+sCol27Value = NUMBERTOSTRING (nValueP03);
+sCol28Value = NUMBERTOSTRING (nValueP04);
+sCol29Value = NUMBERTOSTRING (nValueP05);
+sCol30Value = NUMBERTOSTRING (nValueP06);
+sCol31Value = NUMBERTOSTRING (nValueP07);
+sCol32Value = NUMBERTOSTRING (nValueP08);
+sCol33Value = NUMBERTOSTRING (nValueP09);
+sCol34Value = NUMBERTOSTRING (nValueP10);
+sCol35Value = NUMBERTOSTRING (nValueP11);
+sCol36Value = NUMBERTOSTRING (nValueP12);
+sCol37Value = NUMBERTOSTRING (nValueP13);
+sCol38Value = NUMBERTOSTRING (nValueP14);
+
+
+#******************************************************************************************************************
+# **** CREATE FLAT FILE
+#******************************************************************************************************************
+
+IF (lCounter = 1);
+	#******************************************************************************************************************
+	# **** CREATE HEADER FILE
+	#******************************************************************************************************************
+	ASCIIOUTPUT (sFileName, sCol01, sCol02, sCol03, sCol04, sCol05, sCol06, sCol07, sCol08, sCol09, sCol10, sCol11, sCol12, sCol13, sCol14, sCol15, sCol16, sCol17, sCol18, sCol19, sCol20, sCol21, sCol22, sCol23, sCol24, sCol25, sCol26, sCol27, sCol28,sCol29,sCol30,sCol31,sCol32,sCol33,sCol34,sCol35,sCol36,sCol37,sCol38);
+ENDIF;
+
+#******************************************************************************************************************
+#**** IF ACCOUNT IS CASH FLOW AND ITS SYSTEM DERIVED, SKIP LINE
+#**** ONLY ADD CASH FLOW IF ITS MANUAL CASH FLOW
+#******************************************************************************************************************
+IF (ELISANC(dmAcc, 'CF-MVT', vsAcc) = 1 & sManualCF @<> '');
+#	ITEMSKIP;
+	ASCIIOUTPUT (sFileName, sCol01Value, sCol02Value, sCol03Value, sCol04Value, sCol05Value, sCol06Value, sCol07Value, sCol08Value, sCol09Value, sCol10Value, sCol11Value, sCol12Value, sCol13Value, sCol14Value, sCol15Value, sCol16Value, sCol17Value, sCol18Value, sCol19Value, sCol20Value, sCol21Value, sCol22Value, sCol23Value, sCol24Value, sCol25Value, sCol26Value, sCol27Value, sCol28Value);
+ELSE;
+	ASCIIOUTPUT (sFileName, sCol01Value, sCol02Value, sCol03Value, sCol04Value, sCol05Value, sCol06Value, sCol07Value, sCol08Value, sCol09Value, sCol10Value, sCol11Value, sCol12Value, sCol13Value, sCol14Value, sCol15Value, sCol16Value, sCol17Value, sCol18Value, sCol19Value, sCol20Value, sCol21Value, sCol22Value, sCol23Value, sCol24Value, sCol25Value, sCol26Value, sCol27Value, 
+		sCol28Value,sCol29Value,sCol30Value,sCol31Value,sCol32Value,sCol33Value,sCol34Value,sCol35Value,sCol36Value,sCol37Value,sCol38Value);
+
+ENDIF;
+
+
+
+
+
+
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+
+IF (1= 1);
+
+VIEWDESTROY (cbAE, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmStatus, sView);
+SUBSETDESTROY (dmOC, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmFunc, sView);
+SUBSETDESTROY (dmReason, sView);
+SUBSETDESTROY (dmSPP, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmType, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmItem, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmJur, sView);
+SUBSETDESTROY (dmPer, sView);
+
+
+
+ENDIF;
+
+#******************************************************************************************************************
+#*** THIS IS TO ADD TO ID DETAILS CUBE REGARDLESS OF NO DATA AS DATA HAS BEEN COPIED ACCROSS 
+#******************************************************************************************************************
+IF (lCounter = 0);
+
+
+	#******************************************************************************************************************
+	# **** POPULATE FIELDS FOR FLATFILE
+	#******************************************************************************************************************
+
+	sCol01Value = '''' | psID;
+	sCol02Value = sProg;
+	sCol03Value = sOC;
+	sCol04Value = sReason;
+	sCol05Value = sTitle;
+	sCol06Value = sDesc;
+	sCol07Value = sOC;
+	sCol08Value = '';
+	sCol09Value = '';
+	sCol10Value = '';
+	sCol11Value = '';
+	sCol12Value = '';
+	sCol13Value = '';
+	sCol14Value = '';
+	sCol15Value = '';
+	sCol16Value = '';
+	sCol17Value = '';
+	sCol18Value = '';
+	sCol19Value = '';
+	sCol20Value = '';
+	sCol21Value = '';
+	sCol22Value = '';
+	sCol23Value = '';
+	sCol24Value = '';
+	sCol25Value = '';
+	sCol26Value = '';
+	sCol27Value = '';
+	sCol28Value = '';
+
+	#******************************************************************************************************************
+	# **** CREATE BLANK FLATFILE
+	#******************************************************************************************************************
+	ASCIIOUTPUT (sFileName, sCol01, sCol02, sCol03, sCol04, sCol05, sCol06, sCol07, sCol08, sCol09, sCol10, sCol11, sCol12, sCol13, sCol14, sCol15, sCol16, sCol17, sCol18, sCol19, sCol20, sCol21, sCol22, sCol23, sCol24, sCol25, sCol26, sCol27, sCol28);
+	ASCIIOUTPUT (sFileName, sCol01Value, sCol02Value, sCol03Value, sCol04Value, sCol05Value, sCol06Value, sCol07Value, sCol08Value, sCol09Value, sCol10Value, sCol11Value, sCol12Value, sCol13Value, sCol14Value, sCol15Value, sCol16Value, sCol17Value, sCol18Value, sCol19Value, sCol20Value, sCol21Value, sCol22Value, sCol23Value, sCol24Value, sCol25Value, sCol26Value, sCol27Value, sCol28Value);
+
+ENDIF;
+
+#endregion

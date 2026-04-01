@@ -1,0 +1,100 @@
+{
+	"@type":"NativeView",
+	"Name":"Default",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('measure details')/Hierarchies('measure details')"
+				},
+				"Expression":"TM1SubsetAll([measure details])"
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('measure code')/Hierarchies('measure code')/Subsets('sys_all-n')"
+			}
+		}
+	],
+	"Titles":
+	[
+		{
+			"Subset":
+			{
+				"@id":"Dimensions('headline year')/Hierarchies('headline year')/Subsets('Default')"
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('headline year')/Hierarchies('headline year')/Elements('HL2025-2026')"
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('scenario')/Hierarchies('scenario')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('parameter')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('efficiency dividend')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('CBMS')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('current')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('MA CBMS')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('Actual')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('Actual Adjustments')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('ACM')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('PEFO')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('MYEFO')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('Additional Estimates')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('Pre-ERC')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('Budget')"
+					},
+					{
+						"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('current')"
+					}
+				]
+			},
+			"Selected":
+			{
+				"@id":"Dimensions('scenario')/Hierarchies('scenario')/Elements('current')"
+			}
+		}
+	],
+	"SuppressEmptyColumns":true,
+	"SuppressEmptyRows":true,
+	"FormatString":"0.#########"
+}

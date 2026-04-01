@@ -1,0 +1,308 @@
+{
+	"@type":"Hierarchy",
+	"Name":"scenario",
+	"Elements":
+	[
+		{
+			"Name":"current",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"MYEFO",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Additional Estimates",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Pre-ERC",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Budget",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"parameter",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"efficiency dividend",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Actual",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Actual Adjustments",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"CBMS",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"CBMS-R",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"CBMS-R OBAL",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"CBMS-R FBO",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"UC and FB calculation",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Appropriation Bills",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Economic Update",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FBO",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Budget(2)",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Outcome Restructure",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"CBMS RECO",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"PEFO",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Adjusted Actual",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"MA CBMS RECO",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"MA CBMS",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"ACM",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_BudgetRound",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"CBMSR RECO",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"CBMSR FBO Variance",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"CBMSR FBO Initial",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"CBMS-R FBO Adj",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"CBMS-R AA",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_CBMSR FBO Variance BARS",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"CBMS-R FBO BARS",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_CBMSR FBO Variance CBMS",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"CBMS-R FBO CBMS",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"CBMS RECO",
+			"ComponentName":"CBMS",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMS RECO",
+			"ComponentName":"current",
+			"Weight":-1
+		},
+		{
+			"ParentName":"Adjusted Actual",
+			"ComponentName":"Actual",
+			"Weight":1
+		},
+		{
+			"ParentName":"Adjusted Actual",
+			"ComponentName":"Actual Adjustments",
+			"Weight":1
+		},
+		{
+			"ParentName":"MA CBMS RECO",
+			"ComponentName":"MA CBMS",
+			"Weight":1
+		},
+		{
+			"ParentName":"MA CBMS RECO",
+			"ComponentName":"Adjusted Actual",
+			"Weight":-1
+		},
+		{
+			"ParentName":"sys_BudgetRound",
+			"ComponentName":"PEFO",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_BudgetRound",
+			"ComponentName":"MYEFO",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_BudgetRound",
+			"ComponentName":"Additional Estimates",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_BudgetRound",
+			"ComponentName":"Pre-ERC",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_BudgetRound",
+			"ComponentName":"Budget",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_BudgetRound",
+			"ComponentName":"Appropriation Bills",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_BudgetRound",
+			"ComponentName":"Economic Update",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_BudgetRound",
+			"ComponentName":"FBO",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_BudgetRound",
+			"ComponentName":"Budget(2)",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_BudgetRound",
+			"ComponentName":"current",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_BudgetRound",
+			"ComponentName":"Outcome Restructure",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMSR RECO",
+			"ComponentName":"CBMS-R",
+			"Weight":-1
+		},
+		{
+			"ParentName":"CBMSR RECO",
+			"ComponentName":"CBMS-R OBAL",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMSR FBO Variance",
+			"ComponentName":"current",
+			"Weight":-1
+		},
+		{
+			"ParentName":"CBMSR FBO Variance",
+			"ComponentName":"CBMS-R FBO",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMSR FBO Initial",
+			"ComponentName":"CBMS-R FBO",
+			"Weight":1
+		},
+		{
+			"ParentName":"CBMSR FBO Initial",
+			"ComponentName":"CBMS-R AA",
+			"Weight":-1
+		},
+		{
+			"ParentName":"sys_CBMSR FBO Variance BARS",
+			"ComponentName":"current",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_CBMSR FBO Variance BARS",
+			"ComponentName":"CBMS-R FBO BARS",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_CBMSR FBO Variance CBMS",
+			"ComponentName":"current",
+			"Weight":1
+		},
+		{
+			"ParentName":"sys_CBMSR FBO Variance CBMS",
+			"ComponentName":"CBMS-R FBO CBMS",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"scenario.subsets/$BSApportionment.json",
+		"scenario.subsets/$ChangeCode.json",
+		"scenario.subsets/$CreateFE3II.json",
+		"scenario.subsets/$ME_FlatFile.json",
+		"scenario.subsets/$ME_Profiles.json",
+		"scenario.subsets/$MEDept.json",
+		"scenario.subsets/$parameters.json",
+		"scenario.subsets/$PRIMUSMeasCode.json",
+		"scenario.subsets/$Search.json",
+		"scenario.subsets/$Split.json",
+		"scenario.subsets/$td_FlatFile.json",
+		"scenario.subsets/clear.json",
+		"scenario.subsets/Default.json",
+		"scenario.subsets/Kate Hambly $ChangeCode03.json",
+		"scenario.subsets/Kate Hambly_$sysMeasBulkProcess.json",
+		"scenario.subsets/ME Default.json",
+		"scenario.subsets/sys_Budget.json",
+		"scenario.subsets/sys_BudgetRound.json",
+		"scenario.subsets/sys_print.json",
+		"scenario.subsets/}ME_Validation.json"
+	]
+}

@@ -1,0 +1,57 @@
+{
+	"@type":"Process",
+	"Name":"AE_Rep Extract 00 - Validate",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_Rep Extract 00 - Validate.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"Admin",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psHLYear",
+			"Prompt":"HL2022-2023",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psScenario",
+			"Prompt":"current",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psStatus",
+			"Prompt":"Total Approved",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psProg",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psFullHLExtract",
+			"Prompt":"N",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psExtractType",
+			"Prompt":"Adjusted Base",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

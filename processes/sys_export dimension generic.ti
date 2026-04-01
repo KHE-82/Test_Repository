@@ -1,0 +1,116 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_export dimension generic
+#**** DESCRIPTION:       This is a generic process to export a dimension structure to a flat file for use
+#****                                  with dimension replication.  It copies the dimension as a
+#****                                  flat file where it will be imported into dss_tm1 using
+#****                                  "sys_import dimension generic".
+#****                                  It takes the following parameters:
+#****
+#****                                        psDimName : The dimension to be exported
+#****                                        psExportFile : The file to export it to
+#****                                        psAttributes : 'Y' or 'N', to export attributes as well
+#****
+#**** AUTHOR:                Malcolm MacDonnell (Excelerated Consulting)
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 18/04/2012      MJM        Initial Revision
+#***  12/06/2014      MEC        Implementation at DSS
+#****
+#***********************************************************************************************************************
+
+
+
+DataSourceType = 'SUBSET';
+DataSourceNameForServer = psDimName;
+DataSourceNameForClient = psDimName;
+DataSourceDimensionSubset = 'ALL';
+sAttrDim = '}ElementAttributes_' | psDimName;
+sAttrCube = sAttrDim;
+
+
+
+# If there are no attributes set the flag to false even if already set to true
+If (CubeExists (sAttrDim) = 0);
+	psAttributes = 'N';
+EndIf;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+nCount = ElCompN (psDimName, sElement);
+sType = DType (psDimName, sElement);
+nIndex = 1;
+nAttrCount = DimSiz (sAttrDim);
+nAttrIndex = 1;
+sAttrList = '';
+
+
+
+# Do we want attributes?
+If (psAttributes @= 'Y');
+#--- Get the attributes, their type and their value
+	While (nAttrIndex <= nAttrCount);
+		sAttrName = DimNm (sAttrDim, nAttrIndex);
+		sAttrType = SubSt (DType (sAttrDim, sAttrName), 2, 1);
+		
+		If (sAttrType @= 'N');
+			sAttrVal = Str (CellGetN (sAttrCube, sElement, sAttrName), 20, 10);
+		Else;
+			sAttrVal = CellGetS (sAttrCube, sElement, sAttrName);
+#-------------------------------------------- Remove any pipes '|' from attributes (these occur in formats)
+			nPipeIndex = Scan ('|', sAttrVal);
+
+			While (nPipeIndex > 0);
+				sAttrVal = SubSt (sAttrVal, 1, nPipeIndex - 1) | '##PIPE$$' | SubSt (sAttrVal, nPipeIndex + 1, Long (sAttrVal) - nPipeIndex);
+				nPipeIndex = Scan ('|', sAttrVal);
+			End;
+		EndIf;
+		
+		sAttrList =sAttrList | sAttrName | '|' | sAttrType | '|' | sAttrVal | '|';
+		nAttrIndex = nAttrIndex + 1;
+	End;
+	
+	sAttrList = SubSt (sAttrList, 1, Long (sAttrList) -1);
+EndIf;
+
+
+
+# Loop through all of the children
+While (nIndex <= nCount);
+	sChild = ElComp (psDimName, sElement, nIndex);
+	sChildType = DType (psDimName, sChild);
+	AsciiOutput (psExportFile, sElement, sType, sChild, sChildType, Str (ElWeight (psDimName, sElement, sChild),16, 6), sAttrList);
+	nIndex = nIndex + 1;
+End;
+
+
+
+If (nCount = 0);
+	# This Element has no Children, so just print it out to get the Attributes
+	AsciiOutput (psExportFile, sElement, sType, '', '', '', sAttrList);
+EndIf;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

@@ -1,0 +1,172 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               z_MIgration - CF Derivation Weightings Update
+#**** DESCRIPTION:       This process will upload cash flow derivation weightings
+#****
+#****                                 
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 10/08/2017    KG             Initial Revision
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------
+#-- Declare dimension and cube
+#---------------------------------------------------------------------------------------------
+cbCF = 'AE cash flow';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmMA = 'movement account';
+dmID = 'id';
+dmAccCF = 'account_cf';
+#dmProg = 'programme';
+dmAcc = 'account_other';
+dmRE = 'related entity';
+dmCFMeas = 'cash flow measure';
+dmPer = 'period';
+
+sID = 'cash flow';
+sCFMeas = 'derivation weightings';
+sProg = 'cash flow';
+sRE = 'cash flow';
+sPer = 'cash flow';
+sUCAcc = '9000701';
+sFBAcc = '9000702';
+
+
+#---------------------------------------------------------------------------------------------
+#-- DESTROY EXISTING VIEW
+#---------------------------------------------------------------------------------------------
+sView = '$ClearCF';
+VIEWDESTROY (cbCF, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmAccCF, sView);
+#SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmCFMeas, sView);
+SUBSETDESTROY (dmPer, sView);
+
+#---------------------------------------------------------------------------------------------
+#-- CREATE SUBSETS
+#---------------------------------------------------------------------------------------------
+# headline year
+SUBSETCREATE (dmHLYear, sView);
+SUBSETELEMENTINSERT (dmHLYear, sView, psHLYear, 1);
+
+# scenario
+SUBSETCREATE (dmScenario, sView);
+SUBSETELEMENTINSERT (dmScenario, sView, psScenario, 1);
+
+# MA
+MDX = '{TM1SUBSETALL( [' | dmMA | '] )}';
+SUBSETCREATEBYMDX  (sView, MDX);
+
+# ID
+SUBSETCREATE (dmID, sView);
+SUBSETELEMENTINSERT (dmID, sView, sID, 1);
+
+# Acc CF
+MDX = '{TM1SUBSETALL( [' | dmAccCF | '] )}';
+SUBSETCREATEBYMDX  (sView, MDX);
+
+# Acc
+MDX = '{TM1SUBSETALL( [' | dmAcc | '] )}';
+SUBSETCREATEBYMDX  (sView, MDX);
+
+# RE 
+SUBSETCREATE (dmRE, sView);
+SUBSETELEMENTINSERT (dmRE, sView, sRE, 1);
+
+# Cash flow measure
+SUBSETCREATE (dmCFMeas, sView);
+SUBSETELEMENTINSERT (dmCFMeas, sView, sCFMeas, 1);
+
+# Period
+SUBSETCREATE (dmPer, sView);
+SUBSETELEMENTINSERT (dmPer, sView, sPer, 1);
+
+
+#---------------------------------------------------------------------------------------------
+#-- CREATE VIEWS
+#---------------------------------------------------------------------------------------------
+VIEWCREATE (cbCF, sView);
+VIEWSUBSETASSIGN (cbCF, sView, dmHLYear, sView);
+VIEWSUBSETASSIGN (cbCF, sView, dmScenario, sView);
+VIEWSUBSETASSIGN (cbCF, sView, dmMA, sView);
+VIEWSUBSETASSIGN (cbCF, sView, dmID, sView);
+VIEWSUBSETASSIGN (cbCF, sView, dmAccCF, sView);
+VIEWSUBSETASSIGN (cbCF, sView, dmAcc, sView);
+VIEWSUBSETASSIGN (cbCF, sView, dmRE, sView);
+VIEWSUBSETASSIGN (cbCF, sView, dmCFMeas, sView);
+VIEWSUBSETASSIGN (cbCF, sView, dmPer, sView);
+
+VIEWZEROOUT (cbCF, sView);
+
+#---------------------------------------------------------------------------------------------
+#-- DESTROY EXISTING VIEW
+#---------------------------------------------------------------------------------------------
+VIEWDESTROY (cbCF, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmMA, sView);
+SUBSETDESTROY (dmID, sView);
+SUBSETDESTROY (dmAccCF, sView);
+#SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmAcc, sView);
+SUBSETDESTROY (dmRE, sView);
+SUBSETDESTROY (dmCFMeas, sView);
+SUBSETDESTROY (dmPer, sView);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#-------------------------------------------------------------------------------
+#--- POST DATA
+#-------------------------------------------------------------------------------
+IF (CELLISUPDATEABLE (cbCF, psHLYear, psScenario, vsMA, sID, vsCFAcc, sProg, vsAcc, sRE, sCFMeas, sPer) = 1);
+	
+	#-------------------------------------------------------------------------------
+	#---- Underliying Cash
+	#-------------------------------------------------------------------------------
+	CELLPUTN (vnUC, cbCF, psHLYear, psScenario, vsMA, sID, sUCAcc, sProg, vsAcc, sRE, sCFMeas, sPer);
+
+	#-------------------------------------------------------------------------------
+	#---- Fiscal Balance
+	#-------------------------------------------------------------------------------
+	CELLPUTN (vnFB, cbCF, psHLYear, psScenario, vsMA, sID, sFBAcc, sProg, vsAcc, sRE, sCFMeas, sPer);
+
+	#-------------------------------------------------------------------------------
+	#---- Standard CF
+	#-------------------------------------------------------------------------------
+	CELLPUTN (vnCFMap, cbCF, psHLYear, psScenario, vsMA, sID, vsCFAcc, sProg, vsAcc, sRE, sCFMeas, sPer);
+
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#DELETEALLPERSISTENTFEEDERS;
+#CubeProcessFeeders('AE adjustments');
+#CubeProcessFeeders('AE cash flow');
+#endregion

@@ -1,0 +1,128 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Approve Adjustment
+#**** DESCRIPTION:       This process will change the status of the id to 'Submitted'
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 14/03/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** DECLARE CUBES & DIMENSIONS ***#
+cbID = 'AE id details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmID = 'id';
+dmIDMeas = 'id measures';
+dmVar = 'variables';
+
+#*** DECLARE VARIABLES ***#
+curHLYear = ATTRS(dmVar, 'headline year', 'value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+dmClients = '}Clients';
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sUser) + 1;
+     sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+     sUser = TM1User();
+ENDIF;
+
+     # **** GET DATE VALUES ***#
+     sDNow = TimST( Now, '\D'); 
+     sMNow = TimST( Now, '\m'); 
+     sYNow = TimST( Now, '\Y'); 
+
+     sDay = TRIM(SUBST(sDNow, 1,2));
+
+     IF (LONG (sDay) = 1);
+          sDay = '0' | sDay;
+     ELSE;
+          sDay = sDay;
+     ENDIF;
+
+     sMonth = TRIM(SUBST(sMNow, 1,2));
+
+     IF (LONG (sMonth) = 1);
+          sMonth = '0' | sMonth;
+     ELSE;
+          sMonth = sMonth;
+     ENDIF;
+
+     sYear = TRIM(SUBST(sYNow, 1,4));
+
+     sNow = sDay | '/' | sMonth | '/' | sYear;
+
+
+IF (psStatus @= 'draft');
+     CELLPUTS ('draft', cbID, curHLYear, curScenario, psID, 'status');
+     CELLPUTS (sUser, cbID, curHLYear, curScenario, psID, 'Submitted By');
+     CELLPUTS (sNow, cbID, curHLYear, curScenario, psID, 'submitted date');
+
+     CELLPUTS ('', cbID, curHLYear, curScenario, psID, 'authorised by');
+     CELLPUTS ('', cbID, curHLYear, curScenario, psID, 'authorised date');
+ENDIF;
+
+IF (psStatus @= 'submitted');
+     CELLPUTS ('submitted', cbID, curHLYear, curScenario, psID, 'status');
+     CELLPUTS (sUser, cbID, curHLYear, curScenario, psID, 'Submitted By');
+     CELLPUTS (sNow, cbID, curHLYear, curScenario, psID, 'submitted date');
+ENDIF;
+
+
+IF (psStatus @= 'approved');
+     CELLPUTS ('approved', cbID, curHLYear, curScenario, psID, 'status');
+     CELLPUTS (sUser, cbID, curHLYear, curScenario, psID, 'Authorised By');
+     CELLPUTS (sNow, cbID, curHLYear, curScenario, psID, 'authorised date');
+ENDIF;
+
+IF (psStatus @= 'approved non-flat file');
+     CELLPUTS ('approved non-flat file', cbID, curHLYear, curScenario, psID, 'status');
+     CELLPUTS (sUser, cbID, curHLYear, curScenario, psID, 'Authorised By');
+     CELLPUTS (sNow, cbID, curHLYear, curScenario, psID, 'authorised date');
+ENDIF;
+
+IF (psStatus @= 'CBMS');
+     CELLPUTS ('CBMS', cbID, curHLYear, curScenario, psID, 'status');
+     CELLPUTS (sUser, cbID, curHLYear, curScenario, psID, 'Authorised By');
+     CELLPUTS (sNow, cbID, curHLYear, curScenario, psID, 'authorised date');
+ENDIF;
+
+IF (psStatus @= 'unbalanced');
+     CELLPUTS ('unbalanced', cbID, curHLYear, curScenario, psID, 'status');
+     CELLPUTS (sUser, cbID, curHLYear, curScenario, psID, 'Submitted By');
+     CELLPUTS (sNow, cbID, curHLYear, curScenario, psID, 'submitted date');
+
+     CELLPUTS ('', cbID, curHLYear, curScenario, psID, 'authorised by');
+     CELLPUTS ('', cbID, curHLYear, curScenario, psID, 'authorised date');
+
+ENDIF;
+
+#     ASCIIOUTPUT ('testun.txt', psID, psStatus, cbID, curHLYear, curScenario);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

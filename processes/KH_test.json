@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"KH_test",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"KH_test.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[]
+}

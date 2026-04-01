@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"$BSApportionment",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1SUBSETALL( [related entity] )}, 0)}"
+}

@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"sys_No Jur",
+	"Expression":"{[jurisdiction].[-]}"
+}

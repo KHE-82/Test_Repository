@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"A. Smith_$geuspvt",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100001')"
+		}
+	]
+}

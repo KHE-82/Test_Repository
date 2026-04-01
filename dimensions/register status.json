@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"register status",
+	"Hierarchies@Code.links":
+	[
+		"register status.hierarchies/register status.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('register status')/Hierarchies('register status')"
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"@type":"Subset",
+	"Name":"Admin_$FE3Step03",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('2023-2024')"
+		},
+		{
+			"@id":"Dimensions('period')/Hierarchies('period')/Elements('2024-2025')"
+		}
+	]
+}

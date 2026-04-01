@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"Admin_$AccTempSubset01",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1SUBSETALL( [programme] )}, 0)}"
+}

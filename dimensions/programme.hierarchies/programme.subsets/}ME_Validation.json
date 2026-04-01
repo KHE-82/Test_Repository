@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"}ME_Validation",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('programme')/Hierarchies('programme')/Elements('Administered Programmes')"
+		}
+	]
+}

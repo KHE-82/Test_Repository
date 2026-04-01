@@ -1,0 +1,163 @@
+{
+	"@type":"Hierarchy",
+	"Name":"AE parameters and FE3 calculation measure",
+	"Elements":
+	[
+		{
+			"Name":"original value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"original value to apply parameter",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"parameter value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE3 parameter value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"efficiency dividend value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"FE3 efficiency dividend value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"step 1 value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"step 2 value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"step 3 value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Parameters Calculation value",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"FE3 Calculation value",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"FE3 Parameters Calculation value",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Total FE3 adjustment value",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Total parameter adjustment value",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Total efficiency dividend adjustment value",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Total adjustment value",
+			"Type":"Consolidated"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Parameters Calculation value",
+			"ComponentName":"original value",
+			"Weight":1
+		},
+		{
+			"ParentName":"Parameters Calculation value",
+			"ComponentName":"efficiency dividend value",
+			"Weight":1
+		},
+		{
+			"ParentName":"FE3 Calculation value",
+			"ComponentName":"original value",
+			"Weight":1
+		},
+		{
+			"ParentName":"FE3 Calculation value",
+			"ComponentName":"efficiency dividend value",
+			"Weight":1
+		},
+		{
+			"ParentName":"FE3 Calculation value",
+			"ComponentName":"parameter value",
+			"Weight":1
+		},
+		{
+			"ParentName":"FE3 Parameters Calculation value",
+			"ComponentName":"FE3 efficiency dividend value",
+			"Weight":1
+		},
+		{
+			"ParentName":"FE3 Parameters Calculation value",
+			"ComponentName":"Total FE3 adjustment value",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total FE3 adjustment value",
+			"ComponentName":"step 1 value",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total FE3 adjustment value",
+			"ComponentName":"step 2 value",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total FE3 adjustment value",
+			"ComponentName":"step 3 value",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total parameter adjustment value",
+			"ComponentName":"parameter value",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total parameter adjustment value",
+			"ComponentName":"FE3 parameter value",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total efficiency dividend adjustment value",
+			"ComponentName":"efficiency dividend value",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total efficiency dividend adjustment value",
+			"ComponentName":"FE3 efficiency dividend value",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total adjustment value",
+			"ComponentName":"Total efficiency dividend adjustment value",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total adjustment value",
+			"ComponentName":"Total parameter adjustment value",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total adjustment value",
+			"ComponentName":"Total FE3 adjustment value",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"AE parameters and FE3 calculation measure.subsets/Admin_$FE3Step03.json"
+	]
+}

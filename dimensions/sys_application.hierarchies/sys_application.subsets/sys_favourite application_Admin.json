@@ -1,0 +1,20 @@
+{
+	"@type":"Subset",
+	"Name":"sys_favourite application_Admin",
+	"Alias":"Navigation Search",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Adjustment - ID List')"
+		},
+		{
+			"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Data Entry - New Adj 01 - Header Details')"
+		},
+		{
+			"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Reports - Primary Financial Statements')"
+		},
+		{
+			"@id":"Dimensions('sys_application')/Hierarchies('sys_application')/Elements('Admin Archive - Create New Baseline')"
+		}
+	]
+}

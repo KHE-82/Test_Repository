@@ -1,0 +1,21 @@
+{
+	"@type":"Cube",
+	"Name":"sys_account related entity mapping",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('account')"
+		},
+		{
+			"@id":"Dimensions('related entity')"
+		},
+		{
+			"@id":"Dimensions('sys_mapping measure')"
+		}
+	],
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('sys_mapping measure')"
+	},
+	"Views@Code.links":[]
+}

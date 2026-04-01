@@ -1,0 +1,39 @@
+{
+	"@type":"Process",
+	"Name":"AE_FlatFile 98 - Create FF From Adj Extract Screen",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_FlatFile 98 - Create FF From Adj Extract Screen.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"Admin",
+			"Type":"String"
+		},
+		{
+			"Name":"psHLYear",
+			"Prompt":"",
+			"Value":"HL2018-2019",
+			"Type":"String"
+		},
+		{
+			"Name":"psScenario",
+			"Prompt":"",
+			"Value":"current",
+			"Type":"String"
+		},
+		{
+			"Name":"psID",
+			"Prompt":"",
+			"Value":"00357",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

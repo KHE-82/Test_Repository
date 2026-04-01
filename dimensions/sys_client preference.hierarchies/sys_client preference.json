@@ -1,0 +1,703 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_client preference",
+	"Elements":
+	[
+		{
+			"Name":"geus hlyear",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"geus scenario",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"geus adj",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"geus measure code",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"geus programme",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"geus screen",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"geus fav id",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_status",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_title",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_description",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_comments",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_published title",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_control type",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_reason",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_measure code",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_programme code",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_programme code picklist",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_favourite id",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_outcome",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_function",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_spp",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_bypass account validation",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_appropriation type",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_appropriation item",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_fund life",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_start date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_end date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_apply param",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_disagree cash flow",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_movement account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_related entity",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_jurisdiction",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_editable",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"adj_approver comments",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_adj process",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_adj process picklist",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_bulk process",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_bulk process picklist",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_bulk process count",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_bulk process comment",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_approval process",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_approval process picklist",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_ImpFileValidation",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"rep_base_id",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"rep_budhlyear",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"rep_budscenario",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"rep_hlyear",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"rep_scenario",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"rep_status",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"rep_programme",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"idlist_programme",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"idlist_hlyear",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"idlist_scenario",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"idlist_filter",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"idlist_textfilter",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_meas bulk process",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_meas bulk process picklist",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_meas bulk process count",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_meas bulk process comment",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_id",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_active",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_status",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_CBMS Measure Code",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_title",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_description",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_published title",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_measure type",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_costing ID",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_programme",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_fund life",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_govt decision",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_decision day",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_decision month",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_decision year",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_decision date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_start date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_start day",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_start month",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_start year",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_end date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_end day",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_end month",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_end year",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_not for publication",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_policy entity",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_publication round",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_publication year",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"meas_election commitment",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"measlist_programme",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"measlist_hlyear",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"measlist_scenario",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"measlist_filter",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"measlist_textfilter",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"favapp_application",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"favapp_application picklist",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_admin archive status",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"group adj_program",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"group adj_account template",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"group adj_related entity",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"group adj_jurisdiction",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_group adj DR account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_group adj DR movement account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_group adj CR account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"sys_group adj CR movement account",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"progtrf_SrcProgID",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"progtrf_TarProgID",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"All Notes",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Note 01",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 02",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 03",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 04",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 05",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 06",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 07",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 08",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 09",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 10",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 11",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 12",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 13",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 14",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 15",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 16",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 17",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 18",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 19",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 20",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 01 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 02 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 03 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 04 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 05 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 06 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 07 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 08 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 09 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 10 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 11 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 12 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 13 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 14 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 15 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 16 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 17 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 18 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 19 Date",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Note 20 Date",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 01",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 02",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 03",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 04",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 05",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 06",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 07",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 08",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 09",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 10",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 11",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 12",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 13",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 14",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 15",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 16",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 17",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 18",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 19",
+			"Weight":1
+		},
+		{
+			"ParentName":"All Notes",
+			"ComponentName":"Note 20",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":[]
+}

@@ -1,0 +1,217 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Archive_01 - RemoveUnwanted IDS
+#**** DESCRIPTION:       This process removes unwanted IDs from the adjustments cube and id details cube
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 12/05/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE ID DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE INDEX CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbIndex = 'index';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE CASHFLOW CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbCF= 'AE cash flow';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE GOVERNMENT MEASURE CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbMeas = 'government measures';
+dmMeasDet = 'measure details';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE GOVERNMENT MEASURE DETAILS CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbMeasDet = 'government measures details';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE GROUP ADJUSTMENT ENTRY CUBE ***#
+#---------------------------------------------------------------------------------------------------------------------------
+cbGrp = 'AE group adjustment entry';
+
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#---------------------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#---------------------------------------------------------------------------------------------------------------------------
+#sHLYear = ATTRS(dmVar,'headline year','value');
+#sScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+
+sHLYear = ATTRS(dmVar, 'archive year', 'old value');
+sScenario = ATTRS(dmVar, 'archive scenario', 'old value');
+
+#---------------------------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#---------------------------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sUser) + 1;
+     sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+     sUser = TM1User();
+ENDIF;
+
+sView = '$UnwantedIDs';
+sSubset = sView;
+
+
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy(cbAE, sView);
+ViewDestroy(cbID, sView);
+SubsetDestroy(dmHLYear, sSubset);
+SubsetDestroy(dmScenario, sSubset);
+SubsetDestroy(dmID, sSubset);
+SubsetDestroy(dmIDMeas, sSubset);
+
+#****CREATE SUBSETS
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, sHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, sScenario, 1);
+
+# ID measure
+sDim = dmIDMeas;
+SubsetCreate('id measure', sSubset);
+
+lIndex = 1;
+lCounter = 1;
+lDimSize = DIMSIZ(sDim);
+
+WHILE (lIndex <= lDimSize);
+     sElement = DIMNM(sDim, lIndex);
+     IF(sElement @<> 'used');
+          SubsetElementInsert(sDim, sSubset, sElement, lCounter);
+          lCounter = lCounter + 1;
+     ENDIF;
+     lIndex = lIndex + 1;
+END;
+
+# ID
+sCube = cbID;
+sDim = dmID;
+SubsetCreate(sDim, sSubset);
+
+lIndex = 3;
+lCounter = 1;
+lDimSize = CellGetN(sCube, sHLYear, sScenario, 'Total IDs', 'used') + 2;
+
+WHILE (lIndex <= lDimSize);
+     sElement = DIMNM(sDim, lIndex);
+     sStatus = CellGetS(sCube, sHLYear, sScenario, sElement, 'status');
+     IF(sStatus @= 'unauthorised' % sStatus @= 'delete' % sStatus @= 'deleted');
+          SubsetElementInsert(sDim, sSubset, sElement, lCounter);
+          lCounter = lCounter + 1;
+     ENDIF;
+     lIndex = lIndex + 1;
+END;
+
+#****CREATE VIEW IN ADJUSTMENTS CUBE
+sCube = cbAE;
+ViewCreate(sCube, sView);
+
+ViewSubsetAssign(sCube, sView, dmHLYear, sSubset);
+ViewSubsetAssign(sCube, sView, dmScenario, sSubset);
+ViewSubsetAssign(sCube, sView, dmID, sSubset);
+
+ViewSetSkipZeroes(sCube, sView, 1);
+ViewSetSkipCalcs(sCube, sView, 1);
+ViewZeroOut(sCube, sView);
+
+#****CREATE VIEW IN ID DETAILS CUBE
+sCube = cbID;
+ViewCreate(sCube, sView);
+
+ViewSubsetAssign(sCube, sView, dmHLYear, sSubset);
+ViewSubsetAssign(sCube, sView, dmScenario, sSubset);
+ViewSubsetAssign(sCube, sView, dmID, sSubset);
+ViewSubsetAssign(sCube, sView, dmIDMeas, sSubset);
+
+ViewSetSkipZeroes(sCube, sView, 1);
+ViewSetSkipCalcs(sCube, sView, 1);
+ViewZeroOut(sCube, sView);
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy(cbAE, sView);
+ViewDestroy(cbID, sView);
+SubsetDestroy(dmHLYear, sSubset);
+SubsetDestroy(dmScenario, sSubset);
+SubsetDestroy(dmID, sSubset);
+SubsetDestroy(dmIDMeas, sSubset);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

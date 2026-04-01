@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"Sian Cameron $NewAdj03",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1SUBSETALL( [spp] )}, 0)}"
+}

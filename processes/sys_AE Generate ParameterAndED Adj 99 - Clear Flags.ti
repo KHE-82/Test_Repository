@@ -1,0 +1,125 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_AE Generate ParameterAndED Adj 99 - Clear Flags
+#**** DESCRIPTION:       This process clears the Y Flags in the programme details cube
+#****
+#****                                  
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 04/07/2014    KG             Initial Revision
+#**** 2019	KG	  Updated for GEUS PRIMUS
+#****
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#**** DECLARE CUBES ****#
+#******************************************************************************************************************
+snProg = 'programme';
+sCube = snProg | ' details';
+
+#******************************************************************************************************************
+#*** DECLARE DIMENSIONS ***#
+#******************************************************************************************************************
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmProg = snProg;
+dmMeas = snProg | ' measure';
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM DIMENSIONS ***# 
+#******************************************************************************************************************
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#******************************************************************************************************************
+#**** DECLARE VARIABLES ****#
+#******************************************************************************************************************
+sView = '$ClearParamFlag';
+sSubset = sView;
+
+sHLYear = ATTRS (dmVar, 'headline year', 'value');
+sScenario = 'current';
+
+#******************************************************************************************************************
+#****DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+ViewDestroy (sCube, sView);
+SubsetDestroy (dmHLYear, sSubset);
+SubsetDestroy (dmScenario, sSubset);
+SubsetDestroy (dmProg, sSubset);
+SubsetDestroy (dmMeas, sSubset);
+
+#******************************************************************************************************************
+#****CREATE SUBSETS
+#******************************************************************************************************************
+# headline year
+SubsetCreate(dmHLYear, sSubset);
+SubsetElementInsert(dmHLYear, sSubset, sHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sSubset);
+SubsetElementInsert(dmScenario, sSubset, sScenario, 1);
+
+# Programme
+MDX = '{TM1SUBSETALL( [' | dmProg | '] )}';
+SUBSETCREATEBYMDX (sSubset, MDX);
+
+# Programme Measure
+SubsetCreate(dmMeas, sSubset);
+
+IF (psAdjType @= 'parameter');
+	SubsetElementInsert(dmMeas, sSubset, 'Generate WCI', 1);
+ELSEIF (psAdjTYpe @= 'efficiency dividend');
+	SubsetElementInsert(dmMeas, sSubset, 'Generate ED', 1);
+ELSEIF (psAdjTYpe @= 'FE3');
+	SubsetElementInsert(dmMeas, sSubset, 'Generate FE3', 1);
+ENDIF;
+SubsetElementInsert(dmMeas, sSubset, 'sys_IndexRep flag', 2);
+
+
+#******************************************************************************************************************
+#****BUILD VIEW
+#******************************************************************************************************************
+ViewCreate (sCube, sView);
+ViewSubsetAssign (sCube, sView, dmHLYear, sSubset);
+ViewSubsetAssign (sCube, sView, dmScenario, sSubset);
+ViewSubsetAssign (sCube, sView, dmProg, sSubset);
+ViewSubsetAssign (sCube, sView, dmMeas, sSubset);
+
+#*** CLEAR THE VIEW ***#
+VIEWZEROOUT (sCube, sView);
+
+#******************************************************************************************************************
+#****DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+ViewDestroy (sCube, sView);
+SubsetDestroy (dmHLYear, sSubset);
+SubsetDestroy (dmScenario, sSubset);
+SubsetDestroy (dmProg, sSubset);
+SubsetDestroy (dmMeas, sSubset);
+
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

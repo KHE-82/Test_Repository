@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"Kate Hambly_$sysMeasBulkProcess",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('measure details')/Hierarchies('measure details')/Elements('bulk processing flag')"
+		}
+	]
+}

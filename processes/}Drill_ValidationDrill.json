@@ -1,0 +1,53 @@
+{
+	"@type":"Process",
+	"Name":"}Drill_ValidationDrill",
+	"HasSecurityAccess":true,
+	"Code@Code.link":"}Drill_ValidationDrill.ti",
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForClient":"MA Adjustments",
+		"dataSourceNameForServer":"MA Adjustments",
+		"view":"Validation001"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"cubename",
+			"Prompt":"",
+			"Value":"MA validations",
+			"Type":"String"
+		},
+		{
+			"Name":"headline year",
+			"Prompt":"",
+			"Value":"HL2005-2006",
+			"Type":"String"
+		},
+		{
+			"Name":"scenario",
+			"Prompt":"",
+			"Value":"current",
+			"Type":"String"
+		},
+		{
+			"Name":"validation id",
+			"Prompt":"",
+			"Value":"Total",
+			"Type":"String"
+		},
+		{
+			"Name":"programme",
+			"Prompt":"",
+			"Value":"Administered programmes",
+			"Type":"String"
+		},
+		{
+			"Name":"period",
+			"Prompt":"",
+			"Value":"2004-2005",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

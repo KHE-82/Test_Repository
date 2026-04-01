@@ -1,0 +1,45 @@
+{
+	"@type":"Process",
+	"Name":"sys_AE_Update id_list subset",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"sys_AE_Update id_list subset.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psMDX",
+			"Prompt":"",
+			"Value":"{FILTER( {EXCEPT( {[id].[Total IDs].Children}, {[00000]} )}, INSTR( [id details].([budget year].[2014],[update].[current],[id measure].[appropriation type]), \" ) >=1) }",
+			"Type":"String"
+		},
+		{
+			"Name":"psFilter",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psHLYear",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psScenario",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		},
+		{
+			"Name":"psShowCBMS",
+			"Prompt":"",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

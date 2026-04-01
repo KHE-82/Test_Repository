@@ -1,0 +1,134 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_acc_update account to programme mapping subsets
+#**** DESCRIPTION:       This process will map the selected account template to a programme
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 28/05/2014    KG             Initial Revision
+#***********************************************************************************************************************
+
+#*** DECLARE CUBES & DIMENSIONS ***#
+snProg = 'programme';
+cbMap = 'AE account template mapping';
+dmAccTemp = 'account template';
+dmAccTempMeas = 'account template measure';
+dmProg = snProg;
+dmClients = '}Clients';
+
+sObject  = '$MapSubsetView';
+sAEView = '$MapSubsetView';
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CREATE SOURCE VIEW ***#
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbMap, sAEView);
+SUBSETDESTROY (dmAccTemp, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAccTempMeas, sAEView);
+
+
+# Account Template
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmAccTemp | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Program
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmProg | '] )}, 0)}';
+SUBSETCREATEBYMDX (sAEView, MDX);
+
+# Account Template Measure
+SubsetCreate(dmAccTempMeas, sAEView);
+SubsetElementInsert(dmAccTempMeas, sAEView, 'flag', 1);
+
+#*** BUILD VIEW ***#
+VIEWCREATE (cbMap, sAEView);
+VIEWSUBSETASSIGN (cbMap, sAEView, dmAccTemp, sAEView);
+VIEWSUBSETASSIGN (cbMap, sAEView, dmProg, sAEView);
+VIEWSUBSETASSIGN (cbMap, sAEView, dmAccTempMeas, sAEView);
+
+# *** DEFINE VIEW EXTRACT
+ViewExtractSkipZeroesSet(cbMap, sAEView, 1);
+ViewSuppressZeroesSet(cbMap, sAEView, 1);
+ViewExtractSkipCalcsSet(cbMap, sAEView, 1);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sAEView;
+#DATASOURCENAMEFORSERVER = sAEView;
+
+#*****************************************************************************************************************************************************
+#*** STEP 2 - DELETE ALL SUBSETS IN ACCOUNT TEMPLATE ***#
+     lDimSiz = DIMSIZ(dmProg);
+     lCounter = 1;
+     WHILE (lDimSiz > lCounter);
+          sProgElement = DIMNM (dmProg, lCounter);
+          sProgElement = DIMENSIONELEMENTPRINCIPALNAME (dmProg, sProgElement);
+          sType = DTYPE (dmProg, sProgElement);
+          IF (sType @<> 'C');
+               #*** GET SUBSET NAME AND CLEAR OUT THE SELECTED ACCOUNT TEMPLATE ***#
+               sSubset = '}_' | sProgElement;
+
+               IF (SUBSETEXISTS (dmAccTemp, sSubset) = 1);     
+                    SUBSETDELETEALLELEMENTS (dmAccTemp, sSubset);
+              ENDIF;
+          ENDIF;
+
+          lCounter = lCounter + 1;
+
+     END;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CHECK SUBSET AND REPOPULATE SUBSETS WITH FLAGGED ACCOUNT CODES***#
+#ITEMSKIP;
+
+                    
+IF (Value <> 0);
+     vsProg = DIMENSIONELEMENTPRINCIPALNAME (dmProg, vsProg);
+     vsAccTemp = DIMENSIONELEMENTPRINCIPALNAME (dmAccTemp, vsAccTemp);
+     sSubset = '}_' | vsProg;
+
+     lCounter = 1;
+     IF (SUBSETEXISTS (dmAccTemp, sSubset) = 1);     
+          lSubSiz = SUBSETGETSIZE (dmAccTemp, sSubset);
+          lAdd = lSubSiz + 1;
+          SUBSETELEMENTINSERT (dmAccTemp, sSubset, vsAccTemp, lAdd);
+
+     ELSE;
+          SUBSETCREATE (dmAccTemp, sSubset);
+           lSubSiz = SUBSETGETSIZE (dmAccTemp, sSubset);
+           lSubSiz = lSubSiz + 1;
+          SUBSETELEMENTINSERT (dmAccTemp, sSubset, vsAccTemp, 1);
+     ENDIF;
+
+ENDIF;
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbMap, sAEView);
+SUBSETDESTROY (dmAccTemp, sAEView);
+SUBSETDESTROY (dmProg, sAEView);
+SUBSETDESTROY (dmAccTempMeas, sAEView);
+#endregion

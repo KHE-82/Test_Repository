@@ -1,0 +1,30 @@
+{
+	"@type":"Cube",
+	"Name":"sys_spp agency mapping",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('headline year')"
+		},
+		{
+			"@id":"Dimensions('scenario')"
+		},
+		{
+			"@id":"Dimensions('spp')"
+		},
+		{
+			"@id":"Dimensions('sys_agency')"
+		},
+		{
+			"@id":"Dimensions('sys_spp agency mapping measure')"
+		}
+	],
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('sys_spp agency mapping measure')"
+	},
+	"Views@Code.links":
+	[
+		"sys_spp agency mapping.views/Default.json"
+	]
+}

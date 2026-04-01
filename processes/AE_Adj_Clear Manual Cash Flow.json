@@ -1,0 +1,39 @@
+{
+	"@type":"Process",
+	"Name":"AE_Adj_Clear Manual Cash Flow",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_Adj_Clear Manual Cash Flow.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"Admin",
+			"Type":"String"
+		},
+		{
+			"Name":"psHLYear",
+			"Prompt":"",
+			"Value":"HL2013-2014",
+			"Type":"String"
+		},
+		{
+			"Name":"psScenario",
+			"Prompt":"",
+			"Value":"current",
+			"Type":"String"
+		},
+		{
+			"Name":"psID",
+			"Prompt":"",
+			"Value":"00073",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

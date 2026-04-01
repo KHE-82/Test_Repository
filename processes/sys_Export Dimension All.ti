@@ -1,0 +1,62 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_Export Dimension All
+#**** DESCRIPTION:       This process exports all dimensions required for dss_tm1.  It calls
+#****                                 The generic process "sys_Export Dimension Generic".  It is used to
+#****                                  copy the dimensions into dss_tm1 where they will be imported using
+#****                                  "sys_Import Dimension Generic".
+#**** AUTHOR:                Malcolm MacDonnell (Excelerated Consulting)
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 19/04/2012      MJM        Initial Revision
+#**** 12/06/2014      MEC        Implementation at DSS
+#****
+#***********************************************************************************************************************
+
+
+
+sProcess = 'sys_Export Dimension Generic';
+dmPrm = 'variables';
+sExportPath = AttrS (dmPrm, 'sys_Costings Export Directory', 'Value');
+
+
+
+#**** THE FOLLOWING (sDimList) IS A LIST OF DIMENSION NAMES SEPARATED BY PIPES ('|')
+#**** IT IS IMPORTANT THAT THIS LIST FINISHES WITH A SINGLE PIPE ('|').
+sDimList = 'account template|appropriation item|appropriation type|measure code|programme|reason';
+sDimList = sDimList | '|';
+
+
+
+nIndex = Scan ('|', sDimList);
+While (nIndex >0);
+	sDim = Trim (SubSt (sDimList, 1, nINdex - 1));
+	sDimList = Trim (SubSt (sDimList, nIndex + 1, Long (sDimList) - nIndex));
+	ExecuteProcess (sProcess, 'psDimName', sDim, 'psExportFile', sExportPath | sDim | '.cma', 'psAttributes', 'Y');
+	nIndex = Scan ('|', sDimList);
+End;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

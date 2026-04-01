@@ -1,0 +1,361 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Transfer Prog Baseline 02
+#**** DESCRIPTION:       This process uses the created view from process 01 and then adds data to the adjustment cube for the Target Program
+#****
+#****                                  It takes parameters from the form
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 25/03/2015    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#**** DECLARE VARIABLES ****#
+sCube = 'AE adjustments';
+sCubeProgDet = 'programme details';
+sView = '$base';
+sSubset = sView;
+sHLYear = ATTRS ('variables', 'headline year', 'value');
+sScenario = 'current';
+sStatus = 'Total approved';
+sID ='Total IDs';
+sReason = 'Total reason';
+sMeasure = 'Total Measures';
+#sNewReason = 'Self balancing transfers between same year';
+sNewReason = '1019';
+sNewStatus = 'Data';
+dmTmpID = 'tmp_ID_tmp';
+sDimVar = 'variables';
+dmAcc = 'account';
+dmMA = 'movement account';
+dmPer = 'Period';
+
+sConsolEquity = '7299';
+sConsolGrossVal = '7120';
+sConsolAccDepn = '7150';
+sConsolGrossValROU = '7320';
+sConsolAccDepnROU = '7350';
+sConsolSpecAcc = '9000880';
+
+
+sOpBalEquity = '7211';
+sOpBalGrossVal = '7131';
+sOpBalAccDepn = '7161';
+sOpBalGrossValROU = '7331';
+sOpBalAccDepnROU = '7361';
+sOpResult = '7201';
+
+sOpLeaseLiab = '3240101';
+sOtherLeaseLiab='3240102';
+
+sOpCF ='6100001';
+sOtherCF ='6900002';
+sMvtCF = '6200000';
+
+sOpStudLoan ='5232301';
+sOpOtherLoan = '5232101';
+sOpGovLoan = '5232501';
+sOpStateLoan = '5234101';
+sOpSpecAcc = '9000862';
+
+
+sOtherStudLoan = '5232304';
+sOtherotherLoan = '5232104';
+sOtherGovLoan = '5232504';
+sOtherStateLoan = '5234501';
+sOtherSpecAcc = ' 9000876'; 
+
+
+
+sConsolPL = '9000130';
+sConsolBS = '3800001';
+sConsolLeaseLiab = '3240000';
+sConsolLoan='5232000';
+
+
+
+
+
+#**** VIEW CREATED FROM PREVIOUS PROCESS ****#
+ViewSuppressZeroesSet (sCube, sView,1);
+ViewExtractSkipZeroesSet (sCube, sView, 1);
+ViewExtractSkipCalcsSet (sCube, sView, 0);
+
+DatasourceCubeview=sView;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+sIDProg = vsProg|vsOC|vsAppropType|vsAppropItem|vsFunc|vsSPP;
+sID = ATTRS (dmTmpID, sIDProg, 'ID');
+
+sSPP = CellGetS (sCubeProgDet, sHLYear, sScenario, psTrgProg, 'SPP');
+sOC = CellGetS (sCubeProgDet, sHLYear, sScenario, psTrgProg, 'outcome');
+sAppropType = CellGetS (sCubeProgDet, sHLYear, sScenario, psTrgProg, 'appropriation type');
+sAppropItem = CellGetS (sCubeProgDet, sHLYear, sScenario, psTrgProg, 'appropriation item');
+sFunc = CellGetS (sCubeProgDet, sHLYear, sScenario, psTrgProg, 'function');
+sControlType = CellGetS (sCubeProgDet, sHLYear, sScenario, psTrgProg, 'control type');
+
+IF (sOC @= '');
+#      sOC = ATTRS (sDimVar, 'Default Outcome', 'Value');
+ENDIF;
+
+IF (sSPP @= '');
+#     sSPP = ATTRS (sDimVar, 'Default SPP', 'Value');
+ENDIF;
+
+IF (sAppropType @= '');
+#     sAppropType = ATTRS (sDimVar, 'Default App Type', 'Value');
+ENDIF;
+
+IF (sAppropItem @= '');
+#     sAppropItem = ATTRS (sDimVar, 'Default App Item', 'Value');
+ELSE;
+#     sAppropItem = ATTRS ('appropriation item', vsAppropItem, 'code and description');
+ENDIF;
+
+IF (sFunc @= '');
+#     sFunc = ATTRS (sDimVar, 'Default Function', 'Value');
+ELSE;
+#     sFunc = ATTRS ('function', vsFunc, 'code and description');
+ENDIF;
+
+
+#**** ELEMENT PRINCIPAL NAME  ****#
+sMA = DIMENSIONELEMENTPRINCIPALNAME( dmMA, vsMA);
+sAcc = DIMENSIONELEMENTPRINCIPALNAME( dmAcc, vsAcc);
+
+
+#**** Ignore Cash flow movments except for opening bal for the first year  as it will be derived in the new adjustment  ****#
+IF( ELISANC(dmAcc, sMvtCF, vsACC) =1);
+	ITEMSKIP;
+ENDIF;
+
+#**** Reinstate the opening bal - movement account for the first year only and ignore outyears as new adjustment will calculate it by rules  ****#
+IF(  vsPeriod @<> psStartYr);
+	#****Ignore Op Bal for Outyears  ****#
+	IF( sMA @= sOpBalEquity % sMA @= sOpBalGrossVal % sMA @= sOpBalAccDepn % sMA @= sOpBalGrossValROU % sMA @= sOpBalAccDepnROU);
+		ITEMSKIP;
+	ENDIF;
+
+	#****Ignore Op Result for Outyears  ****#
+	IF( sMA @= sOpResult );
+		ITEMSKIP;
+	ENDIF;
+
+	#****Ignore Op Bal Lease Liability  Outyears  ****#
+	IF( sAcc @= sOpLeaseLiab );
+		ITEMSKIP;
+	ENDIF;
+
+	#****Ignore Op Bal Cashflow  Outyears  ****#
+	IF( sAcc @= sOpCF );
+		ITEMSKIP;
+	ENDIF;
+	
+	#****Ignore OpBal Loan Outyears  ****#
+	IF( sAcc @= sOpStudLoan % sAcc @= sOpOtherLoan % sAcc @= sOpGovLoan % sAcc @= sOpStateLoan );
+		ITEMSKIP;
+	ENDIF;
+
+	#****Ignore OpBal Special Account Schedule Outyears  ****#
+	IF( sACC @= sOpSpecAcc);
+		ITEMSKIP;
+	ENDIF;
+
+	#****Ignore closing Special Account Schedule Outyears  ****#
+	IF( ELISANC(dmACC, sConsolSpecAcc, sACC)=1);
+		ITEMSKIP;
+	ENDIF;
+ENDIF;
+
+#**** Roll Equity movement to the selected MA in the target program ****#
+IF( ELISANC(dmMA, sConsolEquity, vsMA) = 1 );
+      
+     #****Ignore Op Result for current year and roll other movemnt accounts into the selected MA in the target program ****#
+      IF(vsMA @= sOpResult);
+	ITEMSKIP;
+     ENDIF;
+
+      IF (CELLISUPDATEABLE (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, psTrgEQTMA, sAppropItem, psTrgProg, vsAcc, sID, vsJur, vsPeriod) = 1);
+           nOldValue = CELLGETN (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, psTrgEQTMA, sAppropItem, psTrgProg, vsAcc, sID, vsJur, vsPeriod);
+           CELLPUTN(nOldValue + Value, sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, psTrgEQTMA, sAppropItem, psTrgProg, vsAcc, sID, vsJur, vsPeriod);
+      ENDIF;
+
+#**** Roll Gross Value movement to the selected MA in the target program ****#
+ELSEIF(ELISANC(dmMA, sConsolGrossVal, vsMA) = 1 );
+    
+      IF (CELLISUPDATEABLE (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, psTrgGrossValMA, sAppropItem, psTrgProg, vsAcc, sID, vsJur, vsPeriod) = 1);
+           nOldValue = CELLGETN (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, psTrgGrossValMA, sAppropItem, psTrgProg, vsAcc, sID, vsJur, vsPeriod);
+           CELLPUTN(nOldValue + Value, sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, psTrgGrossValMA, sAppropItem, psTrgProg, vsAcc, sID, vsJur, vsPeriod);
+      ENDIF;
+
+#**** Roll AccDepn movement to the selected MA in the target program ****#
+ELSEIF(ELISANC(dmMA, sConsolAccDepn, vsMA) = 1 );
+    
+      IF (CELLISUPDATEABLE (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, psTrgAccDepnMA, sAppropItem, psTrgProg, vsAcc, sID, vsJur, vsPeriod) = 1);
+           nOldValue = CELLGETN (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, psTrgAccDepnMA, sAppropItem, psTrgProg, vsAcc, sID, vsJur, vsPeriod);
+           CELLPUTN(nOldValue + Value, sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, psTrgAccDepnMA, sAppropItem, psTrgProg, vsAcc, sID, vsJur, vsPeriod);
+      ENDIF;
+
+#**** Roll Gross Value ROU movement to the selected MA in the target program ****#
+ELSEIF(ELISANC(dmMA, sConsolGrossValROU, vsMA) = 1 );
+    
+      IF (CELLISUPDATEABLE (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, psTrgGrossValROUMA, sAppropItem, psTrgProg, vsAcc, sID, vsJur, vsPeriod) = 1);
+           nOldValue = CELLGETN (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, psTrgGrossValROUMA, sAppropItem, psTrgProg, vsAcc, sID, vsJur, vsPeriod);
+           CELLPUTN(nOldValue + Value, sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, psTrgGrossValROUMA, sAppropItem, psTrgProg, vsAcc, sID, vsJur, vsPeriod);
+      ENDIF;
+
+#**** Roll AccDepn ROU  movement to the selected MA in the target program ****#
+ELSEIF(ELISANC(dmMA, sConsolAccDepnROU, vsMA) = 1 );
+    
+      IF (CELLISUPDATEABLE (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, psTrgAccDepnROUMA, sAppropItem, psTrgProg, vsAcc, sID, vsJur, vsPeriod) = 1);
+           nOldValue = CELLGETN (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, psTrgAccDepnROUMA, sAppropItem, psTrgProg, vsAcc, sID, vsJur, vsPeriod);
+           CELLPUTN(nOldValue + Value, sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, psTrgAccDepnROUMA, sAppropItem, psTrgProg, vsAcc, sID, vsJur, vsPeriod);
+      ENDIF;
+
+#**** Post Lease Liability Opening Balance to Acc 3240102  in the target program ****#
+ELSEIF(sAcc @= sOpLeaseLiab );
+      sPostAcc = sOtherLeaseLiab;
+      IF (CELLISUPDATEABLE (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod) = 1);
+           nOldValue = CELLGETN (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod);
+           CELLPUTN(nOldValue + Value, sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod);
+      ENDIF;
+
+#**** Post Cash Flow Opening Balance to Acc 6900002  in the target program ****#
+ELSEIF(sAcc @= sOpCF );
+      sPostAcc = sOtherCF;
+      IF (CELLISUPDATEABLE (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod) = 1);
+           nOldValue = CELLGETN (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod);
+           CELLPUTN(nOldValue + Value, sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod);
+      ENDIF;
+
+#**** Post Student Loan Opening Balance to other non cash movement  in the target program ****#
+ELSEIF(sAcc @= sOpStudLoan );
+      sPostAcc = sOtherStudLoan;
+      IF (CELLISUPDATEABLE (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod) = 1);
+           nOldValue = CELLGETN (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod);
+           CELLPUTN(nOldValue + Value, sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod);
+      ENDIF;
+
+#**** Post Other Loan Opening Balance to other non cash movement  in the target program ****#
+ELSEIF(sAcc @= sOpOtherLoan );
+      sPostAcc = sOtherOtherLoan;
+      IF (CELLISUPDATEABLE (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod) = 1);
+           nOldValue = CELLGETN (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod);
+           CELLPUTN(nOldValue + Value, sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod);
+      ENDIF;
+
+
+#**** Post Government Loan Opening Balance to other non cash movement  in the target program ****#
+ELSEIF(sAcc @= sOpGovLoan );
+      sPostAcc = sOtherGovLoan;
+      IF (CELLISUPDATEABLE (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod) = 1);
+           nOldValue = CELLGETN (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod);
+           CELLPUTN(nOldValue + Value, sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod);
+      ENDIF;
+
+#**** Post State Loan Opening Balance to other non cash movement  in the target program ****#
+ELSEIF(sAcc @= sOpStateLoan );
+      sPostAcc = sOtherStateLoan;
+      IF (CELLISUPDATEABLE (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod) = 1);
+           nOldValue = CELLGETN (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod);
+           CELLPUTN(nOldValue + Value, sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod);
+      ENDIF;
+
+#**** Post Special Account schedule Opening Balance to opening balance adjustment  in the target program ****#
+ELSEIF(sAcc @= sOpSpecAcc);
+      sPostAcc = sOtherSpecAcc;
+      IF (CELLISUPDATEABLE (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod) = 1);
+           nOldValue = CELLGETN (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod);
+           CELLPUTN(nOldValue + Value, sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sPostAcc, sID, vsJur, vsPeriod);
+      ENDIF;
+
+#**** P/L accounts with no movement account****#
+ELSEIF ( ELISANC(dmAcc, sConsolPL, sAcc) =1);
+
+      IF(CELLISUPDATEABLE (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sAcc, sID, vsJur, vsPeriod) = 1);
+            nOldValue = CELLGETN (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sAcc, sID, vsJur, vsPeriod);
+           CELLPUTN(nOldValue + Value, sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sAcc, sID, vsJur, vsPeriod);
+     ENDIF;
+
+#**** B/S accounts with no movement account - only post the yearly movement in the new adjustment****#
+ELSEIF ( ELISANC(dmAcc, sConsolBS, sAcc) =1 & sMA @= '-' & ELISANC(dmAcc, sConsolLeaseLiab, sAcc) =0 & ELISANC(dmAcc, sConsolLoan, sAcc) = 0 );
+	
+      IF(  vsPeriod @<> psStartYr);
+             nPeriodIndex = DIMIX( dmPer, vsPeriod);
+             sPreYr = DIMNM(dmPer, nPeriodIndex-1);
+
+            nPreYrBal = CELLGETN (sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, sMeasure,vsAppropType, vsMA, vsAppropItem, psSrcProg, vsAcc, 'Total IDs', vsJur, sPreYr);
+            nMvt = Value - nPreYrBal;
+        	
+			#IF( sAcc @='5220002');
+			#Asciioutput( 'cash at bank.csv', sPreYr, NumberToString(nPreYrBal), NumberToString(value), NumberToString(nMvt),sCube, sHLYear, sScenario, sStatus, vsOC, vsRE, vsFunc, sReason, vsSPP, sMeasure,vsAppropType, vsMA, vsAppropItem, psSrcProg, vsAcc, 'Total IDs', vsJur, sPreYr);
+			#ENDIF;	
+            IF(CELLISUPDATEABLE (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sAcc, sID, vsJur, vsPeriod) = 1);
+                   nOldValue = CELLGETN (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sAcc, sID, vsJur, vsPeriod);
+                  CELLPUTN(nOldValue + nMvt, sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sAcc, sID, vsJur, vsPeriod);
+           ENDIF;
+     ELSE;
+            IF(CELLISUPDATEABLE (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sAcc, sID, vsJur, vsPeriod) = 1);
+                  nOldValue = CELLGETN (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sAcc, sID, vsJur, vsPeriod);
+                  CELLPUTN(nOldValue + Value, sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sAcc, sID, vsJur, vsPeriod);
+           ENDIF;
+
+      ENDIF;
+
+#**** All other accounts -  main schedules****#
+
+ELSEIF(CELLISUPDATEABLE (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sAcc, sID, vsJur, vsPeriod) = 1);
+
+                  nOldValue = CELLGETN (sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sAcc, sID, vsJur, vsPeriod);
+                  CELLPUTN(nOldValue + Value, sCube, sHLYear, sScenario, sNewStatus, sOC, vsRE, sFunc, sNewReason, sSPP, 'M00000', sAppropType, vsMA, sAppropItem, psTrgProg, sAcc, sID, vsJur, vsPeriod);
+IF( sAcc @='9000883');
+asciioutput('special account.csv' , sAcc , vsPeriod, NumberToString(nOldValue), NumberToString(value));
+ENDIF;
+
+
+
+ENDIF;
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy (sCube, sView);
+SubsetDestroy ('headline year', sSubset);
+SubsetDestroy ('scenario', sSubset);
+SubsetDestroy ('status', sSubset);
+SubsetDestroy ('outcome', sSubset);
+SubsetDestroy ('related entity', sSubset);
+SubsetDestroy ('function', sSubset);
+SubsetDestroy ('reason', sSubset);
+SubsetDestroy ('SPP', sSubset);
+SubsetDestroy ('measure code', sSubset);
+SubsetDestroy ('appropriation type', sSubset);
+SubsetDestroy ('movement account', sSubset);
+SubsetDestroy ('appropriation item', sSubset);
+SubsetDestroy ('programme', sSubset);
+SubsetDestroy ('account', sSubset);
+SubsetDestroy ('ID', sSubset);
+SubsetDestroy ('jurisdiction', sSubset);
+SubsetDestroy ('period', sSubset);
+#endregion

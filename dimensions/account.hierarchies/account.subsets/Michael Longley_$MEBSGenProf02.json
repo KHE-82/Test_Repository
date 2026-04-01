@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"Michael Longley_$MEBSGenProf02",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('6222220')"
+		}
+	]
+}

@@ -1,0 +1,243 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Group Adj Change Code 01 - Prepare Data Entry
+#**** DESCRIPTION:       This process just prepares the data entry when the user wants to amend the details
+#****
+#****		          
+#****                                
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 2019    KG             Initial Revision
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS
+#******************************************************************************************************************
+cbID = 'AE id details';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmID = 'id';
+dmIDMeas = 'id measure';
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT GROUPS CUBE
+#******************************************************************************************************************
+cbGroups = '}ClientGroups';
+dmGroups = '}Groups';
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+#******************************************************************************************************************
+#*** STOP PROCESS IF ID IS BLANK
+#******************************************************************************************************************
+IF (psID @= '');
+	PROCESSQUIT;
+ENDIF;
+
+#******************************************************************************************************************
+#******************************************************************************************************************
+#*** UPDATE USER ID AND SELECTED HLYEAR AND SCENARIO AND ALL OTHER DETAILS
+#*** 
+#******************************************************************************************************************
+#******************************************************************************************************************
+
+# Headline Year
+CELLPUTS (psHLYear, cbClient, sUser, 'geus hlyear', 'value');
+
+# Scenario
+CELLPUTS (psScenario, cbClient, sUser, 'geus scenario', 'value');
+
+# ID
+CELLPUTS (psID, cbClient, sUser, 'geus adj', 'value');
+
+
+#******************************************************************************************************************
+#*** GET CLIENT DETAILS & ID DETAILS
+#******************************************************************************************************************
+sStatus = CELLGETS (cbID, psHLYear, psScenario, psID, 'status');
+sControlType = CELLGETS (cbID, psHLYear, psScenario, psID, 'control type');
+sTitle = CELLGETS(cbID, psHLYear, psScenario, psID, 'title');
+sDesc = CELLGETS(cbID, psHLYear, psScenario, psID, 'description');
+sComments = CELLGETS (cbID, psHLYear, psScenario, psID, 'comments');
+sProg = CELLGETS (cbID, psHLYear, psScenario, psID, snProg | ' code');
+sProgDesc = CELLGETS (cbID, psHLYear, psScenario, psID, snProg | ' description');
+sReason = CELLGETS(cbID, psHLYear, psScenario, psID, 'reason');
+sMeasCode = CELLGETS(cbID, psHLYear, psScenario, psID, 'measure');
+
+sOC = CELLGETS(cbID, psHLYear, psScenario, psID, 'outcome');
+sFunc = CELLGETS(cbID, psHLYear, psScenario, psID, 'function');
+sSPP = CELLGETS(cbID, psHLYear, psScenario, psID, 'spp');
+sType = CELLGETS(cbID, psHLYear, psScenario, psID, 'appropriation type');
+sItem = CELLGETS(cbID, psHLYear, psScenario, psID, 'appropriation item');
+sFavID = CELLGETS(cbID, psHLYear, psScenario, psID, 'account favourite template');
+sPublishedTitle = CELLGETS(cbID, psHLYear, psScenario, psID, 'published title');
+sAdjType = CELLGETS (cbID, psHLYear, psScenario, psID, 'adjustment type');
+
+sFundLife = CELLGETS (cbID, psHLYear, psScenario, psID, 'funding life');
+sEndDate = CELLGETS (cbID, psHLYear, psScenario, psID, 'end date');
+sDisagreeCF = CELLGETS (cbID, psHLYear, psScenario, psID, 'disagree cashflow');
+sApplyParam = CELLGETS(cbID, psHLYear, psScenario, psID, 'apply parameters');
+
+
+#*****************************************************************************************************************************************************
+#**** ONLY CURRENT HEADLINE YEAR AND SCENARIO ARE EDITABLE
+#*****************************************************************************************************************************************************
+IF (psHLYear @<> curHLYear & psScenario @<> curScenario);
+
+	PROCESSQUIT;
+
+ELSE;
+
+
+	#*****************************************************************************************************************************************************
+	#**** STEP 1 - CLEAR SYS_CLIENT PREFERENCE CUBE
+	#*****************************************************************************************************************************************************
+	EXECUTEPROCESS('sys_Client - Clear Client Preference Data', 'psUser', sUser);
+
+	#*****************************************************************************************************************************************************
+	#**** STEP 2 - TRANSFER AE ID DETAILS TO SYS CLIENT PREFERENCE CUBE
+	#*****************************************************************************************************************************************************
+
+	#******************************************************************************************************************
+	#*** POST TO CLIENT DETAILS
+	#******************************************************************************************************************
+
+	#*** POST ON VALUE
+	sMeasure = 'value';
+
+	CELLPUTS (sStatus, cbClient, sUser, 'adj_status', sMeasure);
+	CELLPUTS (sTitle, cbClient, sUser, 'adj_title', sMeasure);
+	CELLPUTS (sDesc, cbClient, sUser, 'adj_description', sMeasure);
+	CELLPUTS (sComments, cbClient, sUser, 'adj_comments', sMeasure);
+	CELLPUTS (sPublishedTitle, cbClient, sUser, 'adj_published title', sMeasure);
+	#sProgDesc = ATTRS (dmProg, sProg, 'code and description');
+	sProgDesc = 'multiple';
+	CELLPUTS (sProgDesc, cbClient, sUser, 'adj_programme code', sMeasure);
+	CELLPUTS (sControlType, cbClient, sUser, 'adj_control type', sMeasure);
+	CELLPUTS (sReason, cbClient, sUser, 'adj_reason', sMeasure);
+	CELLPUTS (sMeasCode, cbClient, sUser, 'adj_measure code', sMeasure);
+	CELLPUTS (sFavID, cbClient, sUser, 'adj_favourite id', sMeasure);
+	CELLPUTS (sOC, cbClient, sUser, 'adj_outcome', sMeasure);
+	CELLPUTS (sFunc, cbClient, sUser, 'adj_function', sMeasure);
+	CELLPUTS (sSPP, cbClient, sUser, 'adj_spp', sMeasure);
+	CELLPUTS (sType, cbClient, sUser, 'adj_appropriation type', sMeasure);
+	CELLPUTS (sItem, cbClient, sUser, 'adj_appropriation item', sMeasure);
+	CELLPUTS (sFundLife, cbClient, sUser, 'adj_fund life', sMeasure);
+	CELLPUTS (sEndDate, cbClient, sUser, 'adj_end date', sMeasure);
+	CELLPUTS (sApplyParam, cbClient, sUser, 'adj_apply param', sMeasure);
+	CELLPUTS (sDisagreeCF, cbClient, sUser, 'adj_disagree cash flow', sMeasure);
+
+
+	#*** POST ON OLD VALUE
+	sMeasure = 'old value';
+
+	CELLPUTS (sStatus, cbClient, sUser, 'adj_status', sMeasure);
+	CELLPUTS (sTitle, cbClient, sUser, 'adj_title', sMeasure);
+	CELLPUTS (sDesc, cbClient, sUser, 'adj_description', sMeasure);
+	CELLPUTS (sComments, cbClient, sUser, 'adj_comments', sMeasure);
+	CELLPUTS (sPublishedTitle, cbClient, sUser, 'adj_published title', sMeasure);
+	#CELLPUTS (sProg, cbClient, sUser, 'adj_programme code', sMeasure);
+	#sProgDesc = ATTRS (dmProg, sProg, 'code and description');
+	sProgDesc = 'multiple';
+	CELLPUTS (sProgDesc, cbClient, sUser, 'adj_programme code', sMeasure);
+	CELLPUTS (sControlType, cbClient, sUser, 'adj_control type', sMeasure);
+	CELLPUTS (sReason, cbClient, sUser, 'adj_reason', sMeasure);
+	CELLPUTS (sMeasCode, cbClient, sUser, 'adj_measure code', sMeasure);
+	CELLPUTS (sFavID, cbClient, sUser, 'adj_favourite id', sMeasure);
+	CELLPUTS (sOC, cbClient, sUser, 'adj_outcome', sMeasure);
+	CELLPUTS (sFunc, cbClient, sUser, 'adj_function', sMeasure);
+	CELLPUTS (sSPP, cbClient, sUser, 'adj_spp', sMeasure);
+	CELLPUTS (sType, cbClient, sUser, 'adj_appropriation type', sMeasure);
+	CELLPUTS (sItem, cbClient, sUser, 'adj_appropriation item', sMeasure);
+	CELLPUTS (sFundLife, cbClient, sUser, 'adj_fund life', sMeasure);
+	CELLPUTS (sEndDate, cbClient, sUser, 'adj_end date', sMeasure);
+	CELLPUTS (sApplyParam, cbClient, sUser, 'adj_apply param', sMeasure);
+	CELLPUTS (sDisagreeCF, cbClient, sUser, 'adj_disagree cash flow', sMeasure);
+
+ENDIF;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion

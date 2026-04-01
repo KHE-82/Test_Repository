@@ -1,0 +1,43 @@
+{
+	"@type":"Subset",
+	"Name":"Default",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('Total approp item')"
+		},
+		{
+			"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('-')"
+		},
+		{
+			"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('001')"
+		},
+		{
+			"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('002')"
+		},
+		{
+			"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('006')"
+		},
+		{
+			"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('007')"
+		},
+		{
+			"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('009')"
+		},
+		{
+			"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('010')"
+		},
+		{
+			"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('100')"
+		},
+		{
+			"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('200')"
+		},
+		{
+			"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('300')"
+		},
+		{
+			"@id":"Dimensions('appropriation item')/Hierarchies('appropriation item')/Elements('CBMS 1 appropriation item')"
+		}
+	]
+}

@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"sys_spp adjustment measure",
+	"Hierarchies@Code.links":
+	[
+		"sys_spp adjustment measure.hierarchies/sys_spp adjustment measure.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('sys_spp adjustment measure')/Hierarchies('sys_spp adjustment measure')"
+	}
+}

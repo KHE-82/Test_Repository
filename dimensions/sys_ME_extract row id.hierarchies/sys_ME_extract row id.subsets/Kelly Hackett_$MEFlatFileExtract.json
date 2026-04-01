@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"Kelly Hackett_$MEFlatFileExtract",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1SUBSETALL( [sys_ME_extract row id] )}, 0)}"
+}

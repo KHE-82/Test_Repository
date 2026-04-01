@@ -1,0 +1,13 @@
+{
+	"@type":"Subset",
+	"Name":"E.Turner_$geuspvt",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('4100003')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('5313001')"
+		}
+	]
+}

@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"}Beachware_Batch_Reports",
+	"Hierarchies@Code.links":
+	[
+		"}Beachware_Batch_Reports.hierarchies/}Beachware_Batch_Reports.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('}Beachware_Batch_Reports')/Hierarchies('}Beachware_Batch_Reports')"
+	}
+}

@@ -1,0 +1,147 @@
+{
+	"@type":"NativeView",
+	"Name":"CDM Summary",
+	"Columns":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_CDM publication extract measure')/Hierarchies('sys_CDM publication extract measure')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_CDM publication extract measure')/Hierarchies('sys_CDM publication extract measure')/Elements('used')"
+					}
+				]
+			}
+		}
+	],
+	"Rows":
+	[
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')"
+				},
+				"Alias":"code and description",
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0001')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0002')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0003')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0004')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0005')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0006')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0007')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0008')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0009')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0010')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0011')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0012')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0013')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0014')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0015')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0016')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0017')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0018')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0019')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0020')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0021')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0022')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0023')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0024')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0025')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0026')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0027')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0028')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0029')"
+					},
+					{
+						"@id":"Dimensions('sys_CDM extract ID')/Hierarchies('sys_CDM extract ID')/Elements('E0030')"
+					}
+				]
+			}
+		},
+		{
+			"Subset":
+			{
+				"Hierarchy":
+				{
+					"@id":"Dimensions('sys_CDM row')/Hierarchies('sys_CDM row')"
+				},
+				"Elements":
+				[
+					{
+						"@id":"Dimensions('sys_CDM row')/Hierarchies('sys_CDM row')/Elements('Total Rows')"
+					}
+				]
+			}
+		}
+	],
+	"Titles":[],
+	"SuppressEmptyColumns":true,
+	"SuppressEmptyRows":true,
+	"FormatString":"0.#########"
+}

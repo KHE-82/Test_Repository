@@ -1,0 +1,397 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Measure - Delete
+#**** DESCRIPTION:       This process creates a copy of the selected Measure
+#****			
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 10/09/2015    KG             Initial Revision
+#**** 2019	KG	  Updated for NEW GEUS
+#***********************************************************************************************************************
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+
+
+#******************************************************************************************************************
+#*** DECLARE SYSTEM VARIABLES CUBE AND DIMENSIONS
+#******************************************************************************************************************
+dmVar = 'variables';
+dmCtrlType = 'control type';
+dmFavID = 'favourites_id';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sNoMeasCode = ATTRS(dmVar, 'No Measure Code', 'value');
+sProgDimName = ATTRS(dmVar, 'program dimension name', 'value');
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+IF (DIMENSIONEXISTS ('programme') = 1);
+	sProgDimName = 'programme';
+	sTotalProg = 'Total Programmes';
+ELSE;
+	sProgDimName = 'program';
+	sTotalProg = 'Total Programs';
+ENDIF;
+
+snProg = sProgDimName;
+cbAE = 'AE adjustments';
+dmHLYear = 'headline year';
+dmScenario = 'scenario';
+dmStatus = 'status';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmFunc = 'function';
+dmReason = 'reason';
+dmSPP = 'spp';
+dmMeasCode = 'measure code';
+dmType = 'appropriation type';
+dmMA = 'movement account';
+dmItem = 'appropriation item';
+dmProg = snProg;
+dmAcc = 'account';
+dmID = 'id';
+dmJur = 'jurisdiction';
+dmPer = 'period';
+
+
+#******************************************************************************************************************
+#*** DECLARE GOVERNMENT MEASURES DETAILS CUBE DIMENSIONS
+#******************************************************************************************************************
+cbMeas = 'government measures';
+cbMeasDet = 'government measures details';
+dmMeasDetails = 'measure details';
+
+dmMeasType = 'measure type';
+dmMeasFundType = 'measure fund type';
+
+
+
+#******************************************************************************************************************
+#*** DECLARE AE ID DETAILS CUBE DIMENSIONS
+#******************************************************************************************************************
+cbID = 'AE id details';
+dmIDMeas = 'id measure';
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE PROGRAMME DETAILS CUBE
+#-------------------------------------------------------------------------------------------------------------
+cbProg = snProg | ' details';
+
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+                IF (sUser @<> '');
+                                lScan = SCAN('\',sUser) + 1;
+                                IF(lScan=1);
+                                                lScan = SCAN('/',sUser) + 1;
+                                ENDIF;
+                                sUser = TRIM(SUBST(sUser, lScan, 100));
+                ELSE;
+                                sUser = TM1User();
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+
+
+#******************************************************************************************************************
+#*** VARIABLES USED 
+#******************************************************************************************************************
+sStatus = 'unauthorised';
+sAdjType = 'Manual';
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+#sUser = TM1User();
+#IF (SUBST(sUser,1,3) @= 'CAM');
+#	sUser = ATTRS(dmClient, sUser, '}TM1_DefaultDisplayValue');
+#	lScan = SCAN('\',sUser) + 1;
+#	sUser = TRIM(SUBST(sUser, lScan, 100));
+#ELSE;
+#	sUser = TM1User();
+#ENDIF;
+
+
+#******************************************************************************************************************
+#*** DECLARE VARIABLES USED
+#******************************************************************************************************************
+sView = sUser | ' $MeasDelete';
+
+#*****************************************************************************************************************************************************
+#**** STEP 0 - CHECK IF VALID MEASURE CODE
+#*****************************************************************************************************************************************************
+sErr = '';
+CELLPUTS (sErr, cbClient, psUser, 'geus measure code', 'validate');
+
+IF (DIMIX (dmMeasCode, psMeasCode) = 0);
+	sErr = 'Please go back to the measure list and select a valid measure code';
+	CELLPUTS (sErr, cbClient, psUser, 'geus measure code', 'validate');
+	PROCESSQUIT;
+ENDIF;
+
+#*****************************************************************************************************************************************************
+#**** STEP 1 - SEE IF THERE ARE ANY ADJUSTMENTS FOR THIS MEASURE
+#*****************************************************************************************************************************************************
+sTotalHLYear = 'Total headline year';
+sTotalScenario = 'sys_BudgetRound';
+sStatus = 'data';
+sTotalOC = 'Total outcomes';
+sTotalRE = 'Total related entity';
+sTotalFunc = 'Total functions';
+sTotalReason = 'Total reason';
+sTotalSPP = 'Total SPP';
+sTotalType = 'Total approp types';
+sTotalMA = 'Total movement';
+sTotalItem = 'Total approp item';
+sTotalIDs = 'Total IDs';
+sTotalJur = 'Total jurisdictions';
+sTotalPeriod = 'Total years';
+
+sRevAcc = '1000001';
+sExpAcc = '2000000';
+sLiabilityAcc = '3000000';
+sEquityAcc = '4000000';
+sAssetAcc = '5000000';
+sCFRecAcc = '6211000';
+sCFPayAcc = '6212000';
+sSpecialAcc = '9000850';
+sCBSAcc = '9100000';
+
+nRevAmt = ABS(CELLGETN (cbAE, sTotalHLYear, sTotalScenario, sStatus, sTotalOC, sTotalRE, sTotalFunc, sTotalReason, sTotalSPP, psMeasCode, sTotalType, sTotalMA, sTotalItem, sTotalProg, sRevAcc, sTotalIDs, sTotalJur, sTotalPeriod));
+nExpAmt = ABS(CELLGETN (cbAE, sTotalHLYear, sTotalScenario, sStatus, sTotalOC, sTotalRE, sTotalFunc, sTotalReason, sTotalSPP, psMeasCode, sTotalType, sTotalMA, sTotalItem, sTotalProg, sExpAcc, sTotalIDs, sTotalJur, sTotalPeriod));
+nLiabilityAmt = ABS(CELLGETN (cbAE, sTotalHLYear, sTotalScenario, sStatus, sTotalOC, sTotalRE, sTotalFunc, sTotalReason, sTotalSPP, psMeasCode, sTotalType, sTotalMA, sTotalItem, sTotalProg, sLiabilityAcc, sTotalIDs, sTotalJur, sTotalPeriod));
+nEquityAmt = ABS(CELLGETN (cbAE, sTotalHLYear, sTotalScenario, sStatus, sTotalOC, sTotalRE, sTotalFunc, sTotalReason, sTotalSPP, psMeasCode, sTotalType, sTotalMA, sTotalItem, sTotalProg, sEquityAcc, sTotalIDs, sTotalJur, sTotalPeriod));
+nAssetAmt = ABS(CELLGETN (cbAE, sTotalHLYear, sTotalScenario, sStatus, sTotalOC, sTotalRE, sTotalFunc, sTotalReason, sTotalSPP, psMeasCode, sTotalType, sTotalMA, sTotalItem, sTotalProg, sAssetAcc, sTotalIDs, sTotalJur, sTotalPeriod));
+nCFRecAmt = ABS(CELLGETN (cbAE, sTotalHLYear, sTotalScenario, sStatus, sTotalOC, sTotalRE, sTotalFunc, sTotalReason, sTotalSPP, psMeasCode, sTotalType, sTotalMA, sTotalItem, sTotalProg, sCFRecAcc, sTotalIDs, sTotalJur, sTotalPeriod));
+nCFPayAmt = ABS(CELLGETN (cbAE, sTotalHLYear, sTotalScenario, sStatus, sTotalOC, sTotalRE, sTotalFunc, sTotalReason, sTotalSPP, psMeasCode, sTotalType, sTotalMA, sTotalItem, sTotalProg, sCFPayAcc, sTotalIDs, sTotalJur, sTotalPeriod));
+nSpecialAccAmt = ABS(CELLGETN (cbAE, sTotalHLYear, sTotalScenario, sStatus, sTotalOC, sTotalRE, sTotalFunc, sTotalReason, sTotalSPP, psMeasCode, sTotalType, sTotalMA, sTotalItem, sTotalProg, sSpecialAcc, sTotalIDs, sTotalJur, sTotalPeriod));
+nCBSAmt = ABS(CELLGETN (cbAE, sTotalHLYear, sTotalScenario, sStatus, sTotalOC, sTotalRE, sTotalFunc, sTotalReason, sTotalSPP, psMeasCode, sTotalType, sTotalMA, sTotalItem, sTotalProg, sCBSAcc, sTotalIDs, sTotalJur, sTotalPeriod));
+
+nTotalAmt = nRevAmt + nExpAmt + nLiabilityAmt + nEquityAmt + nAssetAmt + nCFRecAmt + nCFPayAmt + nSpecialAccAmt + nCBSAmt;
+#--------------------------------------------------------------------------------------------------------------
+#--- CHECK IF TOTAL AMOUNT IS NOT EQUAL TO ZERO. IT MEANS THERE ARE BALANCES, SO DO NOT DELETE
+#--------------------------------------------------------------------------------------------------------------
+IF (nTotalAmt <> 0);
+	sErr = 'Selected measure code has balances and cannot be deleted.';
+	CELLPUTS (sErr, cbClient, psUser, 'geus measure code', 'validate');
+	PROCESSQUIT;
+ENDIF;
+
+
+
+#*****************************************************************************************************************************************************
+#**** STEP 2 - CLEAR DATA FROM GOVERNMENT MEASURES CUBE
+#*****************************************************************************************************************************************************
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#******************************************************************************************************************
+VIEWDESTROY (cbMeas, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmStatus, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmPer, sView);
+
+#******************************************************************************************************************
+#*** CREATE SUBSETS
+#******************************************************************************************************************
+# headline year
+SubsetCreate(dmHLYear, sView);
+SubsetElementInsert(dmHLYear, sView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sView);
+SubsetElementInsert(dmScenario, sView, psScenario, 1);
+
+# Status
+SubsetCreate(dmStatus, sView);
+SubsetElementInsert(dmStatus, sView, 'data', 1);
+
+
+# Measure Code
+SubsetCreate(dmMeasCode, sView);
+SubsetElementInsert(dmMeasCode, sView, psMeasCode, 1);
+
+# Period
+#MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}';
+MDX = '{FILTER( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmPer | '] )}, 0)}, [' | dmPer | '].[type] = "annual")}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+#******************************************************************************************************************
+#*** BUILD VIEW ***#
+#******************************************************************************************************************
+VIEWCREATE (cbMeas, sView);
+VIEWSUBSETASSIGN (cbMeas, sView, dmHLYear, sView);
+VIEWSUBSETASSIGN (cbMeas, sView, dmScenario, sView);
+VIEWSUBSETASSIGN (cbMeas, sView, dmStatus, sView);
+VIEWSUBSETASSIGN (cbMeas, sView, dmMeasCode, sView);
+VIEWSUBSETASSIGN (cbMeas, sView, dmPer, sView);
+
+#******************************************************************************************************************
+#**** CLEAR CUBE ****#
+#******************************************************************************************************************
+VIEWZEROOUT (cbMeas, sView);
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#******************************************************************************************************************
+VIEWDESTROY (cbMeas, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmStatus, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmPer, sView);
+
+#*****************************************************************************************************************************************************
+#**** STEP 3 - CLEAR DATA FROM GOVERNMENT MEASURES DETAILS CUBE
+#*****************************************************************************************************************************************************
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+#******************************************************************************************************************
+VIEWDESTROY (cbMeasDet, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmMeasDetails, sView);
+
+#******************************************************************************************************************
+#****CREATE SUBSETS****#
+#******************************************************************************************************************
+# headline year
+SubsetCreate(dmHLYear, sView);
+SubsetElementInsert(dmHLYear, sView, psHLYear, 1);
+
+# Scenario
+SubsetCreate(dmScenario, sView);
+SubsetElementInsert(dmScenario, sView, psScenario, 1);
+
+
+# Measure Code
+SubsetCreate(dmMeasCode, sView);
+SubsetElementInsert(dmMeasCode, sView, psMeasCode, 1);
+
+# Measure Details
+MDX = '{ EXCEPT( {TM1FILTERBYLEVEL( {TM1SUBSETALL( [ ' | dmMeasDetails | '] )}, 0)}, { [' | dmMeasDetails | '].[used] }) }';
+SUBSETCREATEBYMDX (sView, MDX);
+
+#******************************************************************************************************************
+#*** BUILD VIEW ***#
+#******************************************************************************************************************
+VIEWCREATE (cbMeasDet, sView);
+VIEWSUBSETASSIGN (cbMeasDet, sView, dmHLYear, sView);
+VIEWSUBSETASSIGN (cbMeasDet, sView, dmScenario, sView);
+VIEWSUBSETASSIGN (cbMeasDet, sView, dmMeasCode, sView);
+VIEWSUBSETASSIGN (cbMeasDet, sView, dmMeasDetails, sView);
+
+
+#**** CLEAR CUBE ****#
+VIEWZEROOUT (cbMeasDet, sView);
+
+#*** DELETE EXISTING VIEWS AND SUBSETS ***#
+VIEWDESTROY (cbMeasDet, sView);
+SUBSETDESTROY (dmHLYear, sView);
+SUBSETDESTROY (dmScenario, sView);
+SUBSETDESTROY (dmMeasCode, sView);
+SUBSETDESTROY (dmMeasDetails, sView);
+
+#******************************************************************************************************************
+#*** UDDATE OTHER FIELDS AND ATTRIBUTES
+#******************************************************************************************************************
+CELLPUTS (sUser, cbMeasDet, psHLYear, psScenario, psMeasCode, 'deleted by');
+
+#--------------------------------------------------------------------------
+# **** GET DATE VALUES ***#
+#--------------------------------------------------------------------------
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+
+sDay = TRIM(SUBST(sDNow, 1,2));
+
+IF (LONG (sDay) = 1);
+	sDay = '0' | sDay;
+ELSE;
+	sDay = sDay;
+ENDIF;
+
+sMonth = TRIM(SUBST(sMNow, 1,2));
+
+IF (LONG (sMonth) = 1);
+	sMonth = '0' | sMonth;
+ELSE;
+	sMonth = sMonth;
+ENDIF;
+
+sYear = TRIM(SUBST(sYNow, 1,4));
+
+sNow = sDay | '/' | sMonth | '/' | sYear;
+
+CELLPUTS(sNow,  cbMeasDet, psHLYear, psScenario, psMeasCode, 'deleted date');
+
+#******************************************************************************************************************
+#*** SET INACTIVE ATTRIBUTES AND CLEAR OUT ALL OTHER ATTRIBUTES***#
+#******************************************************************************************************************
+ATTRPUTS ('N', dmMeasCode, psMeasCode, 'Active');
+
+sTitle = ATTRS (dmMeasCode, psMeasCode, 'title');
+sTitle = sTitle | ' (DELETED)';
+ATTRPUTS ('' , dmMeasCode, psMeasCode, 'title');
+
+sDesc = ATTRS (dmMeasCode, psMeasCode, 'code and description');
+sDesc = sDesc | ' (DELETED)';
+ATTRPUTS ('', dmMeasCode, psMeasCode, 'code and description');
+
+ATTRPUTS ('', dmMeasCode, psMeasCode, 'CBMS');
+
+sCBMSCDesc = ATTRS (dmMeasCode, psMeasCode, 'CBMS code and description');
+sCBMSCDesc = sCBMSCDesc | ' (DELETED)';
+#ATTRPUTS ('', dmMeasCode, psMeasCode, 'CBMS code and description');
+
+ATTRPUTS ('', dmMeasCode, psMeasCode, 'Budget Round Created');
+ATTRPUTS ('', dmMeasCode, psMeasCode, 'Termination Year');
+ATTRPUTS ('', dmMeasCode, psMeasCode, 'Terminating Year');
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"AE_ParameterAndED_99 - Clear Flags",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_ParameterAndED_99 - Clear Flags.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psAdjType",
+			"Prompt":"",
+			"Value":"parameter",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

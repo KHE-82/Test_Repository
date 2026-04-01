@@ -1,0 +1,24 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_logging measure",
+	"Elements":
+	[
+		{
+			"Name":"Used",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Process name",
+			"Type":"String"
+		},
+		{
+			"Name":"error message",
+			"Type":"String"
+		},
+		{
+			"Name":"comments",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":[]
+}

@@ -1,0 +1,213 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_logging - clear
+#**** DESCRIPTION:       This process will check if the Adjustment can be replaced
+#****		          Process relies on source flatfile CSV being created via Adj Extract process
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 18/10/2023    BL             Initial Revision
+#***********************************************************************************************************************
+
+
+snProg = 'programme';
+curPrc = GETPROCESSNAME();
+
+
+#******************************************************************************************************************
+#*** DECLARE CLIENT PREFRENCE CUBES & DIMENSIONS
+#******************************************************************************************************************
+cbClientPick = '}PickList_sys_client preference';
+cbClient = 'sys_client preference';
+dmClient = '}Clients';
+dmClientPref = 'sys_client preference';
+dmClientMeas = 'sys_client preference measure';
+dmClientPickMeas = '}PickList';
+
+
+#*****************************************************************************
+#*** DECLARE CUBES AND DIMENSIONS***#
+#*****************************************************************************
+cbMeasID = 'government measures details';
+cbAE = 'AE adjustments';
+sCube = cbAE;
+cbID = 'AE id details';
+
+cbProg = snProg | ' details';
+dmProg = snProg;
+
+cbSysLog = 'sys_logging';
+dmRowID = 'RowID';
+dmSysLogMeas = 'sys_logging measure';
+
+
+#*****************************************************************************
+#*** DECLARE SYSTEM VARIABLES
+#*****************************************************************************
+dmVar = 'variables'; 
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+curBudRnd=ATTRS(dmVar, 'current budget round', 'value');
+
+#sImpFilePath = ATTRS(dmVar, 'sys_Costings Import Directory', ' value');
+sImpFilePath = ATTRS(dmVar, 'sys_ImpFileExceptionLogs', ' value');
+
+
+sStatus = 'data';
+sAdjType = 'Manual';
+
+
+#*****************************************************************************
+#*** DECLARE AE ADJUSTMENTS DIMENSIONS ***#
+#*****************************************************************************
+dmID = 'id';
+dmOC = 'outcome';
+dmRE = 'related entity';
+dmReason = 'reason';
+dmType = 'appropriation type';
+dmItem = 'appropriation item';
+dmFunc = 'function';
+dmMeas = 'measure code';
+dmAcc = 'account';
+dmMA = 'movement account';
+dmSPP = 'spp';
+dmJur = 'jurisdiction';
+dmStatus = 'status';
+
+sOldTitle = '';
+sOldCBMS = '';
+sOldID = '';
+
+
+#******************************************************************************************************************
+#*** IDENTIFY CURRENT USER
+#******************************************************************************************************************
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+                sUser = ATTRS(dmClient, sUser, 'GEUS User Name');
+                IF (sUser @= '');
+                          PROCESSQUIT;
+                ENDIF;
+ELSE;
+                sUser = TM1User();
+ENDIF;
+
+
+#****Reset Validation messages
+ATTRPUTS ('PASS', dmVar, 'sys_ImpFileValidation', 'value');
+CELLPUTS ('', cbClient, sUser,  'sys_ImpFileValidation', 'value');
+
+# **** GET DATE VALUES ***#
+sDNow = TimST( Now, '\D'); 
+sMNow = TimST( Now, '\m'); 
+sYNow = TimST( Now, '\Y'); 
+sHNow = TimST (Now, '\h');
+sMinNow = TimST (Now, '\i');
+sSNow = TimST (Now, '\s');
+ 
+sDay = TRIM(SUBST(sDNow, 1,2));
+ 
+IF (LONG (sDay) = 1);
+	sDay = '0' | sDay;
+ELSE;
+     	sDay = sDay;
+ENDIF;
+ 
+sMonth = TRIM(SUBST(sMNow, 1,2));
+ 
+IF (LONG (sMonth) = 1);
+     	sMonth = '0' | sMonth;
+ELSE;
+     	sMonth = sMonth;
+ENDIF;
+ 
+sYear = TRIM(SUBST(sYNow, 1,4));
+sNow = sYear | sMonth | sDay | sHNow | sMinNow | sSNow ;
+ 
+ 
+sOutputFile = 'geus replace adj upload file failed' | sUser | ' ' | sNow | '.csv';
+
+
+
+#*****************************************************************************************************************************************************
+#****  STEP 1 -CLEAR SYS LOGGING CUBE FOR USER
+#*****************************************************************************************************************************************************
+sView = ' $SysLogClear';
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbSysLog, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmrowID,sView);
+SUBSETDESTROY (dmSysLogMeas, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+
+#Clients
+MDX = ' { [' | dmClient  | ' ].[' | psUser | '] } ';
+SUBSETCREATEBYMDX ( sView, MDX );
+
+#RowID
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmRowID | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+#sysLogMeasure
+MDX = '{TM1FILTERBYLEVEL( {TM1SUBSETALL( [' | dmsysLogMeas | '] )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+#-------------------------------------------------------------------------------------------------------------
+#*** BUILD VIEW
+#-------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbSysLog, sView);
+VIEWSUBSETASSIGN (cbSysLog, sView, dmClient, sView);
+VIEWSUBSETASSIGN (cbSysLog, sView ,dmRowID, sView);
+VIEWSUBSETASSIGN (cbSysLog, sView, dmSysLogMeas, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+# *** DEFINE VIEW EXTRACT
+#-------------------------------------------------------------------------------------------------------------
+VIEWSUPPRESSZEROESSET(cbsysLog, sView, 1);
+VIEWEXTRACTSKIPZEROESSET (cbSysLog, sView, 1);
+VIEWEXTRACTSKIPRULEVALUESSET (cbSysLog, sView, 1);
+VIEWEXTRACTSKIPCALCSSET (cbSysLog, sView, 1);
+
+#-------------------------------------------------------------------------------------------------------------
+# ***CLEAR VIEW
+#-------------------------------------------------------------------------------------------------------------
+VIEWZEROOUT(cbSysLog,sView);
+
+#******************************************************************************************************************
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#******************************************************************************************************************
+VIEWDESTROY (cbSysLog, sView);
+SUBSETDESTROY (dmClient, sView);
+SUBSETDESTROY (dmrowID,sView);
+SUBSETDESTROY (dmSysLogMeas, sView);
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

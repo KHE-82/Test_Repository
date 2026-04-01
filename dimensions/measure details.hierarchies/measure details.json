@@ -1,0 +1,275 @@
+{
+	"@type":"Hierarchy",
+	"Name":"measure details",
+	"Elements":
+	[
+		{
+			"Name":"CBMS Measure Code",
+			"Type":"String"
+		},
+		{
+			"Name":"ASL",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"government decision",
+			"Type":"String"
+		},
+		{
+			"Name":"measure title",
+			"Type":"String"
+		},
+		{
+			"Name":"measure description",
+			"Type":"String"
+		},
+		{
+			"Name":"decision date",
+			"Type":"String"
+		},
+		{
+			"Name":"funding life",
+			"Type":"String"
+		},
+		{
+			"Name":"start date",
+			"Type":"String"
+		},
+		{
+			"Name":"end date",
+			"Type":"String"
+		},
+		{
+			"Name":"termination year",
+			"Type":"String"
+		},
+		{
+			"Name":"description",
+			"Type":"String"
+		},
+		{
+			"Name":"used",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"value",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"related programme code",
+			"Type":"String"
+		},
+		{
+			"Name":"related programme description",
+			"Type":"String"
+		},
+		{
+			"Name":"related entity",
+			"Type":"String"
+		},
+		{
+			"Name":"policy entity",
+			"Type":"String"
+		},
+		{
+			"Name":"control type",
+			"Type":"String"
+		},
+		{
+			"Name":"measure type",
+			"Type":"String"
+		},
+		{
+			"Name":"related agency",
+			"Type":"String"
+		},
+		{
+			"Name":"status",
+			"Type":"String"
+		},
+		{
+			"Name":"costing ID",
+			"Type":"String"
+		},
+		{
+			"Name":"created by",
+			"Type":"String"
+		},
+		{
+			"Name":"created date",
+			"Type":"String"
+		},
+		{
+			"Name":"authorised by",
+			"Type":"String"
+		},
+		{
+			"Name":"authorised date",
+			"Type":"String"
+		},
+		{
+			"Name":"deleted by",
+			"Type":"String"
+		},
+		{
+			"Name":"deleted date",
+			"Type":"String"
+		},
+		{
+			"Name":"rejected by",
+			"Type":"String"
+		},
+		{
+			"Name":"rejected date",
+			"Type":"String"
+		},
+		{
+			"Name":"current",
+			"Type":"String"
+		},
+		{
+			"Name":"election commitment",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_status",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_active status",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_measure type",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_measure title",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_measure description",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_election commitment",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_funding life",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_funding end date",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_policy entity",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_current measure flag",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_current measure counter",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"bulk processing flag",
+			"Type":"String"
+		},
+		{
+			"Name":"not for publication",
+			"Type":"String"
+		},
+		{
+			"Name":"measure published title",
+			"Type":"String"
+		},
+		{
+			"Name":"publication round",
+			"Type":"String"
+		},
+		{
+			"Name":"publication year",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_publication book",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_measure code",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_CBMS measure code",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_government decision",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_decision day",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_decision month",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_decision year",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_decision date",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_start day",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_start month",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_start year",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_start date",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_end day",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_end month",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_end year",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_end date",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_terminating year",
+			"Type":"String"
+		},
+		{
+			"Name":"sys_display terminating year",
+			"Type":"String"
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"measure details.subsets/Kate Hambly_$sysMeasBulkProcess.json"
+	]
+}

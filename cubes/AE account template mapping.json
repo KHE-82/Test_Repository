@@ -1,0 +1,25 @@
+{
+	"@type":"Cube",
+	"Name":"AE account template mapping",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('account template')"
+		},
+		{
+			"@id":"Dimensions('programme')"
+		},
+		{
+			"@id":"Dimensions('account template measure')"
+		}
+	],
+	"MeasuresDimension":
+	{
+		"@id":"Dimensions('account template measure')"
+	},
+	"Views@Code.links":
+	[
+		"AE account template mapping.views/Admin_$AccTempSubset01.json",
+		"AE account template mapping.views/Default.json"
+	]
+}

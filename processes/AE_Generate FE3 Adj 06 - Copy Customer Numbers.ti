@@ -1,0 +1,93 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_Generate FE3 Adj 06 - Copy Customer Numbers
+#**** DESCRIPTION:       This process copies the customer numbers from FE2 and post into FE3.
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 14/05/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#**** DECLARE VARIABLES ****#
+snProg = 'programme';
+sCube = 'AE group adjustment entry';
+sView = '$CreateCustFE3';
+sSubset = sView;
+sHLYear = ATTRS ('variables', 'headline year', 'value');
+sScenario = 'current';
+sStatus = 'Total approved';
+sID ='Total IDs';
+
+sProgSubSet = 'ProgsforFE3';
+sNewReason = 'Creation of the New 3rd Forward Year Estimates''';
+#sNewReason = ATTRS ('variables', 'creation of fe3 reason code', 'value');
+sNewStatus = 'Data';
+dmTmpID = 'tmp_ID_tmp';
+
+ViewSuppressZeroesSet (sCube, sView,1);
+ViewExtractSkipZeroesSet (sCube, sView, 1);
+ViewExtractSkipCalcsSet (sCube, sView, 0);
+
+
+DatasourceCubeview=sView;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*** ADD DATA TO ADJUSTMENTS CUBE BASED ON THE SELECTED FE3 YEAR ***#
+sPeriod = psFE3Year;
+
+IF(Dimix(dmTmpID,vsProg)=0);
+     itemskip;
+Endif;
+
+sID = ATTRS (dmTmpID, vsProg, 'ID');
+
+IF (vsAccType @= 'Customer Numbers');
+     IF (vsGrpMeas @= 'value');
+          nAddData = CELLGETN (sCube, sHLYear, sScenario, sNewStatus, vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sID, vsJur, sPeriod, vsGrpMeas);
+          CELLPUTN (nAddData + Value, sCube, sHLYear, sScenario, sNewStatus, vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sID, vsJur, sPeriod, vsGrpMeas);
+          asciioutput('kgtest.txt', NUMBERTOSTRING (Value),  sCube, sHLYear, sScenario, sNewStatus, vsRE, vsMeasCode, vsProg, vsAccType, vsAccTemp, sID, vsJur, sPeriod, vsGrpMeas);
+     ENDIF;
+ENDIF;
+
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+sSubset = sView;
+
+#****DELETE EXISTING VIEWS AND SUBSETS
+ViewDestroy (sCube, sView);
+SubsetDestroy ('headline year', sSubset);
+SubsetDestroy ('scenario', sSubset);
+SubsetDestroy ('status', sSubset);
+SubsetDestroy ('related entity', sSubset);
+SubsetDestroy ('measure code', sSubset);
+SubsetDestroy (snProg, sSubset);
+SubsetDestroy ('account type', sSubset);
+SubsetDestroy ('account template', sSubset);
+SubsetDestroy ('ID', sSubset);
+SubsetDestroy ('jurisdiction', sSubset);
+SubsetDestroy ('period', sSubset);
+SubsetDestroy ('group adjustment measure', sSubset);
+#endregion

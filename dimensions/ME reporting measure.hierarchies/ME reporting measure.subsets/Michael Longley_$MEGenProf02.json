@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"Michael Longley_$MEGenProf02",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('ME reporting measure')/Hierarchies('ME reporting measure')/Elements('value')"
+		}
+	]
+}

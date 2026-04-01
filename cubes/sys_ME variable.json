@@ -1,0 +1,15 @@
+{
+	"@type":"Cube",
+	"Name":"sys_ME variable",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('sys_ME variable')"
+		},
+		{
+			"@id":"Dimensions('sys_ME variable measure')"
+		}
+	],
+	"Rules@Code.link":"sys_ME variable.rules",
+	"Views@Code.links":[]
+}

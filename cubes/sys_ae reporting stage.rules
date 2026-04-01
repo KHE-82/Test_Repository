@@ -1,0 +1,14 @@
+Skipcheck;
+
+# Rule 0001
+# Merge Headline year and Scenario in to Description
+
+['Total stages','Description'] = S: STET;
+['Description'] = S: IF(DB(' sys_ae reporting stage', !reporting stage, 'Headline year') @<> '',SUBST (DB(' sys_ae reporting stage', !reporting stage, 'Headline year'),3,9) | ' ' | DB(' sys_ae reporting stage', !reporting stage, 'Scenario'), STET) ;
+
+
+
+#FEEDSTRINGS;
+#Feeders;
+
+#['Headline year'] => ['Description'];

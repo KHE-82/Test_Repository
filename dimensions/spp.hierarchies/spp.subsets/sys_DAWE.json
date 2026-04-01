@@ -1,0 +1,37 @@
+{
+	"@type":"Subset",
+	"Name":"sys_DAWE",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('SPP127')"
+		},
+		{
+			"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('SPP533')"
+		},
+		{
+			"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('SPP632')"
+		},
+		{
+			"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('SPP752')"
+		},
+		{
+			"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('SPP776')"
+		},
+		{
+			"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('SPP790')"
+		},
+		{
+			"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('SPP827')"
+		},
+		{
+			"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('SPP845')"
+		},
+		{
+			"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('SPP789')"
+		},
+		{
+			"@id":"Dimensions('spp')/Hierarchies('spp')/Elements('SPP893')"
+		}
+	]
+}

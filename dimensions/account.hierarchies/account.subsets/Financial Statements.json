@@ -1,0 +1,53 @@
+{
+	"@type":"Subset",
+	"Name":"Financial Statements",
+	"Alias":"code and description",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9002000')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('1000001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('2000000')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('3800001')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('3900000')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('5000000')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9000003')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('6000000')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9000020')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9100000')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9200000')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9300000')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9000851')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9000860')"
+		},
+		{
+			"@id":"Dimensions('account')/Hierarchies('account')/Elements('9000880')"
+		}
+	]
+}

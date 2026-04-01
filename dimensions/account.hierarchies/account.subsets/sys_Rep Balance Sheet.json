@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_Rep Balance Sheet",
+	"Alias":"code and description",
+	"Expression":"{TM1DRILLDOWNMEMBER( {[account].[3800001]}, ALL, RECURSIVE )}"
+}

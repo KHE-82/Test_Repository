@@ -1,0 +1,30 @@
+{
+	"@type":"Cube",
+	"Name":"AE account template",
+	"Dimensions":
+	[
+		{
+			"@id":"Dimensions('account template')"
+		},
+		{
+			"@id":"Dimensions('account template record type')"
+		},
+		{
+			"@id":"Dimensions('account type')"
+		},
+		{
+			"@id":"Dimensions('account')"
+		},
+		{
+			"@id":"Dimensions('movement account')"
+		},
+		{
+			"@id":"Dimensions('account template measure')"
+		}
+	],
+	"Rules@Code.link":"AE account template.rules",
+	"Views@Code.links":
+	[
+		"AE account template.views/AE Account template.json"
+	]
+}

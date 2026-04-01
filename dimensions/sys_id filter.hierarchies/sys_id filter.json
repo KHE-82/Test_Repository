@@ -1,0 +1,228 @@
+{
+	"@type":"Hierarchy",
+	"Name":"sys_id filter",
+	"Elements":
+	[
+		{
+			"Name":"ID List",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Programme",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Control Type",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Title",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Reason",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"CBMS Measure Code",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"GEUS Measure Code",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Status",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Appropriation Type",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Appropriation Item",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Adjustment Type",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"CBMS ID",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Created By",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Approved By",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Measure List",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"Measure Title",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Measure Description",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Government Decision",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Funding Life",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Measure Type",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Costing ID",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Terminating Year",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"Publication Book",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"ID List",
+			"ComponentName":"Programme",
+			"Weight":1
+		},
+		{
+			"ParentName":"ID List",
+			"ComponentName":"Control Type",
+			"Weight":1
+		},
+		{
+			"ParentName":"ID List",
+			"ComponentName":"Title",
+			"Weight":1
+		},
+		{
+			"ParentName":"ID List",
+			"ComponentName":"Reason",
+			"Weight":1
+		},
+		{
+			"ParentName":"ID List",
+			"ComponentName":"CBMS Measure Code",
+			"Weight":1
+		},
+		{
+			"ParentName":"ID List",
+			"ComponentName":"GEUS Measure Code",
+			"Weight":1
+		},
+		{
+			"ParentName":"ID List",
+			"ComponentName":"Status",
+			"Weight":1
+		},
+		{
+			"ParentName":"ID List",
+			"ComponentName":"Appropriation Type",
+			"Weight":1
+		},
+		{
+			"ParentName":"ID List",
+			"ComponentName":"Appropriation Item",
+			"Weight":1
+		},
+		{
+			"ParentName":"ID List",
+			"ComponentName":"Adjustment Type",
+			"Weight":1
+		},
+		{
+			"ParentName":"ID List",
+			"ComponentName":"CBMS ID",
+			"Weight":1
+		},
+		{
+			"ParentName":"ID List",
+			"ComponentName":"Created By",
+			"Weight":1
+		},
+		{
+			"ParentName":"ID List",
+			"ComponentName":"Approved By",
+			"Weight":1
+		},
+		{
+			"ParentName":"Measure List",
+			"ComponentName":"CBMS Measure Code",
+			"Weight":1
+		},
+		{
+			"ParentName":"Measure List",
+			"ComponentName":"Measure Title",
+			"Weight":1
+		},
+		{
+			"ParentName":"Measure List",
+			"ComponentName":"Measure Description",
+			"Weight":1
+		},
+		{
+			"ParentName":"Measure List",
+			"ComponentName":"Government Decision",
+			"Weight":1
+		},
+		{
+			"ParentName":"Measure List",
+			"ComponentName":"Funding Life",
+			"Weight":1
+		},
+		{
+			"ParentName":"Measure List",
+			"ComponentName":"Measure Type",
+			"Weight":1
+		},
+		{
+			"ParentName":"Measure List",
+			"ComponentName":"Costing ID",
+			"Weight":1
+		},
+		{
+			"ParentName":"Measure List",
+			"ComponentName":"Terminating Year",
+			"Weight":1
+		},
+		{
+			"ParentName":"Measure List",
+			"ComponentName":"Publication Book",
+			"Weight":1
+		},
+		{
+			"ParentName":"Measure List",
+			"ComponentName":"Created By",
+			"Weight":1
+		},
+		{
+			"ParentName":"Measure List",
+			"ComponentName":"Approved By",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"sys_id filter.subsets/sys_bulk process id filter list.json",
+		"sys_id filter.subsets/sys_id filter list.json",
+		"sys_id filter.subsets/sys_measure filter list.json"
+	]
+}

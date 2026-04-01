@@ -1,0 +1,58 @@
+{
+	"@type":"Hierarchy",
+	"Name":"outcome",
+	"Elements":
+	[
+		{
+			"Name":"Total outcomes",
+			"Type":"Consolidated"
+		},
+		{
+			"Name":"12554",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"12555",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"12556",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"12557",
+			"Type":"Numeric"
+		}
+	],
+	"Edges":
+	[
+		{
+			"ParentName":"Total outcomes",
+			"ComponentName":"12554",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total outcomes",
+			"ComponentName":"12555",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total outcomes",
+			"ComponentName":"12556",
+			"Weight":1
+		},
+		{
+			"ParentName":"Total outcomes",
+			"ComponentName":"12557",
+			"Weight":1
+		}
+	],
+	"Subsets@Code.links":
+	[
+		"outcome.subsets/$ChangeCode.json",
+		"outcome.subsets/all-n.json",
+		"outcome.subsets/Kate Hambly $ChangeCode03.json",
+		"outcome.subsets/sys_all-n.json",
+		"outcome.subsets/sys_print.json"
+	]
+}

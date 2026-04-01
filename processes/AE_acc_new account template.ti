@@ -1,0 +1,91 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+
+#*********************************************************************************************************************
+#**** PROCESS:               AE_acc_new account template
+#**** DESCRIPTION:       This process will create a temporary id for the account selected by the user
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 26/03/2014    KG             Initial Revision
+#****
+#***********************************************************************************************************************
+
+#*** DECLARE CUBES & DIMENSIONS ***#
+dmAccTemp = 'account template';
+dmClients = '}Clients';
+sCurUser = TM1User();
+
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+     sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+     lScan = SCAN('\',sUser) + 1;
+     sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+     sUser = TM1User();
+ENDIF;
+
+
+#*** FIND SIZE OF DIMENSION ***#
+lDimSiz = DIMSIZ(dmAccTemp);
+
+# NUMBER OF OTHER ELEMENTS SUCH AS 'TOTAL IDS' OR OTHERS TO EXCLUDE FROM CREATING A NEW ELEMENT
+lCountOtherEl = 1;
+
+nNewID = lDimSiz - lCountOtherEl + 1;
+sNewID = NUMBERTOSTRING (nNewID);
+
+IF (LONG(sNewID) = 1);
+     sNewID = '0000' | sNewID;
+ENDIF;
+
+IF (LONG(sNewID) = 2);
+     sNewID = '000' | sNewID;
+ENDIF;
+
+IF (LONG(sNewID) = 3);
+     sNewID = '00' | sNewID;
+ENDIF;
+
+IF (LONG(sNewID) = 4);
+     sNewID = '0' | sNewID;
+ENDIF;
+
+IF (LONG(sNewID) = 5);
+     sNewID = sNewID;
+ENDIF;
+
+#*** CREATE NEW ELEMENT ***#
+IF (DIMIX(dmAccTemp, sNewID) = 0);
+     DIMENSIONELEMENTINSERT (dmAccTemp, '', sNewID, 'N');
+     DIMENSIONELEMENTCOMPONENTADD (dmAccTemp, 'Total account templates', sNewID, 1);
+
+     #*** NOW STORE THE NEW ID IN THE CLIENTS ATTRIBUTES ***#
+     ATTRPUTS (sNewID, dmClients, sCurUser, 'geus_acctemp_id');
+
+ENDIF;
+
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#endregion

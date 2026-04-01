@@ -1,0 +1,251 @@
+#region Prolog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#*********************************************************************************************************************
+#**** PROCESS:               sys_Favourite Mapping - Copy Programme Mapping
+#**** DESCRIPTION:       This process will copy certain account favourites from a programme to another
+#****
+#****                                  It takes parameters from the source worksheet:
+#****
+#**** MODIFICATION HISTORY:
+#****
+#****  Date               Initials        Comments
+#****  ====              ======      =========
+#**** 26/02/2018    KG             Initial Revision
+#***********************************************************************************************************************
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE AE CUBES & DIMENSIONS 
+#-------------------------------------------------------------------------------------------------------------
+snProg = 'programme';
+cbFavMap = 'sys_favourite mapping';
+dmFavID = 'favourites_id';
+dmProg = snProg;
+dmFavMapMeas = 'sys_favourite mapping measure';
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DECLARE SYSTEM DIMENSIONS
+#-------------------------------------------------------------------------------------------------------------
+dmVar = 'variables';
+dmClients = '}Clients';
+
+#--------------------------------------------------------------------------------------------------------
+#*** GET CURRENT HEADLINE YEAR AND SCENARIO ****#
+#--------------------------------------------------------------------------------------------------------
+curHLYear = ATTRS(dmVar,'headline year','value');
+curScenario = ATTRS(dmVar, 'headline scenario', 'value');
+sCurUser = TM1User();
+
+
+#--------------------------------------------------------------------------------------------------------
+#--- CHECK IF CBMS-R IS LIVE : New Code 08 August 2017 - KG
+#--------------------------------------------------------------------------------------------------------
+sCBMSRLive = ATTRS (dmVar, 'sys_CBMSR GoLive', 'value');
+sCBMSRLiveHLYear = ATTRS (dmVar, 'sys_CBMSR GoLive Headline Year', 'value');
+sCBMSRMigrationScenario = 'CBMS-R OBAL';
+
+#--------------------------------------------------------------------------------------------------------
+#*** DECLARE SUBSETS AND VIEWS ***#
+#--------------------------------------------------------------------------------------------------------
+sUser = TM1User();
+IF (SUBST(sUser,1,3) @= 'CAM');
+	sUser = ATTRS(dmClients, sUser, '}TM1_DefaultDisplayValue');
+	lScan = SCAN('\',sUser) + 1;
+	sUser = TRIM(SUBST(sUser, lScan, 100));
+ELSE;
+	sUser = TM1User();
+ENDIF;
+
+#--------------------------------------------------------------------------------------------------------
+#*** DECLARE VARIABLES USED FOR VIEWS
+#--------------------------------------------------------------------------------------------------------
+sObject  = sUser | '_$CopyFavMapView';
+sView = sUser | '_$CopyFavMapView';
+sMeas = 'flag';
+
+
+#*****************************************************************************************************************************************************
+#*** STEP 1 - CLEAR TARGET VIEW
+#*****************************************************************************************************************************************************
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbFavMap, sView);
+SUBSETDESTROY (dmFavID, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmFavMapMeas, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+
+# Favourite ID
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( { [' | dmFavID | '].[' | psTargetFavID | ']}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Programme
+#SubsetCreate(dmProg, sView);
+#SubsetElementInsert(dmProg, sView, psTargetProg, 1);
+
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( { [' | dmProg | '].[' | psTargetProg | ']}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Favourite Measure
+SubsetCreate(dmFavMapMeas, sView);
+SubsetElementInsert(dmFavMapMeas, sView, sMeas, 1);
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** BUILD VIEW
+#-------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbFavMap, sView);
+VIEWSUBSETASSIGN (cbFavMap, sView, dmFavID, sView);
+VIEWSUBSETASSIGN (cbFavMap, sView, dmProg, sView);
+VIEWSUBSETASSIGN (cbFavMap, sView, dmFavMapMeas, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+# *** DEFINE VIEW EXTRACT
+#-------------------------------------------------------------------------------------------------------------
+VIEWEXTRACTSKIPZEROESSET (cbFavMap, sView, 1);
+VIEWSUPPRESSZEROESSET (cbFavMap, sView, 1);
+VIEWEXTRACTSKIPCALCSSET (cbFavMap, sView, 1);
+
+#-------------------------------------------------------------------------------------------------------------
+# *** ZEROOUT CUBE
+#-------------------------------------------------------------------------------------------------------------
+VIEWZEROOUT (cbFavMap, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbFavMap, sView);
+SUBSETDESTROY (dmFavID, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmFavMapMeas, sView);
+
+
+#*****************************************************************************************************************************************************
+#*** STEP 2 - CREATE SOURCE VIEW
+#*****************************************************************************************************************************************************
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbFavMap, sView);
+SUBSETDESTROY (dmFavID, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmFavMapMeas, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+#****CREATE SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+
+# Favourite ID
+MDX = '{TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( { [' | dmFavID | '].[' | psSourceFavID | ']}, ALL, RECURSIVE )}, 0)}';
+SUBSETCREATEBYMDX (sView, MDX);
+
+# Programme
+SubsetCreate(dmProg, sView);
+SubsetElementInsert(dmProg, sView, psSourceProg, 1);
+
+# Favourite Measure
+SubsetCreate(dmFavMapMeas, sView);
+SubsetElementInsert(dmFavMapMeas, sView, sMeas, 1);
+
+
+#-------------------------------------------------------------------------------------------------------------
+#*** BUILD VIEW
+#-------------------------------------------------------------------------------------------------------------
+VIEWCREATE (cbFavMap, sView);
+VIEWSUBSETASSIGN (cbFavMap, sView, dmFavID, sView);
+VIEWSUBSETASSIGN (cbFavMap, sView, dmProg, sView);
+VIEWSUBSETASSIGN (cbFavMap, sView, dmFavMapMeas, sView);
+
+#-------------------------------------------------------------------------------------------------------------
+# *** DEFINE VIEW EXTRACT
+#-------------------------------------------------------------------------------------------------------------
+VIEWEXTRACTSKIPZEROESSET (cbFavMap, sView, 1);
+VIEWSUPPRESSZEROESSET (cbFavMap, sView, 1);
+VIEWEXTRACTSKIPCALCSSET (cbFavMap, sView, 1);
+
+DATASOURCETYPE = 'VIEW';
+DATASOURCECUBEVIEW = sView;
+#endregion
+#region Metadata
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+#endregion
+#region Data
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+sTargetProgType = DTYPE (dmProg, psTargetProg);
+nCounter = 1;
+nProgDimSize = DIMSIZ (dmProg);
+nLastCounter = nProgDimSize;
+
+IF (sTargetProgType @= 'N');
+
+	#--------------------------------------------------------------------------------------------
+	#---- POST DATA
+	#--------------------------------------------------------------------------------------------
+	IF (psTargetFavID @= 'Total IDs');
+		IF (CELLISUPDATEABLE (cbFavMap, vsFavID, psTargetProg, vsMeas) = 1);
+			CELLPUTN (vnValue, cbFavMap, vsFavID, psTargetProg, vsMeas);
+		ENDIF;
+	ELSE;
+		IF (CELLISUPDATEABLE (cbFavMap, psTargetFavID, psTargetProg, vsMeas) = 1);
+			CELLPUTN (vnValue, cbFavMap, psTargetFavID, psTargetProg, vsMeas);
+		ENDIF;
+	ENDIF;
+ELSE;
+
+	#---------------------------------------------------------
+	WHILE (nCounter < nLastCounter);
+		sProgElement = DIMNM (dmProg, nCounter);
+		sElType = DTYPE (dmProg, sProgElement);
+		IF (sElType @= 'N');
+			IF (ELISANC (dmProg, psTargetProg, sProgElement) = 1);
+				sNewTargetProg = sProgElement;
+				#--------------------------------------------------------------------------------------------
+				#---- POST DATA
+				#--------------------------------------------------------------------------------------------
+				IF (psTargetFavID @= 'Total IDs');
+					IF (CELLISUPDATEABLE (cbFavMap, vsFavID, sNewTargetProg, vsMeas) = 1);
+						CELLPUTN (vnValue, cbFavMap, vsFavID, sNewTargetProg, vsMeas);
+					ENDIF;
+				ELSE;
+					IF (CELLISUPDATEABLE (cbFavMap, psTargetFavID, sNewTargetProg, vsMeas) = 1);
+						CELLPUTN (vnValue, cbFavMap, psTargetFavID, sNewTargetProg, vsMeas);
+					ENDIF;
+				ENDIF;
+			ENDIF;
+		ENDIF;
+		nCounter = nCounter + 1;
+		IF (nCounter = 1000);
+			PROCESSQUIT;
+		ENDIF;
+	END;
+
+ENDIF;
+
+#endregion
+#region Epilog
+
+#****Begin: Generated Statements***
+#****End: Generated Statements****
+
+#-------------------------------------------------------------------------------------------------------------
+#*** DELETE EXISTING VIEWS AND SUBSETS
+#-------------------------------------------------------------------------------------------------------------
+VIEWDESTROY (cbFavMap, sView);
+SUBSETDESTROY (dmFavID, sView);
+SUBSETDESTROY (dmProg, sView);
+SUBSETDESTROY (dmFavMapMeas, sView);
+#endregion

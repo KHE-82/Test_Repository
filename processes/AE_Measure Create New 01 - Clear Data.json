@@ -1,0 +1,21 @@
+{
+	"@type":"Process",
+	"Name":"AE_Measure Create New 01 - Clear Data",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AE_Measure Create New 01 - Clear Data.ti",
+	"UIData":"CubeAction=1511€DataAction=1503€CubeLogChanges=0€",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psUser",
+			"Prompt":"",
+			"Value":"Admin",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

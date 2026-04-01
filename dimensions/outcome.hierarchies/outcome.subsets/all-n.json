@@ -1,0 +1,5 @@
+{
+	"@type":"Subset",
+	"Name":"all-n",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1SUBSETALL( [outcome] )}, 0)}"
+}

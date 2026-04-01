@@ -1,0 +1,80 @@
+{
+	"@type":"Hierarchy",
+	"Name":"tmp_ID_Khristian",
+	"Elements":
+	[
+		{
+			"Name":"1079.01.BALTotal outcomes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1079.01.01Total outcomes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1079.01.02Total outcomes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1079.01.04Total outcomes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1079.01.05Total outcomes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1079.01.06Total outcomes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1079.01.07Total outcomes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1079.01.08Total outcomes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1079.01.09Total outcomes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1079.01.10Total outcomes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1079.01.12Total outcomes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1079.01.13Total outcomes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1079.01.14Total outcomes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1079.01.15Total outcomes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1079.01.17Total outcomes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1079.01.18Total outcomes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1079.01.19Total outcomes",
+			"Type":"Numeric"
+		},
+		{
+			"Name":"1079.01.20Total outcomes",
+			"Type":"Numeric"
+		}
+	],
+	"Subsets@Code.links":[]
+}

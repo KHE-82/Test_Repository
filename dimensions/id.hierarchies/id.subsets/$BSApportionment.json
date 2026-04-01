@@ -1,0 +1,10 @@
+{
+	"@type":"Subset",
+	"Name":"$BSApportionment",
+	"Elements":
+	[
+		{
+			"@id":"Dimensions('id')/Hierarchies('id')/Elements('00001')"
+		}
+	]
+}
