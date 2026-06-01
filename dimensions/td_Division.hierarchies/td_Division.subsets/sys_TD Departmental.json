@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_TD Departmental",
+	"Alias":"Division Code and Description",
+	"Expression":"{{ [td_Division].[Department of Finance] },{TM1SORT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[td_Division].[DEPT]}, ALL, RECURSIVE )}, 0)}, ASC)}, { EXCEPT( {TM1FILTERBYLEVEL( {TM1DRILLDOWNMEMBER( {[td_Division].[External]}, ALL, RECURSIVE )}, 0)}, { [td_Division].[Department of Finance] }) }}"
+}

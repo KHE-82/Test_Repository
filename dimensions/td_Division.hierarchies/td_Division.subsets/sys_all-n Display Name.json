@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_all-n Display Name",
+	"Alias":"Division Code and Description",
+	"Expression":"{TM1FILTERBYLEVEL( {TM1SUBSETALL( [td_Division] )}, 0)}"
+}

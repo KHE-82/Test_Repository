@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"Default",
+	"Alias":"code and description",
+	"Expression":"TM1SubsetAll([td_Division])"
+}

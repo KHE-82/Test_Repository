@@ -1,0 +1,12 @@
+{
+	"@type":"Dimension",
+	"Name":"td_Division",
+	"Hierarchies@Code.links":
+	[
+		"td_Division.hierarchies/td_Division.json"
+	],
+	"DefaultHierarchy":
+	{
+		"@id":"Dimensions('td_Division')/Hierarchies('td_Division')"
+	}
+}

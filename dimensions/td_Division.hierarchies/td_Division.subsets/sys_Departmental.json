@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_Departmental",
+	"Alias":"Division Code and Description",
+	"Expression":"{TM1DRILLDOWNMEMBER( {[td_Division].[DEPT]}, ALL, RECURSIVE )}"
+}

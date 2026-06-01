@@ -1,0 +1,6 @@
+{
+	"@type":"Subset",
+	"Name":"sys_All",
+	"Alias":"Division Code and Description",
+	"Expression":"{TM1DRILLDOWNMEMBER( {[td_Division].[All Clusters]}, ALL, RECURSIVE )}"
+}
