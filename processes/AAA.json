@@ -1,0 +1,13 @@
+{
+	"@type":"Process",
+	"Name":"AAA",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"AAA.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":[],
+	"Variables":[],
+	"UID": "17806282220004"
+}
