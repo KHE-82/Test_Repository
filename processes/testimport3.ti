@@ -1,0 +1,27 @@
+#region Prolog
+MinorErrorLogMax = -1;
+OnMinorErrorDoItemSkip = 1;
+CurrentLogSetting = CubeGetLogChanges('fin_Operating Statement');
+CubeSetLogChanges('fin_Operating Statement', 0);
+NumMetaRowsRead = 0;
+NumMetaRowsProcessed = 0;
+NumRowsRead = 0;
+NumRowsProcessed = 0;
+ViewExtractSkipCalcsSet('fin_Operating Statement','Data EntryV2',1);
+ViewExtractSkipRuleValuesSet('fin_Operating Statement','Data EntryV2',0);
+ViewExtractSkipZeroesSet('fin_Operating Statement','Data EntryV2',1);
+#endregion
+#region Data
+NumRowsRead = NumRowsRead + 1;
+If (Value @<> '');
+CellIncrementN(StringToNumberEx(Value,'.',','),'fin_Operating Statement',vYear,Scenario,Cost_Centre,GL_Code,vMonth,fin_Operating_Statment_Measure);
+NumRowsProcessed = NumRowsProcessed + 1;
+EndIf;
+#endregion
+#region Epilog
+If (pResult @<> '');
+TextOutput(pResult, NumberToString(NumRowsRead), NumberToString(NumRowsProcessed), NumberToString(NumMetaRowsRead), NumberToString(NumMetaRowsProcessed));
+EndIf;
+CubeSaveData('fin_Operating Statement');
+CubeSetLogChanges('fin_Operating Statement', CurrentLogSetting);
+#endregion

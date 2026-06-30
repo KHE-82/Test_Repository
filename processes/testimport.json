@@ -1,0 +1,75 @@
+{
+	"@type":"Process",
+	"Name":"testimport",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"testimport.ti",
+	"UIData":"{\"MappingType\":\"data\",\"Cube\":\"fin_Operating Statement\",\"DataReset\":\"none\",\"DataResetView\":\"\",\"AddOrReplace\":true,\"Skips\":\"true,false,true\",\"Mappings\":[{\"id\":\"col0\",\"SourceType\":\"column\",\"Name\":\"vMonth\",\"Type\":\"String\",\"Content\":\"element\",\"Qualifier\":\"level0\",\"Dimension\":\"Month\"},{\"id\":\"col1\",\"SourceType\":\"column\",\"Name\":\"GL_Code\",\"Type\":\"String\",\"Content\":\"element\",\"Qualifier\":\"level0\",\"Dimension\":\"GL Code\"},{\"id\":\"col2\",\"SourceType\":\"column\",\"Name\":\"vYear\",\"Type\":\"String\",\"Content\":\"element\",\"Qualifier\":\"level0\",\"Dimension\":\"Year\"},{\"id\":\"col3\",\"SourceType\":\"column\",\"Name\":\"Cost_Centre\",\"Type\":\"String\",\"Content\":\"element\",\"Qualifier\":\"level0\",\"Dimension\":\"Cost Centre\"},{\"id\":\"col4\",\"SourceType\":\"column\",\"Name\":\"Scenario\",\"Type\":\"String\",\"Content\":\"element\",\"Qualifier\":\"level0\",\"Dimension\":\"Scenario\"},{\"id\":\"col5\",\"SourceType\":\"column\",\"Name\":\"fin_Operating_Statment_Measure\",\"Type\":\"String\",\"Content\":\"element\",\"Qualifier\":\"level0\",\"Dimension\":\"fin_Operating Statment Measure\"},{\"id\":\"col6\",\"SourceType\":\"column\",\"Name\":\"Value\",\"Type\":\"Numeric\",\"Content\":\"data\",\"PriorType\":\"Numeric\"}]}",
+	"DataSource":
+	{
+		"Type":"TM1CubeView",
+		"dataSourceNameForClient":"",
+		"dataSourceNameForServer":"fin_Operating Statement",
+		"view":"Data EntryV2"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"pResult",
+			"Prompt":"Import count result file",
+			"Value":"",
+			"Type":"String"
+		}
+	],
+	"Variables":
+	[
+		{
+			"Name":"vMonth",
+			"Type":"String",
+			"Position":1,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"GL_Code",
+			"Type":"String",
+			"Position":2,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"vYear",
+			"Type":"String",
+			"Position":3,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"Cost_Centre",
+			"Type":"String",
+			"Position":4,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"Scenario",
+			"Type":"String",
+			"Position":5,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"fin_Operating_Statment_Measure",
+			"Type":"String",
+			"Position":6,
+			"StartByte":0,
+			"EndByte":0
+		},
+		{
+			"Name":"Value",
+			"Type":"String",
+			"Position":7,
+			"StartByte":0,
+			"EndByte":0
+		}
+	]
+}
