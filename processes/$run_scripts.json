@@ -1,0 +1,26 @@
+{
+	"@type":"Process",
+	"Name":"$run_scripts",
+	"HasSecurityAccess":false,
+	"Code@Code.link":"$run_scripts.ti",
+	"DataSource":
+	{
+		"Type":"None"
+	},
+	"Parameters":
+	[
+		{
+			"Name":"psFile",
+			"Prompt":"User Entry",
+			"Value":"export_file.csv",
+			"Type":"String"
+		},
+		{
+			"Name":"psScript",
+			"Prompt":"import.py, export.py,run_rush_ti.py",
+			"Value":"run_rush_ti.py",
+			"Type":"String"
+		}
+	],
+	"Variables":[]
+}

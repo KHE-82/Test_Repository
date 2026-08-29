@@ -1,0 +1,80 @@
+#region Prolog
+##################################################################################
+# DemoNotes
+
+# Python Scripts - TM1 Support Server:
+#   - import.py
+#   - export.py
+#   - run_rush_ti.py
+
+# User Input - Process:
+#   - psFile: User-specified file name
+
+# Default TM1 Server Paths:
+#   - Import Target Folder: 'GEUS PRIMUS/Upload/'
+#   - Export Source Folder: 'GEUS PRIMUS/Flatfile Extract Directory/'
+
+# Configuration:
+#   - These paths are currently static (fixed for demo purposes).
+
+# TM1 Support Server Directories:
+#   - Export Folder: ./file_transfer/export
+#   - Import Folder: ./file_transfer/import
+
+#IP address in Request URL is not Static.
+##################################################################################
+
+#Request
+sMethod= 'POST';
+
+#Demo URL - Subject to Change
+#sServer ='http://147.10.100.14';
+#sURL = sServer|':5000/run_script';
+
+#Utlise ngrok service installed on TM1 Support Server - tunnel requests via public URL below 
+#Need to start ngrok service first on TM1 Support Sever 
+sURL = 'https://nonvinous-joeann-agedly.ngrok-free.dev/run_script';
+
+sHeader= 'Content-Type:text/plain';
+
+If(psScript @='run_rush_ti.py');
+    
+    # sBody= '{
+    #   "script": "'|psScript|'",
+    #   "params": [ "my-tasks.txt","result_01.csv", "4","INFO","No"]
+    # }';
+
+      sBody= '{
+      "script": "'|psScript|'",
+      "params": [ "test_paaas","Sample_Optimal_Mode","4", "INFO","opt","Yes"]
+    }';  
+    
+Else;
+    sBody= '{
+  "script": "'|psScript|'",
+  "params": ["'| psfile |'"]
+}';
+Endif;
+
+ExecuteHttpRequest( sMethod, sURL,'-h ' | sHeader, '-d ' | sBody,'-k' );
+
+#Response
+sRepHeadItem = 'Content-Type';
+sRepStatusCode=NumberToString(HttpResponseGetStatusCode());
+sRepHead =HttpResponseGetHeader(sRepHeadItem);
+sRepBody = HttpResponseGetBody();
+
+#Populate Response Info in a Cube
+cb='sys_client preference';
+sUser = tm1user;
+
+# #Clear
+CellPutS('', 'sys_client preference', sUser, 'http_response_statuscode', 'Value');
+CellPutS('', 'sys_client preference', sUser, 'http_response_header', 'Value');
+CellPutS('', 'sys_client preference', sUser, 'http_response_body', 'Value');
+
+# #Populate
+CellPutS(sRepStatusCode, 'sys_client preference', sUser, 'http_response_statuscode', 'Value');
+CellPutS(sRepHead, 'sys_client preference', sUser, 'http_response_header', 'Value');
+CellPutS(sRepBody, 'sys_client preference', sUser, 'http_response_body', 'Value');
+#endregion
